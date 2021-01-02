@@ -180,9 +180,9 @@ public class EnchantUtil {
      */
     public static float weakness(ServerPlayerEntity player, float amount) {
         ItemStack itemStack = player.getStackInHand(Hand.MAIN_HAND);
-        // 如果没有附魔
-        int level = getLevel(Weakness.NAME, itemStack);
-        if (level < 1) {
+        // 如果不是剑且没有附魔
+        int level;
+        if (!(itemStack.getItem() instanceof SwordItem) || (level = getLevel(Weakness.NAME, itemStack)) < 1) {
             return amount;
         }
         // 已经判断过了
@@ -194,7 +194,6 @@ public class EnchantUtil {
         // 记录
         WEAKNESS_FLAG_MAP.put(id, age);
         // 根据等级判断是否造成弱点攻击
-        boolean trigger = player.getRandom().nextInt(100) < 5 * level;
-        return trigger ? amount * 3 : amount;
+        return player.getRandom().nextInt(100) < 5 * level ? amount * 3 : amount;
     }
 }
