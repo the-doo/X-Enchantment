@@ -162,10 +162,10 @@ public class EnchantUtil {
      * @return true or false
      */
     private static boolean canAttacked(ServerPlayerEntity player, LivingEntity livingEntity) {
-        // 距离小于9
-        return player.squaredDistanceTo(livingEntity) < 9.0
-                // 排除当前对象
-                && livingEntity != player
+        // 排除当前对象
+        return livingEntity != player
+                // 距离小于9
+                && player.squaredDistanceTo(livingEntity) < 9.0
                 // 排除队友
                 && !player.isTeammate(livingEntity)
                 // 可攻击
