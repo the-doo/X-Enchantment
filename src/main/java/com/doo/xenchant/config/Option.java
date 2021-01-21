@@ -35,6 +35,11 @@ public class Option {
      */
     public boolean infinityAcceptMending = true;
 
+    /**
+     * 聊天框提示
+     */
+    public boolean chatTips = true;
+
     public boolean clickAutoFishing() {
         return autoFishing = !autoFishing;
     }
@@ -57,5 +62,9 @@ public class Option {
 
     public boolean clickInfinityAcceptMending() {
         return infinityAcceptMending = !infinityAcceptMending;
+    }
+
+    public boolean clickChatTips() {
+        return chatTips = !chatTips;
     }
 }

@@ -295,12 +295,17 @@ public class EnchantUtil {
         if (ran >= 20) {
             return;
         }
+        boolean chatTips = Enchant.option.chatTips;
         //  5%
         if (ran < 5) {
             level *= 5;
-            Enchant.MC.inGameHud.getChatHud().addMessage(MORE_LOOT_TEXT);
+            if (chatTips) {
+                Enchant.MC.inGameHud.getChatHud().addMessage(MORE_LOOT_TEXT);
+            }
         } else {
-            Enchant.MC.inGameHud.getChatHud().addMessage(LOOT_TEXT);
+            if (chatTips) {
+                Enchant.MC.inGameHud.getChatHud().addMessage(LOOT_TEXT);
+            }
         }
         try {
             level += 1;

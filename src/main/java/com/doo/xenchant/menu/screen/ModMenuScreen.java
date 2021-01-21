@@ -22,6 +22,7 @@ public class ModMenuScreen extends Screen {
     private static final TranslatableText REBIRTH_TEXT = new TranslatableText("enchant.menu.option.rebirth");
     private static final TranslatableText MORE_LOOT_TEXT = new TranslatableText("enchant.menu.option.more_loot");
     private static final TranslatableText INFINITY_ACCEPT_MENDING_TEXT = new TranslatableText("enchant.menu.option.infinity_accept_mending");
+    private static final TranslatableText CHAT_TIPS_TEXT = new TranslatableText("enchant.menu.option.chat_tips");
 
     private static final ModMenuScreen INSTANCE = new ModMenuScreen();
 
@@ -63,6 +64,10 @@ public class ModMenuScreen extends Screen {
         this.addButton(new ButtonWidget(x, y * count++, bw, bh,
                 INFINITY_ACCEPT_MENDING_TEXT.copy().append(": " + Enchant.option.infinityAcceptMending),
                 b -> b.setMessage(INFINITY_ACCEPT_MENDING_TEXT.copy().append(": " + Enchant.option.clickInfinityAcceptMending()))));
+        //  聊天框提示
+        this.addButton(new ButtonWidget(x, y * count++, bw, bh,
+                CHAT_TIPS_TEXT.copy().append(": " + Enchant.option.chatTips),
+                b -> b.setMessage(CHAT_TIPS_TEXT.copy().append(": " + Enchant.option.clickChatTips()))));
         // 返回按钮
         this.addButton(new ButtonWidget(x, this.height - y, bw, bh,
                 ScreenTexts.BACK, b -> INSTANCE.close()));
