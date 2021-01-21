@@ -4,10 +4,13 @@ import com.doo.xenchant.config.Config;
 import com.doo.xenchant.config.Option;
 import com.doo.xenchant.util.EnchantUtil;
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.client.MinecraftClient;
 
 public class Enchant implements ModInitializer {
 
 	public static final String ID = "xenchant";
+
+	public static final MinecraftClient MC = MinecraftClient.getInstance();
 
 	public static Option option = new Option();
 

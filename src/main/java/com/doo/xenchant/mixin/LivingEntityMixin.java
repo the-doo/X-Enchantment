@@ -22,12 +22,20 @@ public abstract class LivingEntityMixin extends Entity {
 	}
 
 	@ModifyVariable(method = "damage", at = @At(value = "HEAD"), ordinal = 0)
-	private float onDamage(float amount, DamageSource source) {
+	private float returnAmount(float amount, DamageSource source) {
 		Entity entity;
 		if (!Enchant.option.weakness || world.isClient() || (entity = source.getAttacker()) == null || !(entity instanceof ServerPlayerEntity)) {
 			return amount;
 		}
 		return EnchantUtil.weakness((ServerPlayerEntity) entity, amount);
+	}
+
+	@Inject(at = @At("TAIL"), method = "setHealth")
+	private void setHealthT(float health, CallbackInfo ci) {
+		ServerPlayerEntity entity;
+		if (Enchant.option.rebirth && health <= 0 && (entity = EnchantUtil.getServerPlayer(getUuid())) != null) {
+			EnchantUtil.rebirth(entity);
+		}
 	}
 
 	@Inject(at = @At("TAIL"), method = "applyDamage")

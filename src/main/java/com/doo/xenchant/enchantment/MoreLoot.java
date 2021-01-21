@@ -6,16 +6,16 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.util.Identifier;
 
 /**
- * 吸血
+ * 更多战利品
  */
-public class SuckBlood extends BaseEnchantment {
+public class MoreLoot extends BaseEnchantment {
 
-    public static final String NAME = "suck_blood";
+    public static final String NAME = "more_loot";
 
-    public SuckBlood() {
+    public MoreLoot() {
         super(new Identifier(Enchant.ID, NAME),
                 Rarity.COMMON,
-                EnchantmentTarget.WEAPON,
+                EnchantmentTarget.BREAKABLE,
                 new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND});
     }
 

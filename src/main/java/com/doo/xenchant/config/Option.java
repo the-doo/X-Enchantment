@@ -20,6 +20,21 @@ public class Option {
      */
     public boolean weakness = true;
 
+    /**
+     * 重生
+     */
+    public boolean rebirth = true;
+
+    /**
+     * 更多战利品
+     */
+    public boolean moreLoot = true;
+
+    /**
+     * 无限与修补
+     */
+    public boolean infinityAcceptMending = true;
+
     public boolean clickAutoFishing() {
         return autoFishing = !autoFishing;
     }
@@ -30,5 +45,17 @@ public class Option {
 
     public boolean clickWeakness() {
         return weakness = !weakness;
+    }
+
+    public boolean clickRebirth() {
+        return rebirth = !rebirth;
+    }
+
+    public boolean clickMoreLoot() {
+        return moreLoot = !moreLoot;
+    }
+
+    public boolean clickInfinityAcceptMending() {
+        return infinityAcceptMending = !infinityAcceptMending;
     }
 }

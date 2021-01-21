@@ -4,10 +4,10 @@
   "package": "com.doo.xenchant.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-  ],
-  "client": [
     "FishingBobberMixin",
-    "LivingEntityMixin"
+    "InfinityMixin",
+    "LivingEntityMixin",
+    "LootTableMixin"
   ],
   "injectors": {
     "defaultRequire": 1

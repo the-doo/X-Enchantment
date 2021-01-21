@@ -2,8 +2,16 @@
     "enchantment.xenchant.auto_fish": "auto fishing",
     "enchantment.xenchant.suck_blood": "such blood",
     "enchantment.xenchant.weakness": "weakness attack",
+    "enchantment.xenchant.rebirth": "rebirth",
+    "enchantment.xenchant.more_loot": "more loot",
+
+    "enchantment.xenchant.chat.more_loot": "more loot !!!",
+    "enchantment.xenchant.chat.more_more_loot": "more more more more loot !!!!!",
 
     "enchant.menu.option.auto_fish": "auto fishing",
     "enchant.menu.option.suck_blood": "such blood",
-    "enchant.menu.option.weakness": "weakness attack"
+    "enchant.menu.option.weakness": "weakness attack",
+    "enchant.menu.option.rebirth": "rebirth",
+    "enchant.menu.option.more_loot": "more loot",
+    "enchant.menu.option.infinity_accept_mending": "infinity accept mending"
 }

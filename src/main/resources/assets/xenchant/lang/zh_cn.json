@@ -2,8 +2,16 @@
     "enchantment.xenchant.auto_fish": "自动钓鱼",
     "enchantment.xenchant.suck_blood": "吸血",
     "enchantment.xenchant.weakness": "弱点攻击",
+    "enchantment.xenchant.rebirth": "重生",
+    "enchantment.xenchant.more_loot": "更多战利品",
+
+    "enchantment.xenchant.chat.more_loot": "更多战利品!",
+    "enchantment.xenchant.chat.more_more_loot": "超级超级超级多的战利品!!!!!",
 
     "enchant.menu.option.auto_fish": "自动钓鱼",
     "enchant.menu.option.suck_blood": "吸血",
-    "enchant.menu.option.weakness": "弱点攻击"
+    "enchant.menu.option.weakness": "弱点攻击",
+    "enchant.menu.option.rebirth": "重生",
+    "enchant.menu.option.more_loot": "更多战利品",
+    "enchant.menu.option.infinity_accept_mending": "无限与经验修复并存"
 }
