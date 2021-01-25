@@ -31,6 +31,16 @@ public class Option {
     public boolean moreLoot = true;
 
     /**
+     * 命中率提升
+     */
+    public boolean hitRateUp = true;
+
+    /**
+     * 快速射击
+     */
+    public boolean quickShoot = true;
+
+    /**
      * 无限与修补
      */
     public boolean infinityAcceptMending = true;
@@ -58,6 +68,14 @@ public class Option {
 
     public boolean clickMoreLoot() {
         return moreLoot = !moreLoot;
+    }
+
+    public boolean clickHitRateUp() {
+        return hitRateUp = !hitRateUp;
+    }
+
+    public boolean clickQuickShoot() {
+        return quickShoot = !quickShoot;
     }
 
     public boolean clickInfinityAcceptMending() {

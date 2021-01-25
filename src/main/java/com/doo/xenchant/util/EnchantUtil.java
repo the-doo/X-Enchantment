@@ -24,16 +24,17 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import org.apache.logging.log4j.Level;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -76,9 +77,11 @@ public class EnchantUtil {
      * 可翻译文本
      */
     public static final MutableText LOOT_TEXT =
-            new TranslatableText("enchantment.xenchant.chat.more_loot").setStyle(Style.EMPTY.withColor(Formatting.YELLOW));
+            new TranslatableText("enchantment.x_enchant.chat.more_loot")
+                    .setStyle(Style.EMPTY.withColor(Formatting.YELLOW));
     public static final MutableText MORE_LOOT_TEXT =
-            new TranslatableText("enchantment.xenchant.chat.more_more_loot").setStyle(Style.EMPTY.withColor(Formatting.RED));
+            new TranslatableText("enchantment.x_enchant.chat.more_more_loot")
+                    .setStyle(Style.EMPTY.withColor(Formatting.RED));
 
     /**
      * 注册所有附魔
@@ -92,6 +95,8 @@ public class EnchantUtil {
         ENCHANTMENT_MAP.put(Weakness.NAME, new Weakness());
         ENCHANTMENT_MAP.put(Rebirth.NAME, new Rebirth());
         ENCHANTMENT_MAP.put(MoreLoot.NAME, new MoreLoot());
+        ENCHANTMENT_MAP.put(HitRateUp.NAME, new HitRateUp());
+        ENCHANTMENT_MAP.put(QuickShoot.NAME, new QuickShoot());
     }
 
     /**
@@ -295,17 +300,12 @@ public class EnchantUtil {
         if (ran >= 20) {
             return;
         }
-        boolean chatTips = Enchant.option.chatTips;
         //  5%
         if (ran < 5) {
-            level *= 5;
-            if (chatTips) {
-                Enchant.MC.inGameHud.getChatHud().addMessage(MORE_LOOT_TEXT);
-            }
+            level *= 10;
+            sendMessage(MORE_LOOT_TEXT);
         } else {
-            if (chatTips) {
-                Enchant.MC.inGameHud.getChatHud().addMessage(LOOT_TEXT);
-            }
+            sendMessage(LOOT_TEXT);
         }
         try {
             level += 1;
@@ -316,6 +316,17 @@ public class EnchantUtil {
             ROLLS_MAP.put(rolls, value);
         } catch (Exception e) {
             Config.LOGGER.log(Level.WARN, "value设置失败", e);
+        }
+    }
+
+    /**
+     * 聊天框发送信息
+     *
+     * @param text text
+     */
+    private static void sendMessage(Text text) {
+        if (Enchant.option.chatTips) {
+            Enchant.MC.inGameHud.getChatHud().addMessage(text);
         }
     }
 
@@ -335,5 +346,42 @@ public class EnchantUtil {
         } catch (Exception e) {
             Config.LOGGER.log(Level.WARN, "value重置失败", e);
         }
+    }
+
+    /**
+     * 命中
+     *
+     * @param player 玩家
+     * @param itemStack 工具
+     * @param world 世界
+     * @param pos 位置
+     * @param box 碰撞体积
+     * @return Entity 命中实体 or null
+     */
+    public static Entity hitRateUp(ServerPlayerEntity player, ItemStack itemStack, World world, Vec3d pos, Box box) {
+        int level = getLevel(HitRateUp.NAME, itemStack);
+        if (level < 1) {
+            return null;
+        }
+        List<LivingEntity> entities =
+                world.getNonSpectatingEntities(LivingEntity.class, box.expand(level));
+        entities.removeIf(e -> e == player || e.isTeammate(player));
+        if (entities.isEmpty()) {
+            return null;
+        }
+        return entities.stream()
+                .filter(e -> e.squaredDistanceTo(pos) <= level)
+                .min(Comparator.comparingDouble(p -> p.squaredDistanceTo(pos)))
+                .orElse(null);
+    }
+
+    /**
+     * 快速射击
+     *
+     * @param itemStack 物品栈
+     * @return level tick
+     */
+    public static int quickShooting(ItemStack itemStack) {
+        return getLevel(QuickShoot.NAME, itemStack);
     }
 }

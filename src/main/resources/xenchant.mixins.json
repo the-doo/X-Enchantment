@@ -7,7 +7,8 @@
     "FishingBobberMixin",
     "InfinityMixin",
     "LivingEntityMixin",
-    "LootTableMixin"
+    "LootTableMixin",
+    "PersistentProjectileEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

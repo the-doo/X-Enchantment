@@ -6,9 +6,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.RangedWeaponItem;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -17,8 +20,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends Entity {
 
+	@Shadow protected ItemStack activeItemStack;
+
+	@Shadow protected int itemUseTimeLeft;
+
 	public LivingEntityMixin(EntityType<?> type, World world) {
 		super(type, world);
+	}
+
+	@Inject(method = "tickActiveItemStack", at = @At(value = "HEAD"), cancellable = true)
+	private void tickActiveItemStackH(CallbackInfo ci) {
+		if (Enchant.option.quickShoot && EnchantUtil.getServerPlayer(getUuid()) != null && activeItemStack.getItem() instanceof RangedWeaponItem && !activeItemStack.isEmpty()) {
+			this.itemUseTimeLeft -= EnchantUtil.quickShooting(activeItemStack);
+		}
 	}
 
 	@ModifyVariable(method = "damage", at = @At(value = "HEAD"), ordinal = 0)

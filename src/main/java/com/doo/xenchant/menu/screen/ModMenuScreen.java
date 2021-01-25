@@ -16,13 +16,16 @@ import org.apache.logging.log4j.Level;
  */
 public class ModMenuScreen extends Screen {
 
-    private static final TranslatableText AUTO_FISHING_TEXT = new TranslatableText("enchant.menu.option.auto_fish");
-    private static final TranslatableText SUCK_BLOOD_TEXT = new TranslatableText("enchant.menu.option.suck_blood");
-    private static final TranslatableText WEAKNESS_TEXT = new TranslatableText("enchant.menu.option.weakness");
-    private static final TranslatableText REBIRTH_TEXT = new TranslatableText("enchant.menu.option.rebirth");
-    private static final TranslatableText MORE_LOOT_TEXT = new TranslatableText("enchant.menu.option.more_loot");
-    private static final TranslatableText INFINITY_ACCEPT_MENDING_TEXT = new TranslatableText("enchant.menu.option.infinity_accept_mending");
-    private static final TranslatableText CHAT_TIPS_TEXT = new TranslatableText("enchant.menu.option.chat_tips");
+    private static final TranslatableText AUTO_FISHING_TEXT = new TranslatableText("x_enchant.menu.option.auto_fish");
+    private static final TranslatableText SUCK_BLOOD_TEXT = new TranslatableText("x_enchant.menu.option.suck_blood");
+    private static final TranslatableText WEAKNESS_TEXT = new TranslatableText("x_enchant.menu.option.weakness");
+    private static final TranslatableText REBIRTH_TEXT = new TranslatableText("x_enchant.menu.option.rebirth");
+    private static final TranslatableText MORE_LOOT_TEXT = new TranslatableText("x_enchant.menu.option.more_loot");
+    private static final TranslatableText INFINITY_ACCEPT_MENDING_TEXT = new TranslatableText("x_enchant.menu.option.infinity_accept_mending");
+    private static final TranslatableText HIT_RATE_UP_TEXT = new TranslatableText("x_enchant.menu.option.hit_rate_up");
+    private static final TranslatableText QUICK_SHOOT_TEXT = new TranslatableText("x_enchant.menu.option.quick_shoot");
+
+    private static final TranslatableText CHAT_TIPS_TEXT = new TranslatableText("x_enchant.menu.option.chat_tips");
 
     private static final ModMenuScreen INSTANCE = new ModMenuScreen();
 
@@ -41,31 +44,39 @@ public class ModMenuScreen extends Screen {
         int x = this.width / 2 - bw / 2;
         int count = 1;
         // 自动钓鱼
-        this.addButton(new ButtonWidget(x, y * count++, bw, bh,
+        this.addButton(new ButtonWidget(x - bw / 2, y * count, bw, bh,
                 AUTO_FISHING_TEXT.copy().append(": " + Enchant.option.autoFishing),
                 b -> b.setMessage(AUTO_FISHING_TEXT.copy().append(": " + Enchant.option.clickAutoFishing()))));
         // 吸血
-        this.addButton(new ButtonWidget(x, y * count++, bw, bh,
+        this.addButton(new ButtonWidget(x + bw / 2, y * count++, bw, bh,
                 SUCK_BLOOD_TEXT.copy().append(": " + Enchant.option.suckBlood),
                 b -> b.setMessage(SUCK_BLOOD_TEXT.copy().append(": " + Enchant.option.clickSuckBlood()))));
         // 弱点攻击
-        this.addButton(new ButtonWidget(x, y * count++, bw, bh,
+        this.addButton(new ButtonWidget(x - bw / 2, y * count, bw, bh,
                 WEAKNESS_TEXT.copy().append(": " + Enchant.option.weakness),
                 b -> b.setMessage(WEAKNESS_TEXT.copy().append(": " + Enchant.option.clickWeakness()))));
         //  重生
-        this.addButton(new ButtonWidget(x, y * count++, bw, bh,
+        this.addButton(new ButtonWidget(x + bw / 2, y * count++, bw, bh,
                 REBIRTH_TEXT.copy().append(": " + Enchant.option.rebirth),
                 b -> b.setMessage(REBIRTH_TEXT.copy().append(": " + Enchant.option.clickRebirth()))));
         //  更多战利品
-        this.addButton(new ButtonWidget(x, y * count++, bw, bh,
+        this.addButton(new ButtonWidget(x - bw / 2, y * count, bw, bh,
                 MORE_LOOT_TEXT.copy().append(": " + Enchant.option.moreLoot),
                 b -> b.setMessage(MORE_LOOT_TEXT.copy().append(": " + Enchant.option.clickMoreLoot()))));
         //  无限与修补
-        this.addButton(new ButtonWidget(x, y * count++, bw, bh,
+        this.addButton(new ButtonWidget(x + bw / 2, y * count++, bw, bh,
                 INFINITY_ACCEPT_MENDING_TEXT.copy().append(": " + Enchant.option.infinityAcceptMending),
                 b -> b.setMessage(INFINITY_ACCEPT_MENDING_TEXT.copy().append(": " + Enchant.option.clickInfinityAcceptMending()))));
+        //  命中率提升
+        this.addButton(new ButtonWidget(x - bw / 2, y * count, bw, bh,
+                HIT_RATE_UP_TEXT.copy().append(": " + Enchant.option.hitRateUp),
+                b -> b.setMessage(HIT_RATE_UP_TEXT.copy().append(": " + Enchant.option.clickHitRateUp()))));
+        //  快速射击
+        this.addButton(new ButtonWidget(x + bw / 2, y * count++, bw, bh,
+                QUICK_SHOOT_TEXT.copy().append(": " + Enchant.option.quickShoot),
+                b -> b.setMessage(QUICK_SHOOT_TEXT.copy().append(": " + Enchant.option.clickQuickShoot()))));
         //  聊天框提示
-        this.addButton(new ButtonWidget(x, y * count++, bw, bh,
+        this.addButton(new ButtonWidget(x - bw / 2, y * count, bw, bh,
                 CHAT_TIPS_TEXT.copy().append(": " + Enchant.option.chatTips),
                 b -> b.setMessage(CHAT_TIPS_TEXT.copy().append(": " + Enchant.option.clickChatTips()))));
         // 返回按钮

@@ -1,10 +1,14 @@
 package com.doo.xenchant.enchantment;
 
+import com.doo.xenchant.util.EnchantUtil;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 附魔基类
@@ -25,6 +29,7 @@ public abstract class BaseEnchantment extends Enchantment {
         super(weight, type, slotTypes);
         this.id = id;
         Registry.register(Registry.ENCHANTMENT, id, this);
+        EnchantUtil.ENCHANTMENT_MAP.put(id.toString(), this);
     }
 
     /**

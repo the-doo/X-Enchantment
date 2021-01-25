@@ -8,7 +8,7 @@ import net.minecraft.client.MinecraftClient;
 
 public class Enchant implements ModInitializer {
 
-	public static final String ID = "xenchant";
+	public static final String ID = "x_enchant";
 
 	public static final MinecraftClient MC = MinecraftClient.getInstance();
 

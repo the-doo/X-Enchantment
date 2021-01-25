@@ -1,17 +1,23 @@
 {
-    "enchantment.xenchant.auto_fish": "自动钓鱼",
-    "enchantment.xenchant.suck_blood": "吸血",
-    "enchantment.xenchant.weakness": "弱点攻击",
-    "enchantment.xenchant.rebirth": "重生",
-    "enchantment.xenchant.more_loot": "更多战利品",
+    "enchantment.x_enchant.auto_fish": "自动钓鱼",
+    "enchantment.x_enchant.suck_blood": "吸血",
+    "enchantment.x_enchant.weakness": "弱点攻击",
+    "enchantment.x_enchant.rebirth": "重生",
+    "enchantment.x_enchant.more_loot": "更多战利品",
+    "enchantment.x_enchant.hit_rate_up": "命中率提升",
+    "enchantment.x_enchant.quick_shoot": "快速射击",
 
-    "enchantment.xenchant.chat.more_loot": "更多战利品!",
-    "enchantment.xenchant.chat.more_more_loot": "超级超级超级多的战利品!!!!!",
+    "enchantment.x_enchant.chat.more_loot": "更多战利品!",
+    "enchantment.x_enchant.chat.more_more_loot": "超级超级超级多的战利品!!!!!",
 
-    "enchant.menu.option.auto_fish": "自动钓鱼",
-    "enchant.menu.option.suck_blood": "吸血",
-    "enchant.menu.option.weakness": "弱点攻击",
-    "enchant.menu.option.rebirth": "重生",
-    "enchant.menu.option.more_loot": "更多战利品",
-    "enchant.menu.option.infinity_accept_mending": "无限与经验修复并存"
+    "x_enchant.menu.option.auto_fish": "自动钓鱼",
+    "x_enchant.menu.option.suck_blood": "吸血",
+    "x_enchant.menu.option.weakness": "弱点攻击",
+    "x_enchant.menu.option.rebirth": "重生",
+    "x_enchant.menu.option.more_loot": "更多战利品",
+    "x_enchant.menu.option.hit_rate_up": "命中率提升",
+    "x_enchant.menu.option.infinity_accept_mending": "无限与经验修复并存",
+    "x_enchant.menu.option.quick_shoot": "快速射击",
+
+    "x_enchant.menu.option.chat_tips": "聊天提示"
 }
