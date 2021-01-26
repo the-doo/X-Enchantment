@@ -351,11 +351,11 @@ public class EnchantUtil {
     /**
      * 命中
      *
-     * @param player 玩家
+     * @param player    玩家
      * @param itemStack 工具
-     * @param world 世界
-     * @param pos 位置
-     * @param box 碰撞体积
+     * @param world     世界
+     * @param pos       位置
+     * @param box       碰撞体积
      * @return Entity 命中实体 or null
      */
     public static Entity hitRateUp(ServerPlayerEntity player, ItemStack itemStack, World world, Vec3d pos, Box box) {

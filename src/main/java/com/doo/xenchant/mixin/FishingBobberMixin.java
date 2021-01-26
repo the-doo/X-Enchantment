@@ -15,15 +15,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(FishingBobberEntity.class)
 public abstract class FishingBobberMixin {
 
-	@Shadow private boolean caughtFish;
+    @Shadow
+    private boolean caughtFish;
 
-	@Shadow @Nullable public abstract PlayerEntity getPlayerOwner();
+    @Shadow
+    @Nullable
+    public abstract PlayerEntity getPlayerOwner();
 
-	@Inject(at = @At("TAIL"), method = "tick")
-	private void tickT(CallbackInfo ci) {
-		PlayerEntity player = this.getPlayerOwner();
-		if (Enchant.option.autoFishing && caughtFish && player instanceof ServerPlayerEntity) {
-			EnchantUtil.autoFish((ServerPlayerEntity) player);
-		}
-	}
+    @Inject(at = @At("TAIL"), method = "tick")
+    private void tickT(CallbackInfo ci) {
+        PlayerEntity player = this.getPlayerOwner();
+        if (Enchant.option.autoFishing && caughtFish && player instanceof ServerPlayerEntity) {
+            EnchantUtil.autoFish((ServerPlayerEntity) player);
+        }
+    }
 }

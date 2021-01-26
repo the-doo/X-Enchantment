@@ -12,11 +12,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(InfinityEnchantment.class)
 public abstract class InfinityMixin {
 
-	@Inject(at = @At("HEAD"), method = "canAccept", cancellable = true)
-	public void canAcceptH(Enchantment other, CallbackInfoReturnable<Boolean> cir) {
-		if (Enchant.option.infinityAcceptMending && other instanceof MendingEnchantment) {
-			cir.setReturnValue(true);
-			cir.cancel();
-		}
-	}
+    @Inject(at = @At("HEAD"), method = "canAccept", cancellable = true)
+    public void canAcceptH(Enchantment other, CallbackInfoReturnable<Boolean> cir) {
+        if (Enchant.option.infinityAcceptMending && other instanceof MendingEnchantment) {
+            cir.setReturnValue(true);
+            cir.cancel();
+        }
+    }
 }

@@ -8,17 +8,17 @@ import net.minecraft.client.MinecraftClient;
 
 public class Enchant implements ModInitializer {
 
-	public static final String ID = "x_enchant";
+    public static final String ID = "x_enchant";
 
-	public static final MinecraftClient MC = MinecraftClient.getInstance();
+    public static final MinecraftClient MC = MinecraftClient.getInstance();
 
-	public static Option option = new Option();
+    public static Option option = new Option();
 
-	@Override
-	public void onInitialize() {
-		// 读取配置
-		option = Config.read(ID, Option.class, option);
-		// 注册附魔
-		EnchantUtil.registerAll();
-	}
+    @Override
+    public void onInitialize() {
+        // 读取配置
+        option = Config.read(ID, Option.class, option);
+        // 注册附魔
+        EnchantUtil.registerAll();
+    }
 }

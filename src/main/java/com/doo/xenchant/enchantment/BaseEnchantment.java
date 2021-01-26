@@ -20,9 +20,9 @@ public abstract class BaseEnchantment extends Enchantment {
     /**
      * 创建并注册
      *
-     * @param id id
-     * @param weight 稀有度
-     * @param type 类型
+     * @param id        id
+     * @param weight    稀有度
+     * @param type      类型
      * @param slotTypes 使用目标
      */
     public BaseEnchantment(Identifier id, Rarity weight, EnchantmentTarget type, EquipmentSlot[] slotTypes) {

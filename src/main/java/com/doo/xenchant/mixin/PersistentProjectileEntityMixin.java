@@ -35,13 +35,13 @@ public abstract class PersistentProjectileEntityMixin extends Entity {
     }
 
     @Inject(method = "getEntityCollision", at = @At("HEAD"), cancellable = true)
-	private void getEntityCollisionT(Vec3d currentPosition, Vec3d nextPosition, CallbackInfoReturnable<EntityHitResult> cir) {
-		if (player != null && !itemStack.isEmpty()) {
+    private void getEntityCollisionT(Vec3d currentPosition, Vec3d nextPosition, CallbackInfoReturnable<EntityHitResult> cir) {
+        if (player != null && !itemStack.isEmpty()) {
             Entity entity = EnchantUtil.hitRateUp(player, itemStack, world, currentPosition, this.getBoundingBox());
-		    if (entity != null) {
-		        cir.setReturnValue(new EntityHitResult(entity));
-		        cir.cancel();
+            if (entity != null) {
+                cir.setReturnValue(new EntityHitResult(entity));
+                cir.cancel();
             }
         }
-	}
+    }
 }
