@@ -6,6 +6,7 @@
     "enchantment.x_enchant.more_loot": "更多战利品",
     "enchantment.x_enchant.hit_rate_up": "命中率提升",
     "enchantment.x_enchant.quick_shoot": "快速射击",
+    "enchantment.x_enchant.magic_immune": "魔免",
 
     "enchantment.x_enchant.chat.more_loot": "更多战利品!",
     "enchantment.x_enchant.chat.more_more_loot": "超级超级超级多的战利品!!!!!",
@@ -18,6 +19,7 @@
     "x_enchant.menu.option.hit_rate_up": "命中率提升",
     "x_enchant.menu.option.infinity_accept_mending": "无限与经验修复并存",
     "x_enchant.menu.option.quick_shoot": "快速射击",
+    "x_enchant.menu.option.magic_immune": "魔免",
 
     "x_enchant.menu.option.chat_tips": "聊天提示"
 }

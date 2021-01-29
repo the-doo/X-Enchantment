@@ -11,6 +11,7 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffectType;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.FishingRodItem;
 import net.minecraft.item.ItemStack;
@@ -97,6 +98,7 @@ public class EnchantUtil {
         ENCHANTMENT_MAP.put(MoreLoot.NAME, new MoreLoot());
         ENCHANTMENT_MAP.put(HitRateUp.NAME, new HitRateUp());
         ENCHANTMENT_MAP.put(QuickShoot.NAME, new QuickShoot());
+        ENCHANTMENT_MAP.put(MagicImmune.NAME, new MagicImmune());
     }
 
     /**
@@ -242,11 +244,11 @@ public class EnchantUtil {
             if (getLevel(Rebirth.NAME, armor) > 0) {
                 player.setHealth(player.getMaxHealth());
                 player.clearStatusEffects();
-                player.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 900, 4));
-                player.addStatusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, 900, 4));
-                player.addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 900, 4));
-                player.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 900, 2));
-                player.addStatusEffect(new StatusEffectInstance(StatusEffects.JUMP_BOOST, 900, 2));
+                player.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 500, 4));
+                player.addStatusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, 500, 4));
+                player.addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 500, 4));
+                player.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 500, 2));
+                player.addStatusEffect(new StatusEffectInstance(StatusEffects.JUMP_BOOST, 500, 2));
                 player.world.sendEntityStatus(player, (byte) 35);
                 armor.getEnchantments().removeIf(tag ->
                         (ENCHANTMENT_MAP.get(Rebirth.NAME).getId().toString().equals(((CompoundTag) tag).getString("id"))));
@@ -383,5 +385,19 @@ public class EnchantUtil {
      */
     public static int quickShooting(ItemStack itemStack) {
         return getLevel(QuickShoot.NAME, itemStack);
+    }
+
+    /**
+     * 魔免判断
+     *
+     * @param uuid   玩家id
+     * @param effect 效果
+     * @return 是否需要免疫
+     */
+    public static boolean magicImmune(UUID uuid, StatusEffectInstance effect) {
+        ServerPlayerEntity player;
+        return (player = getServerPlayer(uuid)) != null
+                && getLevel(MagicImmune.NAME, player.getEquippedStack(EquipmentSlot.CHEST)) > 0
+                && StatusEffectType.HARMFUL.equals(effect.getEffectType().getType());
     }
 }

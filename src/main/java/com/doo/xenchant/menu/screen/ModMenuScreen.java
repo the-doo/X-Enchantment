@@ -24,6 +24,7 @@ public class ModMenuScreen extends Screen {
     private static final TranslatableText INFINITY_ACCEPT_MENDING_TEXT = new TranslatableText("x_enchant.menu.option.infinity_accept_mending");
     private static final TranslatableText HIT_RATE_UP_TEXT = new TranslatableText("x_enchant.menu.option.hit_rate_up");
     private static final TranslatableText QUICK_SHOOT_TEXT = new TranslatableText("x_enchant.menu.option.quick_shoot");
+    private static final TranslatableText MAGIC_IMMUNE_TEXT = new TranslatableText("x_enchant.menu.option.magic_immune");
 
     private static final TranslatableText CHAT_TIPS_TEXT = new TranslatableText("x_enchant.menu.option.chat_tips");
 
@@ -79,6 +80,10 @@ public class ModMenuScreen extends Screen {
         this.addButton(new ButtonWidget(x - bw / 2, y * count, bw, bh,
                 CHAT_TIPS_TEXT.copy().append(": " + Enchant.option.chatTips),
                 b -> b.setMessage(CHAT_TIPS_TEXT.copy().append(": " + Enchant.option.clickChatTips()))));
+        //  魔免
+        this.addButton(new ButtonWidget(x + bw / 2, y * count++, bw, bh,
+                MAGIC_IMMUNE_TEXT.copy().append(": " + Enchant.option.magicImmune),
+                b -> b.setMessage(MAGIC_IMMUNE_TEXT.copy().append(": " + Enchant.option.clickMagicImmune()))));
         // 返回按钮
         this.addButton(new ButtonWidget(x, this.height - y, bw, bh,
                 ScreenTexts.BACK, b -> INSTANCE.close()));

@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.RangedWeaponItem;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -16,6 +17,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends Entity {
@@ -59,6 +61,14 @@ public abstract class LivingEntityMixin extends Entity {
         Entity entity;
         if (Enchant.option.suckBlood && amount > 0 && (entity = source.getAttacker()) != null && entity instanceof ServerPlayerEntity) {
             EnchantUtil.suckBlood((ServerPlayerEntity) entity, amount, getBoundingBox().expand(1.0D, 0.25D, 1.0D));
+        }
+    }
+
+    @Inject(method = "canHaveStatusEffect", at = @At("HEAD"), cancellable = true)
+    private void canHaveStatusEffectH(StatusEffectInstance effect, CallbackInfoReturnable<Boolean> cir) {
+        if (EnchantUtil.magicImmune(getUuid(), effect)) {
+            cir.setReturnValue(false);
+            cir.cancel();
         }
     }
 }

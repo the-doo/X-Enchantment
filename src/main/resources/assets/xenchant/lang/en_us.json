@@ -6,6 +6,7 @@
     "enchantment.x_enchant.more_loot": "more loot",
     "enchantment.x_enchant.hit_rate_up": "hit rate up",
     "enchantment.x_enchant.quick_shoot": "quick shoot",
+    "enchantment.x_enchant.magic_immune": "magic immune",
 
     "enchantment.x_enchant.chat.more_loot": "more loot !!!",
     "enchantment.x_enchant.chat.more_more_loot": "more more more more loot !!!!!",
@@ -18,6 +19,7 @@
     "x_enchant.menu.option.hit_rate_up": "hit rate up",
     "x_enchant.menu.option.infinity_accept_mending": "infinity accept mending",
     "x_enchant.menu.option.quick_shoot": "quick shoot",
+    "x_enchant.menu.option.magic_immune": "magic immune",
 
     "x_enchant.menu.option.chat_tips": "chat tips"
 }

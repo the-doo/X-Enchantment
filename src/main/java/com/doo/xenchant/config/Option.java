@@ -41,6 +41,11 @@ public class Option {
     public boolean quickShoot = true;
 
     /**
+     * 魔免
+     */
+    public boolean magicImmune = true;
+
+    /**
      * 无限与修补
      */
     public boolean infinityAcceptMending = true;
@@ -76,6 +81,10 @@ public class Option {
 
     public boolean clickQuickShoot() {
         return quickShoot = !quickShoot;
+    }
+
+    public boolean clickMagicImmune() {
+        return magicImmune = !magicImmune;
     }
 
     public boolean clickInfinityAcceptMending() {
