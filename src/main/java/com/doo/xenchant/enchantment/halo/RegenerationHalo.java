@@ -1,4 +1,4 @@
-package com.doo.xenchant.enchantment;
+package com.doo.xenchant.enchantment.halo;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;

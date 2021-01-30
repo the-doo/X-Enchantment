@@ -1,4 +1,4 @@
-package com.doo.xenchant.enchantment;
+package com.doo.xenchant.enchantment.halo;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
@@ -8,21 +8,26 @@ import net.minecraft.entity.player.PlayerEntity;
 import java.util.List;
 
 /**
- * 攻速提升光环
+ * 最大生命值提升光环
  */
-public class AttackSpeedUpHalo extends HaloEnchantment {
+public class MaxHPUpHalo extends HaloEnchantment {
 
-    public static final String NAME = "attack_speed_up";
+    public static final String NAME = "max_hp_up";
 
-    public AttackSpeedUpHalo() {
+    public MaxHPUpHalo() {
         super(NAME, true);
-        ATTRIBUTES.add(EntityAttributes.GENERIC_ATTACK_SPEED);
+        ATTRIBUTES.add(EntityAttributes.GENERIC_MAX_HEALTH);
+    }
+
+    @Override
+    public boolean isTreasure() {
+        return true;
     }
 
     @Override
     public void onTarget(PlayerEntity player, Integer level, List<LivingEntity> targets) {
         targets.forEach(e -> {
-            EntityAttributeInstance attr = e.getAttributes().getCustomInstance(EntityAttributes.GENERIC_ATTACK_SPEED);
+            EntityAttributeInstance attr = e.getAttributes().getCustomInstance(EntityAttributes.GENERIC_MAX_HEALTH);
             if (attr == null) {
                 return;
             }

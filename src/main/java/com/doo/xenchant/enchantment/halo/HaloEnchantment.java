@@ -1,7 +1,8 @@
-package com.doo.xenchant.enchantment;
+package com.doo.xenchant.enchantment.halo;
 
 import com.doo.xenchant.Enchant;
 import com.doo.xenchant.attribute.LimitTimeModifier;
+import com.doo.xenchant.enchantment.BaseEnchantment;
 import com.doo.xenchant.util.EnchantUtil;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;

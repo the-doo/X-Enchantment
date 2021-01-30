@@ -4,6 +4,7 @@ import com.doo.xenchant.Enchant;
 import com.doo.xenchant.attribute.LimitTimeModifier;
 import com.doo.xenchant.config.Config;
 import com.doo.xenchant.enchantment.*;
+import com.doo.xenchant.enchantment.halo.*;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -409,7 +410,7 @@ public class EnchantUtil {
     /**
      * 触发光环
      *
-     * @param uuid 玩家id
+     * @param uuid  玩家id
      * @param armor 装备栏
      */
     public static void halo(UUID uuid, Iterable<ItemStack> armor) {
@@ -419,13 +420,13 @@ public class EnchantUtil {
         }
         Map<HaloEnchantment, Integer> haloMap = new HashMap<>();
         armor.forEach(i ->
-            i.getEnchantments().forEach(tag -> {
-                CompoundTag t = (CompoundTag) tag;
-                BaseEnchantment e = ENCHANTMENT_MAP.get(t.getString("id"));
-                if (e instanceof HaloEnchantment) {
-                    haloMap.put((HaloEnchantment) e, haloMap.getOrDefault(e, 0) + 1);
-                }
-            })
+                i.getEnchantments().forEach(tag -> {
+                    CompoundTag t = (CompoundTag) tag;
+                    BaseEnchantment e = ENCHANTMENT_MAP.get(t.getString("id"));
+                    if (e instanceof HaloEnchantment) {
+                        haloMap.put((HaloEnchantment) e, haloMap.getOrDefault(e, 0) + 1);
+                    }
+                })
         );
         haloMap.keySet().removeIf(k -> haloMap.getOrDefault(k, -1) < 4);
         if (haloMap.isEmpty()) {
@@ -433,7 +434,7 @@ public class EnchantUtil {
         }
         Map<Boolean, List<LivingEntity>> entities =
                 player.world.getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox().expand(9))
-                .stream().collect(Collectors.groupingBy(e -> e == player || e.isTeammate(player)));
+                        .stream().collect(Collectors.groupingBy(e -> e == player || e.isTeammate(player)));
         haloMap.forEach((k, v) -> k.tickHalo(player, v, entities.get(true), entities.get(false)));
     }
 

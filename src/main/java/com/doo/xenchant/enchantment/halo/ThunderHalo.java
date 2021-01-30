@@ -1,4 +1,4 @@
-package com.doo.xenchant.enchantment;
+package com.doo.xenchant.enchantment.halo;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LightningEntity;
