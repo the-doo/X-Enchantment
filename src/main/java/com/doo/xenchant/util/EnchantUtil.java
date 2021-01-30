@@ -1,18 +1,21 @@
 package com.doo.xenchant.util;
 
 import com.doo.xenchant.Enchant;
+import com.doo.xenchant.attribute.LimitTimeModifier;
 import com.doo.xenchant.config.Config;
 import com.doo.xenchant.enchantment.*;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.AttributeContainer;
+import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffectType;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.FishingRodItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
@@ -39,6 +42,8 @@ import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 附魔工具
@@ -91,14 +96,14 @@ public class EnchantUtil {
         if (!ENCHANTMENT_MAP.isEmpty()) {
             return;
         }
-        ENCHANTMENT_MAP.put(AutoFish.NAME, new AutoFish());
-        ENCHANTMENT_MAP.put(SuckBlood.NAME, new SuckBlood());
-        ENCHANTMENT_MAP.put(Weakness.NAME, new Weakness());
-        ENCHANTMENT_MAP.put(Rebirth.NAME, new Rebirth());
-        ENCHANTMENT_MAP.put(MoreLoot.NAME, new MoreLoot());
-        ENCHANTMENT_MAP.put(HitRateUp.NAME, new HitRateUp());
-        ENCHANTMENT_MAP.put(QuickShoot.NAME, new QuickShoot());
-        ENCHANTMENT_MAP.put(MagicImmune.NAME, new MagicImmune());
+        Stream.of(
+                // 附魔
+                new AutoFish(), new SuckBlood(), new Weakness(), new Rebirth(),
+                new MoreLoot(), new HitRateUp(), new QuickShoot(), new MagicImmune(),
+                // 光环
+                new SlownessHalo(), new MaxHPUpHalo(), new RegenerationHalo(),
+                new ThunderHalo(), new LuckHalo(), new AttackSpeedUpHalo()
+        ).forEach(e -> ENCHANTMENT_MAP.put(e.getId().toString(), e));
     }
 
     /**
@@ -263,7 +268,7 @@ public class EnchantUtil {
      * @param uuid uuid
      */
     public static ServerPlayerEntity getServerPlayer(UUID uuid) {
-        MinecraftServer server = MinecraftClient.getInstance().getServer();
+        MinecraftServer server = Enchant.MC.getServer();
         if (server == null) {
             return null;
         }
@@ -399,5 +404,54 @@ public class EnchantUtil {
         return (player = getServerPlayer(uuid)) != null
                 && getLevel(MagicImmune.NAME, player.getEquippedStack(EquipmentSlot.CHEST)) > 0
                 && StatusEffectType.HARMFUL.equals(effect.getEffectType().getType());
+    }
+
+    /**
+     * 触发光环
+     *
+     * @param uuid 玩家id
+     * @param armor 装备栏
+     */
+    public static void halo(UUID uuid, Iterable<ItemStack> armor) {
+        PlayerEntity player;
+        if ((player = getServerPlayer(uuid)) == null) {
+            return;
+        }
+        Map<HaloEnchantment, Integer> haloMap = new HashMap<>();
+        armor.forEach(i ->
+            i.getEnchantments().forEach(tag -> {
+                CompoundTag t = (CompoundTag) tag;
+                BaseEnchantment e = ENCHANTMENT_MAP.get(t.getString("id"));
+                if (e instanceof HaloEnchantment) {
+                    haloMap.put((HaloEnchantment) e, haloMap.getOrDefault(e, 0) + 1);
+                }
+            })
+        );
+        haloMap.keySet().removeIf(k -> haloMap.getOrDefault(k, -1) < 4);
+        if (haloMap.isEmpty()) {
+            return;
+        }
+        Map<Boolean, List<LivingEntity>> entities =
+                player.world.getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox().expand(9))
+                .stream().collect(Collectors.groupingBy(e -> e == player || e.isTeammate(player)));
+        haloMap.forEach((k, v) -> k.tickHalo(player, v, entities.get(true), entities.get(false)));
+    }
+
+    /**
+     * 移除过期的属性操作
+     *
+     * @param attributes 属性
+     */
+    public static void removedDirtyHalo(AttributeContainer attributes) {
+        HaloEnchantment.ATTRIBUTES.forEach(a -> {
+            EntityAttributeInstance instance = attributes.getCustomInstance(a);
+            if (instance != null) {
+                instance.getModifiers().forEach(m -> {
+                    if ((m instanceof LimitTimeModifier && ((LimitTimeModifier) m).isExpire())) {
+                        instance.removeModifier(m);
+                    }
+                });
+            }
+        });
     }
 }

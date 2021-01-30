@@ -46,6 +46,11 @@ public class Option {
     public boolean magicImmune = true;
 
     /**
+     * 光环
+     */
+    public boolean halo = true;
+
+    /**
      * 无限与修补
      */
     public boolean infinityAcceptMending = true;
@@ -85,6 +90,10 @@ public class Option {
 
     public boolean clickMagicImmune() {
         return magicImmune = !magicImmune;
+    }
+
+    public boolean clickHalo() {
+        return halo = !halo;
     }
 
     public boolean clickInfinityAcceptMending() {

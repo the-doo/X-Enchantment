@@ -5,6 +5,7 @@ import com.doo.xenchant.util.EnchantUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.AttributeContainer;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.ItemStack;
@@ -28,13 +29,29 @@ public abstract class LivingEntityMixin extends Entity {
     @Shadow
     protected int itemUseTimeLeft;
 
+    private int haloTick;
+
+    @Shadow public abstract Iterable<ItemStack> getArmorItems();
+
+    @Shadow public abstract AttributeContainer getAttributes();
+
     public LivingEntityMixin(EntityType<?> type, World world) {
         super(type, world);
     }
 
+    @Inject(method = "tick", at = @At(value = "TAIL"))
+    private void tickT(CallbackInfo ci) {
+        EnchantUtil.removedDirtyHalo(getAttributes());
+        if (Enchant.option.halo && age - haloTick > 19) {
+            haloTick = age;
+            EnchantUtil.halo(uuid, getArmorItems());
+        }
+    }
+
     @Inject(method = "tickActiveItemStack", at = @At(value = "HEAD"), cancellable = true)
     private void tickActiveItemStackH(CallbackInfo ci) {
-        if (Enchant.option.quickShoot && EnchantUtil.getServerPlayer(getUuid()) != null && activeItemStack.getItem() instanceof RangedWeaponItem && !activeItemStack.isEmpty()) {
+        if (Enchant.option.quickShoot && EnchantUtil.getServerPlayer(uuid) != null
+                && activeItemStack.getItem() instanceof RangedWeaponItem && !activeItemStack.isEmpty()) {
             this.itemUseTimeLeft -= EnchantUtil.quickShooting(activeItemStack);
         }
     }
@@ -42,7 +59,8 @@ public abstract class LivingEntityMixin extends Entity {
     @ModifyVariable(method = "damage", at = @At(value = "HEAD"), ordinal = 0)
     private float returnAmount(float amount, DamageSource source) {
         Entity entity;
-        if (!Enchant.option.weakness || world.isClient() || (entity = source.getAttacker()) == null || !(entity instanceof ServerPlayerEntity)) {
+        if (!Enchant.option.weakness || world.isClient() || (entity = source.getAttacker()) == null
+                || !(entity instanceof ServerPlayerEntity)) {
             return amount;
         }
         return EnchantUtil.weakness((ServerPlayerEntity) entity, amount);
@@ -51,7 +69,7 @@ public abstract class LivingEntityMixin extends Entity {
     @Inject(at = @At("TAIL"), method = "setHealth")
     private void setHealthT(float health, CallbackInfo ci) {
         ServerPlayerEntity entity;
-        if (Enchant.option.rebirth && health <= 0 && (entity = EnchantUtil.getServerPlayer(getUuid())) != null) {
+        if (Enchant.option.rebirth && health <= 0 && (entity = EnchantUtil.getServerPlayer(uuid)) != null) {
             EnchantUtil.rebirth(entity);
         }
     }
@@ -66,7 +84,7 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Inject(method = "canHaveStatusEffect", at = @At("HEAD"), cancellable = true)
     private void canHaveStatusEffectH(StatusEffectInstance effect, CallbackInfoReturnable<Boolean> cir) {
-        if (EnchantUtil.magicImmune(getUuid(), effect)) {
+        if (Enchant.option.magicImmune && EnchantUtil.magicImmune(uuid, effect)) {
             cir.setReturnValue(false);
             cir.cancel();
         }

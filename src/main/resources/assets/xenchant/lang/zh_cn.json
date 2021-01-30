@@ -8,6 +8,13 @@
     "enchantment.x_enchant.quick_shoot": "快速射击",
     "enchantment.x_enchant.magic_immune": "魔免",
 
+    "enchantment.x_enchant.halo.slowness": "光环 - 减速",
+    "enchantment.x_enchant.halo.max_hp_up": "光环 - 双倍生命",
+    "enchantment.x_enchant.halo.regeneration": "光环 - 生命恢复",
+    "enchantment.x_enchant.halo.thunder": "光环 - 雷霆",
+    "enchantment.x_enchant.halo.luck": "光环 - 幸运",
+    "enchantment.x_enchant.halo.attack_speed_up": "光环 - 双倍攻速",
+
     "enchantment.x_enchant.chat.more_loot": "更多战利品!",
     "enchantment.x_enchant.chat.more_more_loot": "超级超级超级多的战利品!!!!!",
 
@@ -20,6 +27,7 @@
     "x_enchant.menu.option.infinity_accept_mending": "无限与经验修复并存",
     "x_enchant.menu.option.quick_shoot": "快速射击",
     "x_enchant.menu.option.magic_immune": "魔免",
+    "x_enchant.menu.option.halo": "光环",
 
     "x_enchant.menu.option.chat_tips": "聊天提示"
 }
