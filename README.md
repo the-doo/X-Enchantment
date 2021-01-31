@@ -2,17 +2,229 @@
 
 
 
-## 添加一些附魔(a few enchant)
+## 添加一些附魔(a few enchantment)
+
+##### 正常附魔:
+
+自动钓鱼: 
+
+​	目标: 鱼竿
+
+​	最高级: 1
+
+​	使用：每次自动钓鱼后，有50%的机会增加1的耐久
+
+吸血:
+
+​	目标: 剑/弓
+
+​	最高级: 5
+
+​	使用：正常情况下，仅有0.1 x level的吸血效率, 当且仅当附魔了横扫及攻击了多个，吸血效率变为0.15 x level
+
+弱点攻击:
+
+​	目标: 剑
+
+​	最高级: 3
+
+​	使用: 有0.5 x level的几率触发3倍攻击
+
+重生:
+
+​	目标: 所有盔甲
+
+​	最高级: 1
+
+​	使用: 当你死了，救你一命，每次触发消耗一层该附魔
+
+更多战利品:
+
+​	目标: 除了盔甲(盔甲也可以附魔，不过没效果)
+
+​	最高级: 5
+
+​	使用:  20%的几率获得level倍的战利品
+
+命中率提升:
+
+​	目标: 所有远程武器(只有弓才能在附魔台附魔)
+
+​	最高级: 5
+
+​	使用: 提高命中
+
+快速射击:
+
+​	目标: 所有远程武器(只有弓才能在附魔台附魔)
+
+​	最高级: 3
+
+​	使用: 减少蓄力时间
+
+魔免:
+
+​	目标: 胸甲
+
+​	最高级: 1
+
+​	使用: 免疫负面效果
 
 
 
-|        名称<br/>(name)         | 最高等级<br/>(max level) |                作用<br/>(effect)                |      目标<br/>(target)      |                      备注<br/>(remarks)                      |
-| :----------------------------: | :----------------------: | :---------------------------------------------: | :-------------------------: | :----------------------------------------------------------: |
-|  自动钓鱼<br/>(auto fishing)   |            1             |           自动钓鱼<br/>(auto fishing)           |      (鱼竿<br/>(rod))       | 钓鱼后有50%耐久+1<br>(it maybe 50% Durability + 1 when it using) |
-|     吸血<br/>(suck blood)      |            5             |        攻击时吸取生命值<br/>(suck blood)        |    剑/弓<br/>(sword/bow)    | 单体(level * 0.01) - 群体(攻击多个且有横扫附魔: level * 0.15)<br/>one - multiple(has sweeping enchantment) |
-| 弱点攻击<br/>(weakness attack) |            3             | 造成3倍伤害<br/>(3 times damage when attacking) |       剑<br/>(sword)        |             概率(Probability): level * 0.05<br/>             |
-|       重生<br/>(rebirth)       |            1             |               重生<br/>(rebirth)                |      盔甲<br/>(armor)       | 使用后附魔消失<br/>(enchantment disappear after use)<br />当你死亡时，满血重生<br />(rebirth when you die) |
-|   更多战利品<br/>(more loot)   |            5             |  获取更多额外战利品<br/>(get more extra loot)   | 除了盔甲<br/>(except armor) | 盔甲可以附魔不过并无效果<br/>(armor can enchantment but no effect)<br />当你挖矿，杀怪等等，都有20%的几率获取level倍战利品<br />(you have 20% to get more loot when you digger or kill...etc) |
+##### 光环附魔: (所有盔甲部位都有一份同样的附魔则可以触发，固定范围，每秒1次)
+
+​	减速光环:
+
+​		目标: 除了你的队伍之外的所有人
+
+​		使用: 获得2级减速效果
+
+​	最大生命值提升:
+
+​		目标: 你的队伍
+
+​		使用: 最大生命值 x 2
+
+​	生命恢复光环:
+
+​		目标: 你的队伍
+
+​		使用: 获得2级生命恢复
+
+​	雷霆光环:
+
+​		目标: 除了你的队伍之外的所有人
+
+​		使用: 10%的几率让目标被雷击中
+
+​		宝藏: 是
+
+​	幸运光环:
+
+​		目标: 你的队伍
+
+​		使用: 获得3级幸运效果
+
+​		宝藏: 是
+
+​	攻速提升光环:
+
+​		目标: 你的队伍
+
+​		使用: 攻速 x 2
+
+
+
+##### Normal Enchantment:
+
+Auto Fishing: 
+
+​	target: rod
+
+​	max level: 1
+
+​	usage：Lets you fish automatically and has a 50% chance to reduce incoming durability damage by one
+
+Suck Blood:
+
+​	target: sword/bow
+
+​	max level: 5
+
+​	usage：Restores .1 hp / level to the user when they strike a target, plus .05 hp / level of sweeping edge the weapon has if it strikes multiple targets.
+
+Weakness Attack:
+
+​	target: sword
+
+​	max level: 3
+
+​	usage: Grants a 5%/level chance of dealing triple damage
+
+Rebirth:
+
+​	target: armor
+
+​	max level: 1
+
+​	usage: Let you rebirth when you die, and then rebirth enchantment removed
+
+More Loot:
+
+​	target: only not armor(you can enchantment in armor, but no effect)
+
+​	max level: 5
+
+​	usage:  20% chance to get levelx Loot
+
+Hit Rate Up:
+
+​	target: range weapon(In enchantment table, only the bow has it)
+
+​	max level: 5
+
+​	usage: More accurate shooting
+
+Quick Shoot:
+
+​	target: range weapon(In enchantment table, only the bow has it)
+
+​	max level: 3
+
+​	usage: Reduces charge time
+
+Magic Immune:
+
+​	target: chest
+
+​	max level: 1
+
+​	usage: Immune harmful effect
+
+
+
+##### Halo Enchantment: (The enchantment only each one of armor will take effect, fixed range, 1s intervals)
+
+​	Slowness Halo:
+
+​		target: all living entity except you team
+
+​		usage: level 2 slowness effect
+
+​	Max HP Up Halo:
+
+​		target: you team
+
+​		usage: Double Max HP
+
+​	Regeneration Halo:
+
+​		target: you team
+
+​		usage: level 2 regeneration effect
+
+​	Thunder Halo:
+
+​		target: all living entity except you team
+
+​		usage: 10% chance to struck target by lightning
+
+​		treasure: yes
+
+​	Luck Halo:
+
+​		target: you team
+
+​		usage: level 3 luck effect
+
+​		treasure: yes
+
+​	Attack Speed Up Halo:
+
+​		target: you team
+
+​		usage: Double Attack Speed
 
 
 
