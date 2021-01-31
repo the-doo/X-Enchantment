@@ -1,9 +1,5 @@
 # X-Enchant Mod
 
-
-
-## 添加一些附魔(a few enchantment)
-
 ##### 正常附魔:
 
 自动钓鱼: 
