@@ -64,7 +64,7 @@
 
 ​	最高级: 1
 
-​	使用: 免疫负面效果
+​	使用: 免疫debuff
 
 
 
@@ -176,11 +176,11 @@ Magic Immune:
 
 ​	max level: 1
 
-​	usage: Immune harmful effect
+​	usage: Immune debuff
 
 
 
-##### Halo Enchantment: (The enchantment only each one of armor will take effect, fixed range, 1s intervals)
+##### Halo Enchantment: (It must be same halo enchantment per armor slot, fixed range, 1s intervals)
 
 ​	Slowness Halo:
 
