@@ -42,7 +42,7 @@ public abstract class LivingEntityMixin extends Entity {
     @Inject(method = "tick", at = @At(value = "TAIL"))
     private void tickT(CallbackInfo ci) {
         EnchantUtil.removedDirtyHalo(getAttributes());
-        if (Enchant.option.halo && age - haloTick > 19) {
+        if (Enchant.option.halo && age - haloTick >= Enchant.option.haloInterval) {
             haloTick = age;
             EnchantUtil.halo(uuid, getArmorItems());
         }

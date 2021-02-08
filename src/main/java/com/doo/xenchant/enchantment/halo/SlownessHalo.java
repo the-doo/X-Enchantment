@@ -1,5 +1,6 @@
 package com.doo.xenchant.enchantment.halo;
 
+import com.doo.xenchant.Enchant;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -19,7 +20,13 @@ public class SlownessHalo extends HaloEnchantment {
     }
 
     @Override
+    protected boolean needTick() {
+        return Enchant.option.slownessHalo;
+    }
+
+    @Override
     public void onTarget(PlayerEntity player, Integer level, List<LivingEntity> targets) {
-        targets.forEach(e -> e.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 30, 1)));
+        targets.forEach(e -> e.addStatusEffect(new StatusEffectInstance(
+                StatusEffects.SLOWNESS, Enchant.option.slownessHaloDuration * 30, Enchant.option.slownessHaloLevel)));
     }
 }

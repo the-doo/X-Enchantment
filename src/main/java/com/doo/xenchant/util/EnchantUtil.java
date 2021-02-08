@@ -433,7 +433,7 @@ public class EnchantUtil {
             return;
         }
         Map<Boolean, List<LivingEntity>> entities =
-                player.world.getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox().expand(9))
+                player.world.getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox().expand(Enchant.option.haloRange))
                         .stream().collect(Collectors.groupingBy(e -> e == player || e.isTeammate(player)));
         haloMap.forEach((k, v) -> k.tickHalo(player, v, entities.get(true), entities.get(false)));
     }

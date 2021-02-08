@@ -65,6 +65,9 @@ public abstract class HaloEnchantment extends BaseEnchantment {
      * @param mobs 其他
      */
     public final void tickHalo(PlayerEntity player, Integer level, List<LivingEntity> friends, List<LivingEntity> mobs) {
+        if (!needTick()) {
+            return;
+        }
         if (isFriendTarget) {
             if (friends != null && !friends.isEmpty()) {
                 onTarget(player, level, friends);
@@ -76,22 +79,23 @@ public abstract class HaloEnchantment extends BaseEnchantment {
         }
     }
 
+    protected abstract boolean needTick();
+
     public abstract void onTarget(PlayerEntity player, Integer level, List<LivingEntity> targets);
 
     /**
      * 添加或更新修改值
      *
-     * @param e 修改对象
-     * @param attr 修改属性
+     * @param attr 修改的属性
+     *  @param modifier 修改值 默认值
      */
-    public void addOrResetModifier(LivingEntity e, EntityAttributeInstance attr) {
+    public void addOrResetModifier(EntityAttributeInstance attr, LimitTimeModifier modifier) {
         Optional<EntityAttributeModifier> optional = attr.getModifiers().stream()
                 .filter(m -> m.getName().equals(getId().toString()) && m instanceof LimitTimeModifier).findAny();
         if (optional.isPresent()) {
             ((LimitTimeModifier) optional.get()).reset(1.2F);
         } else {
-            attr.addTemporaryModifier(LimitTimeModifier.get(
-                    getId().toString(), 1, EntityAttributeModifier.Operation.MULTIPLY_TOTAL, e.age + 25, e));
+            attr.addTemporaryModifier(modifier);
         }
     }
 }

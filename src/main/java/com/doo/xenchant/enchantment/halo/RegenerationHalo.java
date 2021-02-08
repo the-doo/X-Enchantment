@@ -1,5 +1,6 @@
 package com.doo.xenchant.enchantment.halo;
 
+import com.doo.xenchant.Enchant;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -21,7 +22,13 @@ public class RegenerationHalo extends HaloEnchantment {
     }
 
     @Override
+    protected boolean needTick() {
+        return Enchant.option.regenerationHalo;
+    }
+
+    @Override
     public void onTarget(PlayerEntity player, Integer level, List<LivingEntity> targets) {
-        targets.forEach(e -> e.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 30, 1)));
+        targets.forEach(e -> e.addStatusEffect(new StatusEffectInstance(
+                StatusEffects.REGENERATION, Enchant.option.regenerationHaloDuration * 30, Enchant.option.regenerationHaloLevel)));
     }
 }

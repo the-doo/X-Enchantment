@@ -1,5 +1,6 @@
 package com.doo.xenchant.enchantment.halo;
 
+import com.doo.xenchant.Enchant;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LightningEntity;
 import net.minecraft.entity.LivingEntity;
@@ -22,13 +23,18 @@ public class ThunderHalo extends HaloEnchantment {
 
     @Override
     public boolean isTreasure() {
-        return true;
+        return Enchant.option.thunderHaloIsTreasure;
+    }
+
+    @Override
+    protected boolean needTick() {
+        return Enchant.option.thunderHalo;
     }
 
     @Override
     public void onTarget(PlayerEntity player, Integer level, List<LivingEntity> targets) {
         targets.forEach(e -> {
-            if (player.getRandom().nextInt(10) == 5) {
+            if (player.getRandom().nextInt(100) < Enchant.option.thunderHaloStruckChance) {
                 e.onStruckByLightning((ServerWorld) player.world, new LightningEntity(EntityType.LIGHTNING_BOLT, e.world));
                 e.playSound(SoundEvents.ENTITY_LIGHTNING_BOLT_THUNDER, 1, 1);
                 e.setAttacker(player);

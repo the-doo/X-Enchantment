@@ -1,5 +1,6 @@
 package com.doo.xenchant.enchantment.halo;
 
+import com.doo.xenchant.Enchant;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -20,11 +21,17 @@ public class LuckHalo extends HaloEnchantment {
 
     @Override
     public boolean isTreasure() {
-        return true;
+        return Enchant.option.luckHaloIsTreasure;
+    }
+
+    @Override
+    protected boolean needTick() {
+        return Enchant.option.luckHalo;
     }
 
     @Override
     public void onTarget(PlayerEntity player, Integer level, List<LivingEntity> targets) {
-        targets.forEach(e -> e.addStatusEffect(new StatusEffectInstance(StatusEffects.LUCK, 30, 2)));
+        targets.forEach(e -> e.addStatusEffect(
+                new StatusEffectInstance(StatusEffects.LUCK, Enchant.option.luckHaloDuration * 20, Enchant.option.luckHaloLevel - 1)));
     }
 }

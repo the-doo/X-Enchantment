@@ -46,11 +46,6 @@ public class Option {
     public boolean magicImmune = true;
 
     /**
-     * 光环
-     */
-    public boolean halo = true;
-
-    /**
      * 无限与修补
      */
     public boolean infinityAcceptMending = true;
@@ -60,47 +55,103 @@ public class Option {
      */
     public boolean chatTips = true;
 
-    public boolean clickAutoFishing() {
-        return autoFishing = !autoFishing;
-    }
+    /**
+     * 光环
+     */
+    public boolean halo = true;
 
-    public boolean clickSuckBlood() {
-        return suckBlood = !suckBlood;
-    }
+    /**
+     * 光环范围
+     */
+    public double haloRange = 9F;
 
-    public boolean clickWeakness() {
-        return weakness = !weakness;
-    }
+    /**
+     * 光环触发时刻
+     */
+    public double haloInterval = 20F;
 
-    public boolean clickRebirth() {
-        return rebirth = !rebirth;
-    }
+    /**
+     * 攻速光环
+     */
+    public boolean attackSpeedHalo = true;
 
-    public boolean clickMoreLoot() {
-        return moreLoot = !moreLoot;
-    }
+    /**
+     * 攻速光环 倍数
+     */
+    public double attackSpeedHaloMultiple = 1;
 
-    public boolean clickHitRateUp() {
-        return hitRateUp = !hitRateUp;
-    }
+    /**
+     * 幸运光环
+     */
+    public boolean luckHalo = true;
 
-    public boolean clickQuickShoot() {
-        return quickShoot = !quickShoot;
-    }
+    /**
+     * 幸运光环 是否是宝藏
+     */
+    public boolean luckHaloIsTreasure = true;
 
-    public boolean clickMagicImmune() {
-        return magicImmune = !magicImmune;
-    }
+    /**
+     * 幸运光环 持续时间 单位: s
+     */
+    public int luckHaloDuration = 1;
 
-    public boolean clickHalo() {
-        return halo = !halo;
-    }
+    /**
+     * 幸运光环  级别
+     */
+    public int luckHaloLevel = 3;
 
-    public boolean clickInfinityAcceptMending() {
-        return infinityAcceptMending = !infinityAcceptMending;
-    }
+    /**
+     * 最大生命值光环
+     */
+    public boolean maxHPHalo = true;
 
-    public boolean clickChatTips() {
-        return chatTips = !chatTips;
-    }
+    /**
+     * 最大生命光环 倍数
+     */
+    public double maxHPHaloMultiple = 1;
+
+    /**
+     * 恢复光环
+     */
+    public boolean regenerationHalo = true;
+
+    /**
+     * 恢复光环 持续时间 单位: s
+     */
+    public int regenerationHaloDuration = 1;
+
+    /**
+     * 恢复光环  级别
+     */
+    public int regenerationHaloLevel = 2;
+
+    /**
+     * 减速光环
+     */
+    public boolean slownessHalo = true;
+
+    /**
+     * 减速光环 持续时间 单位: s
+     */
+    public int slownessHaloDuration = 1;
+
+    /**
+     * 减速光环  级别
+     */
+    public int slownessHaloLevel = 2;
+
+    /**
+     * 雷霆光环
+     */
+    public boolean thunderHalo = true;
+
+    /**
+     * 雷霆光环 是否是宝藏
+     */
+    public boolean thunderHaloIsTreasure = true;
+
+    /**
+     * 雷霆光环 击中几率
+     */
+    public int thunderHaloStruckChance = 10;
 }
