@@ -33,6 +33,21 @@ public class ModMenuScreen extends Screen {
     private static final BooleanOption MORE_LOOT = new BooleanOption("x_enchant.menu.option.more_loot",
             o -> Enchant.option.moreLoot, (o, d) -> Enchant.option.moreLoot = d);
 
+    private static final DoubleOption MORE_LOOT_RATE = new DoubleOption("", 1, 100, 1,
+            o -> Enchant.option.moreLootRate,
+            (o, d) -> Enchant.option.moreLootRate = d,
+            (g, o) -> new TranslatableText("x_enchant.menu.option.more_loot_rate", Enchant.option.moreLootRate));
+
+    private static final DoubleOption MORE_MORE_LOOT_RATE = new DoubleOption("", 1, 100, 1,
+            o -> Enchant.option.moreMoreLootRate,
+            (o, d) -> Enchant.option.moreMoreLootRate = d,
+            (g, o) -> new TranslatableText("x_enchant.menu.option.more_more_loot_rate", Enchant.option.moreMoreLootRate));
+
+    private static final DoubleOption MORE_MORE_LOOT_MULTIPLIER = new DoubleOption("", 1, 100, 1,
+            o -> Enchant.option.moreMoreLootMultiplier,
+            (o, d) -> Enchant.option.moreMoreLootMultiplier = d,
+            (g, o) -> new TranslatableText("x_enchant.menu.option.more_more_loot_multiplier", Enchant.option.moreMoreLootMultiplier));
+
     private static final BooleanOption INFINITY_ACCEPT_MENDING = new BooleanOption("x_enchant.menu.option.infinity_accept_mending",
             o -> Enchant.option.infinityAcceptMending, (o, d) -> Enchant.option.infinityAcceptMending = d);
 
@@ -144,7 +159,7 @@ public class ModMenuScreen extends Screen {
     protected void init() {
         list = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
         Option[] options = {
-                AUTO_FISHING, SUCK_BLOOD, WEAKNESS, REBIRTH, MORE_LOOT, INFINITY_ACCEPT_MENDING,
+                AUTO_FISHING, SUCK_BLOOD, WEAKNESS, REBIRTH, MORE_LOOT, MORE_LOOT_RATE, MORE_MORE_LOOT_RATE, MORE_MORE_LOOT_MULTIPLIER, INFINITY_ACCEPT_MENDING,
                 HIT_RATE_UP, QUICK_SHOOT, MAGIC_IMMUNE, CHAT_TIPS, HALO,
                 HALO_RANGE, HALO_TICK,
                 ATTACK_SPEED_HALO, ATTACK_SPEED_HALO_MULTI,

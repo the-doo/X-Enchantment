@@ -115,7 +115,7 @@ public class EnchantUtil {
      * @return 等级
      */
     private static int getLevel(String name, ItemStack itemStack) {
-        return EnchantmentHelper.getLevel(ENCHANTMENT_MAP.get(name), itemStack);
+        return EnchantmentHelper.getLevel(ENCHANTMENT_MAP.get(Enchant.ID + ":" + name), itemStack);
     }
 
     /**
@@ -305,12 +305,12 @@ public class EnchantUtil {
         }
         // 20%的几率
         int ran = context.getRandom().nextInt(100);
-        if (ran >= 20) {
+        if (ran >= Enchant.option.moreLootRate - 1) {
             return;
         }
         //  5%
-        if (ran < 5) {
-            level *= 10;
+        if (ran < Enchant.option.moreMoreLootRate - 1) {
+            level *= Enchant.option.moreMoreLootMultiplier;
             sendMessage(MORE_LOOT_TEXT);
         } else {
             sendMessage(LOOT_TEXT);
