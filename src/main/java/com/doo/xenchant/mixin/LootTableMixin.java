@@ -4,8 +4,8 @@ import com.doo.xenchant.Enchant;
 import com.doo.xenchant.util.EnchantUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootPool;
-import net.minecraft.loot.LootTableRange;
 import net.minecraft.loot.context.LootContext;
+import net.minecraft.loot.provider.number.LootNumberProvider;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -20,7 +20,7 @@ public abstract class LootTableMixin {
 
     @Shadow
     @Final
-    private LootTableRange rolls;
+    LootNumberProvider rolls;
 
     @Inject(at = @At(value = "HEAD"), method = "addGeneratedLoot")
     public void addGeneratedLootH(Consumer<ItemStack> lootConsumer, LootContext context, CallbackInfo ci) {

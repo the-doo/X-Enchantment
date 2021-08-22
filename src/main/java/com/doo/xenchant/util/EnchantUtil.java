@@ -20,11 +20,11 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.FishingRodItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
-import net.minecraft.loot.ConstantLootTableRange;
-import net.minecraft.loot.LootTableRange;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
+import net.minecraft.loot.provider.number.LootNumberProvider;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
@@ -73,7 +73,7 @@ public class EnchantUtil {
     /**
      * 战利品源数据记录
      */
-    private static final Map<LootTableRange, Integer> ROLLS_MAP = new HashMap<>();
+    private static final Map<LootNumberProvider, Integer> ROLLS_MAP = new HashMap<>();
 
     /**
      * 线程池
@@ -115,7 +115,7 @@ public class EnchantUtil {
      * @return 等级
      */
     private static int getLevel(String name, ItemStack itemStack) {
-        return EnchantmentHelper.getLevel(ENCHANTMENT_MAP.get(name), itemStack);
+        return EnchantmentHelper.getLevel(ENCHANTMENT_MAP.get(Enchant.ID + ":" + name), itemStack);
     }
 
     /**
@@ -175,7 +175,7 @@ public class EnchantUtil {
             return;
         }
         // 是否已经＋过了
-        int id = player.getEntityId();
+        int id = player.getId();
         int age = player.getLastAttackTime();
         if (SUCK_FLAG_MAP.getOrDefault(id, -1) >= age) {
             return;
@@ -226,7 +226,7 @@ public class EnchantUtil {
             return amount;
         }
         // 已经判断过了
-        int id = player.getEntityId();
+        int id = player.getId();
         int age = player.getLastAttackTime();
         if (WEAKNESS_FLAG_MAP.getOrDefault(id, -1) >= age) {
             return amount;
@@ -257,7 +257,7 @@ public class EnchantUtil {
                 player.addStatusEffect(new StatusEffectInstance(StatusEffects.JUMP_BOOST, 500, 2));
                 player.world.sendEntityStatus(player, (byte) 35);
                 armor.getEnchantments().removeIf(tag ->
-                        (ENCHANTMENT_MAP.get(Rebirth.NAME).getId().toString().equals(((CompoundTag) tag).getString("id"))));
+                        (ENCHANTMENT_MAP.get(Rebirth.NAME).getId().toString().equals(((NbtCompound) tag).getString("id"))));
                 return;
             }
         }
@@ -282,7 +282,7 @@ public class EnchantUtil {
      * @param context 上下文
      * @param rolls   基数
      */
-    public static void moreLoot(LootContext context, LootTableRange rolls) {
+    public static void moreLoot(LootContext context, LootNumberProvider rolls) {
         ItemStack itemStack = context.get(LootContextParameters.TOOL);
         if (itemStack == null) {
             Entity entity = context.get(LootContextParameters.KILLER_ENTITY);
@@ -305,19 +305,19 @@ public class EnchantUtil {
         }
         // 20%的几率
         int ran = context.getRandom().nextInt(100);
-        if (ran >= 20) {
+        if (ran >= Enchant.option.moreLootRate - 1) {
             return;
         }
         //  5%
-        if (ran < 5) {
-            level *= 10;
+        if (ran < Enchant.option.moreMoreLootRate - 1) {
+            level *= Enchant.option.moreMoreLootMultiplier;
             sendMessage(MORE_LOOT_TEXT);
         } else {
             sendMessage(LOOT_TEXT);
         }
         try {
             level += 1;
-            Field field = ConstantLootTableRange.class.getDeclaredField("value");
+            Field field = ConstantLootNumberProvider.class.getDeclaredField("value");
             field.setAccessible(true);
             int value = field.getInt(rolls);
             field.set(rolls, level * value);
@@ -343,12 +343,12 @@ public class EnchantUtil {
      *
      * @param rolls 基数
      */
-    public static void resetLoot(LootTableRange rolls) {
+    public static void resetLoot(LootNumberProvider rolls) {
         if (!ROLLS_MAP.containsKey(rolls)) {
             return;
         }
         try {
-            Field field = ConstantLootTableRange.class.getDeclaredField("value");
+            Field field = ConstantLootNumberProvider.class.getDeclaredField("value");
             field.setAccessible(true);
             field.set(rolls, ROLLS_MAP.remove(rolls));
         } catch (Exception e) {
@@ -421,7 +421,7 @@ public class EnchantUtil {
         Map<HaloEnchantment, Integer> haloMap = new HashMap<>();
         armor.forEach(i ->
                 i.getEnchantments().forEach(tag -> {
-                    CompoundTag t = (CompoundTag) tag;
+                    NbtCompound t = (NbtCompound) tag;
                     BaseEnchantment e = ENCHANTMENT_MAP.get(t.getString("id"));
                     if (e instanceof HaloEnchantment) {
                         haloMap.put((HaloEnchantment) e, haloMap.getOrDefault(e, 0) + 1);

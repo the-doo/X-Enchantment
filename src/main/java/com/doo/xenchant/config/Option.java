@@ -31,6 +31,21 @@ public class Option {
     public boolean moreLoot = true;
 
     /**
+     * 更多战利品几率
+     */
+    public double moreLootRate = 20;
+
+    /**
+     * 更多战利品暴击几率
+     */
+    public double moreMoreLootRate = 5;
+
+    /**
+     * 更多战利品暴击倍数
+     */
+    public double moreMoreLootMultiplier = 10;
+
+    /**
      * 命中率提升
      */
     public boolean hitRateUp = true;
