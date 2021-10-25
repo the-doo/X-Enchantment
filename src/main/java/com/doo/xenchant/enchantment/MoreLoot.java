@@ -15,7 +15,7 @@ public class MoreLoot extends BaseEnchantment {
     public MoreLoot() {
         super(new Identifier(Enchant.ID, NAME),
                 Rarity.COMMON,
-                EnchantmentTarget.BREAKABLE,
+                EnchantmentTarget.WEAPON,
                 new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND});
     }
 
