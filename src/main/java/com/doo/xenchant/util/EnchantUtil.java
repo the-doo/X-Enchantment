@@ -73,7 +73,7 @@ public class EnchantUtil {
     /**
      * 战利品源数据记录
      */
-    private static final Map<LootNumberProvider, Integer> ROLLS_MAP = new HashMap<>();
+    private static final Map<LootNumberProvider, Float> ROLLS_MAP = new HashMap<>();
 
     /**
      * 线程池
@@ -319,7 +319,7 @@ public class EnchantUtil {
             level += 1;
             Field field = ConstantLootNumberProvider.class.getDeclaredField("value");
             field.setAccessible(true);
-            int value = field.getInt(rolls);
+            float value = field.getFloat(rolls);
             field.set(rolls, level * value);
             ROLLS_MAP.put(rolls, value);
         } catch (Exception e) {
