@@ -257,7 +257,7 @@ public class EnchantUtil {
                 player.addStatusEffect(new StatusEffectInstance(StatusEffects.JUMP_BOOST, 500, 2));
                 player.world.sendEntityStatus(player, (byte) 35);
                 armor.getEnchantments().removeIf(tag ->
-                        (ENCHANTMENT_MAP.get(Rebirth.NAME).getId().toString().equals(((NbtCompound) tag).getString("id"))));
+                        (ENCHANTMENT_MAP.get(Enchant.ID + ":" + Rebirth.NAME).getId().toString().equals(((NbtCompound) tag).getString("id"))));
                 return;
             }
         }
