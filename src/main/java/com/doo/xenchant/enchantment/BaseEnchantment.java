@@ -35,4 +35,7 @@ public abstract class BaseEnchantment extends Enchantment {
     public Identifier getId() {
         return id;
     }
+
+    public void register() {
+    }
 }

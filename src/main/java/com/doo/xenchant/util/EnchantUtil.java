@@ -6,6 +6,9 @@ import com.doo.xenchant.config.Config;
 import com.doo.xenchant.enchantment.*;
 import com.doo.xenchant.enchantment.halo.*;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
@@ -17,6 +20,7 @@ import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.item.FishingRodItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
@@ -37,6 +41,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.Level;
+import org.lwjgl.glfw.GLFW;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -50,6 +55,12 @@ import java.util.stream.Stream;
  * 附魔工具
  */
 public class EnchantUtil {
+
+    /**
+     * MouseRightClick
+     */
+    private static final InputUtil.Key MOUSE_RIGHT_CLICK =
+            InputUtil.Type.MOUSE.createFromCode(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
 
     /**
      * 所有盔甲
@@ -98,13 +109,14 @@ public class EnchantUtil {
             return;
         }
         Stream.of(
-                // 附魔
-                new AutoFish(), new SuckBlood(), new Weakness(), new Rebirth(),
-                new MoreLoot(), new HitRateUp(), new QuickShoot(), new MagicImmune(),
-                // 光环
-                new SlownessHalo(), new MaxHPUpHalo(), new RegenerationHalo(),
-                new ThunderHalo(), new LuckHalo(), new AttackSpeedUpHalo()
-        ).forEach(e -> ENCHANTMENT_MAP.put(e.getId().toString(), e));
+                        // 附魔
+                        new AutoFish(), new SuckBlood(), new Weakness(), new Rebirth(),
+                        new MoreLoot(), new HitRateUp(), new QuickShoot(), new MagicImmune(),
+                        // 光环
+                        new SlownessHalo(), new MaxHPUpHalo(), new RegenerationHalo(),
+                        new ThunderHalo(), new LuckHalo(), new AttackSpeedUpHalo())
+                .peek(BaseEnchantment::register)
+                .forEach(e -> ENCHANTMENT_MAP.put(e.getId().toString(), e));
     }
 
     /**
@@ -120,17 +132,28 @@ public class EnchantUtil {
 
     /**
      * 自动钓鱼
-     *
-     * @param user 玩家
      */
-    public static void autoFish(ServerPlayerEntity user) {
+    public static void autoFish(World world, Box box) {
+        if (world == null) {
+            return;
+        }
+        List<FishingBobberEntity> list = world.getNonSpectatingEntities(FishingBobberEntity.class, box.expand(3));
+        if (list == null || list.isEmpty()) {
+            return;
+        }
+        FishingBobberEntity bob = list.get(0);
+        Entity owner = bob.getOwner();
+        if (!(owner instanceof PlayerEntity) || owner != MinecraftClient.getInstance().player) {
+            return;
+        }
+        PlayerEntity player = (PlayerEntity) owner;
         // 没有使用
-        Hand hand = user.getActiveHand();
+        Hand hand = player.getActiveHand();
         if (hand == null) {
             return;
         }
         // 不为空
-        ItemStack itemStack = user.getStackInHand(hand);
+        ItemStack itemStack = player.getStackInHand(hand);
         if (itemStack.isEmpty()) {
             return;
         }
@@ -144,20 +167,43 @@ public class EnchantUtil {
         }
         // 50%概率 耐久 + 1
         int damage = itemStack.getDamage();
-        if (damage > 0 && user.getRandom().nextBoolean()) {
-            itemStack.setDamage(damage - 1);
+        if (player.getRandom().nextBoolean()) {
+            // -1 mean rollback
+            NetworkUtil.incItemStackDamage(damage, -1, slot(player, itemStack), itemStack);
         }
-        // 收杆
-        if (user.fishHook != null) {
-            itemStack.use(user.world, user, hand);
-        }
-        // 自动触发钓鱼事件
+        // 点击右键收杆
+        KeyBinding.onKeyPressed(MOUSE_RIGHT_CLICK);
+        // 点击右键钓鱼 --- 300ms延迟
         EXECUTOR.schedule(() -> {
-            if (itemStack.isEmpty() || !itemStack.equals(user.getStackInHand(hand)) || user.fishHook != null) {
+            if (itemStack.isEmpty() || !itemStack.equals(player.getStackInHand(hand)) || player.fishHook != null) {
                 return;
             }
-            itemStack.use(user.world, user, hand);
-        }, 200, TimeUnit.MILLISECONDS);
+            KeyBinding.onKeyPressed(MOUSE_RIGHT_CLICK);
+        }, 300, TimeUnit.MILLISECONDS);
+    }
+
+
+    public static int slot(PlayerEntity player, ItemStack stack) {
+        int slot = -1;
+        for (ItemStack itemStack : player.getInventory().main) {
+            slot++;
+            if (itemStack == stack) {
+                return slot;
+            }
+        }
+        for (ItemStack itemStack : player.getInventory().armor) {
+            slot++;
+            if (itemStack == stack) {
+                return slot;
+            }
+        }
+        for (ItemStack itemStack : player.getInventory().offHand) {
+            slot++;
+            if (itemStack == stack) {
+                return slot;
+            }
+        }
+        return slot;
     }
 
     /**

@@ -1,8 +1,12 @@
 package com.doo.xenchant.enchantment;
 
 import com.doo.xenchant.Enchant;
+import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
+import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.loot.LootManager;
+import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
 /**
@@ -32,5 +36,14 @@ public class MoreLoot extends BaseEnchantment {
     @Override
     public int getMaxLevel() {
         return 5;
+    }
+
+    @Override
+    public void register() {
+        LootTableLoadingCallback.EVENT.register(
+                getId(),
+                (resourceManager, manager, id, supplier, setter) -> {
+                    System.out.println(id);
+                });
     }
 }
