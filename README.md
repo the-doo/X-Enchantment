@@ -1,14 +1,7 @@
-# X-Enchant Mod
+<div style="text-align: center; font-size: xxx-large"> X-Enchant Mod </div>
 
-##### 正常附魔:
-
-自动钓鱼: 
-
-​	目标: 鱼竿
-
-​	最高级: 1
-
-​	使用：每次自动钓鱼后，有50%的机会增加1的耐久
+## 正常附魔:
+ - 自动钓鱼: 自动钓鱼, 同时有50%的机会增加1耐久
 
 吸血:
 
