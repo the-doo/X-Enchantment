@@ -26,4 +26,4 @@
 ###### fixed range
 ###### 1s intervals
 
-##### Tips: 如果有好玩的想法，请联系我(if you have a good idea, call me)
+##### Tips: Comment if you have a good idea
