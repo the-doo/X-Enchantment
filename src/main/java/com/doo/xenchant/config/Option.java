@@ -23,7 +23,7 @@ public class Option {
     /**
      * 重生
      */
-    public boolean rebirth = true;
+    public boolean reborn = true;
 
     /**
      * 更多战利品

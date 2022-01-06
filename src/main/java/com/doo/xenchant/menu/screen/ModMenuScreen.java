@@ -27,8 +27,8 @@ public class ModMenuScreen extends Screen {
     private static final CyclingOption<Boolean> WEAKNESS = CyclingOption.create("x_enchant.menu.option.weakness",
             o -> Enchant.option.weakness, (g, o, d) -> Enchant.option.weakness = d);
 
-    private static final CyclingOption<Boolean> REBIRTH = CyclingOption.create("x_enchant.menu.option.rebirth",
-            o -> Enchant.option.rebirth, (g, o, d) -> Enchant.option.rebirth = d);
+    private static final CyclingOption<Boolean> REBIRTH = CyclingOption.create("x_enchant.menu.option.reborn",
+            o -> Enchant.option.reborn, (g, o, d) -> Enchant.option.reborn = d);
 
     private static final CyclingOption<Boolean> MORE_LOOT = CyclingOption.create("x_enchant.menu.option.more_loot",
             o -> Enchant.option.moreLoot, (g, o, d) -> Enchant.option.moreLoot = d);
