@@ -69,8 +69,8 @@ public abstract class LivingEntityMixin extends Entity {
     @Inject(at = @At("TAIL"), method = "setHealth")
     private void setHealthT(float health, CallbackInfo ci) {
         ServerPlayerEntity entity;
-        if (Enchant.option.rebirth && health <= 0 && (entity = EnchantUtil.getServerPlayer(uuid)) != null) {
-            EnchantUtil.rebirth(entity);
+        if (Enchant.option.reborn && health <= 0 && (entity = EnchantUtil.getServerPlayer(uuid)) != null) {
+            EnchantUtil.reborn(entity);
         }
     }
 

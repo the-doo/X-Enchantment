@@ -8,11 +8,11 @@ import net.minecraft.util.Identifier;
 /**
  * 重生
  */
-public class Rebirth extends BaseEnchantment {
+public class Reborn extends BaseEnchantment {
 
-    public static final String NAME = "rebirth";
+    public static final String NAME = "reborn";
 
-    public Rebirth() {
+    public Reborn() {
         super(new Identifier(Enchant.ID, NAME),
                 Rarity.COMMON,
                 EnchantmentTarget.ARMOR,

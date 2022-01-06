@@ -27,8 +27,8 @@ public class ModMenuScreen extends Screen {
     private static final BooleanOption WEAKNESS = new BooleanOption("x_enchant.menu.option.weakness",
             o -> Enchant.option.weakness, (o, d) -> Enchant.option.weakness = d);
 
-    private static final BooleanOption REBIRTH = new BooleanOption("x_enchant.menu.option.rebirth",
-            o -> Enchant.option.rebirth, (o, d) -> Enchant.option.rebirth = d);
+    private static final BooleanOption REBIRTH = new BooleanOption("x_enchant.menu.option.reborn",
+            o -> Enchant.option.reborn, (o, d) -> Enchant.option.reborn = d);
 
     private static final BooleanOption MORE_LOOT = new BooleanOption("x_enchant.menu.option.more_loot",
             o -> Enchant.option.moreLoot, (o, d) -> Enchant.option.moreLoot = d);

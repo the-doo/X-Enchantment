@@ -99,7 +99,7 @@ public class EnchantUtil {
         }
         Stream.of(
                 // 附魔
-                new AutoFish(), new SuckBlood(), new Weakness(), new Rebirth(),
+                new AutoFish(), new SuckBlood(), new Weakness(), new Reborn(),
                 new MoreLoot(), new HitRateUp(), new QuickShoot(), new MagicImmune(),
                 // 光环
                 new SlownessHalo(), new MaxHPUpHalo(), new RegenerationHalo(),
@@ -245,9 +245,9 @@ public class EnchantUtil {
      *
      * @param player 玩家
      */
-    public static void rebirth(ServerPlayerEntity player) {
+    public static void reborn(ServerPlayerEntity player) {
         for (ItemStack armor : player.getArmorItems()) {
-            if (getLevel(Rebirth.NAME, armor) > 0) {
+            if (getLevel(Reborn.NAME, armor) > 0) {
                 player.setHealth(player.getMaxHealth());
                 player.clearStatusEffects();
                 player.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 500, 4));
@@ -257,7 +257,7 @@ public class EnchantUtil {
                 player.addStatusEffect(new StatusEffectInstance(StatusEffects.JUMP_BOOST, 500, 2));
                 player.world.sendEntityStatus(player, (byte) 35);
                 armor.getEnchantments().removeIf(tag ->
-                        (ENCHANTMENT_MAP.get(Rebirth.NAME).getId().toString().equals(((CompoundTag) tag).getString("id"))));
+                        (ENCHANTMENT_MAP.get(Enchant.ID + ":" + Reborn.NAME).getId().toString().equals(((CompoundTag) tag).getString("id"))));
                 return;
             }
         }
