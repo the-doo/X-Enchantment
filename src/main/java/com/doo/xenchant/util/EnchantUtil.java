@@ -10,6 +10,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -54,7 +55,11 @@ import java.util.stream.Stream;
 /**
  * 附魔工具
  */
+@SuppressWarnings("all")
 public class EnchantUtil {
+
+    private EnchantUtil() {
+    }
 
     /**
      * MouseRightClick
@@ -67,19 +72,16 @@ public class EnchantUtil {
      */
     public static final EquipmentSlot[] ALL_ARMOR =
             new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
-    /**
-     * 附魔表
-     */
-    public static final Map<String, BaseEnchantment> ENCHANTMENT_MAP = new HashMap<>();
+
     /**
      * 吸血记录
      */
-    public static final Map<Integer, Integer> SUCK_FLAG_MAP = new HashMap<>();
+    private static final Map<Integer, Integer> SUCK_FLAG_MAP = new HashMap<>();
 
     /**
      * 攻击记录
      */
-    public static final Map<Integer, Integer> WEAKNESS_FLAG_MAP = new HashMap<>();
+    private static final Map<Integer, Integer> WEAKNESS_FLAG_MAP = new HashMap<>();
 
     /**
      * 战利品源数据记录
@@ -105,29 +107,29 @@ public class EnchantUtil {
      * 注册所有附魔
      */
     public static void registerAll() {
-        if (!ENCHANTMENT_MAP.isEmpty()) {
-            return;
-        }
-        Stream.of(
-                        // 附魔
-                        new AutoFish(), new SuckBlood(), new Weakness(), new Rebirth(),
-                        new MoreLoot(), new HitRateUp(), new QuickShoot(), new MagicImmune(),
-                        // 光环
-                        new SlownessHalo(), new MaxHPUpHalo(), new RegenerationHalo(),
-                        new ThunderHalo(), new LuckHalo(), new AttackSpeedUpHalo())
-                .peek(BaseEnchantment::register)
-                .forEach(e -> ENCHANTMENT_MAP.put(e.getId().toString(), e));
+        // normal enchantments
+        Stream.of(AutoFish.class, SuckBlood.class,
+                        Weakness.class, Rebirth.class,
+                        MoreLoot.class, HitRateUp.class,
+                        QuickShoot.class, MagicImmune.class)
+                .forEach(c -> BaseEnchantment.get(c).register());
+
+        // Halo enchantments
+        Stream.of(SlownessHalo.class, MaxHPUpHalo.class,
+                        RegenerationHalo.class, ThunderHalo.class,
+                        LuckHalo.class, AttackSpeedUpHalo.class)
+                .forEach(c -> BaseEnchantment.get(c).register());
     }
 
     /**
      * 获取附魔级别
      *
-     * @param name      附魔名称
+     * @param clazz     附魔类
      * @param itemStack 物品
      * @return 等级
      */
-    private static int getLevel(String name, ItemStack itemStack) {
-        return EnchantmentHelper.getLevel(ENCHANTMENT_MAP.get(Enchant.ID + ":" + name), itemStack);
+    private static <T extends BaseEnchantment> int level(Class<T> clazz, ItemStack itemStack) {
+        return EnchantmentHelper.getLevel(BaseEnchantment.get(clazz), itemStack);
     }
 
     /**
@@ -162,7 +164,7 @@ public class EnchantUtil {
             return;
         }
         // 附魔判断
-        if (getLevel(AutoFish.NAME, itemStack) < 1) {
+        if (level(AutoFish.class, itemStack) < 1) {
             return;
         }
         // 50%概率 耐久 + 1
@@ -216,7 +218,7 @@ public class EnchantUtil {
     public static void suckBlood(ServerPlayerEntity player, float amount, Box box) {
         ItemStack itemStack = player.getStackInHand(Hand.MAIN_HAND);
         // 如果没有附魔
-        int level = getLevel(SuckBlood.NAME, itemStack);
+        int level = level(SuckBlood.class, itemStack);
         if (level < 1) {
             return;
         }
@@ -232,9 +234,10 @@ public class EnchantUtil {
         long count = itemStack.getItem() instanceof SwordItem ?
                 player.world.getNonSpectatingEntities(LivingEntity.class, box)
                         .stream().filter(l -> canAttacked(player, l)).count() : 0;
-        // 吸血比例
-        float scale = level * (0.1F + (count > 1 && getLevel("sweeping", itemStack) > 0 ? 0.05F : 0.00F));
-        player.heal(scale * amount);
+        // suck scale
+        boolean moreWithSweep = count > 1 && EnchantmentHelper.getLevel(Enchantments.SWEEPING, itemStack) > 0;
+        float scale = level * (1F + (moreWithSweep ? 0.5F : 0F));
+        player.heal(scale * amount / 10);
     }
 
     /**
@@ -268,7 +271,7 @@ public class EnchantUtil {
         ItemStack itemStack = player.getStackInHand(Hand.MAIN_HAND);
         // 如果不是剑且没有附魔
         int level;
-        if (!(itemStack.getItem() instanceof SwordItem) || (level = getLevel(Weakness.NAME, itemStack)) < 1) {
+        if (!(itemStack.getItem() instanceof SwordItem) || (level = level(Weakness.class, itemStack)) < 1) {
             return amount;
         }
         // 已经判断过了
@@ -293,7 +296,7 @@ public class EnchantUtil {
      */
     public static void rebirth(ServerPlayerEntity player) {
         for (ItemStack armor : player.getArmorItems()) {
-            if (getLevel(Rebirth.NAME, armor) > 0) {
+            if (level(Rebirth.class, armor) > 0) {
                 player.setHealth(player.getMaxHealth());
                 player.clearStatusEffects();
                 player.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 500, 4));
@@ -302,8 +305,8 @@ public class EnchantUtil {
                 player.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 500, 2));
                 player.addStatusEffect(new StatusEffectInstance(StatusEffects.JUMP_BOOST, 500, 2));
                 player.world.sendEntityStatus(player, (byte) 35);
-                armor.getEnchantments().removeIf(tag ->
-                        (ENCHANTMENT_MAP.get(Enchant.ID + ":" + Rebirth.NAME).getId().toString().equals(((NbtCompound) tag).getString("id"))));
+
+                armor.getEnchantments().removeIf(tag -> BaseEnchantment.get((NbtCompound) tag) != null);
                 return;
             }
         }
@@ -340,7 +343,7 @@ public class EnchantUtil {
             return;
         }
         // 没有附魔
-        int level = getLevel(MoreLoot.NAME, itemStack);
+        int level = level(MoreLoot.class, itemStack);
         if (level < 1) {
             return;
         }
@@ -413,7 +416,7 @@ public class EnchantUtil {
      * @return Entity 命中实体 or null
      */
     public static Entity hitRateUp(ServerPlayerEntity player, ItemStack itemStack, World world, Vec3d pos, Box box) {
-        int level = getLevel(HitRateUp.NAME, itemStack);
+        int level = level(HitRateUp.class, itemStack);
         if (level < 1) {
             return null;
         }
@@ -436,7 +439,7 @@ public class EnchantUtil {
      * @return level tick
      */
     public static int quickShooting(ItemStack itemStack) {
-        return getLevel(QuickShoot.NAME, itemStack);
+        return level(QuickShoot.class, itemStack);
     }
 
     /**
@@ -449,7 +452,7 @@ public class EnchantUtil {
     public static boolean magicImmune(UUID uuid, StatusEffectInstance effect) {
         ServerPlayerEntity player;
         return (player = getServerPlayer(uuid)) != null
-                && getLevel(MagicImmune.NAME, player.getEquippedStack(EquipmentSlot.CHEST)) > 0
+                && level(MagicImmune.class, player.getEquippedStack(EquipmentSlot.CHEST)) > 0
                 && StatusEffectCategory.HARMFUL.equals(effect.getEffectType().getCategory());
     }
 
@@ -468,7 +471,7 @@ public class EnchantUtil {
         armor.forEach(i ->
                 i.getEnchantments().forEach(tag -> {
                     NbtCompound t = (NbtCompound) tag;
-                    BaseEnchantment e = ENCHANTMENT_MAP.get(t.getString("id"));
+                    BaseEnchantment e = BaseEnchantment.get(EnchantmentHelper.getIdFromNbt(t));
                     if (e instanceof HaloEnchantment) {
                         haloMap.put((HaloEnchantment) e, haloMap.getOrDefault(e, 0) + 1);
                     }
