@@ -44,14 +44,13 @@ public abstract class LivingEntityMixin extends Entity {
         EnchantUtil.removedDirtyHalo(getAttributes());
         if (Enchant.option.halo && age - haloTick >= Enchant.option.haloInterval) {
             haloTick = age;
-            EnchantUtil.halo(uuid, getArmorItems());
+            EnchantUtil.halo((LivingEntity) (Object) this, getArmorItems());
         }
     }
 
     @Inject(method = "tickActiveItemStack", at = @At(value = "HEAD"), cancellable = true)
     private void tickActiveItemStackH(CallbackInfo ci) {
-        if (Enchant.option.quickShoot && EnchantUtil.getServerPlayer(uuid) != null
-                && activeItemStack.getItem() instanceof RangedWeaponItem && !activeItemStack.isEmpty()) {
+        if (Enchant.option.quickShoot && EnchantUtil.isServerPlayer((LivingEntity) (Object) this) && activeItemStack.getItem() instanceof RangedWeaponItem) {
             this.itemUseTimeLeft -= EnchantUtil.quickShooting(activeItemStack);
         }
     }
@@ -68,9 +67,8 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Inject(at = @At("TAIL"), method = "setHealth")
     private void setHealthT(float health, CallbackInfo ci) {
-        ServerPlayerEntity entity;
-        if (Enchant.option.rebirth && health <= 0 && (entity = EnchantUtil.getServerPlayer(uuid)) != null) {
-            EnchantUtil.rebirth(entity);
+        if (Enchant.option.rebirth && health <= 0) {
+            EnchantUtil.rebirth((LivingEntity) (Object) this);
         }
     }
 
@@ -84,7 +82,8 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Inject(method = "canHaveStatusEffect", at = @At("HEAD"), cancellable = true)
     private void canHaveStatusEffectH(StatusEffectInstance effect, CallbackInfoReturnable<Boolean> cir) {
-        if (Enchant.option.magicImmune && EnchantUtil.magicImmune(uuid, effect)) {
+        LivingEntity e = (LivingEntity) (Object) this;
+        if (Enchant.option.magicImmune && e instanceof ServerPlayerEntity && EnchantUtil.magicImmune((ServerPlayerEntity) e, effect)) {
             cir.setReturnValue(false);
             cir.cancel();
         }

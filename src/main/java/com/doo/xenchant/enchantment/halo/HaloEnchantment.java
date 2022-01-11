@@ -59,10 +59,10 @@ public abstract class HaloEnchantment extends BaseEnchantment {
     /**
      * 触发光环
      *
-     * @param player 玩家
-     * @param level 等级
+     * @param player  玩家
+     * @param level   等级
      * @param friends 队友
-     * @param mobs 其他
+     * @param mobs    其他
      */
     public final void tickHalo(PlayerEntity player, Integer level, List<LivingEntity> friends, List<LivingEntity> mobs) {
         if (!needTick()) {
@@ -86,8 +86,8 @@ public abstract class HaloEnchantment extends BaseEnchantment {
     /**
      * 添加或更新修改值
      *
-     * @param attr 修改的属性
-     *  @param modifier 修改值 默认值
+     * @param attr     修改的属性
+     * @param modifier 修改值 默认值
      */
     public void addOrResetModifier(EntityAttributeInstance attr, LimitTimeModifier modifier) {
         Optional<EntityAttributeModifier> optional = attr.getModifiers().stream()

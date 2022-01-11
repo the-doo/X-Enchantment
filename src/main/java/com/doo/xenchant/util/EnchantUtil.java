@@ -30,7 +30,6 @@ import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.loot.provider.number.LootNumberProvider;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
@@ -39,13 +38,14 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.glfw.GLFW;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -76,12 +76,12 @@ public class EnchantUtil {
     /**
      * 吸血记录
      */
-    private static final Map<Integer, Integer> SUCK_FLAG_MAP = new HashMap<>();
+    private static final Map<Integer, Integer> SUCK_LOG = new HashMap<>();
 
     /**
      * 攻击记录
      */
-    private static final Map<Integer, Integer> WEAKNESS_FLAG_MAP = new HashMap<>();
+    private static final Map<Integer, Integer> WEAKNESS_LOG = new HashMap<>();
 
     /**
      * 战利品源数据记录
@@ -186,6 +186,7 @@ public class EnchantUtil {
 
 
     public static int slot(PlayerEntity player, ItemStack stack) {
+        // slot like net.minecraft.entity.player.PlayerInventory.combinedInventory
         int slot = -1;
         for (ItemStack itemStack : player.getInventory().main) {
             slot++;
@@ -222,18 +223,20 @@ public class EnchantUtil {
         if (level < 1) {
             return;
         }
+
         // 是否已经＋过了
         int id = player.getId();
         int age = player.getLastAttackTime();
-        if (SUCK_FLAG_MAP.getOrDefault(id, -1) >= age) {
+        if (SUCK_LOG.getOrDefault(id, -1) >= age) {
             return;
         }
         // 记录
-        SUCK_FLAG_MAP.put(id, age);
+        SUCK_LOG.put(id, age);
+
         // 如果是剑则判断是否攻击了多个目标
         long count = itemStack.getItem() instanceof SwordItem ?
-                player.world.getNonSpectatingEntities(LivingEntity.class, box)
-                        .stream().filter(l -> canAttacked(player, l)).count() : 0;
+                player.world.getNonSpectatingEntities(LivingEntity.class, box).stream().filter(l -> canAttacked(player, l)).count() : 0;
+
         // suck scale
         boolean moreWithSweep = count > 1 && EnchantmentHelper.getLevel(Enchantments.SWEEPING, itemStack) > 0;
         float scale = level * (1F + (moreWithSweep ? 0.5F : 0F));
@@ -277,11 +280,11 @@ public class EnchantUtil {
         // 已经判断过了
         int id = player.getId();
         int age = player.getLastAttackTime();
-        if (WEAKNESS_FLAG_MAP.getOrDefault(id, -1) >= age) {
+        if (WEAKNESS_LOG.getOrDefault(id, -1) >= age) {
             return amount;
         }
         // 记录
-        WEAKNESS_FLAG_MAP.put(id, age);
+        WEAKNESS_LOG.put(id, age);
         // 根据等级判断是否造成弱点攻击
         return player.getRandom().nextInt(100) < 5 * level ? amount * 3 : amount;
     }
@@ -294,7 +297,11 @@ public class EnchantUtil {
      *
      * @param player 玩家
      */
-    public static void rebirth(ServerPlayerEntity player) {
+    public static void rebirth(LivingEntity player) {
+        if (!isServerPlayer(player)) {
+            return;
+        }
+
         for (ItemStack armor : player.getArmorItems()) {
             if (level(Rebirth.class, armor) > 0) {
                 player.setHealth(player.getMaxHealth());
@@ -310,19 +317,6 @@ public class EnchantUtil {
                 return;
             }
         }
-    }
-
-    /**
-     * 获取服务端玩家
-     *
-     * @param uuid uuid
-     */
-    public static ServerPlayerEntity getServerPlayer(UUID uuid) {
-        MinecraftServer server = Enchant.MC.getServer();
-        if (server == null) {
-            return null;
-        }
-        return server.getPlayerManager().getPlayer(uuid);
     }
 
     /**
@@ -406,30 +400,13 @@ public class EnchantUtil {
     }
 
     /**
-     * 命中
+     * 获取命中等级
      *
-     * @param player    玩家
      * @param itemStack 工具
-     * @param world     世界
-     * @param pos       位置
-     * @param box       碰撞体积
-     * @return Entity 命中实体 or null
+     * @return level
      */
-    public static Entity hitRateUp(ServerPlayerEntity player, ItemStack itemStack, World world, Vec3d pos, Box box) {
-        int level = level(HitRateUp.class, itemStack);
-        if (level < 1) {
-            return null;
-        }
-        List<LivingEntity> entities =
-                world.getNonSpectatingEntities(LivingEntity.class, box.expand(level));
-        entities.removeIf(e -> e == player || e.isTeammate(player));
-        if (entities.isEmpty()) {
-            return null;
-        }
-        return entities.stream()
-                .filter(e -> e.squaredDistanceTo(pos) <= level)
-                .min(Comparator.comparingDouble(p -> p.squaredDistanceTo(pos)))
-                .orElse(null);
+    public static int hitRateUp(ItemStack itemStack) {
+        return level(HitRateUp.class, itemStack);
     }
 
     /**
@@ -449,11 +426,11 @@ public class EnchantUtil {
      * @param effect 效果
      * @return 是否需要免疫
      */
-    public static boolean magicImmune(UUID uuid, StatusEffectInstance effect) {
-        ServerPlayerEntity player;
-        return (player = getServerPlayer(uuid)) != null
-                && level(MagicImmune.class, player.getEquippedStack(EquipmentSlot.CHEST)) > 0
-                && StatusEffectCategory.HARMFUL.equals(effect.getEffectType().getCategory());
+    public static boolean magicImmune(ServerPlayerEntity player, StatusEffectInstance effect) {
+        if (player == null && StatusEffectCategory.HARMFUL.equals(effect.getEffectType().getCategory())) {
+            return false;
+        }
+        return level(MagicImmune.class, player.getEquippedStack(EquipmentSlot.CHEST)) > 0;
     }
 
     /**
@@ -462,11 +439,11 @@ public class EnchantUtil {
      * @param uuid  玩家id
      * @param armor 装备栏
      */
-    public static void halo(UUID uuid, Iterable<ItemStack> armor) {
-        PlayerEntity player;
-        if ((player = getServerPlayer(uuid)) == null) {
+    public static void halo(LivingEntity player, Iterable<ItemStack> armor) {
+        if (!isServerPlayer(player)) {
             return;
         }
+
         Map<HaloEnchantment, Integer> haloMap = new HashMap<>();
         armor.forEach(i ->
                 i.getEnchantments().forEach(tag -> {
@@ -481,10 +458,11 @@ public class EnchantUtil {
         if (haloMap.isEmpty()) {
             return;
         }
+
         Map<Boolean, List<LivingEntity>> entities =
                 player.world.getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox().expand(Enchant.option.haloRange))
                         .stream().collect(Collectors.groupingBy(e -> e == player || e.isTeammate(player)));
-        haloMap.forEach((k, v) -> k.tickHalo(player, v, entities.get(true), entities.get(false)));
+        haloMap.forEach((k, v) -> k.tickHalo((PlayerEntity) player, v, entities.get(true), entities.get(false)));
     }
 
     /**
@@ -503,5 +481,9 @@ public class EnchantUtil {
                 });
             }
         });
+    }
+
+    public static boolean isServerPlayer(LivingEntity livingEntity) {
+        return livingEntity instanceof ServerPlayerEntity;
     }
 }

@@ -29,7 +29,7 @@ public abstract class BaseEnchantment extends Enchantment {
      * @param type      类型
      * @param slotTypes 使用目标
      */
-    BaseEnchantment(Identifier id, Rarity weight, EnchantmentTarget type, EquipmentSlot[] slotTypes) {
+    protected BaseEnchantment(Identifier id, Rarity weight, EnchantmentTarget type, EquipmentSlot[] slotTypes) {
         super(weight, type, slotTypes);
         this.id = id;
 
