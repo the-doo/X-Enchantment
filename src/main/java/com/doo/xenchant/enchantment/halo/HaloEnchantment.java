@@ -16,6 +16,7 @@ import net.minecraft.util.Identifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * 光环类附魔
@@ -61,21 +62,16 @@ public abstract class HaloEnchantment extends BaseEnchantment {
      *
      * @param player  玩家
      * @param level   等级
-     * @param friends 队友
-     * @param mobs    其他
+     * @param targetsGetter 目标获取器
      */
-    public final void tickHalo(PlayerEntity player, Integer level, List<LivingEntity> friends, List<LivingEntity> mobs) {
+    public final void tickHalo(PlayerEntity player, Integer level, Function<Boolean, List<LivingEntity>> targetsGetter) {
         if (!needTick()) {
             return;
         }
-        if (isFriendTarget) {
-            if (friends != null && !friends.isEmpty()) {
-                onTarget(player, level, friends);
-            }
-        } else {
-            if (mobs != null && !mobs.isEmpty()) {
-                onTarget(player, level, mobs);
-            }
+
+        List<LivingEntity> targets = targetsGetter.apply(isFriendTarget);
+        if (targets != null && !targets.isEmpty()) {
+            onTarget(player, level, targets);
         }
     }
 
