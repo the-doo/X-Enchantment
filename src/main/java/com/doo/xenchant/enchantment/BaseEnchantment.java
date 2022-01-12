@@ -32,8 +32,6 @@ public abstract class BaseEnchantment extends Enchantment {
     protected BaseEnchantment(Identifier id, Rarity weight, EnchantmentTarget type, EquipmentSlot[] slotTypes) {
         super(weight, type, slotTypes);
         this.id = id;
-
-        ID_MAP.put(id, Registry.register(Registry.ENCHANTMENT, id, this));
     }
 
     /**
@@ -46,6 +44,7 @@ public abstract class BaseEnchantment extends Enchantment {
     }
 
     public void register() {
+        ID_MAP.put(id, Registry.register(Registry.ENCHANTMENT, id, this));
     }
 
 
