@@ -44,7 +44,7 @@ public abstract class LivingEntityMixin extends Entity {
         EnchantUtil.removedDirtyHalo(getAttributes());
         if (Enchant.option.halo && age - haloTick >= Enchant.option.haloInterval) {
             haloTick = age;
-            EnchantUtil.halo((LivingEntity) (Object) this, getArmorItems());
+            EnchantUtil.halo((LivingEntity) (Object) this);
         }
     }
 
@@ -55,7 +55,7 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
-    @ModifyVariable(method = "damage", at = @At(value = "HEAD"), ordinal = 0)
+    @ModifyVariable(method = "damage", at = @At(value = "HEAD"), ordinal = 0, argsOnly = true)
     private float returnAmount(float amount, DamageSource source) {
         Entity entity;
         if (!Enchant.option.weakness || world.isClient() || (entity = source.getAttacker()) == null

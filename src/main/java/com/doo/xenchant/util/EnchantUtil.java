@@ -227,7 +227,7 @@ public class EnchantUtil {
         // 是否已经＋过了
         int id = player.getId();
         int age = player.getLastAttackTime();
-        if (SUCK_LOG.getOrDefault(id, -1) >= age) {
+        if (SUCK_LOG.getOrDefault(id, -1) != age) {
             return;
         }
         // 记录
@@ -280,7 +280,7 @@ public class EnchantUtil {
         // 已经判断过了
         int id = player.getId();
         int age = player.getLastAttackTime();
-        if (WEAKNESS_LOG.getOrDefault(id, -1) >= age) {
+        if (WEAKNESS_LOG.getOrDefault(id, -1) != age) {
             return amount;
         }
         // 记录
@@ -439,11 +439,12 @@ public class EnchantUtil {
      * @param uuid  玩家id
      * @param armor 装备栏
      */
-    public static void halo(LivingEntity player, Iterable<ItemStack> armor) {
+    public static void halo(LivingEntity player) {
         if (!isServerPlayer(player)) {
             return;
         }
 
+        Iterable<ItemStack> armor = player.getArmorItems();
         Map<HaloEnchantment, Integer> haloMap = new HashMap<>();
         armor.forEach(i ->
                 i.getEnchantments().forEach(tag -> {
