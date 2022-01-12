@@ -5,6 +5,7 @@ import com.doo.xenchant.attribute.LimitTimeModifier;
 import com.doo.xenchant.config.Config;
 import com.doo.xenchant.enchantment.*;
 import com.doo.xenchant.enchantment.halo.*;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
@@ -64,14 +65,14 @@ public class EnchantUtil {
     /**
      * MouseRightClick
      */
-    private static final InputUtil.Key MOUSE_RIGHT_CLICK =
-            InputUtil.Type.MOUSE.createFromCode(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
+    private static final InputUtil.Key MOUSE_RIGHT_CLICK = InputUtil.Type.MOUSE.createFromCode(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
 
     /**
      * 所有盔甲
      */
-    public static final EquipmentSlot[] ALL_ARMOR =
-            new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
+    public static final EquipmentSlot[] ALL_ARMOR = new EquipmentSlot[]{
+            EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET
+    };
 
     /**
      * 吸血记录
@@ -104,7 +105,7 @@ public class EnchantUtil {
                     .setStyle(Style.EMPTY.withColor(Formatting.RED));
 
     /**
-     * 注册所有附魔
+     * 注册所有附魔及事件
      */
     public static void registerAll() {
         // normal enchantments
@@ -119,6 +120,16 @@ public class EnchantUtil {
                         RegenerationHalo.class, ThunderHalo.class,
                         LuckHalo.class, AttackSpeedUpHalo.class)
                 .forEach(c -> BaseEnchantment.get(c).register());
+
+        // some listener
+        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+            ServerPlayerEntity player = handler.player;
+            if (player != null) {
+                // remove log
+                SUCK_LOG.remove(player.getId());
+                WEAKNESS_LOG.remove(player.getId());
+            }
+        });
     }
 
     /**
@@ -227,7 +238,7 @@ public class EnchantUtil {
         // 是否已经＋过了
         int id = player.getId();
         int age = player.getLastAttackTime();
-        if (SUCK_LOG.getOrDefault(id, -1) != age) {
+        if (SUCK_LOG.getOrDefault(id, -1) <= age) {
             return;
         }
         // 记录
@@ -280,7 +291,7 @@ public class EnchantUtil {
         // 已经判断过了
         int id = player.getId();
         int age = player.getLastAttackTime();
-        if (WEAKNESS_LOG.getOrDefault(id, -1) != age) {
+        if (WEAKNESS_LOG.getOrDefault(id, -1) <= age) {
             return amount;
         }
         // 记录
