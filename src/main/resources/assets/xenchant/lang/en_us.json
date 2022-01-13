@@ -1,6 +1,6 @@
 {
     "enchantment.x_enchant.auto_fish": "Auto Fishing",
-    "enchantment.x_enchant.auto_fish.desc": "Auto click rightClick when catching fish",
+    "enchantment.x_enchant.auto_fish.desc": "Auto click rightClick when catching fish and 50% chance to add 1 durational",
     "enchantment.x_enchant.suck_blood": "Such Blood",
     "enchantment.x_enchant.suck_blood.desc": "Heal when you attack: level x (0.1/0.15)",
     "enchantment.x_enchant.weakness": "Weakness Attack",

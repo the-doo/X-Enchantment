@@ -7,8 +7,6 @@ import com.doo.xenchant.enchantment.*;
 import com.doo.xenchant.enchantment.halo.*;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
@@ -22,8 +20,6 @@ import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.FishingBobberEntity;
-import net.minecraft.item.FishingRodItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
 import net.minecraft.loot.context.LootContext;
@@ -39,7 +35,6 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Box;
-import net.minecraft.world.World;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.glfw.GLFW;
 
@@ -49,7 +44,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -65,7 +59,7 @@ public class EnchantUtil {
     /**
      * MouseRightClick
      */
-    private static final InputUtil.Key MOUSE_RIGHT_CLICK = InputUtil.Type.MOUSE.createFromCode(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
+    public static final InputUtil.Key MOUSE_RIGHT_CLICK = InputUtil.Type.MOUSE.createFromCode(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
 
     /**
      * 所有盔甲
@@ -133,94 +127,6 @@ public class EnchantUtil {
     }
 
     /**
-     * 获取附魔级别
-     *
-     * @param clazz     附魔类
-     * @param itemStack 物品
-     * @return 等级
-     */
-    private static <T extends BaseEnchantment> int level(Class<T> clazz, ItemStack itemStack) {
-        return EnchantmentHelper.getLevel(BaseEnchantment.get(clazz), itemStack);
-    }
-
-    /**
-     * 自动钓鱼
-     */
-    public static void autoFish(World world, Box box) {
-        if (world == null) {
-            return;
-        }
-        List<FishingBobberEntity> list = world.getNonSpectatingEntities(FishingBobberEntity.class, box.expand(3));
-        if (list == null || list.isEmpty()) {
-            return;
-        }
-        FishingBobberEntity bob = list.get(0);
-        Entity owner = bob.getOwner();
-        if (!(owner instanceof PlayerEntity) || owner != MinecraftClient.getInstance().player) {
-            return;
-        }
-        PlayerEntity player = (PlayerEntity) owner;
-        // 没有使用
-        Hand hand = player.getActiveHand();
-        if (hand == null) {
-            return;
-        }
-        // 不为空
-        ItemStack itemStack = player.getStackInHand(hand);
-        if (itemStack.isEmpty()) {
-            return;
-        }
-        // 仅鱼竿有效
-        if (!(itemStack.getItem() instanceof FishingRodItem)) {
-            return;
-        }
-        // 附魔判断
-        if (level(AutoFish.class, itemStack) < 1) {
-            return;
-        }
-        // 50%概率 耐久 + 1
-        int damage = itemStack.getDamage();
-        if (player.getRandom().nextBoolean()) {
-            // -1 mean rollback
-            NetworkUtil.incItemStackDamage(damage, -1, slot(player, itemStack), itemStack);
-        }
-        // 点击右键收杆
-        KeyBinding.onKeyPressed(MOUSE_RIGHT_CLICK);
-        // 点击右键钓鱼 --- 300ms延迟
-        EXECUTOR.schedule(() -> {
-            if (itemStack.isEmpty() || !itemStack.equals(player.getStackInHand(hand)) || player.fishHook != null) {
-                return;
-            }
-            KeyBinding.onKeyPressed(MOUSE_RIGHT_CLICK);
-        }, 300, TimeUnit.MILLISECONDS);
-    }
-
-
-    public static int slot(PlayerEntity player, ItemStack stack) {
-        // slot like net.minecraft.entity.player.PlayerInventory.combinedInventory
-        int slot = -1;
-        for (ItemStack itemStack : player.getInventory().main) {
-            slot++;
-            if (itemStack == stack) {
-                return slot;
-            }
-        }
-        for (ItemStack itemStack : player.getInventory().armor) {
-            slot++;
-            if (itemStack == stack) {
-                return slot;
-            }
-        }
-        for (ItemStack itemStack : player.getInventory().offHand) {
-            slot++;
-            if (itemStack == stack) {
-                return slot;
-            }
-        }
-        return slot;
-    }
-
-    /**
      * 吸血
      *
      * @param player 玩家
@@ -230,7 +136,7 @@ public class EnchantUtil {
     public static void suckBlood(ServerPlayerEntity player, float amount, Box box) {
         ItemStack itemStack = player.getStackInHand(Hand.MAIN_HAND);
         // 如果没有附魔
-        int level = level(SuckBlood.class, itemStack);
+        int level = BaseEnchantment.get(SuckBlood.class).level(itemStack);
         if (level < 1) {
             return;
         }
@@ -283,11 +189,17 @@ public class EnchantUtil {
      */
     public static float weakness(ServerPlayerEntity player, float amount) {
         ItemStack itemStack = player.getStackInHand(Hand.MAIN_HAND);
-        // 如果不是剑且没有附魔
-        int level;
-        if (!(itemStack.getItem() instanceof SwordItem) || (level = level(Weakness.class, itemStack)) < 1) {
+        // no sword
+        if (!(itemStack.getItem() instanceof SwordItem)) {
             return amount;
         }
+
+        // no level
+        int level = BaseEnchantment.get(Weakness.class).level(itemStack);
+        if (level < 1) {
+            return amount;
+        }
+
         // 已经判断过了
         int id = player.getId();
         int age = player.getLastAttackTime();
@@ -314,7 +226,7 @@ public class EnchantUtil {
         }
 
         for (ItemStack armor : player.getArmorItems()) {
-            if (level(Rebirth.class, armor) > 0) {
+            if (BaseEnchantment.get(Rebirth.class).level(armor) > 0) {
                 player.setHealth(player.getMaxHealth());
                 player.clearStatusEffects();
                 player.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 500, 4));
@@ -348,7 +260,7 @@ public class EnchantUtil {
             return;
         }
         // 没有附魔
-        int level = level(MoreLoot.class, itemStack);
+        int level = BaseEnchantment.get(MoreLoot.class).level(itemStack);
         if (level < 1) {
             return;
         }
@@ -417,7 +329,7 @@ public class EnchantUtil {
      * @return level
      */
     public static int hitRateUp(ItemStack itemStack) {
-        return level(HitRateUp.class, itemStack);
+        return BaseEnchantment.get(HitRateUp.class).level(itemStack);
     }
 
     /**
@@ -427,7 +339,7 @@ public class EnchantUtil {
      * @return level tick
      */
     public static int quickShooting(ItemStack itemStack) {
-        return level(QuickShoot.class, itemStack);
+        return BaseEnchantment.get(QuickShoot.class).level(itemStack);
     }
 
     /**
@@ -441,7 +353,8 @@ public class EnchantUtil {
         if (player == null && StatusEffectCategory.HARMFUL.equals(effect.getEffectType().getCategory())) {
             return false;
         }
-        return level(MagicImmune.class, player.getEquippedStack(EquipmentSlot.CHEST)) > 0;
+
+        return BaseEnchantment.get(MagicImmune.class).level(player.getEquippedStack(EquipmentSlot.CHEST)) > 0;
     }
 
     /**

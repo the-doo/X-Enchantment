@@ -5,6 +5,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -43,27 +44,27 @@ public abstract class BaseEnchantment extends Enchantment {
         return id;
     }
 
+    public int level(ItemStack item) {
+        return EnchantmentHelper.getLevel(this, item);
+    }
+
     public void register() {
         ID_MAP.put(id, Registry.register(Registry.ENCHANTMENT, id, this));
     }
 
-
     public static <T extends BaseEnchantment> T get(Class<T> clazz) {
         return BaseEnchantmentFactory.getInstance(clazz);
     }
-
 
     @SuppressWarnings("all")
     public static <T extends BaseEnchantment> T get(Identifier id) {
         return (T) ID_MAP.get(id);
     }
 
-
     @SuppressWarnings("all")
     public static <T extends BaseEnchantment> T get(NbtCompound tag) {
         return (T) ID_MAP.get(EnchantmentHelper.getIdFromNbt(tag));
     }
-
 
     @SuppressWarnings("all")
     private static class BaseEnchantmentFactory {

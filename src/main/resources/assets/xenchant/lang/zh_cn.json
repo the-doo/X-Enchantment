@@ -1,6 +1,6 @@
 {
     "enchantment.x_enchant.auto_fish": "自动钓鱼",
-    "enchantment.x_enchant.auto_fish.desc": "钓鱼时自动点击右键",
+    "enchantment.x_enchant.auto_fish.desc": "钓鱼时自动点击右键, 有50几率耐久+1",
     "enchantment.x_enchant.suck_blood": "吸血",
     "enchantment.x_enchant.suck_blood.desc": "恢复一定比例攻击伤害的血量: 等级 x 伤害 x 0.1/0.15",
     "enchantment.x_enchant.weakness": "弱点攻击",
