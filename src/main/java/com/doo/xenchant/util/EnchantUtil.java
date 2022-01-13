@@ -5,7 +5,9 @@ import com.doo.xenchant.attribute.LimitTimeModifier;
 import com.doo.xenchant.config.Config;
 import com.doo.xenchant.enchantment.*;
 import com.doo.xenchant.enchantment.halo.*;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
@@ -108,15 +110,17 @@ public class EnchantUtil {
                         LuckHalo.class, AttackSpeedUpHalo.class)
                 .forEach(c -> BaseEnchantment.get(c).register());
 
-        // some listener
-        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
-            ServerPlayerEntity player = handler.player;
-            if (player != null) {
-                // remove log
-                SUCK_LOG.remove(player.getId());
-                WEAKNESS_LOG.remove(player.getId());
-            }
-        });
+        // server listener
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER) {
+            ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+                ServerPlayerEntity player = handler.player;
+                if (player != null) {
+                    // remove log
+                    SUCK_LOG.remove(player.getId());
+                    WEAKNESS_LOG.remove(player.getId());
+                }
+            });
+        }
     }
 
     /**
