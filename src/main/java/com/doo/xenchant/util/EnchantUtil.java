@@ -7,7 +7,6 @@ import com.doo.xenchant.enchantment.*;
 import com.doo.xenchant.enchantment.halo.*;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.util.InputUtil;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
@@ -36,7 +35,6 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Box;
 import org.apache.logging.log4j.Level;
-import org.lwjgl.glfw.GLFW;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -55,11 +53,6 @@ public class EnchantUtil {
 
     private EnchantUtil() {
     }
-
-    /**
-     * MouseRightClick
-     */
-    public static final InputUtil.Key MOUSE_RIGHT_CLICK = InputUtil.Type.MOUSE.createFromCode(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
 
     /**
      * 所有盔甲
