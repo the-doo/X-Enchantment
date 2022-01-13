@@ -22,6 +22,7 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.RangedWeaponItem;
 import net.minecraft.item.SwordItem;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
@@ -123,38 +124,29 @@ public class EnchantUtil {
         }
     }
 
-    /**
-     * 吸血
-     *
-     * @param player 玩家
-     * @param amount 伤害量
-     * @param box    攻击范围
-     */
-    public static void suckBlood(ServerPlayerEntity player, float amount, Box box) {
-        ItemStack itemStack = player.getStackInHand(Hand.MAIN_HAND);
-        // 如果没有附魔
+    public static void suckBlood(LivingEntity attacker, float amount, Box box) {
+        ItemStack itemStack = attacker.getStackInHand(Hand.MAIN_HAND);
+        // no level
         int level = BaseEnchantment.get(SuckBlood.class).level(itemStack);
         if (level < 1) {
             return;
         }
 
-        // 是否已经＋过了
-        int id = player.getId();
-        int age = player.getLastAttackTime();
-        if (SUCK_LOG.getOrDefault(id, -1) <= age) {
+        // log
+        int id = attacker.getId();
+        int age = attacker.getLastAttackTime();
+        if (SUCK_LOG.put(id, age) == age) {
             return;
         }
-        // 记录
-        SUCK_LOG.put(id, age);
 
-        // 如果是剑则判断是否攻击了多个目标
+        // attack multi target and has sweep
         long count = itemStack.getItem() instanceof SwordItem ?
-                player.world.getNonSpectatingEntities(LivingEntity.class, box).stream().filter(l -> canAttacked(player, l)).count() : 0;
+                attacker.world.getNonSpectatingEntities(LivingEntity.class, box).stream().filter(l -> canAttacked(attacker, l)).count() : 0;
 
         // suck scale
         boolean moreWithSweep = count > 1 && EnchantmentHelper.getLevel(Enchantments.SWEEPING, itemStack) > 0;
-        float scale = level * (1F + (moreWithSweep ? 0.5F : 0F));
-        player.heal(scale * amount / 10);
+        float scale = level * (1F + (moreWithSweep ? Math.min(0.1F * count, 0.5F) : 0F));
+        attacker.heal(scale * amount / 10);
     }
 
     /**
@@ -163,17 +155,17 @@ public class EnchantUtil {
      * (判断参考如下)
      * see PlayerEntity.attack(Entity target)
      *
-     * @param player       玩家
+     * @param attacker     玩家
      * @param livingEntity 存活对象
      * @return true or false
      */
-    private static boolean canAttacked(ServerPlayerEntity player, LivingEntity livingEntity) {
+    private static boolean canAttacked(LivingEntity attacker, LivingEntity livingEntity) {
         // 排除当前对象
-        return livingEntity != player
+        return livingEntity != attacker
                 // 距离小于9
-                && player.squaredDistanceTo(livingEntity) < 9.0
+                && attacker.squaredDistanceTo(livingEntity) < 9.0
                 // 排除队友
-                && !player.isTeammate(livingEntity)
+                && !attacker.isTeammate(livingEntity)
                 // 可攻击
                 && !(livingEntity instanceof ArmorStandEntity && ((ArmorStandEntity) livingEntity).isMarker());
     }
@@ -181,13 +173,13 @@ public class EnchantUtil {
     /**
      * 弱点攻击
      *
-     * @param player 玩家
+     * @param attack 玩家
      * @param amount 伤害量
      */
-    public static float weakness(ServerPlayerEntity player, float amount) {
-        ItemStack itemStack = player.getStackInHand(Hand.MAIN_HAND);
+    public static float weakness(LivingEntity attack, float amount) {
+        ItemStack itemStack = attack.getStackInHand(Hand.MAIN_HAND);
         // no sword
-        if (!(itemStack.getItem() instanceof SwordItem)) {
+        if (!(itemStack.getItem() instanceof SwordItem || itemStack.getItem() instanceof RangedWeaponItem)) {
             return amount;
         }
 
@@ -197,16 +189,15 @@ public class EnchantUtil {
             return amount;
         }
 
-        // 已经判断过了
-        int id = player.getId();
-        int age = player.getLastAttackTime();
-        if (WEAKNESS_LOG.getOrDefault(id, -1) <= age) {
+        // log
+        int id = attack.getId();
+        int age = attack.getLastAttackTime();
+        if (WEAKNESS_LOG.put(id, age) == age) {
             return amount;
         }
-        // 记录
-        WEAKNESS_LOG.put(id, age);
-        // 根据等级判断是否造成弱点攻击
-        return player.getRandom().nextInt(100) < 5 * level ? amount * 3 : amount;
+
+        // random number
+        return attack.getRandom().nextInt(100) < 5 * level ? amount * 3 : amount;
     }
 
     /**

@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -31,9 +31,11 @@ public abstract class LivingEntityMixin extends Entity {
 
     private int haloTick;
 
-    @Shadow public abstract Iterable<ItemStack> getArmorItems();
+    @Shadow
+    public abstract Iterable<ItemStack> getArmorItems();
 
-    @Shadow public abstract AttributeContainer getAttributes();
+    @Shadow
+    public abstract AttributeContainer getAttributes();
 
     public LivingEntityMixin(EntityType<?> type, World world) {
         super(type, world);
@@ -55,28 +57,28 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
-    @ModifyVariable(method = "damage", at = @At(value = "HEAD"), ordinal = 0, argsOnly = true)
-    private float returnAmount(float amount, DamageSource source) {
-        Entity entity;
-        if (!Enchant.option.weakness || world.isClient() || (entity = source.getAttacker()) == null
-                || !(entity instanceof ServerPlayerEntity)) {
-            return amount;
+    @ModifyArg(method = "applyDamage", at = @At(value = "HEAD"))
+    private float returnAmount(DamageSource source, float amount) {
+        Entity entity = source.getAttacker();
+        if (Enchant.option.weakness && entity instanceof LivingEntity) {
+            return EnchantUtil.weakness((LivingEntity) entity, amount);
         }
-        return EnchantUtil.weakness((ServerPlayerEntity) entity, amount);
+
+        return amount;
+    }
+
+    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;setHealth(F)V"), method = "applyDamage")
+    private void applyDamageT(DamageSource source, float amount, CallbackInfo ci) {
+        Entity entity = source.getAttacker();
+        if (Enchant.option.suckBlood && entity instanceof LivingEntity) {
+            EnchantUtil.suckBlood((LivingEntity) entity, amount, entity.getBoundingBox().expand(1.0D, 0.25D, 1.0D));
+        }
     }
 
     @Inject(at = @At("TAIL"), method = "setHealth")
     private void setHealthT(float health, CallbackInfo ci) {
         if (Enchant.option.rebirth && health <= 0) {
             EnchantUtil.rebirth((LivingEntity) (Object) this);
-        }
-    }
-
-    @Inject(at = @At("TAIL"), method = "applyDamage")
-    private void applyDamageT(DamageSource source, float amount, CallbackInfo ci) {
-        Entity entity;
-        if (Enchant.option.suckBlood && amount > 0 && (entity = source.getAttacker()) != null && entity instanceof ServerPlayerEntity) {
-            EnchantUtil.suckBlood((ServerPlayerEntity) entity, amount, getBoundingBox().expand(1.0D, 0.25D, 1.0D));
         }
     }
 
