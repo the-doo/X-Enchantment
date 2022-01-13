@@ -25,12 +25,12 @@ public abstract class HaloEnchantment extends BaseEnchantment {
 
     public static final String NAME = "halo";
 
-    public boolean isFriendTarget;
-
     public static final List<EntityAttribute> ATTRIBUTES = new ArrayList<>(16);
 
+    private boolean isFriendTarget;
+
     public HaloEnchantment(String name, boolean isFriendTarget) {
-        super(new Identifier(Enchant.ID, NAME + "." + name),
+        super(new Identifier(Enchant.ID, NAME + "_" + name),
                 Rarity.COMMON,
                 EnchantmentTarget.ARMOR,
                 EnchantUtil.ALL_ARMOR);
