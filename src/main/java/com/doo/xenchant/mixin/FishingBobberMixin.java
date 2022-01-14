@@ -21,7 +21,6 @@ public abstract class FishingBobberMixin {
     @Nullable
     public abstract PlayerEntity getPlayerOwner();
 
-    @Environment(EnvType.SERVER)
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/data/DataTracker;set(Lnet/minecraft/entity/data/TrackedData;Ljava/lang/Object;)V", ordinal = 1), method = "tickFishingLogic")
     private void tickT(BlockPos pos, CallbackInfo ci) {
         if (Enchant.option.autoFishing && getPlayerOwner() != null) {

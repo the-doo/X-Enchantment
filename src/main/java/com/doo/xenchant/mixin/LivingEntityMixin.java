@@ -46,7 +46,7 @@ public abstract class LivingEntityMixin {
 
     @Inject(method = "tickActiveItemStack", at = @At(value = "HEAD"))
     private void tickActiveItemStackH(CallbackInfo ci) {
-        if (Enchant.option.quickShoot && EnchantUtil.isServerPlayer((LivingEntity) (Object) this) && activeItemStack.getItem() instanceof RangedWeaponItem) {
+        if (Enchant.option.quickShoot && activeItemStack.getItem() instanceof RangedWeaponItem) {
             this.itemUseTimeLeft -= EnchantUtil.quickShooting(activeItemStack);
         }
     }

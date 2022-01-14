@@ -320,10 +320,6 @@ public class EnchantUtil {
      * @param armor 装备栏
      */
     public static void halo(LivingEntity player) {
-        if (!isServerPlayer(player)) {
-            return;
-        }
-
         Iterable<ItemStack> armor = player.getArmorItems();
         Map<HaloEnchantment, Integer> haloMap = new HashMap<>();
         armor.forEach(i ->
