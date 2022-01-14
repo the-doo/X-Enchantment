@@ -2,37 +2,23 @@ package com.doo.xenchant.mixin;
 
 import com.doo.xenchant.Enchant;
 import com.doo.xenchant.util.EnchantUtil;
-import net.minecraft.item.ItemStack;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.context.LootContext;
-import net.minecraft.loot.provider.number.LootNumberProvider;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.function.Consumer;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 @Mixin(LootPool.class)
 public abstract class LootTableMixin {
 
-    @Shadow
-    @Final
-    LootNumberProvider rolls;
-
-    @Inject(at = @At(value = "HEAD"), method = "addGeneratedLoot")
-    public void addGeneratedLootH(Consumer<ItemStack> lootConsumer, LootContext context, CallbackInfo ci) {
+    @Environment(EnvType.SERVER)
+    @ModifyArg(method = "addGeneratedLoot", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/math/MathHelper;floor(F)I"))
+    public float resetTotalLoot(LootContext context, float value) {
         if (Enchant.option.moreLoot) {
-            EnchantUtil.moreLoot(context, this.rolls);
+            return value * EnchantUtil.loot(context);
         }
-    }
-
-    @Inject(at = @At(value = "TAIL"), method = "addGeneratedLoot")
-    public void addGeneratedLootT(Consumer<ItemStack> lootConsumer, LootContext context, CallbackInfo ci) {
-        if (Enchant.option.moreLoot) {
-            EnchantUtil.resetLoot(this.rolls);
-        }
+        return value;
     }
 }

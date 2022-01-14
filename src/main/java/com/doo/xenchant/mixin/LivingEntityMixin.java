@@ -17,6 +17,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -60,8 +61,8 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
-    @ModifyArg(method = "applyDamage", at = @At(value = "HEAD"))
-    private float returnAmount(DamageSource source, float amount) {
+    @ModifyVariable(method = "applyDamage", at = @At(value = "HEAD"), argsOnly = true)
+    private float returnAmount(float amount, DamageSource source) {
         Entity entity = source.getAttacker();
         if (Enchant.option.weakness && entity instanceof LivingEntity) {
             return EnchantUtil.weakness((LivingEntity) entity, amount);

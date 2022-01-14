@@ -2,11 +2,11 @@ package com.doo.xenchant.util;
 
 import com.doo.xenchant.Enchant;
 import com.doo.xenchant.attribute.LimitTimeModifier;
-import com.doo.xenchant.config.Config;
 import com.doo.xenchant.enchantment.*;
 import com.doo.xenchant.enchantment.halo.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.fabric.api.tool.attribute.v1.ToolManager;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -26,8 +26,6 @@ import net.minecraft.item.RangedWeaponItem;
 import net.minecraft.item.SwordItem;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
-import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
-import net.minecraft.loot.provider.number.LootNumberProvider;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
@@ -37,9 +35,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Box;
-import org.apache.logging.log4j.Level;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,11 +69,6 @@ public class EnchantUtil {
      * 攻击记录
      */
     private static final Map<Integer, Integer> WEAKNESS_LOG = new HashMap<>();
-
-    /**
-     * 战利品源数据记录
-     */
-    private static final Map<LootNumberProvider, Float> ROLLS_MAP = new HashMap<>();
 
     /**
      * 线程池
@@ -236,7 +227,7 @@ public class EnchantUtil {
      * @param context 上下文
      * @param rolls   基数
      */
-    public static void moreLoot(LootContext context, LootNumberProvider rolls) {
+    public static int loot(LootContext context) {
         ItemStack itemStack = context.get(LootContextParameters.TOOL);
         if (itemStack == null) {
             Entity entity = context.get(LootContextParameters.KILLER_ENTITY);
@@ -245,40 +236,35 @@ public class EnchantUtil {
             }
         }
         if (itemStack == null || itemStack.isEmpty()) {
-            return;
+            return 1;
         }
-        // 没有附魔
+
+        // no effect on
+        BlockState block = context.get(LootContextParameters.BLOCK_STATE);
+        if (!ToolManager.handleIsEffectiveOn(block, itemStack, null)) {
+            return 1;
+        }
+
+        // no level
         int level = BaseEnchantment.get(MoreLoot.class).level(itemStack);
         if (level < 1) {
-            return;
+            return 1;
         }
-        // 不是无效的
-        BlockState block = context.get(LootContextParameters.BLOCK_STATE);
-        if (block != null && itemStack.getMiningSpeedMultiplier(block) <= 1) {
-            return;
-        }
-        // 20%的几率
+
+        // 20%
         int ran = context.getRandom().nextInt(100);
         if (ran >= Enchant.option.moreLootRate - 1) {
-            return;
+            return 1;
         }
-        //  5%
+        // 5%
         if (ran < Enchant.option.moreMoreLootRate - 1) {
             level *= Enchant.option.moreMoreLootMultiplier;
             sendMessage(MORE_LOOT_TEXT);
         } else {
             sendMessage(LOOT_TEXT);
         }
-        try {
-            level += 1;
-            Field field = ConstantLootNumberProvider.class.getDeclaredField("value");
-            field.setAccessible(true);
-            float value = field.getFloat(rolls);
-            field.set(rolls, level * value);
-            ROLLS_MAP.put(rolls, value);
-        } catch (Exception e) {
-            Config.LOGGER.log(Level.WARN, "value设置失败", e);
-        }
+
+        return level + 1;
     }
 
     /**
@@ -289,24 +275,6 @@ public class EnchantUtil {
     private static void sendMessage(Text text) {
         if (Enchant.option.chatTips) {
             Enchant.MC.inGameHud.getChatHud().addMessage(text);
-        }
-    }
-
-    /**
-     * 重置战利品生成基数
-     *
-     * @param rolls 基数
-     */
-    public static void resetLoot(LootNumberProvider rolls) {
-        if (!ROLLS_MAP.containsKey(rolls)) {
-            return;
-        }
-        try {
-            Field field = ConstantLootNumberProvider.class.getDeclaredField("value");
-            field.setAccessible(true);
-            field.set(rolls, ROLLS_MAP.remove(rolls));
-        } catch (Exception e) {
-            Config.LOGGER.log(Level.WARN, "value重置失败", e);
         }
     }
 
