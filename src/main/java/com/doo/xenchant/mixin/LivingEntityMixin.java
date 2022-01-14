@@ -37,6 +37,9 @@ public abstract class LivingEntityMixin extends Entity {
     @Shadow
     public abstract AttributeContainer getAttributes();
 
+    @Shadow
+    public abstract boolean isDead();
+
     public LivingEntityMixin(EntityType<?> type, World world) {
         super(type, world);
     }
@@ -75,9 +78,9 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
-    @Inject(at = @At("TAIL"), method = "setHealth")
-    private void setHealthT(float health, CallbackInfo ci) {
-        if (Enchant.option.rebirth && health <= 0) {
+    @Inject(at = @At(value = "TAIL"), method = "applyDamage")
+    private void setHealthT(DamageSource source, float amount, CallbackInfo ci) {
+        if (Enchant.option.rebirth && isDead()) {
             EnchantUtil.rebirth((LivingEntity) (Object) this);
         }
     }
