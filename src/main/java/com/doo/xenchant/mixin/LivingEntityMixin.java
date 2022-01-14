@@ -3,7 +3,6 @@ package com.doo.xenchant.mixin;
 import com.doo.xenchant.Enchant;
 import com.doo.xenchant.util.EnchantUtil;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.AttributeContainer;
 import net.minecraft.entity.damage.DamageSource;
@@ -11,18 +10,16 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.RangedWeaponItem;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
-public abstract class LivingEntityMixin extends Entity {
+public abstract class LivingEntityMixin {
 
     @Shadow
     protected ItemStack activeItemStack;
@@ -33,28 +30,21 @@ public abstract class LivingEntityMixin extends Entity {
     private int haloTick;
 
     @Shadow
-    public abstract Iterable<ItemStack> getArmorItems();
-
-    @Shadow
     public abstract AttributeContainer getAttributes();
 
     @Shadow
     public abstract boolean isDead();
 
-    public LivingEntityMixin(EntityType<?> type, World world) {
-        super(type, world);
-    }
-
     @Inject(method = "tick", at = @At(value = "TAIL"))
     private void tickT(CallbackInfo ci) {
         EnchantUtil.removedDirtyHalo(getAttributes());
-        if (Enchant.option.halo && age - haloTick >= Enchant.option.haloInterval) {
-            haloTick = age;
+        if (Enchant.option.halo && ((LivingEntity) (Object) this).age - haloTick >= Enchant.option.haloInterval) {
+            haloTick = ((LivingEntity) (Object) this).age;
             EnchantUtil.halo((LivingEntity) (Object) this);
         }
     }
 
-    @Inject(method = "tickActiveItemStack", at = @At(value = "HEAD"), cancellable = true)
+    @Inject(method = "tickActiveItemStack", at = @At(value = "HEAD"))
     private void tickActiveItemStackH(CallbackInfo ci) {
         if (Enchant.option.quickShoot && EnchantUtil.isServerPlayer((LivingEntity) (Object) this) && activeItemStack.getItem() instanceof RangedWeaponItem) {
             this.itemUseTimeLeft -= EnchantUtil.quickShooting(activeItemStack);
