@@ -64,7 +64,7 @@ public class AutoFish extends BaseEnchantment {
                     item.setDamage(item.getDamage() + 2);
                 }
 
-                ServerPlayNetworking.send((ServerPlayerEntity) player, getId(), PacketByteBufs.create());
+                ServerPlayNetworking.send((ServerPlayerEntity) player, getId(), PacketByteBufs.empty());
             }));
         }
 
@@ -76,9 +76,9 @@ public class AutoFish extends BaseEnchantment {
                     return;
                 }
 
-                // right click
+                // right-click
                 KeyBinding.onKeyPressed(MOUSE_RIGHT_CLICK);
-                // and right click again
+                // right-click again
                 client.execute(() -> KeyBinding.onKeyPressed(MOUSE_RIGHT_CLICK));
             }));
         }
