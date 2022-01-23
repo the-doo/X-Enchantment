@@ -4,9 +4,12 @@ import com.doo.xenchant.config.Config;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentTarget;
+import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -19,6 +22,8 @@ import java.util.Map;
 public abstract class BaseEnchantment extends Enchantment {
 
     private static final Map<Identifier, BaseEnchantment> ID_MAP = new HashMap<>();
+
+    private static final Formatting[] RATE_COLOR = {Formatting.GRAY, Formatting.BLUE, Formatting.YELLOW, Formatting.GOLD};
 
     private final Identifier id;
 
@@ -35,6 +40,11 @@ public abstract class BaseEnchantment extends Enchantment {
         this.id = id;
     }
 
+    @Override
+    public Text getName(int level) {
+        return super.getName(level).shallowCopy().formatted(RATE_COLOR[getRarity().ordinal()]);
+    }
+
     /**
      * 获取id
      *
@@ -42,6 +52,15 @@ public abstract class BaseEnchantment extends Enchantment {
      */
     public Identifier getId() {
         return id;
+    }
+
+    @Override
+    public final float getAttackDamage(int level, EntityGroup group) {
+        return super.getAttackDamage(level, group);
+    }
+
+    public float getAttackDamage(ItemStack item, int level, EntityGroup group) {
+        return super.getAttackDamage(level, group);
     }
 
     public int level(ItemStack item) {

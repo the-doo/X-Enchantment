@@ -27,6 +27,6 @@ public class SlownessHalo extends HaloEnchantment {
     @Override
     public void onTarget(PlayerEntity player, Integer level, List<LivingEntity> targets) {
         targets.forEach(e -> e.addStatusEffect(new StatusEffectInstance(
-                StatusEffects.SLOWNESS, Enchant.option.slownessHaloDuration * 30, Enchant.option.slownessHaloLevel)));
+                StatusEffects.SLOWNESS, Enchant.option.slownessHaloDuration * 25, Enchant.option.slownessHaloLevel)));
     }
 }

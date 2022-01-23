@@ -38,7 +38,7 @@ public class Option {
     /**
      * 更多战利品暴击几率
      */
-    public double moreMoreLootRate = 5;
+    public double moreMoreLootRate = 1;
 
     /**
      * 更多战利品暴击倍数

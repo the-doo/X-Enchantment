@@ -1,7 +1,5 @@
 package com.doo.xenchant.events;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.entity.player.PlayerEntity;
@@ -14,7 +12,6 @@ import net.minecraft.item.ItemStack;
  *
  * @see net.minecraft.entity.projectile.FishingBobberEntity#caughtFish
  */
-@Environment(EnvType.SERVER)
 public interface S2CFishCaughtCallback {
 
     Event<S2CFishCaughtCallback> EVENT = EventFactory.createArrayBacked(S2CFishCaughtCallback.class,

@@ -14,7 +14,7 @@ public class HitRateUp extends BaseEnchantment {
 
     public HitRateUp() {
         super(new Identifier(Enchant.ID, NAME),
-                Rarity.COMMON,
+                Rarity.UNCOMMON,
                 EnchantmentTarget.BOW,
                 new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND});
     }

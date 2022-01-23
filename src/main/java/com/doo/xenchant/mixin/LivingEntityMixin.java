@@ -32,15 +32,12 @@ public abstract class LivingEntityMixin {
     @Shadow
     public abstract AttributeContainer getAttributes();
 
-    @Shadow
-    public abstract boolean isDead();
-
     @Inject(method = "tick", at = @At(value = "TAIL"))
     private void tickT(CallbackInfo ci) {
         EnchantUtil.removedDirtyHalo(getAttributes());
         if (Enchant.option.halo && ((LivingEntity) (Object) this).age - haloTick >= Enchant.option.haloInterval) {
             haloTick = ((LivingEntity) (Object) this).age;
-            EnchantUtil.halo((LivingEntity) (Object) this);
+            EnchantUtil.livingTick((LivingEntity) (Object) this);
         }
     }
 
@@ -66,13 +63,6 @@ public abstract class LivingEntityMixin {
         Entity entity = source.getAttacker();
         if (Enchant.option.suckBlood && entity instanceof LivingEntity) {
             EnchantUtil.suckBlood((LivingEntity) entity, amount, entity.getBoundingBox().expand(1.0D, 0.25D, 1.0D));
-        }
-    }
-
-    @Inject(at = @At(value = "TAIL"), method = "applyDamage")
-    private void setHealthT(DamageSource source, float amount, CallbackInfo ci) {
-        if (Enchant.option.rebirth && isDead()) {
-            EnchantUtil.rebirth((LivingEntity) (Object) this);
         }
     }
 

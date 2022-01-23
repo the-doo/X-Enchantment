@@ -32,6 +32,6 @@ public class LuckHalo extends HaloEnchantment {
     @Override
     public void onTarget(PlayerEntity player, Integer level, List<LivingEntity> targets) {
         targets.forEach(e -> e.addStatusEffect(
-                new StatusEffectInstance(StatusEffects.LUCK, Enchant.option.luckHaloDuration * 20, Enchant.option.luckHaloLevel - 1)));
+                new StatusEffectInstance(StatusEffects.LUCK, Enchant.option.luckHaloDuration * 25, Enchant.option.luckHaloLevel - 1)));
     }
 }

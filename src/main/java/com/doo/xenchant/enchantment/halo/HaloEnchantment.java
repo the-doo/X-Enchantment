@@ -31,7 +31,7 @@ public abstract class HaloEnchantment extends BaseEnchantment {
 
     public HaloEnchantment(String name, boolean isFriendTarget) {
         super(new Identifier(Enchant.ID, NAME + "_" + name),
-                Rarity.COMMON,
+                Rarity.RARE,
                 EnchantmentTarget.ARMOR,
                 EnchantUtil.ALL_ARMOR);
         this.isFriendTarget = isFriendTarget;

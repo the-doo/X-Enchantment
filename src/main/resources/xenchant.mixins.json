@@ -2,8 +2,9 @@
   "required": true,
   "minVersion": "0.8",
   "package": "com.doo.xenchant.mixin",
-  "compatibilityLevel": "JAVA_17",
-  "server": [
+  "compatibilityLevel": "JAVA_16",
+  "mixins": [
+    "EnchantmentHelperMixin",
     "FishingBobberMixin",
     "InfinityMixin",
     "LivingEntityMixin",

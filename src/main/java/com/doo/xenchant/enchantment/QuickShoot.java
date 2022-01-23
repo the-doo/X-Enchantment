@@ -14,7 +14,7 @@ public class QuickShoot extends BaseEnchantment {
 
     public QuickShoot() {
         super(new Identifier(Enchant.ID, NAME),
-                Rarity.COMMON,
+                Rarity.UNCOMMON,
                 EnchantmentTarget.BOW,
                 new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND});
     }

@@ -4,29 +4,29 @@ import com.doo.xenchant.Enchant;
 import com.doo.xenchant.attribute.LimitTimeModifier;
 import com.doo.xenchant.enchantment.*;
 import com.doo.xenchant.enchantment.halo.*;
-import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.tool.attribute.v1.ToolManager;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.BlockState;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.EnchantmentLevelEntry;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.AttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.RangedWeaponItem;
-import net.minecraft.item.SwordItem;
+import net.minecraft.item.*;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
@@ -34,13 +34,16 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Rarity;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -59,6 +62,11 @@ public class EnchantUtil {
     public static final EquipmentSlot[] ALL_ARMOR = new EquipmentSlot[]{
             EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET
     };
+
+    /**
+     * ALL HAND
+     */
+    public static final EquipmentSlot[] ALL_HAND = new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND};
 
     /**
      * 吸血记录
@@ -93,7 +101,8 @@ public class EnchantUtil {
         Stream.of(AutoFish.class, SuckBlood.class,
                         Weakness.class, Rebirth.class,
                         MoreLoot.class, HitRateUp.class,
-                        QuickShoot.class, MagicImmune.class)
+                        QuickShoot.class, MagicImmune.class,
+                        Librarian.class, IncDamage.class)
                 .forEach(c -> BaseEnchantment.get(c).register());
 
         // Halo enchantments
@@ -103,16 +112,14 @@ public class EnchantUtil {
                 .forEach(c -> BaseEnchantment.get(c).register());
 
         // server listener
-        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER) {
-            ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
-                ServerPlayerEntity player = handler.player;
-                if (player != null) {
-                    // remove log
-                    SUCK_LOG.remove(player.getId());
-                    WEAKNESS_LOG.remove(player.getId());
-                }
-            });
-        }
+        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+            ServerPlayerEntity player = handler.player;
+            if (player != null) {
+                // remove log
+                SUCK_LOG.remove(player.getId());
+                WEAKNESS_LOG.remove(player.getId());
+            }
+        });
     }
 
     public static void suckBlood(LivingEntity attacker, float amount, Box box) {
@@ -125,7 +132,7 @@ public class EnchantUtil {
 
         // log
         int id = attacker.getId();
-        int age = attacker.getLastAttackTime();
+        Integer age = attacker.getLastAttackTime();
         if (SUCK_LOG.put(id, age) == age) {
             return;
         }
@@ -182,7 +189,7 @@ public class EnchantUtil {
 
         // log
         int id = attack.getId();
-        int age = attack.getLastAttackTime();
+        Integer age = attack.getLastAttackTime();
         if (WEAKNESS_LOG.put(id, age) == age) {
             return amount;
         }
@@ -199,72 +206,75 @@ public class EnchantUtil {
      *
      * @param player 玩家
      */
-    public static void rebirth(LivingEntity player) {
-        if (!isServerPlayer(player)) {
-            return;
+    public static boolean rebirth(LivingEntity player) {
+        ItemStack stack = player.getEquippedStack(EquipmentSlot.CHEST);
+        Rebirth rebirth = BaseEnchantment.get(Rebirth.class);
+
+        int level = rebirth.level(stack);
+        if (level < 1) {
+            return true;
         }
 
-        for (ItemStack armor : player.getArmorItems()) {
-            if (BaseEnchantment.get(Rebirth.class).level(armor) > 0) {
-                player.setHealth(player.getMaxHealth());
-                player.clearStatusEffects();
-                player.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 500, 4));
-                player.addStatusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, 500, 4));
-                player.addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 500, 4));
-                player.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 500, 2));
-                player.addStatusEffect(new StatusEffectInstance(StatusEffects.JUMP_BOOST, 500, 2));
-                player.world.sendEntityStatus(player, (byte) 35);
+        // use totem effect
+        player.setHealth(player.getMaxHealth());
+        player.clearStatusEffects();
+        player.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 500, 4));
+        player.addStatusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, 500, 4));
+        player.addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 500, 4));
+        player.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 500, 2));
+        player.addStatusEffect(new StatusEffectInstance(StatusEffects.JUMP_BOOST, 500, 2));
+        player.world.sendEntityStatus(player, (byte) 35);
 
-                armor.getEnchantments().removeIf(tag -> BaseEnchantment.get((NbtCompound) tag) != null);
-                return;
-            }
-        }
+        // decrement 1 level, see ItemStack.addEnchantment
+        stack.getNbt().getList(ItemStack.ENCHANTMENTS_KEY, 10).stream()
+                .map(e -> (NbtCompound) e).filter(e -> EnchantmentHelper.getIdFromNbt(e).equals(rebirth.getId()))
+                .findFirst()
+                .ifPresent(e -> EnchantmentHelper.writeLevelToNbt(e, level - 1));
+        return false;
     }
 
     /**
      * 更多战利品
      *
-     * @param context 上下文
      * @param rolls   基数
+     * @param context 上下文
      */
     public static int loot(LootContext context) {
         ItemStack itemStack = context.get(LootContextParameters.TOOL);
         if (itemStack == null) {
             Entity entity = context.get(LootContextParameters.KILLER_ENTITY);
-            if (entity instanceof ServerPlayerEntity) {
-                itemStack = ((ServerPlayerEntity) entity).getMainHandStack();
+            if (entity instanceof LivingEntity) {
+                itemStack = ((LivingEntity) entity).getMainHandStack();
             }
         }
         if (itemStack == null || itemStack.isEmpty()) {
-            return 1;
+            return 0;
         }
 
         // no effect on
         BlockState block = context.get(LootContextParameters.BLOCK_STATE);
-        if (!ToolManager.handleIsEffectiveOn(block, itemStack, null)) {
-            return 1;
+        if (block != null && !ToolManager.handleIsEffectiveOn(block, itemStack, null)) {
+            return 0;
         }
 
         // no level
         int level = BaseEnchantment.get(MoreLoot.class).level(itemStack);
         if (level < 1) {
-            return 1;
+            return 0;
         }
 
-        // 20%
+        // 20% 0-19
         int ran = context.getRandom().nextInt(100);
         if (ran >= Enchant.option.moreLootRate - 1) {
-            return 1;
+            return 0;
         }
-        // 5%
-        if (ran < Enchant.option.moreMoreLootRate - 1) {
+        // 1% only 1
+        if (ran < Enchant.option.moreMoreLootRate) {
             level *= Enchant.option.moreMoreLootMultiplier;
             sendMessage(MORE_LOOT_TEXT);
-        } else {
-            sendMessage(LOOT_TEXT);
         }
 
-        return level + 1;
+        return level;
     }
 
     /**
@@ -279,13 +289,25 @@ public class EnchantUtil {
     }
 
     /**
-     * 获取命中等级
+     * 命中
      *
+     * @param player    玩家
      * @param itemStack 工具
-     * @return level
+     * @param world     世界
+     * @param pos       位置
+     * @param box       碰撞体积
+     * @return Entity 命中实体 or null
      */
-    public static int hitRateUp(ItemStack itemStack) {
-        return BaseEnchantment.get(HitRateUp.class).level(itemStack);
+    public static Entity hitRateUp(Entity player, ItemStack itemStack, World world, Vec3d pos, Box box) {
+        int level = BaseEnchantment.get(HitRateUp.class).level(itemStack);
+        if (level < 1) {
+            return null;
+        }
+        return world.getOtherEntities(player, box.expand(level), e -> e instanceof LivingEntity)
+                .stream()
+                .filter(e -> !e.isTeammate(player) && e.squaredDistanceTo(pos) <= level)
+                .findFirst()
+                .orElse(null);
     }
 
     /**
@@ -311,6 +333,16 @@ public class EnchantUtil {
         }
 
         return BaseEnchantment.get(MagicImmune.class).level(player.getEquippedStack(EquipmentSlot.CHEST)) > 0;
+    }
+
+    /**
+     * 触发光环
+     *
+     * @param uuid  玩家id
+     * @param armor 装备栏
+     */
+    public static void livingTick(LivingEntity player) {
+        halo(player);
     }
 
     /**
@@ -362,5 +394,78 @@ public class EnchantUtil {
 
     public static boolean isServerPlayer(LivingEntity livingEntity) {
         return livingEntity instanceof ServerPlayerEntity;
+    }
+
+    public static boolean hasAttackDamage(ItemStack stack) {
+        return !stack.isEmpty() && (stack.getItem() instanceof RangedWeaponItem || stack.getItem() instanceof ToolItem ||
+                !stack.getItem().getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_DAMAGE).isEmpty() ||
+                !stack.getItem().getAttributeModifiers(EquipmentSlot.OFFHAND).get(EntityAttributes.GENERIC_ATTACK_DAMAGE).isEmpty());
+    }
+
+    public static ItemStack getHandStack(LivingEntity entity, Class<? extends Item> type) {
+        if (entity != null) {
+            ItemStack item = entity.getStackInHand(Hand.MAIN_HAND);
+            if (!type.isInstance(item.getItem())) {
+                item = entity.getStackInHand(Hand.OFF_HAND);
+            }
+            return !type.isInstance(item.getItem()) ? ItemStack.EMPTY : item;
+        }
+        return ItemStack.EMPTY;
+    }
+
+    /**
+     * replace common loot to enchantment book
+     *
+     * @param player
+     * @param fishingLoots
+     * @param random
+     * @return
+     */
+    public static Collection<ItemStack> replaceEnchantmentBook(Collection<ItemStack> fishingLoots, Random random, ItemStack rod) {
+        if (rod.isEmpty()) {
+            return fishingLoots;
+        }
+
+        int level = BaseEnchantment.get(Librarian.class).level(rod);
+
+        List<ItemStack> enchantments = new ArrayList<>();
+        Enchantment enchantment;
+        for (ItemStack fishingLoot : fishingLoots) {
+            // try to replace --- 5% * level chance
+            if (fishingLoot.getRarity() == Rarity.COMMON && random.nextInt(100) < 5 * level) {
+                fishingLoot.setCount(0);
+
+                // add rondom enchantment
+                enchantment = Registry.ENCHANTMENT.getRandom(random);
+                enchantments.add(EnchantedBookItem.forEnchantment(new EnchantmentLevelEntry(enchantment, random.nextInt(enchantment.getMaxLevel()) + 1)));
+            }
+        }
+
+        if (!enchantments.isEmpty()) {
+            fishingLoots.addAll(enchantments);
+        }
+        return fishingLoots;
+    }
+
+    /**
+     * foreach
+     *
+     * @param function
+     * @param stack
+     * @return
+     * @see EnchantmentHelper#forEachEnchantment(net.minecraft.enchantment.EnchantmentHelper.Consumer, net.minecraft.item.ItemStack)
+     */
+    public static void forBaseEnchantment(BiConsumer<BaseEnchantment, Integer> consumer, ItemStack stack) {
+        if (stack.isEmpty()) {
+            return;
+        }
+        NbtList nbtList = stack.getEnchantments();
+        for (int i = 0; i < nbtList.size(); ++i) {
+            NbtCompound nbtCompound = nbtList.getCompound(i);
+            Registry.ENCHANTMENT.getOrEmpty(EnchantmentHelper.getIdFromNbt(nbtCompound))
+                    // only BaseEnchantment
+                    .filter(enchantment -> enchantment instanceof BaseEnchantment)
+                    .ifPresent(enchantment -> consumer.accept((BaseEnchantment) enchantment, EnchantmentHelper.getLevelFromNbt(nbtCompound)));
+        }
     }
 }

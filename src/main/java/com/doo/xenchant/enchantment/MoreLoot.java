@@ -3,6 +3,8 @@ package com.doo.xenchant.enchantment;
 import com.doo.xenchant.Enchant;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Wearable;
 import net.minecraft.util.Identifier;
 
 /**
@@ -13,7 +15,7 @@ public class MoreLoot extends BaseEnchantment {
     public static final String NAME = "more_loot";
 
     public MoreLoot() {
-        super(new Identifier(Enchant.ID, NAME), Rarity.COMMON, EnchantmentTarget.BREAKABLE,
+        super(new Identifier(Enchant.ID, NAME), Rarity.RARE, EnchantmentTarget.WEAPON,
                 new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND});
     }
 
@@ -35,5 +37,10 @@ public class MoreLoot extends BaseEnchantment {
     @Override
     public void register() {
         super.register();
+    }
+
+    @Override
+    public boolean isAcceptableItem(ItemStack stack) {
+        return !(stack.getItem() instanceof Wearable);
     }
 }

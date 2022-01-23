@@ -1,14 +1,18 @@
 {
     "enchantment.x_enchant.auto_fish": "Auto Fishing",
-    "enchantment.x_enchant.auto_fish.desc": "Auto click rightClick when catching fish and 50% chance to add 1 durational",
+    "enchantment.x_enchant.auto_fish.desc": "Auto click rightClick when catching fish and 50% chance to add 1 durational time",
+    "enchantment.x_enchant.librarian": "Librarian",
+    "enchantment.x_enchant.librarian.desc": "Has chance to change common fishing loot be enchantment book: 5% x level",
     "enchantment.x_enchant.suck_blood": "Such Blood",
     "enchantment.x_enchant.suck_blood.desc": "Heal when you attack: level x (0.1/0.15)",
     "enchantment.x_enchant.weakness": "Weakness Attack",
     "enchantment.x_enchant.weakness.desc": "3 x damage when you attack: level x 1.5% chance",
+    "enchantment.x_enchant.increment_attack_damage": "I'll Be Strong",
+    "enchantment.x_enchant.increment_attack_damage.desc": "Increment attack damage When you killed other, limit value is related to the level",
     "enchantment.x_enchant.rebirth": "Rebirth",
     "enchantment.x_enchant.rebirth.desc": "Totem enchantment version",
     "enchantment.x_enchant.more_loot": "More Loot",
-    "enchantment.x_enchant.more_loot.desc": "20% chance to get multi loot when you kill or mine, multi number is related to the level",
+    "enchantment.x_enchant.more_loot.desc": "20% chance to get multi loot when you kill or mine, it is related to the level, 1% chance will be rich",
     "enchantment.x_enchant.hit_rate_up": "Hit Rate Up",
     "enchantment.x_enchant.hit_rate_up.desc": "A larger arrow bounding box, maybe it can hit on target easy",
     "enchantment.x_enchant.quick_shoot": "Quick Shoot",
@@ -29,7 +33,6 @@
     "enchantment.x_enchant.halo_attack_speed_up": "HALO - Attack Speed Up",
     "enchantment.x_enchant.halo_attack_speed_up.desc": "Double attack speed when target in halo",
 
-    "enchantment.x_enchant.chat.more_loot": "drop multi item!!!",
     "enchantment.x_enchant.chat.more_more_loot": "I'm rich man!!!",
 
     "x_enchant.menu.option.auto_fish": "Auto Fishing",

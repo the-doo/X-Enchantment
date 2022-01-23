@@ -14,7 +14,7 @@ public class MagicImmune extends BaseEnchantment {
 
     public MagicImmune() {
         super(new Identifier(Enchant.ID, NAME),
-                Rarity.COMMON,
+                Rarity.VERY_RARE,
                 EnchantmentTarget.ARMOR_CHEST,
                 new EquipmentSlot[]{EquipmentSlot.CHEST});
     }

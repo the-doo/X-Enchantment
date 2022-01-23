@@ -1,8 +1,10 @@
 package com.doo.xenchant.enchantment;
 
 import com.doo.xenchant.Enchant;
+import com.doo.xenchant.util.EnchantUtil;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
 /**
@@ -14,7 +16,7 @@ public class SuckBlood extends BaseEnchantment {
 
     public SuckBlood() {
         super(new Identifier(Enchant.ID, NAME),
-                Rarity.COMMON,
+                Rarity.RARE,
                 EnchantmentTarget.WEAPON,
                 new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND});
     }
@@ -31,6 +33,16 @@ public class SuckBlood extends BaseEnchantment {
 
     @Override
     public int getMaxLevel() {
-        return 5;
+        return 3;
+    }
+
+    @Override
+    public boolean isTreasure() {
+        return true;
+    }
+
+    @Override
+    public boolean isAcceptableItem(ItemStack stack) {
+        return EnchantUtil.hasAttackDamage(stack) || super.isAcceptableItem(stack);
     }
 }

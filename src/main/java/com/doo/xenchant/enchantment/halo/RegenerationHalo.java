@@ -29,6 +29,6 @@ public class RegenerationHalo extends HaloEnchantment {
     @Override
     public void onTarget(PlayerEntity player, Integer level, List<LivingEntity> targets) {
         targets.forEach(e -> e.addStatusEffect(new StatusEffectInstance(
-                StatusEffects.REGENERATION, Enchant.option.regenerationHaloDuration * 30, Enchant.option.regenerationHaloLevel)));
+                StatusEffects.REGENERATION, Enchant.option.regenerationHaloDuration * 25, Enchant.option.regenerationHaloLevel)));
     }
 }
