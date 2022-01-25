@@ -54,9 +54,9 @@ public class AutoFish extends BaseEnchantment {
                 return;
             }
 
-            // 50% chance to add 2 damage
-            if (player.getRandom().nextBoolean()) {
-                item.setDamage(item.getDamage() + 2);
+            // 25% chance to return 10 damage
+            if (player.getRandom().nextBoolean() && player.getRandom().nextBoolean()) {
+                item.setDamage(item.getDamage() - 10);
             }
 
             ServerPlayNetworking.send((ServerPlayerEntity) player, getId(), PacketByteBufs.create());
