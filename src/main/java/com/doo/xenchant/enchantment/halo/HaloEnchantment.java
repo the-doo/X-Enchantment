@@ -1,5 +1,6 @@
 package com.doo.xenchant.enchantment.halo;
 
+import com.doo.xenchant.Enchant;
 import com.doo.xenchant.attribute.LimitTimeModifier;
 import com.doo.xenchant.enchantment.BaseEnchantment;
 import com.doo.xenchant.util.EnchantUtil;
@@ -9,11 +10,13 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.Box;
+import org.apache.commons.lang3.mutable.MutableInt;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * 光环类附魔
@@ -54,6 +57,44 @@ public abstract class HaloEnchantment extends BaseEnchantment {
     @Override
     protected final boolean canAccept(Enchantment other) {
         return !(other instanceof HaloEnchantment && this.isTreasure() && other.isTreasure());
+    }
+
+    @Override
+    public void livingTick(LivingEntity living, ItemStack stack, int level) {
+        if (!Enchant.option.halo) {
+            return;
+        }
+
+        Iterable<ItemStack> armor = living.getArmorItems();
+
+        Map<String, Integer> counter = new HashMap<>();
+        Map<String, Integer> min = new HashMap<>();
+        MutableInt total = new MutableInt(0);
+
+        armor.forEach(i -> {
+            total.increment();
+            i.getEnchantments().forEach(n -> {
+                // id and lvl can see EnchantmentHelper.ID_KEY/EnchantmentHelper.LEVEL_KEY
+                String id = EnchantUtil.id(n);
+                int lvl = EnchantUtil.lvl(n);
+                if (lvl > 0 && HaloEnchantment.isHalo(id)) {
+                    counter.compute(id, (k, v) -> v == null ? 1 : v + 1);
+                    min.compute(id, (k, v) -> v == null ? lvl : Math.min(lvl, v));
+                }
+            });
+        });
+        counter.keySet().removeIf(k -> counter.getOrDefault(k, 0) < total.intValue());
+        if (counter.isEmpty()) {
+            return;
+        }
+
+        // get targets
+        Box box = living.getBoundingBox().expand(Enchant.option.haloRange);
+        Map<Boolean, List<LivingEntity>> entities = living.world.getNonSpectatingEntities(LivingEntity.class, box)
+                .stream().collect(Collectors.groupingBy(e -> e == living || e.isTeammate(living)));
+
+        // trigger halo
+        counter.keySet().stream().map(k -> (HaloEnchantment) get(k)).forEach(k -> k.halo(living, min.get(k), entities::get));
     }
 
     /**

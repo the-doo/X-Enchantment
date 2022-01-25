@@ -7,6 +7,7 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
@@ -72,6 +73,13 @@ public abstract class BaseEnchantment extends Enchantment {
      */
     public void register() {
     }
+
+    /**
+     * Add enchantment trigger callback
+     */
+    public void livingTick(LivingEntity living, ItemStack stack, int level) {
+    }
+
 
     public static <T extends BaseEnchantment> T get(Class<T> clazz) {
         return BaseEnchantmentFactory.getInstance(clazz);

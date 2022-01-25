@@ -25,6 +25,7 @@ import net.minecraft.item.*;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
@@ -38,14 +39,13 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
-import org.apache.commons.lang3.mutable.MutableInt;
 
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * 附魔工具
@@ -314,53 +314,28 @@ public class EnchantUtil {
     }
 
     /**
-     * 触发光环
+     * living tick
      *
-     * @param uuid  玩家id
-     * @param armor 装备栏
+     * @param living living
      */
-    public static void livingTick(LivingEntity player) {
-        halo(player);
+    public static void livingTick(LivingEntity living) {
+        // remove dirty arributes
+        EnchantUtil.removedDirtyHalo(living.getAttributes());
+
+        // tick enchantment
+        StreamSupport.stream(living.getItemsEquipped().spliterator(), true).forEach(stack -> {
+            stack.getEnchantments().stream()
+                    .filter(n -> BaseEnchantment.isBase(id(n)))
+                    .forEach(n -> ((BaseEnchantment) BaseEnchantment.get(id(n))).livingTick(living, stack, lvl(n)));
+        });
     }
 
-    /**
-     * trigger halo
-     *
-     * @param uuid  玩家id
-     * @param armor 装备栏
-     */
-    public static void halo(LivingEntity player) {
-        Iterable<ItemStack> armor = player.getArmorItems();
+    public static String id(NbtElement n) {
+        return ((NbtCompound) n).getString("id");
+    }
 
-        Map<String, Integer> counter = new HashMap<>();
-        Map<String, Integer> min = new HashMap<>();
-        MutableInt total = new MutableInt(0);
-
-        armor.forEach(i -> {
-            total.increment();
-            i.getEnchantments().forEach(tag -> {
-                // id and lvl can see EnchantmentHelper.ID_KEY/EnchantmentHelper.LEVEL_KEY
-                String id = ((NbtCompound) tag).getString("id");
-                int lvl = ((NbtCompound) tag).getInt("lvl");
-                if (lvl > 0 && HaloEnchantment.isHalo(id)) {
-                    counter.compute(id, (k, v) -> v == null ? 1 : v + 1);
-                    min.compute(id, (k, v) -> v == null ? lvl : Math.min(lvl, v));
-                }
-            });
-        });
-        counter.keySet().removeIf(k -> counter.getOrDefault(k, 0) < total.intValue());
-        if (counter.isEmpty()) {
-            return;
-        }
-
-        // get targets
-        Box box = player.getBoundingBox().expand(Enchant.option.haloRange);
-        Map<Boolean, List<LivingEntity>> entities = player.world.getNonSpectatingEntities(LivingEntity.class, box)
-                .stream().collect(Collectors.groupingBy(e -> e == player || e.isTeammate(player)));
-
-        // trigger halo
-        counter.keySet().stream().map(k -> (HaloEnchantment) BaseEnchantment.get(k))
-                .forEach(k -> k.halo(player, min.get(k), entities::get));
+    public static int lvl(NbtElement n) {
+        return ((NbtCompound) n).getInt("lvl");
     }
 
     /**

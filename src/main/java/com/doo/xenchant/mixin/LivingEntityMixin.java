@@ -4,7 +4,6 @@ import com.doo.xenchant.Enchant;
 import com.doo.xenchant.util.EnchantUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.AttributeContainer;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.ItemStack;
@@ -27,18 +26,10 @@ public abstract class LivingEntityMixin {
     @Shadow
     protected int itemUseTimeLeft;
 
-    private int haloTick;
-
-    @Shadow
-    public abstract AttributeContainer getAttributes();
 
     @Inject(method = "tick", at = @At(value = "TAIL"))
     private void tickT(CallbackInfo ci) {
-        EnchantUtil.removedDirtyHalo(getAttributes());
-        if (Enchant.option.halo && ((LivingEntity) (Object) this).age - haloTick >= Enchant.option.haloInterval) {
-            haloTick = ((LivingEntity) (Object) this).age;
-            EnchantUtil.livingTick((LivingEntity) (Object) this);
-        }
+        EnchantUtil.livingTick((LivingEntity) (Object) this);
     }
 
     @Inject(method = "tickActiveItemStack", at = @At(value = "HEAD"))
