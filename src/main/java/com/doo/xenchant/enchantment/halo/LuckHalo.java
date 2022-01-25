@@ -4,7 +4,6 @@ import com.doo.xenchant.Enchant;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.player.PlayerEntity;
 
 import java.util.List;
 
@@ -30,7 +29,7 @@ public class LuckHalo extends HaloEnchantment {
     }
 
     @Override
-    public void onTarget(PlayerEntity player, Integer level, List<LivingEntity> targets) {
+    public void onTarget(LivingEntity entity, Integer level, List<LivingEntity> targets) {
         targets.forEach(e -> e.addStatusEffect(
                 new StatusEffectInstance(StatusEffects.LUCK, Enchant.option.luckHaloDuration * 25, Enchant.option.luckHaloLevel - 1)));
     }

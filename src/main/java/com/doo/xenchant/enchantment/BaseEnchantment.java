@@ -1,5 +1,6 @@
 package com.doo.xenchant.enchantment;
 
+import com.doo.xenchant.Enchant;
 import com.doo.xenchant.config.Config;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -21,23 +22,26 @@ import java.util.Map;
  */
 public abstract class BaseEnchantment extends Enchantment {
 
-    private static final Map<Identifier, BaseEnchantment> ID_MAP = new HashMap<>();
+    private static final Map<String, BaseEnchantment> ID_MAP = new HashMap<>();
 
     private static final Formatting[] RATE_COLOR = {Formatting.GRAY, Formatting.BLUE, Formatting.YELLOW, Formatting.GOLD};
 
     private final Identifier id;
 
-    /**
-     * 创建并注册
-     *
-     * @param id        id
-     * @param weight    稀有度
-     * @param type      类型
-     * @param slotTypes 使用目标
-     */
-    protected BaseEnchantment(Identifier id, Rarity weight, EnchantmentTarget type, EquipmentSlot[] slotTypes) {
+
+    protected BaseEnchantment(String name, Rarity weight, EnchantmentTarget type, EquipmentSlot[] slotTypes) {
         super(weight, type, slotTypes);
-        this.id = id;
+        this.id = new Identifier(Enchant.ID, name);
+
+        ID_MAP.put(id.toString(), Registry.register(Registry.ENCHANTMENT, id, this));
+    }
+
+    public Identifier getId() {
+        return id;
+    }
+
+    public static boolean isBase(String id) {
+        return id != null && id.contains(Enchant.ID);
     }
 
     @Override
@@ -46,14 +50,10 @@ public abstract class BaseEnchantment extends Enchantment {
     }
 
     /**
-     * 获取id
+     * It's final
      *
-     * @return id
+     * @see BaseEnchantment#getAttackDamage(net.minecraft.item.ItemStack, int, net.minecraft.entity.EntityGroup)
      */
-    public Identifier getId() {
-        return id;
-    }
-
     @Override
     public final float getAttackDamage(int level, EntityGroup group) {
         return super.getAttackDamage(level, group);
@@ -67,12 +67,19 @@ public abstract class BaseEnchantment extends Enchantment {
         return EnchantmentHelper.getLevel(this, item);
     }
 
+    /**
+     * Can regis to any event or other things
+     */
     public void register() {
-        ID_MAP.put(id, Registry.register(Registry.ENCHANTMENT, id, this));
     }
 
     public static <T extends BaseEnchantment> T get(Class<T> clazz) {
         return BaseEnchantmentFactory.getInstance(clazz);
+    }
+
+    @SuppressWarnings("all")
+    public static <T extends BaseEnchantment> T get(String id) {
+        return (T) ID_MAP.get(id);
     }
 
     @SuppressWarnings("all")

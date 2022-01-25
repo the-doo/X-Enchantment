@@ -1,6 +1,5 @@
 package com.doo.xenchant.enchantment.halo;
 
-import com.doo.xenchant.Enchant;
 import com.doo.xenchant.attribute.LimitTimeModifier;
 import com.doo.xenchant.enchantment.BaseEnchantment;
 import com.doo.xenchant.util.EnchantUtil;
@@ -10,8 +9,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +27,13 @@ public abstract class HaloEnchantment extends BaseEnchantment {
     private final boolean isFriendTarget;
 
     public HaloEnchantment(String name, boolean isFriendTarget) {
-        super(new Identifier(Enchant.ID, NAME + "_" + name),
-                Rarity.RARE,
-                EnchantmentTarget.ARMOR,
-                EnchantUtil.ALL_ARMOR);
+        super(NAME + "_" + name, Rarity.RARE, EnchantmentTarget.ARMOR, EnchantUtil.ALL_ARMOR);
+
         this.isFriendTarget = isFriendTarget;
+    }
+
+    public static boolean isHalo(String id) {
+        return BaseEnchantment.isBase(id) && id.contains(NAME);
     }
 
     @Override
@@ -58,13 +57,13 @@ public abstract class HaloEnchantment extends BaseEnchantment {
     }
 
     /**
-     * 触发光环
+     * trigger halo
      *
-     * @param player  玩家
-     * @param level   等级
+     * @param player        玩家
+     * @param level         等级
      * @param targetsGetter 目标获取器
      */
-    public final void tickHalo(PlayerEntity player, Integer level, Function<Boolean, List<LivingEntity>> targetsGetter) {
+    public final void halo(LivingEntity player, Integer level, Function<Boolean, List<LivingEntity>> targetsGetter) {
         if (!needTick()) {
             return;
         }
@@ -77,7 +76,7 @@ public abstract class HaloEnchantment extends BaseEnchantment {
 
     protected abstract boolean needTick();
 
-    public abstract void onTarget(PlayerEntity player, Integer level, List<LivingEntity> targets);
+    public abstract void onTarget(LivingEntity entity, Integer level, List<LivingEntity> targets);
 
     /**
      * 添加或更新修改值

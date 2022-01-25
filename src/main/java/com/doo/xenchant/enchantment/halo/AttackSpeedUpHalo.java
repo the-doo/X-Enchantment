@@ -6,7 +6,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.player.PlayerEntity;
 
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class AttackSpeedUpHalo extends HaloEnchantment {
     }
 
     @Override
-    public void onTarget(PlayerEntity player, Integer level, List<LivingEntity> targets) {
+    public void onTarget(LivingEntity entity, Integer level, List<LivingEntity> targets) {
         targets.forEach(e -> {
             EntityAttributeInstance attr = e.getAttributes().getCustomInstance(EntityAttributes.GENERIC_ATTACK_SPEED);
             if (attr == null) {

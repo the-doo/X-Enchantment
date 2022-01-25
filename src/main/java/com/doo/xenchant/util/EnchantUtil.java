@@ -21,7 +21,6 @@ import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
@@ -39,6 +38,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.mutable.MutableInt;
 
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -59,9 +59,7 @@ public class EnchantUtil {
     /**
      * 所有盔甲
      */
-    public static final EquipmentSlot[] ALL_ARMOR = new EquipmentSlot[]{
-            EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET
-    };
+    public static final EquipmentSlot[] ALL_ARMOR = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
 
     /**
      * ALL HAND
@@ -86,30 +84,18 @@ public class EnchantUtil {
     /**
      * 可翻译文本
      */
-    public static final MutableText LOOT_TEXT =
-            new TranslatableText("enchantment.x_enchant.chat.more_loot")
-                    .setStyle(Style.EMPTY.withColor(Formatting.YELLOW));
-    public static final MutableText MORE_LOOT_TEXT =
-            new TranslatableText("enchantment.x_enchant.chat.more_more_loot")
-                    .setStyle(Style.EMPTY.withColor(Formatting.RED));
+    public static final MutableText LOOT_TEXT = new TranslatableText("enchantment.x_enchant.chat.more_loot").setStyle(Style.EMPTY.withColor(Formatting.YELLOW));
+    public static final MutableText MORE_LOOT_TEXT = new TranslatableText("enchantment.x_enchant.chat.more_more_loot").setStyle(Style.EMPTY.withColor(Formatting.RED));
 
     /**
      * 注册所有附魔及事件
      */
     public static void registerAll() {
         // normal enchantments
-        Stream.of(AutoFish.class, SuckBlood.class,
-                        Weakness.class, Rebirth.class,
-                        MoreLoot.class, HitRateUp.class,
-                        QuickShoot.class, MagicImmune.class,
-                        Librarian.class, IncDamage.class)
-                .forEach(c -> BaseEnchantment.get(c).register());
+        Stream.of(AutoFish.class, SuckBlood.class, Weakness.class, Rebirth.class, MoreLoot.class, HitRateUp.class, QuickShoot.class, MagicImmune.class, Librarian.class, IncDamage.class).forEach(c -> BaseEnchantment.get(c).register());
 
         // Halo enchantments
-        Stream.of(SlownessHalo.class, MaxHPUpHalo.class,
-                        RegenerationHalo.class, ThunderHalo.class,
-                        LuckHalo.class, AttackSpeedUpHalo.class)
-                .forEach(c -> BaseEnchantment.get(c).register());
+        Stream.of(SlownessHalo.class, MaxHPUpHalo.class, RegenerationHalo.class, ThunderHalo.class, LuckHalo.class, AttackSpeedUpHalo.class).forEach(c -> BaseEnchantment.get(c).register());
 
         // server listener
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
@@ -138,8 +124,7 @@ public class EnchantUtil {
         }
 
         // attack multi target and has sweep
-        long count = itemStack.getItem() instanceof SwordItem ?
-                attacker.world.getNonSpectatingEntities(LivingEntity.class, box).stream().filter(l -> canAttacked(attacker, l)).count() : 0;
+        long count = itemStack.getItem() instanceof SwordItem ? attacker.world.getNonSpectatingEntities(LivingEntity.class, box).stream().filter(l -> canAttacked(attacker, l)).count() : 0;
 
         // suck scale
         boolean moreWithSweep = count > 1 && EnchantmentHelper.getLevel(Enchantments.SWEEPING, itemStack) > 0;
@@ -226,10 +211,7 @@ public class EnchantUtil {
         player.world.sendEntityStatus(player, (byte) 35);
 
         // decrement 1 level, see ItemStack.addEnchantment
-        stack.getNbt().getList(ItemStack.ENCHANTMENTS_KEY, 10).stream()
-                .map(e -> (NbtCompound) e).filter(e -> EnchantmentHelper.getIdFromNbt(e).equals(rebirth.getId()))
-                .findFirst()
-                .ifPresent(e -> EnchantmentHelper.writeLevelToNbt(e, level - 1));
+        stack.getNbt().getList(ItemStack.ENCHANTMENTS_KEY, 10).stream().map(e -> (NbtCompound) e).filter(e -> EnchantmentHelper.getIdFromNbt(e).equals(rebirth.getId())).findFirst().ifPresent(e -> EnchantmentHelper.writeLevelToNbt(e, level - 1));
         return false;
     }
 
@@ -303,11 +285,7 @@ public class EnchantUtil {
         if (level < 1) {
             return null;
         }
-        return world.getOtherEntities(player, box.expand(level), e -> e instanceof LivingEntity)
-                .stream()
-                .filter(e -> !e.isTeammate(player) && e.squaredDistanceTo(pos) <= level)
-                .findFirst()
-                .orElse(null);
+        return world.getOtherEntities(player, box.expand(level), e -> e instanceof LivingEntity).stream().filter(e -> !e.isTeammate(player) && e.squaredDistanceTo(pos) <= level).findFirst().orElse(null);
     }
 
     /**
@@ -346,32 +324,43 @@ public class EnchantUtil {
     }
 
     /**
-     * 触发光环
+     * trigger halo
      *
      * @param uuid  玩家id
      * @param armor 装备栏
      */
     public static void halo(LivingEntity player) {
         Iterable<ItemStack> armor = player.getArmorItems();
-        Map<HaloEnchantment, Integer> haloMap = new HashMap<>();
-        armor.forEach(i ->
-                i.getEnchantments().forEach(tag -> {
-                    NbtCompound t = (NbtCompound) tag;
-                    BaseEnchantment e = BaseEnchantment.get(EnchantmentHelper.getIdFromNbt(t));
-                    if (e instanceof HaloEnchantment) {
-                        haloMap.put((HaloEnchantment) e, haloMap.getOrDefault(e, 0) + 1);
-                    }
-                })
-        );
-        haloMap.keySet().removeIf(k -> haloMap.getOrDefault(k, -1) < 4);
-        if (haloMap.isEmpty()) {
+
+        Map<String, Integer> counter = new HashMap<>();
+        Map<String, Integer> min = new HashMap<>();
+        MutableInt total = new MutableInt(0);
+
+        armor.forEach(i -> {
+            total.increment();
+            i.getEnchantments().forEach(tag -> {
+                // id and lvl can see EnchantmentHelper.ID_KEY/EnchantmentHelper.LEVEL_KEY
+                String id = ((NbtCompound) tag).getString("id");
+                int lvl = ((NbtCompound) tag).getInt("lvl");
+                if (lvl > 0 && HaloEnchantment.isHalo(id)) {
+                    counter.compute(id, (k, v) -> v == null ? 1 : v + 1);
+                    min.compute(id, (k, v) -> v == null ? lvl : Math.min(lvl, v));
+                }
+            });
+        });
+        counter.keySet().removeIf(k -> counter.getOrDefault(k, 0) < total.intValue());
+        if (counter.isEmpty()) {
             return;
         }
 
-        Map<Boolean, List<LivingEntity>> entities =
-                player.world.getNonSpectatingEntities(LivingEntity.class, player.getBoundingBox().expand(Enchant.option.haloRange))
-                        .stream().collect(Collectors.groupingBy(e -> e == player || e.isTeammate(player)));
-        haloMap.forEach((k, v) -> k.tickHalo((PlayerEntity) player, v, entities::get));
+        // get targets
+        Box box = player.getBoundingBox().expand(Enchant.option.haloRange);
+        Map<Boolean, List<LivingEntity>> entities = player.world.getNonSpectatingEntities(LivingEntity.class, box)
+                .stream().collect(Collectors.groupingBy(e -> e == player || e.isTeammate(player)));
+
+        // trigger halo
+        counter.keySet().stream().map(k -> (HaloEnchantment) BaseEnchantment.get(k))
+                .forEach(k -> k.halo(player, min.get(k), entities::get));
     }
 
     /**
@@ -397,9 +386,7 @@ public class EnchantUtil {
     }
 
     public static boolean hasAttackDamage(ItemStack stack) {
-        return !stack.isEmpty() && (stack.getItem() instanceof RangedWeaponItem || stack.getItem() instanceof ToolItem ||
-                !stack.getItem().getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_DAMAGE).isEmpty() ||
-                !stack.getItem().getAttributeModifiers(EquipmentSlot.OFFHAND).get(EntityAttributes.GENERIC_ATTACK_DAMAGE).isEmpty());
+        return !stack.isEmpty() && (stack.getItem() instanceof RangedWeaponItem || stack.getItem() instanceof ToolItem || !stack.getItem().getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_DAMAGE).isEmpty() || !stack.getItem().getAttributeModifiers(EquipmentSlot.OFFHAND).get(EntityAttributes.GENERIC_ATTACK_DAMAGE).isEmpty());
     }
 
     public static ItemStack getHandStack(LivingEntity entity, Class<? extends Item> type) {
@@ -464,8 +451,7 @@ public class EnchantUtil {
             NbtCompound nbtCompound = nbtList.getCompound(i);
             Registry.ENCHANTMENT.getOrEmpty(EnchantmentHelper.getIdFromNbt(nbtCompound))
                     // only BaseEnchantment
-                    .filter(enchantment -> enchantment instanceof BaseEnchantment)
-                    .ifPresent(enchantment -> consumer.accept((BaseEnchantment) enchantment, EnchantmentHelper.getLevelFromNbt(nbtCompound)));
+                    .filter(enchantment -> enchantment instanceof BaseEnchantment).ifPresent(enchantment -> consumer.accept((BaseEnchantment) enchantment, EnchantmentHelper.getLevelFromNbt(nbtCompound)));
         }
     }
 }

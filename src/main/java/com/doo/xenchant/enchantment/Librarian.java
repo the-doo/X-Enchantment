@@ -1,9 +1,7 @@
 package com.doo.xenchant.enchantment;
 
-import com.doo.xenchant.Enchant;
 import com.doo.xenchant.util.EnchantUtil;
 import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.util.Identifier;
 
 /**
  * Librarian
@@ -15,7 +13,7 @@ public class Librarian extends BaseEnchantment {
     public static final String NAME = "librarian";
 
     public Librarian() {
-        super(new Identifier(Enchant.ID, NAME), Rarity.RARE, EnchantmentTarget.FISHING_ROD, EnchantUtil.ALL_HAND);
+        super(NAME, Rarity.RARE, EnchantmentTarget.FISHING_ROD, EnchantUtil.ALL_HAND);
     }
 
     @Override

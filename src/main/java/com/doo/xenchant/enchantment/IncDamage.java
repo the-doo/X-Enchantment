@@ -1,6 +1,5 @@
 package com.doo.xenchant.enchantment;
 
-import com.doo.xenchant.Enchant;
 import com.doo.xenchant.util.EnchantUtil;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 import net.minecraft.enchantment.EnchantmentTarget;
@@ -11,7 +10,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolItem;
 import net.minecraft.item.ToolMaterials;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.Identifier;
 
 /**
  * Increment Attack Damage
@@ -21,7 +19,7 @@ public class IncDamage extends BaseEnchantment {
     public static final String NAME = "increment_attack_damage";
 
     public IncDamage() {
-        super(new Identifier(Enchant.ID, NAME), Rarity.VERY_RARE, EnchantmentTarget.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
+        super(NAME, Rarity.VERY_RARE, EnchantmentTarget.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
     }
 
     @Override

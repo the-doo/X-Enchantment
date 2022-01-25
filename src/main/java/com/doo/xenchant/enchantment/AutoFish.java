@@ -1,6 +1,5 @@
 package com.doo.xenchant.enchantment;
 
-import com.doo.xenchant.Enchant;
 import com.doo.xenchant.events.S2CFishCaughtCallback;
 import com.doo.xenchant.util.EnchantUtil;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -12,7 +11,6 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 /**
@@ -26,7 +24,7 @@ public class AutoFish extends BaseEnchantment {
             InputUtil.Type.MOUSE.createFromCode(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
 
     public AutoFish() {
-        super(new Identifier(Enchant.ID, NAME), Enchantment.Rarity.COMMON, EnchantmentTarget.FISHING_ROD, EnchantUtil.ALL_HAND);
+        super(NAME, Enchantment.Rarity.COMMON, EnchantmentTarget.FISHING_ROD, EnchantUtil.ALL_HAND);
     }
 
     @Override
