@@ -12,12 +12,12 @@ import java.util.List;
 /**
  * 攻速提升光环
  */
-public class AttackSpeedUpHalo extends HaloEnchantment {
+public class AttackSpeedUpHalo extends FriendHalo {
 
     public static final String NAME = "attack_speed_up";
 
     public AttackSpeedUpHalo() {
-        super(NAME, true);
+        super(NAME);
         ATTRIBUTES.add(EntityAttributes.GENERIC_ATTACK_SPEED);
     }
 

@@ -26,7 +26,6 @@ public abstract class LivingEntityMixin {
     @Shadow
     protected int itemUseTimeLeft;
 
-
     @Inject(method = "tick", at = @At(value = "TAIL"))
     private void tickT(CallbackInfo ci) {
         EnchantUtil.livingTick((LivingEntity) (Object) this);

@@ -41,8 +41,6 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -77,11 +75,6 @@ public class EnchantUtil {
     private static final Map<Integer, Integer> WEAKNESS_LOG = new HashMap<>();
 
     /**
-     * 线程池
-     */
-    public static final ScheduledExecutorService EXECUTOR = Executors.newScheduledThreadPool(3);
-
-    /**
      * 可翻译文本
      */
     public static final MutableText LOOT_TEXT = new TranslatableText("enchantment.x_enchant.chat.more_loot").setStyle(Style.EMPTY.withColor(Formatting.YELLOW));
@@ -95,7 +88,7 @@ public class EnchantUtil {
         Stream.of(AutoFish.class, SuckBlood.class, Weakness.class, Rebirth.class, MoreLoot.class, HitRateUp.class, QuickShoot.class, MagicImmune.class, Librarian.class, IncDamage.class).forEach(c -> BaseEnchantment.get(c).register());
 
         // Halo enchantments
-        Stream.of(SlownessHalo.class, MaxHPUpHalo.class, RegenerationHalo.class, ThunderHalo.class, LuckHalo.class, AttackSpeedUpHalo.class).forEach(c -> BaseEnchantment.get(c).register());
+        Stream.of(SlownessHalo.class, MaxHPUpHalo.class, RegenerationHalo.class, ThunderHalo.class, FriendHalo.class, AttackSpeedUpHalo.class).forEach(c -> BaseEnchantment.get(c).register());
 
         // server listener
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {

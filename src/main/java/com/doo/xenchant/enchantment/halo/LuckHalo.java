@@ -10,12 +10,12 @@ import java.util.List;
 /**
  * 幸运光环
  */
-public class LuckHalo extends HaloEnchantment {
+public class LuckHalo extends FriendHalo {
 
     public static final String NAME = "luck";
 
     public LuckHalo() {
-        super(NAME, true);
+        super(NAME);
     }
 
     @Override
@@ -30,7 +30,6 @@ public class LuckHalo extends HaloEnchantment {
 
     @Override
     public void onTarget(LivingEntity entity, Integer level, List<LivingEntity> targets) {
-        targets.forEach(e -> e.addStatusEffect(
-                new StatusEffectInstance(StatusEffects.LUCK, Enchant.option.luckHaloDuration * 25, Enchant.option.luckHaloLevel - 1)));
+        targets.forEach(e -> e.addStatusEffect(new StatusEffectInstance(StatusEffects.LUCK, Enchant.option.luckHaloDuration * 25, Enchant.option.luckHaloLevel - 1)));
     }
 }

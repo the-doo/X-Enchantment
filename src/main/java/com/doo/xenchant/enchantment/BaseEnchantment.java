@@ -93,7 +93,7 @@ public abstract class BaseEnchantment extends Enchantment {
     /**
      * enchantment on tick ending
      */
-    private void livingTick(LivingEntity living, ItemStack stack, int level) {
+    protected void livingTick(LivingEntity living, ItemStack stack, int level) {
     }
 
 

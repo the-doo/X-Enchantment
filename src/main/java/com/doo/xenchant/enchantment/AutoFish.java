@@ -20,8 +20,7 @@ public class AutoFish extends BaseEnchantment {
 
     public static final String NAME = "auto_fish";
 
-    private static final InputUtil.Key MOUSE_RIGHT_CLICK =
-            InputUtil.Type.MOUSE.createFromCode(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
+    private static final InputUtil.Key MOUSE_RIGHT_CLICK = InputUtil.Type.MOUSE.createFromCode(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
 
     public AutoFish() {
         super(NAME, Enchantment.Rarity.COMMON, EnchantmentTarget.FISHING_ROD, EnchantUtil.ALL_HAND);

@@ -10,12 +10,12 @@ import java.util.List;
 /**
  * 减速光环
  */
-public class SlownessHalo extends HaloEnchantment {
+public class SlownessHalo extends HarmfulHalo {
 
     public static final String NAME = "slowness";
 
     public SlownessHalo() {
-        super(NAME, false);
+        super(NAME);
     }
 
     @Override

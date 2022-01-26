@@ -12,12 +12,12 @@ import java.util.List;
 /**
  * 雷霆光环
  */
-public class ThunderHalo extends HaloEnchantment {
+public class ThunderHalo extends FriendHalo {
 
     public static final String NAME = "thunder";
 
     public ThunderHalo() {
-        super(NAME, false);
+        super(NAME);
     }
 
     @Override

@@ -11,12 +11,12 @@ import java.util.List;
 /**
  * 生命恢复光环
  */
-public class RegenerationHalo extends HaloEnchantment {
+public class RegenerationHalo extends FriendHalo {
 
     public static final String NAME = "regeneration";
 
     public RegenerationHalo() {
-        super(NAME, true);
+        super(NAME);
         ATTRIBUTES.add(EntityAttributes.GENERIC_MAX_HEALTH);
     }
 

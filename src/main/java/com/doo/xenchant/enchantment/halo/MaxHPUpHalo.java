@@ -11,12 +11,12 @@ import java.util.List;
 /**
  * 最大生命值提升光环
  */
-public class MaxHPUpHalo extends HaloEnchantment {
+public class MaxHPUpHalo extends FriendHalo {
 
     public static final String NAME = "max_hp_up";
 
     public MaxHPUpHalo() {
-        super(NAME, true);
+        super(NAME);
         ATTRIBUTES.add(EntityAttributes.GENERIC_MAX_HEALTH);
     }
 
