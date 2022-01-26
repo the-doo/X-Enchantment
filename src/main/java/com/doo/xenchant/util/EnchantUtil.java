@@ -326,7 +326,7 @@ public class EnchantUtil {
         StreamSupport.stream(living.getItemsEquipped().spliterator(), true).forEach(stack -> {
             stack.getEnchantments().stream()
                     .filter(n -> BaseEnchantment.isBase(id(n)))
-                    .forEach(n -> ((BaseEnchantment) BaseEnchantment.get(id(n))).livingTick(living, stack, lvl(n)));
+                    .forEach(n -> ((BaseEnchantment) BaseEnchantment.get(id(n))).tryTrigger(living, stack, lvl(n)));
         });
     }
 

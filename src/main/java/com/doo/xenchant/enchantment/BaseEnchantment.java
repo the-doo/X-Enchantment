@@ -77,7 +77,23 @@ public abstract class BaseEnchantment extends Enchantment {
     /**
      * Add enchantment trigger callback
      */
-    public void livingTick(LivingEntity living, ItemStack stack, int level) {
+    public final void tryTrigger(LivingEntity living, ItemStack stack, int level) {
+        if (living.age % tickNum() == 0) {
+            livingTick(living, stack, level);
+        }
+    }
+
+    /**
+     * default 1s
+     */
+    private int tickNum() {
+        return 20;
+    }
+
+    /**
+     * enchantment on tick ending
+     */
+    private void livingTick(LivingEntity living, ItemStack stack, int level) {
     }
 
 
