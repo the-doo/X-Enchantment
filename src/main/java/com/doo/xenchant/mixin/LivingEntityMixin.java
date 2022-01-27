@@ -3,15 +3,12 @@ package com.doo.xenchant.mixin;
 import com.doo.xenchant.Enchant;
 import com.doo.xenchant.util.EnchantUtil;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.AttributeContainer;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.RangedWeaponItem;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
-public abstract class LivingEntityMixin extends Entity {
+public abstract class LivingEntityMixin {
 
     @Shadow
     protected ItemStack activeItemStack;
@@ -29,62 +26,40 @@ public abstract class LivingEntityMixin extends Entity {
     @Shadow
     protected int itemUseTimeLeft;
 
-    private int haloTick;
-
-    @Shadow public abstract Iterable<ItemStack> getArmorItems();
-
-    @Shadow public abstract AttributeContainer getAttributes();
-
-    public LivingEntityMixin(EntityType<?> type, World world) {
-        super(type, world);
-    }
-
     @Inject(method = "tick", at = @At(value = "TAIL"))
     private void tickT(CallbackInfo ci) {
-        EnchantUtil.removedDirtyHalo(getAttributes());
-        if (Enchant.option.halo && age - haloTick >= Enchant.option.haloInterval) {
-            haloTick = age;
-            EnchantUtil.halo(uuid, getArmorItems());
-        }
+        EnchantUtil.livingTick((LivingEntity) (Object) this);
     }
 
-    @Inject(method = "tickActiveItemStack", at = @At(value = "HEAD"), cancellable = true)
+    @Inject(method = "tickActiveItemStack", at = @At(value = "HEAD"))
     private void tickActiveItemStackH(CallbackInfo ci) {
-        if (Enchant.option.quickShoot && EnchantUtil.getServerPlayer(uuid) != null
-                && activeItemStack.getItem() instanceof RangedWeaponItem && !activeItemStack.isEmpty()) {
+        if (Enchant.option.quickShoot && activeItemStack.getItem() instanceof RangedWeaponItem) {
             this.itemUseTimeLeft -= EnchantUtil.quickShooting(activeItemStack);
         }
     }
 
-    @ModifyVariable(method = "damage", at = @At(value = "HEAD"), ordinal = 0)
+    @ModifyVariable(method = "applyDamage", at = @At(value = "HEAD"), argsOnly = true)
     private float returnAmount(float amount, DamageSource source) {
-        Entity entity;
-        if (!Enchant.option.weakness || world.isClient() || (entity = source.getAttacker()) == null
-                || !(entity instanceof ServerPlayerEntity)) {
-            return amount;
+        Entity entity = source.getAttacker();
+        if (Enchant.option.weakness && entity instanceof LivingEntity) {
+            return EnchantUtil.weakness((LivingEntity) entity, amount);
         }
-        return EnchantUtil.weakness((ServerPlayerEntity) entity, amount);
+
+        return amount;
     }
 
-    @Inject(at = @At("TAIL"), method = "setHealth")
-    private void setHealthT(float health, CallbackInfo ci) {
-        ServerPlayerEntity entity;
-        if (Enchant.option.rebirth && health <= 0 && (entity = EnchantUtil.getServerPlayer(uuid)) != null) {
-            EnchantUtil.rebirth(entity);
-        }
-    }
-
-    @Inject(at = @At("TAIL"), method = "applyDamage")
+    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;setHealth(F)V"), method = "applyDamage")
     private void applyDamageT(DamageSource source, float amount, CallbackInfo ci) {
-        Entity entity;
-        if (Enchant.option.suckBlood && amount > 0 && (entity = source.getAttacker()) != null && entity instanceof ServerPlayerEntity) {
-            EnchantUtil.suckBlood((ServerPlayerEntity) entity, amount, getBoundingBox().expand(1.0D, 0.25D, 1.0D));
+        Entity entity = source.getAttacker();
+        if (Enchant.option.suckBlood && entity instanceof LivingEntity) {
+            EnchantUtil.suckBlood((LivingEntity) entity, amount, entity.getBoundingBox().expand(1.0D, 0.25D, 1.0D));
         }
     }
 
     @Inject(method = "canHaveStatusEffect", at = @At("HEAD"), cancellable = true)
     private void canHaveStatusEffectH(StatusEffectInstance effect, CallbackInfoReturnable<Boolean> cir) {
-        if (Enchant.option.magicImmune && EnchantUtil.magicImmune(uuid, effect)) {
+        LivingEntity e = (LivingEntity) (Object) this;
+        if (Enchant.option.magicImmune && e instanceof ServerPlayerEntity && EnchantUtil.magicImmune((ServerPlayerEntity) e, effect)) {
             cir.setReturnValue(false);
             cir.cancel();
         }

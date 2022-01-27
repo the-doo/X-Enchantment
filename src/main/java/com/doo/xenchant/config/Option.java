@@ -1,5 +1,12 @@
 package com.doo.xenchant.config;
 
+import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.attribute.EntityAttributes;
+
+import java.util.Collection;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 /**
  * 设置选项
  */
@@ -38,7 +45,7 @@ public class Option {
     /**
      * 更多战利品暴击几率
      */
-    public double moreMoreLootRate = 5;
+    public double moreMoreLootRate = 1;
 
     /**
      * 更多战利品暴击倍数
@@ -81,11 +88,6 @@ public class Option {
     public double haloRange = 9F;
 
     /**
-     * 光环触发时刻
-     */
-    public double haloInterval = 20F;
-
-    /**
      * 攻速光环
      */
     public boolean attackSpeedHalo = true;
@@ -93,67 +95,7 @@ public class Option {
     /**
      * 攻速光环 倍数
      */
-    public double attackSpeedHaloMultiple = 1;
-
-    /**
-     * 幸运光环
-     */
-    public boolean luckHalo = true;
-
-    /**
-     * 幸运光环 是否是宝藏
-     */
-    public boolean luckHaloIsTreasure = true;
-
-    /**
-     * 幸运光环 持续时间 单位: s
-     */
-    public int luckHaloDuration = 1;
-
-    /**
-     * 幸运光环  级别
-     */
-    public int luckHaloLevel = 3;
-
-    /**
-     * 最大生命值光环
-     */
-    public boolean maxHPHalo = true;
-
-    /**
-     * 最大生命光环 倍数
-     */
-    public double maxHPHaloMultiple = 1;
-
-    /**
-     * 恢复光环
-     */
-    public boolean regenerationHalo = true;
-
-    /**
-     * 恢复光环 持续时间 单位: s
-     */
-    public int regenerationHaloDuration = 1;
-
-    /**
-     * 恢复光环  级别
-     */
-    public int regenerationHaloLevel = 2;
-
-    /**
-     * 减速光环
-     */
-    public boolean slownessHalo = true;
-
-    /**
-     * 减速光环 持续时间 单位: s
-     */
-    public int slownessHaloDuration = 1;
-
-    /**
-     * 减速光环  级别
-     */
-    public int slownessHaloLevel = 2;
+    public double attackSpeedHaloMultiple = 0.5;
 
     /**
      * 雷霆光环
@@ -169,4 +111,18 @@ public class Option {
      * 雷霆光环 击中几率
      */
     public int thunderHaloStruckChance = 10;
+
+    /**
+     * attributes
+     */
+    public Collection<String> attributes = Stream.of(
+                    EntityAttributes.GENERIC_ATTACK_DAMAGE,
+                    EntityAttributes.GENERIC_ATTACK_SPEED,
+                    EntityAttributes.GENERIC_ARMOR,
+                    EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE,
+                    EntityAttributes.GENERIC_FLYING_SPEED,
+                    EntityAttributes.GENERIC_MOVEMENT_SPEED,
+                    EntityAttributes.GENERIC_MAX_HEALTH,
+                    EntityAttributes.GENERIC_ATTACK_KNOCKBACK)
+            .map(EntityAttribute::getTranslationKey).collect(Collectors.toSet());
 }

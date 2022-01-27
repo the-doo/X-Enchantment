@@ -5,8 +5,6 @@ import com.doo.xenchant.util.EnchantUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.context.LootContext;
-import net.minecraft.loot.provider.number.LootNumberProvider;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -19,20 +17,14 @@ import java.util.function.Consumer;
 public abstract class LootTableMixin {
 
     @Shadow
-    @Final
-    LootNumberProvider rolls;
+    protected abstract void supplyOnce(Consumer<ItemStack> lootConsumer, LootContext context);
 
-    @Inject(at = @At(value = "HEAD"), method = "addGeneratedLoot")
-    public void addGeneratedLootH(Consumer<ItemStack> lootConsumer, LootContext context, CallbackInfo ci) {
+    @Inject(method = "addGeneratedLoot", at = @At(value = "INVOKE", target = "Lnet/minecraft/loot/LootPool;supplyOnce(Ljava/util/function/Consumer;Lnet/minecraft/loot/context/LootContext;)V"))
+    public void forLootI(Consumer<ItemStack> lootConsumer, LootContext context, CallbackInfo ci) {
         if (Enchant.option.moreLoot) {
-            EnchantUtil.moreLoot(context, this.rolls);
-        }
-    }
-
-    @Inject(at = @At(value = "TAIL"), method = "addGeneratedLoot")
-    public void addGeneratedLootT(Consumer<ItemStack> lootConsumer, LootContext context, CallbackInfo ci) {
-        if (Enchant.option.moreLoot) {
-            EnchantUtil.resetLoot(this.rolls);
+            for (int k = EnchantUtil.loot(context); k > 0; k--) {
+                supplyOnce(lootConsumer, context);
+            }
         }
     }
 }

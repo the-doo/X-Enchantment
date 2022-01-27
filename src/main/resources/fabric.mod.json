@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "xenchant",
-  "version": "1.0.9",
+  "id": "x-enchant",
+  "version": "1.18-2",
 
-  "name": "xenchant",
+  "name": "X-Enchant",
   "description": "添加附魔\n(add some enchant)",
   "authors": [
     "doo"

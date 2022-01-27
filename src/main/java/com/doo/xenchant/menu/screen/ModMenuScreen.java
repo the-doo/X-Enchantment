@@ -71,11 +71,6 @@ public class ModMenuScreen extends Screen {
             (o, d) -> Enchant.option.haloRange = d,
             (g, o) -> new TranslatableText("x_enchant.menu.option.halo_range", Enchant.option.haloRange));
 
-    private static final DoubleOption HALO_TICK = new DoubleOption("", 1, 100, 1,
-            o -> Enchant.option.haloInterval,
-            (o, d) -> Enchant.option.haloInterval = d,
-            (g, o) -> new TranslatableText("x_enchant.menu.option.halo_interval", Enchant.option.haloInterval));
-
     private static final CyclingOption<Boolean> ATTACK_SPEED_HALO = CyclingOption.create("x_enchant.menu.option.attack_speed_halo",
             o -> Enchant.option.attackSpeedHalo, (g, o, d) -> Enchant.option.attackSpeedHalo = d);
 
@@ -83,56 +78,6 @@ public class ModMenuScreen extends Screen {
             o -> Enchant.option.attackSpeedHaloMultiple,
             (o, d) -> Enchant.option.attackSpeedHaloMultiple = d,
             (g, o) -> new TranslatableText("x_enchant.menu.option.attack_speed_halo_multi", Enchant.option.attackSpeedHaloMultiple));
-
-    private static final CyclingOption<Boolean> LUCK_HALO = CyclingOption.create("x_enchant.menu.option.luck_halo",
-            o -> Enchant.option.luckHalo, (g, o, d) -> Enchant.option.luckHalo = d);
-
-    private static final CyclingOption<Boolean> LUCK_HALO_TREASURE = CyclingOption.create("x_enchant.menu.option.luck_halo_treasure",
-            o -> Enchant.option.luckHaloIsTreasure, (g, o, d) -> Enchant.option.luckHaloIsTreasure = d);
-
-    private static final DoubleOption LUCK_HALO_DURATION = new DoubleOption("", 1, 60, 1,
-            o -> (double) Enchant.option.luckHaloDuration,
-            (o, d) -> Enchant.option.luckHaloDuration = d.intValue(),
-            (g, o) -> new TranslatableText("x_enchant.menu.option.luck_halo_duration", Enchant.option.luckHaloDuration));
-
-    private static final DoubleOption LUCK_HALO_LEVEL = new DoubleOption("", 1, 10, 1,
-            o -> (double) Enchant.option.luckHaloLevel,
-            (o, d) -> Enchant.option.luckHaloLevel = d.intValue(),
-            (g, o) -> new TranslatableText("x_enchant.menu.option.luck_halo_level", Enchant.option.luckHaloLevel));
-
-    private static final CyclingOption<Boolean> MAX_HP_HALO = CyclingOption.create("x_enchant.menu.option.max_hp_halo",
-            o -> Enchant.option.maxHPHalo, (g, o, d) -> Enchant.option.maxHPHalo = d);
-
-    private static final DoubleOption MAX_HP_HALO_MULTI = new DoubleOption("", 1, 10, 1,
-            o -> Enchant.option.maxHPHaloMultiple,
-            (o, d) -> Enchant.option.maxHPHaloMultiple = d,
-            (g, o) -> new TranslatableText("x_enchant.menu.option.max_hp_halo_multi", Enchant.option.maxHPHaloMultiple));
-
-    private static final CyclingOption<Boolean> REGENERATION_HALO = CyclingOption.create("x_enchant.menu.option.regeneration_halo",
-            o -> Enchant.option.regenerationHalo, (g, o, d) -> Enchant.option.regenerationHalo = d);
-
-    private static final DoubleOption REGENERATION_HALO_DURATION = new DoubleOption("", 1, 60, 1,
-            o -> (double) Enchant.option.regenerationHaloDuration,
-            (o, d) -> Enchant.option.regenerationHaloDuration = d.intValue(),
-            (g, o) -> new TranslatableText("x_enchant.menu.option.regeneration_halo_duration", Enchant.option.regenerationHaloDuration));
-
-    private static final DoubleOption REGENERATION_HALO_LEVEL = new DoubleOption("", 1, 10, 1,
-            o -> (double) Enchant.option.regenerationHaloLevel,
-            (o, d) -> Enchant.option.regenerationHaloLevel = d.intValue(),
-            (g, o) -> new TranslatableText("x_enchant.menu.option.regeneration_halo_level", Enchant.option.regenerationHaloLevel));
-
-    private static final CyclingOption<Boolean> SLOWNESS_HALO = CyclingOption.create("x_enchant.menu.option.slowness_halo",
-            o -> Enchant.option.slownessHalo, (g, o, d) -> Enchant.option.slownessHalo = d);
-
-    private static final DoubleOption SLOWNESS_HALO_DURATION = new DoubleOption("", 1, 60, 1,
-            o -> (double) Enchant.option.slownessHaloDuration,
-            (o, d) -> Enchant.option.slownessHaloDuration = d.intValue(),
-            (g, o) -> new TranslatableText("x_enchant.menu.option.slowness_halo_duration", Enchant.option.slownessHaloDuration));
-
-    private static final DoubleOption SLOWNESS_HALO_LEVEL = new DoubleOption("", 1, 10, 1,
-            o -> (double) Enchant.option.slownessHaloLevel,
-            (o, d) -> Enchant.option.slownessHaloLevel = d.intValue(),
-            (g, o) -> new TranslatableText("x_enchant.menu.option.slowness_halo_level", Enchant.option.slownessHaloLevel));
 
     private static final CyclingOption<Boolean> THUNDER_HALO = CyclingOption.create("x_enchant.menu.option.thunder_halo",
             o -> Enchant.option.thunderHalo, (g, o, d) -> Enchant.option.thunderHalo = d);
@@ -154,13 +99,8 @@ public class ModMenuScreen extends Screen {
     };
 
     private static final Option[] HALO_OPTION = {
-            HALO,
-            HALO_RANGE, HALO_TICK,
+            HALO, HALO_RANGE,
             ATTACK_SPEED_HALO, ATTACK_SPEED_HALO_MULTI,
-            LUCK_HALO, LUCK_HALO_TREASURE, LUCK_HALO_DURATION, LUCK_HALO_LEVEL,
-            MAX_HP_HALO, MAX_HP_HALO_MULTI,
-            REGENERATION_HALO, REGENERATION_HALO_DURATION, REGENERATION_HALO_LEVEL,
-            SLOWNESS_HALO, SLOWNESS_HALO_DURATION, SLOWNESS_HALO_LEVEL,
             THUNDER_HALO, THUNDER_HALO_TREASURE, THUNDER_HALO_CHANCE,
     };
 
@@ -170,6 +110,13 @@ public class ModMenuScreen extends Screen {
 
     private ModMenuScreen() {
         super(new LiteralText(Enchant.ID));
+    }
+
+    public static ModMenuScreen get(Screen pre) {
+        INSTANCE.width = pre.width;
+        INSTANCE.height = pre.height;
+        INSTANCE.pre = pre;
+        return INSTANCE;
     }
 
     @Override
@@ -182,13 +129,6 @@ public class ModMenuScreen extends Screen {
         // 返回按钮
         this.addDrawableChild(new ButtonWidget(this.width / 2 - 150 / 2, this.height - 28, 150, 20,
                 ScreenTexts.BACK, b -> INSTANCE.close()));
-    }
-
-    public static ModMenuScreen get(Screen pre) {
-        INSTANCE.width = pre.width;
-        INSTANCE.height = pre.height;
-        INSTANCE.pre = pre;
-        return INSTANCE;
     }
 
     private void close() {

@@ -1,13 +1,9 @@
 package com.doo.xenchant.enchantment;
 
-import com.doo.xenchant.Enchant;
-import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
-import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.loot.LootManager;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Wearable;
 
 /**
  * 更多战利品
@@ -17,20 +13,17 @@ public class MoreLoot extends BaseEnchantment {
     public static final String NAME = "more_loot";
 
     public MoreLoot() {
-        super(new Identifier(Enchant.ID, NAME),
-                Rarity.COMMON,
-                EnchantmentTarget.BREAKABLE,
-                new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND});
+        super(NAME, Rarity.RARE, EnchantmentTarget.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND});
     }
 
     @Override
     public int getMinPower(int level) {
-        return 1 + (level - 1) * 10;
+        return 1 + (level - 1) * 20;
     }
 
     @Override
     public int getMaxPower(int level) {
-        return this.getMinPower(level) + 15;
+        return this.getMinPower(level) + 50;
     }
 
     @Override
@@ -40,10 +33,11 @@ public class MoreLoot extends BaseEnchantment {
 
     @Override
     public void register() {
-        LootTableLoadingCallback.EVENT.register(
-                getId(),
-                (resourceManager, manager, id, supplier, setter) -> {
-                    System.out.println(id);
-                });
+        super.register();
+    }
+
+    @Override
+    public boolean isAcceptableItem(ItemStack stack) {
+        return !(stack.getItem() instanceof Wearable);
     }
 }

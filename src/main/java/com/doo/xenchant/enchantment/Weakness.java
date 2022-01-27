@@ -1,9 +1,9 @@
 package com.doo.xenchant.enchantment;
 
-import com.doo.xenchant.Enchant;
+import com.doo.xenchant.util.EnchantUtil;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.util.Identifier;
+import net.minecraft.item.ItemStack;
 
 /**
  * 弱点攻击
@@ -13,24 +13,31 @@ public class Weakness extends BaseEnchantment {
     public static final String NAME = "weakness";
 
     public Weakness() {
-        super(new Identifier(Enchant.ID, NAME),
-                Rarity.COMMON,
-                EnchantmentTarget.WEAPON,
-                new EquipmentSlot[]{EquipmentSlot.MAINHAND});
+        super(NAME, Rarity.VERY_RARE, EnchantmentTarget.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
     }
 
     @Override
     public int getMinPower(int level) {
-        return 5 + (level - 1) * 9;
+        return 5 + (level - 1) * 15;
     }
 
     @Override
     public int getMaxPower(int level) {
-        return this.getMinPower(level) + 15;
+        return this.getMinPower(level) + 30;
     }
 
     @Override
     public int getMaxLevel() {
         return 3;
+    }
+
+    @Override
+    public boolean isTreasure() {
+        return true;
+    }
+
+    @Override
+    public boolean isAcceptableItem(ItemStack stack) {
+        return EnchantUtil.hasAttackDamage(stack) || super.isAcceptableItem(stack);
     }
 }

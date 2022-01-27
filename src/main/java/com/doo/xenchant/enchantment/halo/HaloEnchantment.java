@@ -1,101 +1,73 @@
 package com.doo.xenchant.enchantment.halo;
 
 import com.doo.xenchant.Enchant;
-import com.doo.xenchant.attribute.LimitTimeModifier;
 import com.doo.xenchant.enchantment.BaseEnchantment;
 import com.doo.xenchant.util.EnchantUtil;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.EntityAttribute;
-import net.minecraft.entity.attribute.EntityAttributeInstance;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Identifier;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.Box;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
- * 光环类附魔
+ * Enchantment of Halo
  */
-public abstract class HaloEnchantment extends BaseEnchantment {
+public abstract class HaloEnchantment<T extends Entity> extends BaseEnchantment {
 
     public static final String NAME = "halo";
 
-    public boolean isFriendTarget;
-
-    public static final List<EntityAttribute> ATTRIBUTES = new ArrayList<>(16);
-
-    public HaloEnchantment(String name, boolean isFriendTarget) {
-        super(new Identifier(Enchant.ID, NAME + "." + name),
-                Rarity.COMMON,
-                EnchantmentTarget.ARMOR,
-                EnchantUtil.ALL_ARMOR);
-        this.isFriendTarget = isFriendTarget;
+    public HaloEnchantment(String name) {
+        super(NAME + "_" + name, Rarity.RARE, EnchantmentTarget.ARMOR, EnchantUtil.ALL_ARMOR);
     }
 
     @Override
-    public final int getMaxLevel() {
+    public int getMaxLevel() {
         return 1;
     }
 
     @Override
     public final int getMinPower(int level) {
-        return 10;
+        return 20;
     }
 
     @Override
     public final int getMaxPower(int level) {
-        return 25;
+        return 50;
     }
 
     @Override
     protected final boolean canAccept(Enchantment other) {
-        return !(other instanceof HaloEnchantment && this.isTreasure() && other.isTreasure());
+        return !(other instanceof HaloEnchantment);
     }
 
-    /**
-     * 触发光环
-     *
-     * @param player 玩家
-     * @param level 等级
-     * @param friends 队友
-     * @param mobs 其他
-     */
-    public final void tickHalo(PlayerEntity player, Integer level, List<LivingEntity> friends, List<LivingEntity> mobs) {
-        if (!needTick()) {
+    @Override
+    public void livingTick(LivingEntity living, ItemStack stack, int level) {
+        if (!Enchant.option.halo && needTick()) {
             return;
         }
-        if (isFriendTarget) {
-            if (friends != null && !friends.isEmpty()) {
-                onTarget(player, level, friends);
-            }
-        } else {
-            if (mobs != null && !mobs.isEmpty()) {
-                onTarget(player, level, mobs);
-            }
-        }
+
+        // trigger halo
+        Box box = living.getBoundingBox().expand(Enchant.option.haloRange);
+        halo(living, level, box);
     }
 
     protected abstract boolean needTick();
 
-    public abstract void onTarget(PlayerEntity player, Integer level, List<LivingEntity> targets);
-
     /**
-     * 添加或更新修改值
-     *
-     * @param attr 修改的属性
-     *  @param modifier 修改值 默认值
+     * trigger halo
      */
-    public void addOrResetModifier(EntityAttributeInstance attr, LimitTimeModifier modifier) {
-        Optional<EntityAttributeModifier> optional = attr.getModifiers().stream()
-                .filter(m -> m.getName().equals(getId().toString()) && m instanceof LimitTimeModifier).findAny();
-        if (optional.isPresent()) {
-            ((LimitTimeModifier) optional.get()).reset(1.2F);
-        } else {
-            attr.addTemporaryModifier(modifier);
+    private void halo(LivingEntity living, Integer level, Box box) {
+        List<T> targets = targets(living, box);
+
+        if (targets != null && !targets.isEmpty()) {
+            onTarget(living, level, targets);
         }
     }
+
+    protected abstract List<T> targets(LivingEntity living, Box box);
+
+    protected abstract void onTarget(LivingEntity entity, Integer level, List<T> targets);
 }
