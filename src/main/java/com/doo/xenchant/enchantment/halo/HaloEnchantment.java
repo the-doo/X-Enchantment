@@ -1,22 +1,16 @@
 package com.doo.xenchant.enchantment.halo;
 
 import com.doo.xenchant.Enchant;
-import com.doo.xenchant.attribute.LimitTimeModifier;
 import com.doo.xenchant.enchantment.BaseEnchantment;
 import com.doo.xenchant.util.EnchantUtil;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.EntityAttribute;
-import net.minecraft.entity.attribute.EntityAttributeInstance;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Box;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Enchantment of Halo
@@ -24,8 +18,6 @@ import java.util.Optional;
 public abstract class HaloEnchantment<T extends Entity> extends BaseEnchantment {
 
     public static final String NAME = "halo";
-
-    public static final List<EntityAttribute> ATTRIBUTES = new ArrayList<>(16);
 
     public HaloEnchantment(String name) {
         super(NAME + "_" + name, Rarity.RARE, EnchantmentTarget.ARMOR, EnchantUtil.ALL_ARMOR);
@@ -78,21 +70,4 @@ public abstract class HaloEnchantment<T extends Entity> extends BaseEnchantment 
     protected abstract List<T> targets(LivingEntity living, Box box);
 
     protected abstract void onTarget(LivingEntity entity, Integer level, List<T> targets);
-
-    /**
-     * 添加或更新修改值
-     *
-     * @param attr     修改的属性
-     * @param modifier 修改值 默认值
-     */
-    public void addOrResetModifier(EntityAttributeInstance attr, LimitTimeModifier modifier) {
-        Optional<EntityAttributeModifier> optional = attr.getModifiers().stream()
-                .filter(m -> m.getName().equals(getId().toString()) && m instanceof LimitTimeModifier).findAny();
-
-        if (optional.isPresent()) {
-            ((LimitTimeModifier) optional.get()).reset(1.2F);
-        } else {
-            attr.addTemporaryModifier(modifier);
-        }
-    }
 }

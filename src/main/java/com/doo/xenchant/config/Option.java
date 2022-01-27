@@ -1,5 +1,12 @@
 package com.doo.xenchant.config;
 
+import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.attribute.EntityAttributes;
+
+import java.util.Collection;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 /**
  * 设置选项
  */
@@ -104,4 +111,18 @@ public class Option {
      * 雷霆光环 击中几率
      */
     public int thunderHaloStruckChance = 10;
+
+    /**
+     * attributes
+     */
+    public Collection<String> attributes = Stream.of(
+                    EntityAttributes.GENERIC_ATTACK_DAMAGE,
+                    EntityAttributes.GENERIC_ATTACK_SPEED,
+                    EntityAttributes.GENERIC_ARMOR,
+                    EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE,
+                    EntityAttributes.GENERIC_FLYING_SPEED,
+                    EntityAttributes.GENERIC_MOVEMENT_SPEED,
+                    EntityAttributes.GENERIC_MAX_HEALTH,
+                    EntityAttributes.GENERIC_ATTACK_KNOCKBACK)
+            .map(EntityAttribute::getTranslationKey).collect(Collectors.toSet());
 }

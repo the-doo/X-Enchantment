@@ -1,11 +1,9 @@
 package com.doo.xenchant.util;
 
 import com.doo.xenchant.Enchant;
-import com.doo.xenchant.attribute.LimitTimeModifier;
 import com.doo.xenchant.enchantment.*;
-import com.doo.xenchant.enchantment.halo.AttackSpeedUpHalo;
+import com.doo.xenchant.enchantment.halo.AttrHalo;
 import com.doo.xenchant.enchantment.halo.EffectHalo;
-import com.doo.xenchant.enchantment.halo.HaloEnchantment;
 import com.doo.xenchant.enchantment.halo.ThunderHalo;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -20,8 +18,6 @@ import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.AttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.effect.StatusEffectCategory;
@@ -93,12 +89,17 @@ public class EnchantUtil {
                 .forEach(c -> BaseEnchantment.get(c).register());
 
         // Halo enchantments
-        Stream.of(ThunderHalo.class, AttackSpeedUpHalo.class).forEach(c -> BaseEnchantment.get(c).register());
+        Stream.of(ThunderHalo.class).forEach(c -> BaseEnchantment.get(c).register());
 
         // Status effect halo must regist after all mod loaded
+        // Attribute halo
         // need filter(s -> Identifier.isValid(s.getTranslationKey()))
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             Registry.STATUS_EFFECT.stream().filter(e -> e != null && Identifier.isValid(e.getTranslationKey())).forEach(EffectHalo::new);
+
+            Registry.ATTRIBUTE.getEntries().stream()
+                    .filter(e -> Enchant.option.attributes.contains(e.getValue().getTranslationKey()))
+                    .forEach(e -> new AttrHalo(e.getValue()));
         });
 
         // server listener
@@ -343,7 +344,7 @@ public class EnchantUtil {
         }
 
         // remove dirty arributes
-        EnchantUtil.removedDirtyHalo(living.getAttributes());
+        AttrHalo.removeDirty(living);
 
         // tick enchantment
         StreamSupport.stream(living.getItemsEquipped().spliterator(), true).forEach(stack -> {
@@ -364,26 +365,11 @@ public class EnchantUtil {
         return ((NbtCompound) n).getInt("lvl");
     }
 
-    /**
-     * 移除过期的属性操作
-     *
-     * @param attributes 属性
-     */
-    public static void removedDirtyHalo(AttributeContainer attributes) {
-        HaloEnchantment.ATTRIBUTES.forEach(a -> {
-            EntityAttributeInstance instance = attributes.getCustomInstance(a);
-            if (instance != null) {
-                instance.getModifiers().forEach(m -> {
-                    if ((m instanceof LimitTimeModifier && ((LimitTimeModifier) m).isExpire())) {
-                        instance.removeModifier(m);
-                    }
-                });
-            }
-        });
-    }
-
     public static boolean hasAttackDamage(ItemStack stack) {
-        return !stack.isEmpty() && (stack.getItem() instanceof RangedWeaponItem || stack.getItem() instanceof ToolItem || !stack.getItem().getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_DAMAGE).isEmpty() || !stack.getItem().getAttributeModifiers(EquipmentSlot.OFFHAND).get(EntityAttributes.GENERIC_ATTACK_DAMAGE).isEmpty());
+        return !stack.isEmpty() &&
+                (stack.getItem() instanceof RangedWeaponItem || stack.getItem() instanceof ToolItem ||
+                        !stack.getItem().getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_DAMAGE).isEmpty() ||
+                        !stack.getItem().getAttributeModifiers(EquipmentSlot.OFFHAND).get(EntityAttributes.GENERIC_ATTACK_DAMAGE).isEmpty());
     }
 
     public static ItemStack getHandStack(LivingEntity entity, Class<? extends Item> type) {
