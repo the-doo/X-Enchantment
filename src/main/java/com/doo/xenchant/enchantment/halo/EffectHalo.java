@@ -51,7 +51,7 @@ public class EffectHalo extends LivingHalo {
 
     @Override
     public boolean isTreasure() {
-        return effect.isInstant() || effect.isBeneficial();
+        return effect == null || effect.isInstant() || effect.isBeneficial();
     }
 
     @Override

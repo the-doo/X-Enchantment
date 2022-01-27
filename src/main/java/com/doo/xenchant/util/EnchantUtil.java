@@ -40,6 +40,7 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
@@ -77,6 +78,7 @@ public class EnchantUtil {
      * 攻击记录
      */
     private static final Map<Integer, Integer> WEAKNESS_LOG = new HashMap<>();
+
     private EnchantUtil() {
     }
 
@@ -94,8 +96,9 @@ public class EnchantUtil {
         Stream.of(ThunderHalo.class, AttackSpeedUpHalo.class).forEach(c -> BaseEnchantment.get(c).register());
 
         // Status effect halo must regist after all mod loaded
-        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-            Registry.STATUS_EFFECT.forEach(EffectHalo::new);
+        // need filter(s -> Identifier.isValid(s.getTranslationKey()))
+        ServerLifecycleEvents.SERVER_STARTING.register(server -> {
+            Registry.STATUS_EFFECT.stream().filter(e -> e != null && Identifier.isValid(e.getTranslationKey())).forEach(EffectHalo::new);
         });
 
         // server listener
