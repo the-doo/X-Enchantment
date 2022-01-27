@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * 雷霆光环
  */
-public class ThunderHalo extends FriendHalo {
+public class ThunderHalo extends LivingHalo {
 
     public static final String NAME = "thunder";
 
@@ -31,10 +31,24 @@ public class ThunderHalo extends FriendHalo {
     }
 
     @Override
+    protected int second() {
+        // 3s
+        return 3;
+    }
+
+    @Override
+    public int getMaxLevel() {
+        return 3;
+    }
+
+    @Override
     public void onTarget(LivingEntity entity, Integer level, List<LivingEntity> targets) {
+        LightningEntity lightning = new LightningEntity(EntityType.LIGHTNING_BOLT, entity.world);
+        lightning.setInvisible(true);
+
         targets.forEach(e -> {
-            if (entity.getRandom().nextInt(100) < Enchant.option.thunderHaloStruckChance) {
-                e.onStruckByLightning((ServerWorld) entity.world, new LightningEntity(EntityType.LIGHTNING_BOLT, e.world));
+            if (entity.getRandom().nextInt(100) < Enchant.option.thunderHaloStruckChance * level) {
+                e.onStruckByLightning((ServerWorld) e.world, lightning);
                 e.playSound(SoundEvents.ENTITY_LIGHTNING_BOLT_THUNDER, 1, 1);
                 e.setAttacker(entity);
             }

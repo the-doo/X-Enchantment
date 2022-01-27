@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * 攻速提升光环
  */
-public class AttackSpeedUpHalo extends FriendHalo {
+public class AttackSpeedUpHalo extends LivingHalo {
 
     public static final String NAME = "attack_speed_up";
 
@@ -27,6 +27,11 @@ public class AttackSpeedUpHalo extends FriendHalo {
     }
 
     @Override
+    public int getMaxLevel() {
+        return 5;
+    }
+
+    @Override
     public void onTarget(LivingEntity entity, Integer level, List<LivingEntity> targets) {
         targets.forEach(e -> {
             EntityAttributeInstance attr = e.getAttributes().getCustomInstance(EntityAttributes.GENERIC_ATTACK_SPEED);
@@ -34,7 +39,7 @@ public class AttackSpeedUpHalo extends FriendHalo {
                 return;
             }
             addOrResetModifier(attr, LimitTimeModifier.get(
-                    getId().toString(), Enchant.option.attackSpeedHaloMultiple,
+                    getId().toString(), Enchant.option.attackSpeedHaloMultiple * level,
                     EntityAttributeModifier.Operation.MULTIPLY_TOTAL, e.age + 25, e));
         });
     }

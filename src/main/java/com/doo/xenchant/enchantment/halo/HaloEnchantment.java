@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * 光环类附魔
+ * Enchantment of Halo
  */
 public abstract class HaloEnchantment<T extends Entity> extends BaseEnchantment {
 
@@ -69,6 +69,7 @@ public abstract class HaloEnchantment<T extends Entity> extends BaseEnchantment 
      */
     private void halo(LivingEntity living, Integer level, Box box) {
         List<T> targets = targets(living, box);
+
         if (targets != null && !targets.isEmpty()) {
             onTarget(living, level, targets);
         }
@@ -87,6 +88,7 @@ public abstract class HaloEnchantment<T extends Entity> extends BaseEnchantment 
     public void addOrResetModifier(EntityAttributeInstance attr, LimitTimeModifier modifier) {
         Optional<EntityAttributeModifier> optional = attr.getModifiers().stream()
                 .filter(m -> m.getName().equals(getId().toString()) && m instanceof LimitTimeModifier).findAny();
+
         if (optional.isPresent()) {
             ((LimitTimeModifier) optional.get()).reset(1.2F);
         } else {

@@ -3,7 +3,13 @@ package com.doo.xenchant.util;
 import com.doo.xenchant.Enchant;
 import com.doo.xenchant.attribute.LimitTimeModifier;
 import com.doo.xenchant.enchantment.*;
-import com.doo.xenchant.enchantment.halo.*;
+import com.doo.xenchant.enchantment.halo.AttackSpeedUpHalo;
+import com.doo.xenchant.enchantment.halo.EffectHalo;
+import com.doo.xenchant.enchantment.halo.HaloEnchantment;
+import com.doo.xenchant.enchantment.halo.ThunderHalo;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.tool.attribute.v1.ToolManager;
 import net.minecraft.block.BlockState;
@@ -51,44 +57,61 @@ import java.util.stream.StreamSupport;
 @SuppressWarnings("all")
 public class EnchantUtil {
 
-    private EnchantUtil() {
-    }
-
     /**
      * 所有盔甲
      */
     public static final EquipmentSlot[] ALL_ARMOR = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
-
     /**
      * ALL HAND
      */
     public static final EquipmentSlot[] ALL_HAND = new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND};
-
+    /**
+     * 可翻译文本
+     */
+    public static final MutableText MORE_LOOT_TEXT = new TranslatableText("enchantment.x_enchant.chat.more_more_loot").setStyle(Style.EMPTY.withColor(Formatting.RED));
     /**
      * 吸血记录
      */
     private static final Map<Integer, Integer> SUCK_LOG = new HashMap<>();
-
     /**
      * 攻击记录
      */
     private static final Map<Integer, Integer> WEAKNESS_LOG = new HashMap<>();
-
-    /**
-     * 可翻译文本
-     */
-    public static final MutableText LOOT_TEXT = new TranslatableText("enchantment.x_enchant.chat.more_loot").setStyle(Style.EMPTY.withColor(Formatting.YELLOW));
-    public static final MutableText MORE_LOOT_TEXT = new TranslatableText("enchantment.x_enchant.chat.more_more_loot").setStyle(Style.EMPTY.withColor(Formatting.RED));
+    private EnchantUtil() {
+    }
 
     /**
      * 注册所有附魔及事件
      */
     public static void registerAll() {
         // normal enchantments
-        Stream.of(AutoFish.class, SuckBlood.class, Weakness.class, Rebirth.class, MoreLoot.class, HitRateUp.class, QuickShoot.class, MagicImmune.class, Librarian.class, IncDamage.class).forEach(c -> BaseEnchantment.get(c).register());
+        Stream.of(AutoFish.class, SuckBlood.class, Weakness.class, Rebirth.class,
+                        MoreLoot.class, HitRateUp.class, QuickShoot.class, MagicImmune.class,
+                        Librarian.class, IncDamage.class)
+                .forEach(c -> BaseEnchantment.get(c).register());
 
         // Halo enchantments
-        Stream.of(SlownessHalo.class, MaxHPUpHalo.class, RegenerationHalo.class, ThunderHalo.class, FriendHalo.class, AttackSpeedUpHalo.class).forEach(c -> BaseEnchantment.get(c).register());
+        Stream.of(ThunderHalo.class, AttackSpeedUpHalo.class).forEach(c -> BaseEnchantment.get(c).register());
+
+        // Status effect halo must regist after all mod loaded
+        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+            Registry.STATUS_EFFECT.forEach(EffectHalo::new);
+        });
+
+        // server listener
+        ServerWorldEvents.LOAD.register((server, world) -> {
+            SUCK_LOG.clear();
+            WEAKNESS_LOG.clear();
+        });
+
+        // server listener
+        ServerEntityEvents.ENTITY_UNLOAD.register((entity, world) -> {
+            if (entity != null) {
+                // remove log
+                SUCK_LOG.remove(entity.getId());
+                WEAKNESS_LOG.remove(entity.getId());
+            }
+        });
 
         // server listener
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
@@ -312,6 +335,10 @@ public class EnchantUtil {
      * @param living living
      */
     public static void livingTick(LivingEntity living) {
+        if (living.world.isClient()) {
+            return;
+        }
+
         // remove dirty arributes
         EnchantUtil.removedDirtyHalo(living.getAttributes());
 
@@ -319,7 +346,10 @@ public class EnchantUtil {
         StreamSupport.stream(living.getItemsEquipped().spliterator(), true).forEach(stack -> {
             stack.getEnchantments().stream()
                     .filter(n -> BaseEnchantment.isBase(id(n)))
-                    .forEach(n -> ((BaseEnchantment) BaseEnchantment.get(id(n))).tryTrigger(living, stack, lvl(n)));
+                    .forEach(n -> {
+                        // old enchantment is null
+                        Optional.ofNullable((BaseEnchantment) BaseEnchantment.get(id(n))).ifPresent(e -> e.tryTrigger(living, stack, lvl(n)));
+                    });
         });
     }
 
@@ -347,10 +377,6 @@ public class EnchantUtil {
                 });
             }
         });
-    }
-
-    public static boolean isServerPlayer(LivingEntity livingEntity) {
-        return livingEntity instanceof ServerPlayerEntity;
     }
 
     public static boolean hasAttackDamage(ItemStack stack) {

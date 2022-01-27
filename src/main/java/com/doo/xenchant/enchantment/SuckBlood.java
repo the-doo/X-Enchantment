@@ -18,12 +18,12 @@ public class SuckBlood extends BaseEnchantment {
 
     @Override
     public int getMinPower(int level) {
-        return 1 + (level - 1) * 10;
+        return 1 + (level - 1) * 20;
     }
 
     @Override
     public int getMaxPower(int level) {
-        return this.getMinPower(level) + 15;
+        return this.getMinPower(level) + 50;
     }
 
     @Override

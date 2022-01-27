@@ -81,11 +81,6 @@ public class Option {
     public double haloRange = 9F;
 
     /**
-     * 光环触发时刻
-     */
-    public double haloInterval = 20F;
-
-    /**
      * 攻速光环
      */
     public boolean attackSpeedHalo = true;
@@ -93,67 +88,7 @@ public class Option {
     /**
      * 攻速光环 倍数
      */
-    public double attackSpeedHaloMultiple = 1;
-
-    /**
-     * 幸运光环
-     */
-    public boolean luckHalo = true;
-
-    /**
-     * 幸运光环 是否是宝藏
-     */
-    public boolean luckHaloIsTreasure = true;
-
-    /**
-     * 幸运光环 持续时间 单位: s
-     */
-    public int luckHaloDuration = 1;
-
-    /**
-     * 幸运光环  级别
-     */
-    public int luckHaloLevel = 3;
-
-    /**
-     * 最大生命值光环
-     */
-    public boolean maxHPHalo = true;
-
-    /**
-     * 最大生命光环 倍数
-     */
-    public double maxHPHaloMultiple = 1;
-
-    /**
-     * 恢复光环
-     */
-    public boolean regenerationHalo = true;
-
-    /**
-     * 恢复光环 持续时间 单位: s
-     */
-    public int regenerationHaloDuration = 1;
-
-    /**
-     * 恢复光环  级别
-     */
-    public int regenerationHaloLevel = 2;
-
-    /**
-     * 减速光环
-     */
-    public boolean slownessHalo = true;
-
-    /**
-     * 减速光环 持续时间 单位: s
-     */
-    public int slownessHaloDuration = 1;
-
-    /**
-     * 减速光环  级别
-     */
-    public int slownessHaloLevel = 2;
+    public double attackSpeedHaloMultiple = 0.5;
 
     /**
      * 雷霆光环

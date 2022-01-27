@@ -35,14 +35,34 @@ public abstract class BaseEnchantment extends Enchantment {
         this.id = new Identifier(Enchant.ID, name);
 
         ID_MAP.put(id.toString(), Registry.register(Registry.ENCHANTMENT, id, this));
-    }
-
-    public Identifier getId() {
-        return id;
+        BaseEnchantmentFactory.register(this);
     }
 
     public static boolean isBase(String id) {
         return id != null && id.contains(Enchant.ID);
+    }
+
+    public static <T extends BaseEnchantment> T get(Class<T> clazz) {
+        return BaseEnchantmentFactory.getInstance(clazz);
+    }
+
+    @SuppressWarnings("all")
+    public static <T extends BaseEnchantment> T get(String id) {
+        return (T) ID_MAP.get(id);
+    }
+
+    @SuppressWarnings("all")
+    public static <T extends BaseEnchantment> T get(Identifier id) {
+        return (T) ID_MAP.get(id);
+    }
+
+    @SuppressWarnings("all")
+    public static <T extends BaseEnchantment> T get(NbtCompound tag) {
+        return (T) ID_MAP.get(EnchantmentHelper.getIdFromNbt(tag));
+    }
+
+    public Identifier getId() {
+        return id;
     }
 
     @Override
@@ -78,7 +98,8 @@ public abstract class BaseEnchantment extends Enchantment {
      * Add enchantment trigger callback
      */
     public final void tryTrigger(LivingEntity living, ItemStack stack, int level) {
-        if (living.age % tickNum() == 0) {
+        // 20 tick == 1s
+        if (living.age % (second() * 20) == 0) {
             livingTick(living, stack, level);
         }
     }
@@ -86,34 +107,14 @@ public abstract class BaseEnchantment extends Enchantment {
     /**
      * default 1s
      */
-    private int tickNum() {
-        return 20;
+    protected int second() {
+        return 1;
     }
 
     /**
      * enchantment on tick ending
      */
     protected void livingTick(LivingEntity living, ItemStack stack, int level) {
-    }
-
-
-    public static <T extends BaseEnchantment> T get(Class<T> clazz) {
-        return BaseEnchantmentFactory.getInstance(clazz);
-    }
-
-    @SuppressWarnings("all")
-    public static <T extends BaseEnchantment> T get(String id) {
-        return (T) ID_MAP.get(id);
-    }
-
-    @SuppressWarnings("all")
-    public static <T extends BaseEnchantment> T get(Identifier id) {
-        return (T) ID_MAP.get(id);
-    }
-
-    @SuppressWarnings("all")
-    public static <T extends BaseEnchantment> T get(NbtCompound tag) {
-        return (T) ID_MAP.get(EnchantmentHelper.getIdFromNbt(tag));
     }
 
     @SuppressWarnings("all")
@@ -133,8 +134,11 @@ public abstract class BaseEnchantment extends Enchantment {
                 Config.LOGGER.warn("error to load enchantment {}", clazz.getName());
             }
 
-            CACHE.put(clazz, e);
             return (T) e;
+        }
+
+        public static <T extends BaseEnchantment> void register(T t) {
+            CACHE.put(t.getClass(), t);
         }
     }
 }
