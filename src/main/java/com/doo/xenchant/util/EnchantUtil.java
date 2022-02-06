@@ -96,7 +96,7 @@ public class EnchantUtil {
         // need filter(s -> Identifier.isValid(s.getTranslationKey()))
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             // if exsits
-            if (Registry.ENCHANTMENT.stream().anyMatch(e -> e.getTranslationKey().contains(Enchant.ID))) {
+            if (Registry.ENCHANTMENT.stream().anyMatch(e -> e.getTranslationKey().contains(Enchant.ID) && e.getTranslationKey().contains(EffectHalo.NAME))) {
                 return;
             }
 
