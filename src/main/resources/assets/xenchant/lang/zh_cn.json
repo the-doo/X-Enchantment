@@ -22,7 +22,7 @@
 
   "enchantment.x_enchant.halo_effect": "光环 - %s",
   "enchantment.x_enchant.halo_effect.desc": "药水效果的附魔版",
-  "enchantment.x_enchant.halo_attribute": "光环 - %s ↑",
+  "enchantment.x_enchant.halo_attribute": "光环 - ↑%s",
   "enchantment.x_enchant.halo_attribute.desc": "基础属性的附魔版",
   "enchantment.x_enchant.halo_thunder": "光环 - 雷霆",
   "enchantment.x_enchant.halo_thunder.desc": "闪电有10%的概率劈人",
@@ -48,6 +48,7 @@
   "x_enchant.menu.option.thunder_halo": "雷霆光环",
   "x_enchant.menu.option.thunder_halo_treasure": "雷霆光环是宝藏",
   "x_enchant.menu.option.thunder_halo_chance": "雷霆光环击中几率: %d",
+  "x_enchant.menu.option.status_effect_halo": "药水光环设置",
 
   "x_enchant.menu.option.chat_tips": "聊天提示"
 }

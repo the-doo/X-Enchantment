@@ -1,5 +1,6 @@
 package com.doo.xenchant.enchantment.halo;
 
+import com.doo.xenchant.Enchant;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
@@ -52,6 +53,11 @@ public class EffectHalo extends LivingHalo {
     @Override
     public boolean isTreasure() {
         return effect == null || effect.isInstant() || effect.isBeneficial();
+    }
+
+    @Override
+    protected boolean needTick() {
+        return !Enchant.option.disabledEffect.contains(effect.getTranslationKey());
     }
 
     @Override

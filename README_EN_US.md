@@ -4,7 +4,7 @@
 
 ## Normal Enchantment:
 
-- #### Auto Fishing: AutoFishing and has a 50% chance to add durability by one
+- #### Auto Fishing: AutoFishing and has a 25% chance to add durability by ten
 - #### Suck Blood: Restores(.1 * damage * level) HP when damage a target, most restores(.15 * damage * level) when sweeping and more target.
 - #### Weakness Attack: Grants(.5 * level) chance of dealing triple damage
 - #### Rebirth: Consume a level to reborn and totem effect when you die
@@ -15,15 +15,18 @@
 
 ## Halo Enchantment:
 
-- #### Slowness: Except your team, level 2 slowness effect
-- #### Max HP Up: Your team, Double Max HP
-- #### Regeneration: Your team, level 2 regeneration effect
-- #### Thunder: Except you team, 10% chance to damage target by lightning, is treasure
-- #### Luck: Your team, level 3 luck effect, is treasure
-- #### Attack Speed Up: Your team, Double Attack Speed
+###### Friendly: Target is You or Your Teammate
 
-###### It must be same halo enchantment per armor slot
-###### fixed range
-###### 1s intervals
+###### Harmful: Target is Other except Friendly
+
+- #### Effect: Friendly, Instant or Beneficial effect is treasure
+- #### Attribute: Friendly, Add attribute base value addition or multi total
+- #### Thunder: Harmful, 3s to trigger, Struck by lightning, chance: 10% x level, treasure
+
+###### Fixed range
+
+###### General 1s to trigger
+
+#
 
 ##### Tips: Comment if you have a good idea

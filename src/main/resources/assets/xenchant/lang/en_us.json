@@ -22,7 +22,7 @@
 
   "enchantment.x_enchant.halo_effect": "HALO - %s",
   "enchantment.x_enchant.halo_effect.desc": "Enchantment version of Status effect",
-  "enchantment.x_enchant.halo_attribute": "HALO - %s ↑",
+  "enchantment.x_enchant.halo_attribute": "HALO - ↑%s",
   "enchantment.x_enchant.halo_attribute.desc": "Enchantment version of Attribute",
   "enchantment.x_enchant.halo_thunder": "HALO - Thunder",
   "enchantment.x_enchant.halo_thunder.desc": "10% chance Struck By Lightning",
@@ -48,6 +48,7 @@
   "x_enchant.menu.option.thunder_halo": "HALO - Thunder",
   "x_enchant.menu.option.thunder_halo_treasure": "HALO - Thunder Is Treasure",
   "x_enchant.menu.option.thunder_halo_chance": "HALO - Thunder Struck Chance: %d",
+  "x_enchant.menu.option.status_effect_halo": "Status Effect Halo Settings",
 
   "x_enchant.menu.option.chat_tips": "Chat Tips"
 }

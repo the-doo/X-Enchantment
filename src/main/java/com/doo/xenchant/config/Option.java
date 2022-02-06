@@ -4,6 +4,7 @@ import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributes;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -88,16 +89,6 @@ public class Option {
     public double haloRange = 9F;
 
     /**
-     * 攻速光环
-     */
-    public boolean attackSpeedHalo = true;
-
-    /**
-     * 攻速光环 倍数
-     */
-    public double attackSpeedHaloMultiple = 0.5;
-
-    /**
      * 雷霆光环
      */
     public boolean thunderHalo = true;
@@ -125,4 +116,9 @@ public class Option {
                     EntityAttributes.GENERIC_MAX_HEALTH,
                     EntityAttributes.GENERIC_ATTACK_KNOCKBACK)
             .map(EntityAttribute::getTranslationKey).collect(Collectors.toSet());
+
+    /**
+     * Disabled Effect Set
+     */
+    public Collection<String> disabledEffect = Collections.emptySet();
 }
