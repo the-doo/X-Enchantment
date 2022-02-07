@@ -6,8 +6,10 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.ButtonListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.option.CyclingOption;
 import net.minecraft.client.option.DoubleOption;
+import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.Option;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
@@ -71,14 +73,6 @@ public class ModMenuScreen extends Screen {
             (o, d) -> Enchant.option.haloRange = d,
             (g, o) -> new TranslatableText("x_enchant.menu.option.halo_range", Enchant.option.haloRange));
 
-    private static final CyclingOption<Boolean> ATTACK_SPEED_HALO = CyclingOption.create("x_enchant.menu.option.attack_speed_halo",
-            o -> Enchant.option.attackSpeedHalo, (g, o, d) -> Enchant.option.attackSpeedHalo = d);
-
-    private static final DoubleOption ATTACK_SPEED_HALO_MULTI = new DoubleOption("", 1, 10, 1,
-            o -> Enchant.option.attackSpeedHaloMultiple,
-            (o, d) -> Enchant.option.attackSpeedHaloMultiple = d,
-            (g, o) -> new TranslatableText("x_enchant.menu.option.attack_speed_halo_multi", Enchant.option.attackSpeedHaloMultiple));
-
     private static final CyclingOption<Boolean> THUNDER_HALO = CyclingOption.create("x_enchant.menu.option.thunder_halo",
             o -> Enchant.option.thunderHalo, (g, o, d) -> Enchant.option.thunderHalo = d);
 
@@ -90,19 +84,27 @@ public class ModMenuScreen extends Screen {
             (o, d) -> Enchant.option.thunderHaloStruckChance = d.intValue(),
             (g, o) -> new TranslatableText("x_enchant.menu.option.thunder_halo_chance", Enchant.option.thunderHaloStruckChance));
 
-    private static final ModMenuScreen INSTANCE = new ModMenuScreen();
-
+    private static final Option STATUS_EFFECT = new Option("x_enchant.menu.option.status_effect_halo") {
+        @Override
+        public ClickableWidget createButton(GameOptions options, int x, int y, int width) {
+            return new ButtonWidget(x, y, width, 20, getDisplayPrefix(), b -> {
+                if (INSTANCE.client != null) {
+                    INSTANCE.client.setScreen(DisabledEffectScreen.get(INSTANCE));
+                }
+            });
+        }
+    };
+    private static final Option[] HALO_OPTION = {
+            HALO, HALO_RANGE, THUNDER_HALO, THUNDER_HALO_TREASURE, THUNDER_HALO_CHANCE,
+            STATUS_EFFECT
+    };
     private static final Option[] ENCHANT_OPTION = {
             AUTO_FISHING, SUCK_BLOOD, WEAKNESS, REBIRTH,
             MORE_LOOT, MORE_LOOT_RATE, MORE_MORE_LOOT_RATE, MORE_MORE_LOOT_MULTIPLIER,
             INFINITY_ACCEPT_MENDING, HIT_RATE_UP, QUICK_SHOOT, MAGIC_IMMUNE, CHAT_TIPS,
     };
 
-    private static final Option[] HALO_OPTION = {
-            HALO, HALO_RANGE,
-            ATTACK_SPEED_HALO, ATTACK_SPEED_HALO_MULTI,
-            THUNDER_HALO, THUNDER_HALO_TREASURE, THUNDER_HALO_CHANCE,
-    };
+    private static final ModMenuScreen INSTANCE = new ModMenuScreen();
 
     private Screen pre;
 

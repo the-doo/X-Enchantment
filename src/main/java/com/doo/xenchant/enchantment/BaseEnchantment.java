@@ -34,6 +34,11 @@ public abstract class BaseEnchantment extends Enchantment {
         super(weight, type, slotTypes);
         this.id = new Identifier(Enchant.ID, name);
 
+        // Don't replace if exist
+        if (Registry.ENCHANTMENT.containsId(id)) {
+            return;
+        }
+
         ID_MAP.put(id.toString(), Registry.register(Registry.ENCHANTMENT, id, this));
         BaseEnchantmentFactory.register(this);
     }

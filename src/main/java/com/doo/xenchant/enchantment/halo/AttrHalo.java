@@ -82,8 +82,9 @@ public class AttrHalo extends LivingHalo {
                 return;
             }
 
-            double value = level * (attr.getBaseValue() == 0 ? 1 : attr.getBaseValue());
-            EntityAttributeModifier.Operation op = EntityAttributeModifier.Operation.ADDITION;
+            double value = level + (attr.getBaseValue() == 0 ? 1 : attr.getBaseValue());
+            EntityAttributeModifier.Operation op = attr.getBaseValue() == 0 ?
+                    EntityAttributeModifier.Operation.MULTIPLY_TOTAL : EntityAttributeModifier.Operation.ADDITION;
 
             addOrResetModifier(attr, LimitTimeModifier.get(getId().toString(), value, op, e.age + second() * 25, e));
         });

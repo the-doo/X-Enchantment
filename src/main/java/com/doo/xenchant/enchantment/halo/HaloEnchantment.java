@@ -45,7 +45,7 @@ public abstract class HaloEnchantment<T extends Entity> extends BaseEnchantment 
 
     @Override
     public void livingTick(LivingEntity living, ItemStack stack, int level) {
-        if (!Enchant.option.halo && needTick()) {
+        if (!Enchant.option.halo || !needTick()) {
             return;
         }
 

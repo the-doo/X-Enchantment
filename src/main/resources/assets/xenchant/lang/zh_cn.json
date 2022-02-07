@@ -22,7 +22,7 @@
 
   "enchantment.x_enchant.halo_effect": "光环 - %s",
   "enchantment.x_enchant.halo_effect.desc": "药水效果的附魔版",
-  "enchantment.x_enchant.halo_attribute": "光环 - %s ↑",
+  "enchantment.x_enchant.halo_attribute": "光环 - ↑%s",
   "enchantment.x_enchant.halo_attribute.desc": "基础属性的附魔版",
   "enchantment.x_enchant.halo_thunder": "光环 - 雷霆",
   "enchantment.x_enchant.halo_thunder.desc": "闪电有10%的概率劈人",
@@ -34,8 +34,8 @@
   "x_enchant.menu.option.weakness": "弱点攻击",
   "x_enchant.menu.option.rebirth": "重生",
   "x_enchant.menu.option.more_loot": "更多战利品",
-  "x_enchant.menu.option.more_loot_rate": "更多战利品几率: %d",
-  "x_enchant.menu.option.more_more_loot_rate": "更多更多战利品几率: %d",
+  "x_enchant.menu.option.more_loot_rate": "更多战利品几率: %d%",
+  "x_enchant.menu.option.more_more_loot_rate": "更多更多战利品几率: %d%",
   "x_enchant.menu.option.more_more_loot_multiplier": "更多更多战利品倍数: %d",
   "x_enchant.menu.option.hit_rate_up": "命中率提升",
   "x_enchant.menu.option.infinity_accept_mending": "无限与经验修复并存",
@@ -48,6 +48,7 @@
   "x_enchant.menu.option.thunder_halo": "雷霆光环",
   "x_enchant.menu.option.thunder_halo_treasure": "雷霆光环是宝藏",
   "x_enchant.menu.option.thunder_halo_chance": "雷霆光环击中几率: %d",
+  "x_enchant.menu.option.status_effect_halo": "药水光环设置",
 
   "x_enchant.menu.option.chat_tips": "聊天提示"
 }

@@ -95,13 +95,12 @@ public class EnchantUtil {
         // Attribute halo
         // need filter(s -> Identifier.isValid(s.getTranslationKey()))
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
-            // if exsits
-            if (Registry.ENCHANTMENT.stream().anyMatch(e -> e.getTranslationKey().contains(Enchant.ID) && e.getTranslationKey().contains(EffectHalo.NAME))) {
-                return;
-            }
+            // if not exsits
+            Registry.STATUS_EFFECT.stream()
+                    .filter(e -> e != null && Identifier.isValid(e.getTranslationKey()) && !Enchant.option.disabledEffect.contains(e.getTranslationKey()))
+                    .forEach(EffectHalo::new);
 
-            Registry.STATUS_EFFECT.stream().filter(e -> e != null && Identifier.isValid(e.getTranslationKey())).forEach(EffectHalo::new);
-
+            // if not exsits
             Registry.ATTRIBUTE.getEntries().stream()
                     .filter(e -> Enchant.option.attributes.contains(e.getValue().getTranslationKey()))
                     .forEach(e -> new AttrHalo(e.getValue()));
