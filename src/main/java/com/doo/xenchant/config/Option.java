@@ -5,6 +5,7 @@ import net.minecraft.entity.attribute.EntityAttributes;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -120,5 +121,5 @@ public class Option {
     /**
      * Disabled Effect Set
      */
-    public Collection<String> disabledEffect = Collections.emptySet();
+    public Collection<String> disabledEffect = new HashSet<>();
 }

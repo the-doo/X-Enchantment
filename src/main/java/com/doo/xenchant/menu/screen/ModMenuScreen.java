@@ -83,7 +83,7 @@ public class ModMenuScreen extends Screen {
             o -> (double) Enchant.option.thunderHaloStruckChance,
             (o, d) -> Enchant.option.thunderHaloStruckChance = d.intValue(),
             (g, o) -> new TranslatableText("x_enchant.menu.option.thunder_halo_chance", Enchant.option.thunderHaloStruckChance));
-    private static final ModMenuScreen INSTANCE = new ModMenuScreen();
+
     private static final Option STATUS_EFFECT = new Option("x_enchant.menu.option.status_effect_halo") {
         @Override
         public ClickableWidget createButton(GameOptions options, int x, int y, int width) {
@@ -103,6 +103,9 @@ public class ModMenuScreen extends Screen {
             MORE_LOOT, MORE_LOOT_RATE, MORE_MORE_LOOT_RATE, MORE_MORE_LOOT_MULTIPLIER,
             INFINITY_ACCEPT_MENDING, HIT_RATE_UP, QUICK_SHOOT, MAGIC_IMMUNE, CHAT_TIPS,
     };
+
+    private static final ModMenuScreen INSTANCE = new ModMenuScreen();
+
     private Screen pre;
 
     private ButtonListWidget list;

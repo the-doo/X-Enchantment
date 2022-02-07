@@ -34,8 +34,8 @@
   "x_enchant.menu.option.weakness": "Weakness Attack",
   "x_enchant.menu.option.rebirth": "Rebirth",
   "x_enchant.menu.option.more_loot": "More Loot",
-  "x_enchant.menu.option.more_loot_rate": "More Loot Rate: %d\\%",
-  "x_enchant.menu.option.more_more_loot_rate": "More More Loot Rate: %d\\%",
+  "x_enchant.menu.option.more_loot_rate": "More Loot Rate: %d",
+  "x_enchant.menu.option.more_more_loot_rate": "More More Loot Rate: %d",
   "x_enchant.menu.option.more_more_loot_multiplier": "More More Loot Multiplier: %d",
   "x_enchant.menu.option.hit_rate_up": "Hit Rate Up",
   "x_enchant.menu.option.infinity_accept_mending": "Infinity Accept Mending",
@@ -46,8 +46,8 @@
   "x_enchant.menu.option.halo_range": "HALO Range: %d",
   "x_enchant.menu.option.halo_interval": "HALO Interval : %d tick",
   "x_enchant.menu.option.thunder_halo": "HALO - Thunder",
-  "x_enchant.menu.option.thunder_halo_treasure": "HALO - Thunder Is Treasure",
-  "x_enchant.menu.option.thunder_halo_chance": "HALO - Thunder Struck Chance: %d",
+  "x_enchant.menu.option.thunder_halo_treasure": "Thunder Halo Is Treasure",
+  "x_enchant.menu.option.thunder_halo_chance": "Thunder Halo Struck Chance: %d",
   "x_enchant.menu.option.status_effect_halo": "Status Effect Halo Settings",
 
   "x_enchant.menu.option.chat_tips": "Chat Tips"
