@@ -62,6 +62,11 @@ public class ModMenuScreen extends Screen {
     private static final CyclingOption<Boolean> MAGIC_IMMUNE = CyclingOption.create("x_enchant.menu.option.magic_immune",
             o -> Enchant.option.magicImmune, (g, o, d) -> Enchant.option.magicImmune = d);
 
+    private static final DoubleOption DIFFUSION = new DoubleOption("", 1, 40, 0.5F,
+            o -> Enchant.option.diffusion,
+            (o, d) -> Enchant.option.diffusion = d,
+            (g, o) -> new TranslatableText("x_enchant.menu.option.diffusion", Enchant.option.diffusion));
+
     private static final CyclingOption<Boolean> CHAT_TIPS = CyclingOption.create("x_enchant.menu.option.chat_tips",
             o -> Enchant.option.chatTips, (g, o, d) -> Enchant.option.chatTips = d);
 
@@ -101,7 +106,8 @@ public class ModMenuScreen extends Screen {
     private static final Option[] ENCHANT_OPTION = {
             AUTO_FISHING, SUCK_BLOOD, WEAKNESS, REBIRTH,
             MORE_LOOT, MORE_LOOT_RATE, MORE_MORE_LOOT_RATE, MORE_MORE_LOOT_MULTIPLIER,
-            INFINITY_ACCEPT_MENDING, HIT_RATE_UP, QUICK_SHOOT, MAGIC_IMMUNE, CHAT_TIPS,
+            INFINITY_ACCEPT_MENDING, HIT_RATE_UP,
+            QUICK_SHOOT, MAGIC_IMMUNE, DIFFUSION, CHAT_TIPS,
     };
 
     private static final ModMenuScreen INSTANCE = new ModMenuScreen();

@@ -70,6 +70,11 @@ public class Option {
     public boolean magicImmune = true;
 
     /**
+     * Diffusion base value
+     */
+    public double diffusion = 5;
+
+    /**
      * 无限与修补
      */
     public boolean infinityAcceptMending = true;

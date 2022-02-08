@@ -86,7 +86,8 @@ public class EnchantUtil {
         // normal enchantments
         Stream.of(AutoFish.class, SuckBlood.class, Weakness.class, Rebirth.class,
                         MoreLoot.class, HitRateUp.class, QuickShoot.class, MagicImmune.class,
-                        Librarian.class, IncDamage.class, Climber.class, Smart.class)
+                        Librarian.class, IncDamage.class, Climber.class, Smart.class,
+                        KingKongLegs.class, Diffusion.class)
                 .forEach(c -> BaseEnchantment.get(c).register());
 
         // Halo enchantments
@@ -355,7 +356,7 @@ public class EnchantUtil {
         // tick enchantment
         StreamSupport.stream(living.getItemsEquipped().spliterator(), true).forEach(stack -> {
             stack.getEnchantments().stream()
-                    .filter(n -> BaseEnchantment.isBase(id(n)))
+                    .filter(n -> BaseEnchantment.isBase(id(n)) && lvl(n) > 0)
                     .forEach(n -> {
                         // old enchantment is null
                         Optional.ofNullable((BaseEnchantment) BaseEnchantment.get(id(n))).ifPresent(e -> e.tryTrigger(living, stack, lvl(n)));

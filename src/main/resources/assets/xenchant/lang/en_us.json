@@ -23,6 +23,10 @@
   "enchantment.x_enchant.climber.desc": "Add JUMP BOOST III status effect when you climb a mountain to a certain extent",
   "enchantment.x_enchant.smart": "Smart",
   "enchantment.x_enchant.smart.desc": "Automatically increase XP every 5 seconds",
+  "enchantment.x_enchant.king_kong_legs": "King Kong Legs",
+  "enchantment.x_enchant.king_kong_legs.desc": "Minimize fall damage",
+  "enchantment.x_enchant.diffusion": "Diffusion",
+  "enchantment.x_enchant.diffusion.desc": "Range Weapon version of Sweeping enchantment",
 
   "enchantment.x_enchant.halo_effect": "HALO - %s",
   "enchantment.x_enchant.halo_effect.desc": "Enchantment version of Status effect",
@@ -46,6 +50,7 @@
   "x_enchant.menu.option.infinity_accept_mending": "Infinity Accept Mending",
   "x_enchant.menu.option.quick_shoot": "Quick Shoot",
   "x_enchant.menu.option.magic_immune": "Magic Immune",
+  "x_enchant.menu.option.diffusion": "Diffusion base value: %d",
 
   "x_enchant.menu.option.halo": "HALO",
   "x_enchant.menu.option.halo_range": "HALO Range: %d",

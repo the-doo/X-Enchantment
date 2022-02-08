@@ -39,14 +39,14 @@ public abstract class LivingHalo extends HaloEnchantment<LivingEntity> {
     /**
      * Target is who in halo
      */
-    protected enum Type {
+    public enum Type {
         FRIENDLY((self, target) -> !target.isSpectator() && (target == self || target.isTeammate(self))),
 
         HARMFUL((self, target) -> !target.isSpectator() && target != self && !target.isTeammate(self)),
 
         ;
 
-        private final BiPredicate<LivingEntity, LivingEntity> predicate;
+        public final BiPredicate<LivingEntity, LivingEntity> predicate;
 
         Type(BiPredicate<LivingEntity, LivingEntity> predicate) {
             this.predicate = predicate;

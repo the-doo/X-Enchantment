@@ -22,7 +22,7 @@ public class Smart extends BaseEnchantment {
             .setStyle(Style.EMPTY.withColor(Formatting.GOLD));
 
     public Smart() {
-        super(NAME, Rarity.RARE, EnchantmentTarget.ARMOR_HEAD, new EquipmentSlot[]{EquipmentSlot.HEAD});
+        super(NAME, Rarity.VERY_RARE, EnchantmentTarget.ARMOR_HEAD, new EquipmentSlot[]{EquipmentSlot.HEAD});
     }
 
     @Override
@@ -32,12 +32,17 @@ public class Smart extends BaseEnchantment {
 
     @Override
     public int getMinPower(int level) {
-        return 50;
+        return 150;
     }
 
     @Override
     public int getMaxPower(int level) {
         return level * getMinPower(level);
+    }
+
+    @Override
+    public boolean isTreasure() {
+        return true;
     }
 
     @Override
@@ -48,11 +53,11 @@ public class Smart extends BaseEnchantment {
     @Override
     protected void livingTick(LivingEntity living, ItemStack stack, int level) {
         if (living instanceof PlayerEntity) {
-            // add xp: Max of (level, level * next * 0.01)
-            int amount = Math.max(100, ((PlayerEntity) living).getNextLevelExperience()) / 100 * level;
-            // if epiphany
-            if (living.getRandom().nextFloat() <= 0.001) {
-                amount *= 100;
+            // add level xp
+            int amount = level;
+            // if epiphany - 0.0005
+            if (living.getRandom().nextInt(1000) < 5) {
+                amount *= 1000;
                 EnchantUtil.sendMessage(living.getDisplayName(), EPIPHANY);
             }
 
