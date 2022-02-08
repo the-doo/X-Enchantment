@@ -65,7 +65,8 @@ public class EnchantUtil {
     /**
      * 可翻译文本
      */
-    public static final MutableText MORE_LOOT_TEXT = new TranslatableText("enchantment.x_enchant.chat.more_more_loot").setStyle(Style.EMPTY.withColor(Formatting.RED));
+    public static final MutableText MORE_LOOT_TEXT = new TranslatableText("enchantment.x_enchant.chat.more_more_loot")
+            .setStyle(Style.EMPTY.withColor(Formatting.RED));
     /**
      * 吸血记录
      */
@@ -85,7 +86,8 @@ public class EnchantUtil {
         // normal enchantments
         Stream.of(AutoFish.class, SuckBlood.class, Weakness.class, Rebirth.class,
                         MoreLoot.class, HitRateUp.class, QuickShoot.class, MagicImmune.class,
-                        Librarian.class, IncDamage.class)
+                        Librarian.class, IncDamage.class, Climber.class, Smart.class,
+                        KingKongLegs.class, Diffusion.class)
                 .forEach(c -> BaseEnchantment.get(c).register());
 
         // Halo enchantments
@@ -277,7 +279,7 @@ public class EnchantUtil {
         // 1% only 1
         if (ran < Enchant.option.moreMoreLootRate) {
             level *= Enchant.option.moreMoreLootMultiplier;
-            sendMessage(MORE_LOOT_TEXT);
+            sendMessage(itemStack.getName(), MORE_LOOT_TEXT);
         }
 
         return level;
@@ -286,11 +288,12 @@ public class EnchantUtil {
     /**
      * 聊天框发送信息
      *
-     * @param text text
+     * @param senderName sender
+     * @param text       text
      */
-    private static void sendMessage(Text text) {
+    public static void sendMessage(Text senderName, Text text) {
         if (Enchant.option.chatTips) {
-            Enchant.MC.inGameHud.getChatHud().addMessage(text);
+            Enchant.MC.inGameHud.getChatHud().addMessage(senderName.shallowCopy().append(":").append(text));
         }
     }
 
@@ -353,7 +356,7 @@ public class EnchantUtil {
         // tick enchantment
         StreamSupport.stream(living.getItemsEquipped().spliterator(), true).forEach(stack -> {
             stack.getEnchantments().stream()
-                    .filter(n -> BaseEnchantment.isBase(id(n)))
+                    .filter(n -> BaseEnchantment.isBase(id(n)) && lvl(n) > 0)
                     .forEach(n -> {
                         // old enchantment is null
                         Optional.ofNullable((BaseEnchantment) BaseEnchantment.get(id(n))).ifPresent(e -> e.tryTrigger(living, stack, lvl(n)));

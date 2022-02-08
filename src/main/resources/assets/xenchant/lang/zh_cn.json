@@ -19,6 +19,14 @@
   "enchantment.x_enchant.quick_shoot.desc": "没啥好说的, 更快的拉弓",
   "enchantment.x_enchant.magic_immune": "魔免",
   "enchantment.x_enchant.magic_immune.desc": "忽略负面效果",
+  "enchantment.x_enchant.climber": "登山者",
+  "enchantment.x_enchant.climber.desc": "当你爬山到一定程度时, 会添加跳跃提升3效果",
+  "enchantment.x_enchant.smart": "聪慧",
+  "enchantment.x_enchant.smart.desc": "每5秒增长一次经验也不奇怪吧, 神童是这样的",
+  "enchantment.x_enchant.king_kong_legs": "金刚腿",
+  "enchantment.x_enchant.king_kong_legs.desc": "可以最大减免坠落伤害也是正常的吧",
+  "enchantment.x_enchant.diffusion": "扩散",
+  "enchantment.x_enchant.diffusion.desc": "横扫之刃远程版, 可曰“球扫之箭”",
 
   "enchantment.x_enchant.halo_effect": "光环 - %s",
   "enchantment.x_enchant.halo_effect.desc": "药水效果的附魔版",
@@ -28,6 +36,7 @@
   "enchantment.x_enchant.halo_thunder.desc": "闪电有10%的概率劈人",
 
   "enchantment.x_enchant.chat.more_more_loot": "苟富贵，勿相忘~~~",
+  "enchantment.x_enchant.chat.smart": "一花一世界，带师，我悟了!",
 
   "x_enchant.menu.option.auto_fish": "自动钓鱼",
   "x_enchant.menu.option.suck_blood": "吸血",
@@ -41,6 +50,7 @@
   "x_enchant.menu.option.infinity_accept_mending": "无限与经验修复并存",
   "x_enchant.menu.option.quick_shoot": "快速射击",
   "x_enchant.menu.option.magic_immune": "魔免",
+  "x_enchant.menu.option.diffusion": "扩散基础伤害: %d",
 
   "x_enchant.menu.option.halo": "光环",
   "x_enchant.menu.option.halo_range": "光环范围: %d",

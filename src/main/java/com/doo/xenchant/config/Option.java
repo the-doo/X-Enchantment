@@ -4,7 +4,6 @@ import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributes;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -68,6 +67,11 @@ public class Option {
      * 魔免
      */
     public boolean magicImmune = true;
+
+    /**
+     * Diffusion base value
+     */
+    public double diffusion = 5;
 
     /**
      * 无限与修补

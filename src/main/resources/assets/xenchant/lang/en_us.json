@@ -19,6 +19,14 @@
   "enchantment.x_enchant.quick_shoot.desc": "Quick shoot, reduce bow pre time, and up with level",
   "enchantment.x_enchant.magic_immune": "Magic Immune",
   "enchantment.x_enchant.magic_immune.desc": "Immune badly status effect",
+  "enchantment.x_enchant.climber": "Climber",
+  "enchantment.x_enchant.climber.desc": "Add JUMP BOOST III status effect when you climb a mountain to a certain extent",
+  "enchantment.x_enchant.smart": "Smart",
+  "enchantment.x_enchant.smart.desc": "Automatically increase XP every 5 seconds",
+  "enchantment.x_enchant.king_kong_legs": "King Kong Legs",
+  "enchantment.x_enchant.king_kong_legs.desc": "Minimize fall damage",
+  "enchantment.x_enchant.diffusion": "Diffusion",
+  "enchantment.x_enchant.diffusion.desc": "Range Weapon version of Sweeping enchantment",
 
   "enchantment.x_enchant.halo_effect": "HALO - %s",
   "enchantment.x_enchant.halo_effect.desc": "Enchantment version of Status effect",
@@ -27,7 +35,8 @@
   "enchantment.x_enchant.halo_thunder": "HALO - Thunder",
   "enchantment.x_enchant.halo_thunder.desc": "10% chance Struck By Lightning",
 
-  "enchantment.x_enchant.chat.more_more_loot": "I'm rich man!!!",
+  "enchantment.x_enchant.chat.more_more_loot": "You're rich man now!!!",
+  "enchantment.x_enchant.chat.smart": "Life is insightful in its advance, and years are fragrant in its accumulation",
 
   "x_enchant.menu.option.auto_fish": "Auto Fishing",
   "x_enchant.menu.option.suck_blood": "Such Blood",
@@ -41,6 +50,7 @@
   "x_enchant.menu.option.infinity_accept_mending": "Infinity Accept Mending",
   "x_enchant.menu.option.quick_shoot": "Quick Shoot",
   "x_enchant.menu.option.magic_immune": "Magic Immune",
+  "x_enchant.menu.option.diffusion": "Diffusion base value: %d",
 
   "x_enchant.menu.option.halo": "HALO",
   "x_enchant.menu.option.halo_range": "HALO Range: %d",

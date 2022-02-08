@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "id": "x-enchant",
-  "version": "1.18-3.2",
+  "version": "1.18-4",
 
   "name": "X-Enchant",
-  "description": "添加附魔\n(add some enchant)",
+  "description": "添加附魔\n(Add Some Enchantment)",
   "authors": [
     "doo"
   ],

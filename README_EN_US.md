@@ -12,6 +12,10 @@
 - #### Hit Rate Up: More accurate shooting
 - #### Quick Shoot: Reduces charge time
 - #### Magic Immune: Immune debuff
+- #### Smart: Automatically increase XP every 5 seconds
+- #### King Kong Legs: Minimize fall damage, but it can't ignore all damage
+- #### Climber: Add JUMP BOOST III status effect when Y > 80
+- #### Diffusion: Range Weapon version of Sweeping enchantment, Damage: level x 5
 
 ## Halo Enchantment:
 
