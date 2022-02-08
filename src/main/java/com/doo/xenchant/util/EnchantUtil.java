@@ -289,7 +289,7 @@ public class EnchantUtil {
      * 聊天框发送信息
      *
      * @param senderName sender
-     * @param text text
+     * @param text       text
      */
     public static void sendMessage(Text senderName, Text text) {
         if (Enchant.option.chatTips) {
