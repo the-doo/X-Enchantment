@@ -85,7 +85,7 @@ public class EnchantUtil {
         // normal enchantments
         Stream.of(AutoFish.class, SuckBlood.class, Weakness.class, Rebirth.class,
                         MoreLoot.class, HitRateUp.class, QuickShoot.class, MagicImmune.class,
-                        Librarian.class, IncDamage.class)
+                        Librarian.class, IncDamage.class, Climber.class)
                 .forEach(c -> BaseEnchantment.get(c).register());
 
         // Halo enchantments

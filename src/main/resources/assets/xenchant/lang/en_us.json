@@ -19,6 +19,8 @@
   "enchantment.x_enchant.quick_shoot.desc": "Quick shoot, reduce bow pre time, and up with level",
   "enchantment.x_enchant.magic_immune": "Magic Immune",
   "enchantment.x_enchant.magic_immune.desc": "Immune badly status effect",
+  "enchantment.x_enchant.climber": "Climber",
+  "enchantment.x_enchant.climber.desc": "Add JUMP BOOST III status effect when you climb a mountain to a certain extent",
 
   "enchantment.x_enchant.halo_effect": "HALO - %s",
   "enchantment.x_enchant.halo_effect.desc": "Enchantment version of Status effect",

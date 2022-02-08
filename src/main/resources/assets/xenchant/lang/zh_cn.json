@@ -19,6 +19,8 @@
   "enchantment.x_enchant.quick_shoot.desc": "没啥好说的, 更快的拉弓",
   "enchantment.x_enchant.magic_immune": "魔免",
   "enchantment.x_enchant.magic_immune.desc": "忽略负面效果",
+  "enchantment.x_enchant.climber": "登山者",
+  "enchantment.x_enchant.climber.desc": "当你爬山到一定程度时, 会添加跳跃提升3效果",
 
   "enchantment.x_enchant.halo_effect": "光环 - %s",
   "enchantment.x_enchant.halo_effect.desc": "药水效果的附魔版",
