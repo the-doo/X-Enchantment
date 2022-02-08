@@ -21,6 +21,8 @@
   "enchantment.x_enchant.magic_immune.desc": "忽略负面效果",
   "enchantment.x_enchant.climber": "登山者",
   "enchantment.x_enchant.climber.desc": "当你爬山到一定程度时, 会添加跳跃提升3效果",
+  "enchantment.x_enchant.smart": "聪慧",
+  "enchantment.x_enchant.smart.desc": "每隔5秒自动增长经验",
 
   "enchantment.x_enchant.halo_effect": "光环 - %s",
   "enchantment.x_enchant.halo_effect.desc": "药水效果的附魔版",
@@ -30,6 +32,7 @@
   "enchantment.x_enchant.halo_thunder.desc": "闪电有10%的概率劈人",
 
   "enchantment.x_enchant.chat.more_more_loot": "苟富贵，勿相忘~~~",
+  "enchantment.x_enchant.chat.smart": "一花一世界，带师，我悟了!",
 
   "x_enchant.menu.option.auto_fish": "自动钓鱼",
   "x_enchant.menu.option.suck_blood": "吸血",
