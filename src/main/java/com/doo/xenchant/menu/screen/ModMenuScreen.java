@@ -89,6 +89,16 @@ public class ModMenuScreen extends Screen {
             (o, d) -> Enchant.option.thunderHaloStruckChance = d.intValue(),
             (g, o) -> new TranslatableText("x_enchant.menu.option.thunder_halo_chance", Enchant.option.thunderHaloStruckChance));
 
+    private static final DoubleOption TREASURE_EFFECT_LEVEL = new DoubleOption("", 1, 10, 1,
+            o -> (double) Enchant.option.effectTreasureMaxLevel,
+            (o, d) -> Enchant.option.effectTreasureMaxLevel = d.intValue(),
+            (g, o) -> new TranslatableText("x_enchant.menu.option.halo_effect_level_treasure", Enchant.option.effectTreasureMaxLevel));
+
+    private static final DoubleOption OTHER_EFFECT_LEVEL = new DoubleOption("", 1, 10, 1,
+            o -> (double) Enchant.option.effectOtherMaxLevel,
+            (o, d) -> Enchant.option.effectOtherMaxLevel = d.intValue(),
+            (g, o) -> new TranslatableText("x_enchant.menu.option.halo_effect_level_other", Enchant.option.effectOtherMaxLevel));
+
     private static final Option STATUS_EFFECT = new Option("x_enchant.menu.option.status_effect_halo") {
         @Override
         public ClickableWidget createButton(GameOptions options, int x, int y, int width) {
@@ -101,6 +111,7 @@ public class ModMenuScreen extends Screen {
     };
     private static final Option[] HALO_OPTION = {
             HALO, HALO_RANGE, THUNDER_HALO, THUNDER_HALO_TREASURE, THUNDER_HALO_CHANCE,
+            TREASURE_EFFECT_LEVEL, OTHER_EFFECT_LEVEL,
             STATUS_EFFECT
     };
     private static final Option[] ENCHANT_OPTION = {

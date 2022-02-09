@@ -5,6 +5,7 @@ import com.doo.xenchant.enchantment.*;
 import com.doo.xenchant.enchantment.halo.AttrHalo;
 import com.doo.xenchant.enchantment.halo.EffectHalo;
 import com.doo.xenchant.enchantment.halo.ThunderHalo;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
@@ -93,19 +94,18 @@ public class EnchantUtil {
         // Halo enchantments
         Stream.of(ThunderHalo.class).forEach(c -> BaseEnchantment.get(c).register());
 
-        // Status effect halo must regist after all mod loaded
-        // Attribute halo
-        // need filter(s -> Identifier.isValid(s.getTranslationKey()))
-        ServerLifecycleEvents.SERVER_STARTING.register(server -> {
-            // if not exsits
-            Registry.STATUS_EFFECT.stream()
-                    .filter(e -> e != null && Identifier.isValid(e.getTranslationKey()) && !Enchant.option.disabledEffect.contains(e.getTranslationKey()))
-                    .forEach(EffectHalo::new);
+        // regist to server
+        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+            registEffect();
 
-            // if not exsits
-            Registry.ATTRIBUTE.getEntries().stream()
-                    .filter(e -> Enchant.option.attributes.contains(e.getValue().getTranslationKey()))
-                    .forEach(e -> new AttrHalo(e.getValue()));
+            registAttr();
+        });
+
+        // regist to client
+        ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
+            registEffect();
+
+            registAttr();
         });
 
         // server listener
@@ -132,6 +132,24 @@ public class EnchantUtil {
                 WEAKNESS_LOG.remove(player.getId());
             }
         });
+    }
+
+    private static void registAttr() {
+        // Status effect halo must regist after all mod loaded
+        // need filter(s -> Identifier.isValid(s.getTranslationKey()))
+        // if not exsits
+        Registry.ATTRIBUTE.getEntries().stream()
+                .filter(e -> Enchant.option.attributes.contains(e.getValue().getTranslationKey()))
+                .forEach(e -> new AttrHalo(e.getValue()));
+    }
+
+    private static void registEffect() {
+        // Attribute halo must regist after all mod loaded
+        // need filter(s -> Identifier.isValid(s.getTranslationKey()))
+        // if not exsits
+        Registry.STATUS_EFFECT.stream()
+                .filter(e -> e != null && Identifier.isValid(e.getTranslationKey()) && !Enchant.option.disabledEffect.contains(e.getTranslationKey()))
+                .forEach(EffectHalo::new);
     }
 
     public static void suckBlood(LivingEntity attacker, float amount, Box box) {

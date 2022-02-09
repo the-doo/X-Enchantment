@@ -123,6 +123,16 @@ public class Option {
             .map(EntityAttribute::getTranslationKey).collect(Collectors.toSet());
 
     /**
+     * Effect Halo Level of friendly
+     */
+    public int effectTreasureMaxLevel = 5;
+
+    /**
+     * Effect Halo Level of Harmful
+     */
+    public int effectOtherMaxLevel = 3;
+
+    /**
      * Disabled Effect Set
      */
     public Collection<String> disabledEffect = new HashSet<>();

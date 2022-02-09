@@ -47,7 +47,7 @@ public class EffectHalo extends LivingHalo {
 
     @Override
     public int getMaxLevel() {
-        return isTreasure() ? 5 : 3;
+        return isTreasure() ? Enchant.option.effectTreasureMaxLevel : Enchant.option.effectOtherMaxLevel;
     }
 
     @Override

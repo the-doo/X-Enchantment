@@ -58,6 +58,8 @@
   "x_enchant.menu.option.thunder_halo": "HALO - Thunder",
   "x_enchant.menu.option.thunder_halo_treasure": "Thunder Halo Is Treasure",
   "x_enchant.menu.option.thunder_halo_chance": "Thunder Halo Struck Chance: %d",
+  "x_enchant.menu.option.halo_effect_level_treasure": "Treasure Effect Max Level: %d",
+  "x_enchant.menu.option.halo_effect_level_other": "Other Effect Max Level: %d",
   "x_enchant.menu.option.status_effect_halo": "Status Effect Halo Settings",
 
   "x_enchant.menu.option.chat_tips": "Chat Tips"
