@@ -4,7 +4,9 @@ import com.doo.xenchant.Enchant;
 import com.doo.xenchant.util.EnchantUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootPool;
+import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContext;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,17 +15,21 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.function.Consumer;
 
-@Mixin(LootPool.class)
+@Mixin(LootTable.class)
 public abstract class LootTableMixin {
 
+    @Final
     @Shadow
-    protected abstract void supplyOnce(Consumer<ItemStack> lootConsumer, LootContext context);
+    LootPool[] pools;
 
-    @Inject(method = "addGeneratedLoot", at = @At(value = "INVOKE", target = "Lnet/minecraft/loot/LootPool;supplyOnce(Ljava/util/function/Consumer;Lnet/minecraft/loot/context/LootContext;)V"))
-    public void forLootI(Consumer<ItemStack> lootConsumer, LootContext context, CallbackInfo ci) {
+    @Inject(method = "generateUnprocessedLoot", at = @At(value = "TAIL"))
+    public void forLootI(LootContext context, Consumer<ItemStack> lootConsumer, CallbackInfo ci) {
         if (Enchant.option.moreLoot) {
-            for (int k = EnchantUtil.loot(context); k > 0; k--) {
-                supplyOnce(lootConsumer, context);
+            int k = EnchantUtil.loot(context);
+            for (; k > 0; k--) {
+                for (LootPool lootPool : pools) {
+                    lootPool.addGeneratedLoot(lootConsumer, context);
+                }
             }
         }
     }

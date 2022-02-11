@@ -45,21 +45,19 @@ public class AutoFish extends BaseEnchantment {
     public void register() {
         super.register();
 
-        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER) {
-            S2CFishCaughtCallback.EVENT.register(getId(), ((player, item) -> {
-                // check enchantment
-                if (item.isEmpty() || level(item) < 1) {
-                    return;
-                }
+        S2CFishCaughtCallback.EVENT.register(getId(), ((player, item) -> {
+            // check enchantment
+            if (item.isEmpty() || level(item) < 1) {
+                return;
+            }
 
-                // 25% chance to return 10 damage
-                if (player.getRandom().nextBoolean() && player.getRandom().nextBoolean()) {
-                    item.setDamage(item.getDamage() - 10);
-                }
+            // 25% chance to return 10 damage
+            if (player.getRandom().nextBoolean() && player.getRandom().nextBoolean()) {
+                item.setDamage(item.getDamage() - 10);
+            }
 
-                ServerPlayNetworking.send((ServerPlayerEntity) player, getId(), PacketByteBufs.create());
-            }));
-        }
+            ServerPlayNetworking.send((ServerPlayerEntity) player, getId(), PacketByteBufs.create());
+        }));
 
         // client register
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {

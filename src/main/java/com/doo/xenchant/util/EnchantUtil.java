@@ -98,38 +98,36 @@ public class EnchantUtil {
         Stream.of(ThunderHalo.class).forEach(c -> BaseEnchantment.get(c).register());
 
         // regist to server
-        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER) {
-            ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-                registEffect();
+        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+            registEffect();
 
-                registAttr();
-            });
+            registAttr();
+        });
 
-            // server listener
-            ServerWorldEvents.LOAD.register((server, world) -> {
-                SUCK_LOG.clear();
-                WEAKNESS_LOG.clear();
-            });
+        // server listener
+        ServerWorldEvents.LOAD.register((server, world) -> {
+            SUCK_LOG.clear();
+            WEAKNESS_LOG.clear();
+        });
 
-            // server listener
-            ServerEntityEvents.ENTITY_UNLOAD.register((entity, world) -> {
-                if (entity != null) {
-                    // remove log
-                    SUCK_LOG.remove(entity.getId());
-                    WEAKNESS_LOG.remove(entity.getId());
-                }
-            });
+        // server listener
+        ServerEntityEvents.ENTITY_UNLOAD.register((entity, world) -> {
+            if (entity != null) {
+                // remove log
+                SUCK_LOG.remove(entity.getId());
+                WEAKNESS_LOG.remove(entity.getId());
+            }
+        });
 
-            // server listener
-            ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
-                ServerPlayerEntity player = handler.player;
-                if (player != null) {
-                    // remove log
-                    SUCK_LOG.remove(player.getId());
-                    WEAKNESS_LOG.remove(player.getId());
-                }
-            });
-        }
+        // server listener
+        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+            ServerPlayerEntity player = handler.player;
+            if (player != null) {
+                // remove log
+                SUCK_LOG.remove(player.getId());
+                WEAKNESS_LOG.remove(player.getId());
+            }
+        });
 
         // regist to client
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
@@ -440,6 +438,10 @@ public class EnchantUtil {
                 // add rondom enchantment
                 enchantment = Registry.ENCHANTMENT.getRandom(random);
                 enchantments.add(EnchantedBookItem.forEnchantment(new EnchantmentLevelEntry(enchantment, random.nextInt(enchantment.getMaxLevel()) + 1)));
+
+                if (enchantments.size() >= level) {
+                    break;
+                }
             }
         }
 
