@@ -4,8 +4,8 @@ import com.doo.xenchant.Enchant;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LightningEntity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundEvents;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.math.Vec3d;
 
 import java.util.List;
 
@@ -42,15 +42,23 @@ public class ThunderHalo extends LivingHalo {
     }
 
     @Override
+    public Type getType() {
+        return Type.HARMFUL;
+    }
+
+    @Override
     public void onTarget(LivingEntity entity, Integer level, List<LivingEntity> targets) {
-        LightningEntity lightning = new LightningEntity(EntityType.LIGHTNING_BOLT, entity.world);
-        lightning.setInvisible(true);
+        LightningEntity lightning = EntityType.LIGHTNING_BOLT.create(entity.getWorld());
+        if (lightning == null) {
+            return;
+        }
+
+        lightning.setChanneler(entity instanceof ServerPlayerEntity ? (ServerPlayerEntity) entity : null);
 
         targets.forEach(e -> {
             if (entity.getRandom().nextInt(100) < Enchant.option.thunderHaloStruckChance * level) {
-                e.onStruckByLightning((ServerWorld) e.world, lightning);
-                e.playSound(SoundEvents.ENTITY_LIGHTNING_BOLT_THUNDER, 1, 1);
-                e.setAttacker(entity);
+                lightning.refreshPositionAfterTeleport(Vec3d.ofBottomCenter(e.getBlockPos()));
+                e.world.spawnEntity(lightning);
             }
         });
     }

@@ -5,13 +5,16 @@ import com.doo.xenchant.enchantment.*;
 import com.doo.xenchant.enchantment.halo.AttrHalo;
 import com.doo.xenchant.enchantment.halo.EffectHalo;
 import com.doo.xenchant.enchantment.halo.ThunderHalo;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.tool.attribute.v1.ToolManager;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentLevelEntry;
@@ -95,43 +98,47 @@ public class EnchantUtil {
         Stream.of(ThunderHalo.class).forEach(c -> BaseEnchantment.get(c).register());
 
         // regist to server
-        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-            registEffect();
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER) {
+            ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+                registEffect();
 
-            registAttr();
-        });
+                registAttr();
+            });
+
+            // server listener
+            ServerWorldEvents.LOAD.register((server, world) -> {
+                SUCK_LOG.clear();
+                WEAKNESS_LOG.clear();
+            });
+
+            // server listener
+            ServerEntityEvents.ENTITY_UNLOAD.register((entity, world) -> {
+                if (entity != null) {
+                    // remove log
+                    SUCK_LOG.remove(entity.getId());
+                    WEAKNESS_LOG.remove(entity.getId());
+                }
+            });
+
+            // server listener
+            ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+                ServerPlayerEntity player = handler.player;
+                if (player != null) {
+                    // remove log
+                    SUCK_LOG.remove(player.getId());
+                    WEAKNESS_LOG.remove(player.getId());
+                }
+            });
+        }
 
         // regist to client
-        ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
-            registEffect();
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+            ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
+                registEffect();
 
-            registAttr();
-        });
-
-        // server listener
-        ServerWorldEvents.LOAD.register((server, world) -> {
-            SUCK_LOG.clear();
-            WEAKNESS_LOG.clear();
-        });
-
-        // server listener
-        ServerEntityEvents.ENTITY_UNLOAD.register((entity, world) -> {
-            if (entity != null) {
-                // remove log
-                SUCK_LOG.remove(entity.getId());
-                WEAKNESS_LOG.remove(entity.getId());
-            }
-        });
-
-        // server listener
-        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
-            ServerPlayerEntity player = handler.player;
-            if (player != null) {
-                // remove log
-                SUCK_LOG.remove(player.getId());
-                WEAKNESS_LOG.remove(player.getId());
-            }
-        });
+                registAttr();
+            });
+        }
     }
 
     private static void registAttr() {
@@ -311,7 +318,7 @@ public class EnchantUtil {
      */
     public static void sendMessage(Text senderName, Text text) {
         if (Enchant.option.chatTips) {
-            Enchant.MC.inGameHud.getChatHud().addMessage(senderName.shallowCopy().append(":").append(text));
+            MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(senderName.shallowCopy().append(":").append(text));
         }
     }
 
