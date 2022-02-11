@@ -12,21 +12,20 @@
     "homepage": "",
     "sources": ""
   },
-
   "license": "CC0-1.0",
   "icon": "assets/xenchant/textures/icon.png",
-
   "environment": "*",
   "entrypoints": {
     "main": [
       "com.doo.xenchant.Enchant"
     ],
-    "modmenu": [ "com.doo.xenchant.menu.ModMenu" ]
+    "modmenu": [
+      "com.doo.xenchant.menu.ModMenu"
+    ]
   },
   "mixins": [
     "xenchant.mixins.json"
   ],
-
   "depends": {
     "fabricloader": ">=0.7.4",
     "fabric": "*",
