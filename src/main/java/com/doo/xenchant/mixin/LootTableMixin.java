@@ -22,7 +22,7 @@ public abstract class LootTableMixin {
     @Shadow
     LootPool[] pools;
 
-    @Inject(method = "generateUnprocessedLoot", at = @At(value = "TAIL"))
+    @Inject(method = "generateUnprocessedLoot", at = @At(value = "INVOKE", target = "Lnet/minecraft/loot/context/LootContext;markInactive(Lnet/minecraft/loot/LootTable;)V"))
     public void forLootI(LootContext context, Consumer<ItemStack> lootConsumer, CallbackInfo ci) {
         if (Enchant.option.moreLoot) {
             int k = EnchantUtil.loot(context);
