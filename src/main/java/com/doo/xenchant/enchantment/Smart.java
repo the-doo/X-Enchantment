@@ -6,6 +6,7 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.TranslatableText;
@@ -52,13 +53,13 @@ public class Smart extends BaseEnchantment {
 
     @Override
     protected void livingTick(LivingEntity living, ItemStack stack, int level) {
-        if (living instanceof PlayerEntity) {
+        if (living instanceof ServerPlayerEntity) {
             // add level xp
             int amount = level;
             // if epiphany - 0.0005
             if (living.getRandom().nextInt(1000) < 5) {
                 amount *= 1000;
-                EnchantUtil.sendMessage(living.getDisplayName(), EPIPHANY);
+                EnchantUtil.sendMessage((ServerPlayerEntity) living, living.getDisplayName(), EPIPHANY);
             }
 
             ((PlayerEntity) living).addExperience(amount);

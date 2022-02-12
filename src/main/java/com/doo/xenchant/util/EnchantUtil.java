@@ -14,7 +14,6 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.tool.attribute.v1.ToolManager;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentLevelEntry;
@@ -33,6 +32,7 @@ import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
@@ -49,6 +49,8 @@ import net.minecraft.world.World;
 
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -272,8 +274,8 @@ public class EnchantUtil {
      */
     public static int loot(LootContext context) {
         ItemStack itemStack = context.get(LootContextParameters.TOOL);
+        Entity entity = context.get(LootContextParameters.KILLER_ENTITY);
         if (itemStack == null) {
-            Entity entity = context.get(LootContextParameters.KILLER_ENTITY);
             if (entity instanceof LivingEntity) {
                 itemStack = ((LivingEntity) entity).getMainHandStack();
             }
@@ -302,10 +304,37 @@ public class EnchantUtil {
         // 1% only 1
         if (ran < Enchant.option.moreMoreLootRate) {
             level *= Enchant.option.moreMoreLootMultiplier;
-            sendMessage(itemStack.getName(), MORE_LOOT_TEXT);
+            if (entity instanceof ServerPlayerEntity) {
+                sendMessage((ServerPlayerEntity) entity, itemStack.getName(), MORE_LOOT_TEXT);
+            }
         }
 
         return level;
+    }
+
+    public static Consumer<? super ItemStack> lootConsumer(int level, Consumer<ItemStack> lootConsumer) {
+        return i -> {
+            if (!i.isStackable()) {
+                IntStream.range(0, level).forEach(v -> lootConsumer.accept(i.copy()));
+                return;
+            }
+
+            int max = i.getMaxCount();
+            int count = i.getCount() * level;
+            if (count <= max) {
+                i.setCount(count);
+                return;
+            }
+            i.setCount(max);
+            count -= max;
+
+            // need new one
+            for (; count > 0; count -= max) {
+                ItemStack copy = i.copy();
+                copy.setCount(count <= max ? count : max);
+                lootConsumer.accept(copy);
+            }
+        };
     }
 
     /**
@@ -314,9 +343,9 @@ public class EnchantUtil {
      * @param senderName sender
      * @param text       text
      */
-    public static void sendMessage(Text senderName, Text text) {
+    public static void sendMessage(ServerPlayerEntity player, Text senderName, Text text) {
         if (Enchant.option.chatTips) {
-            MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(senderName.shallowCopy().append(":").append(text));
+            player.networkHandler.onChatMessage(new ChatMessageC2SPacket(senderName.shallowCopy().formatted(Formatting.GOLD).append(": ").append(text).getString()));
         }
     }
 
