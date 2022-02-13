@@ -4,13 +4,11 @@ import com.doo.xenchant.Enchant;
 import com.doo.xenchant.enchantment.*;
 import com.doo.xenchant.enchantment.halo.AttrHalo;
 import com.doo.xenchant.enchantment.halo.EffectHalo;
+import com.doo.xenchant.enchantment.halo.HeightAdvantageHalo;
 import com.doo.xenchant.enchantment.halo.ThunderHalo;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.tool.attribute.v1.ToolManager;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.BlockState;
@@ -46,6 +44,8 @@ import net.minecraft.world.World;
 import org.apache.commons.lang3.mutable.MutableFloat;
 
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
@@ -71,14 +71,6 @@ public class EnchantUtil {
      */
     public static final MutableText MORE_LOOT_TEXT = new TranslatableText("enchantment.x_enchant.chat.more_more_loot")
             .setStyle(Style.EMPTY.withColor(Formatting.RED));
-    /**
-     * 吸血记录
-     */
-    private static final Map<Integer, Integer> SUCK_LOG = new HashMap<>();
-    /**
-     * 攻击记录
-     */
-    private static final Map<Integer, Integer> WEAKNESS_LOG = new HashMap<>();
 
     private EnchantUtil() {
     }
@@ -91,42 +83,17 @@ public class EnchantUtil {
         Stream.of(AutoFish.class, SuckBlood.class, Weakness.class, Rebirth.class,
                         MoreLoot.class, HitRateUp.class, QuickShoot.class, MagicImmune.class,
                         Librarian.class, IncDamage.class, Climber.class, Smart.class,
-                        KingKongLegs.class, Diffusion.class)
+                        KingKongLegs.class, Diffusion.class, Elasticity.class)
                 .forEach(c -> BaseEnchantment.get(c).register());
 
         // Halo enchantments
-        Stream.of(ThunderHalo.class).forEach(c -> BaseEnchantment.get(c).register());
+        Stream.of(ThunderHalo.class, HeightAdvantageHalo.class).forEach(c -> BaseEnchantment.get(c).register());
 
         // regist to server
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
             registEffect();
 
             registAttr();
-        });
-
-        // server listener
-        ServerWorldEvents.LOAD.register((server, world) -> {
-            SUCK_LOG.clear();
-            WEAKNESS_LOG.clear();
-        });
-
-        // server listener
-        ServerEntityEvents.ENTITY_UNLOAD.register((entity, world) -> {
-            if (entity != null) {
-                // remove log
-                SUCK_LOG.remove(entity.getId());
-                WEAKNESS_LOG.remove(entity.getId());
-            }
-        });
-
-        // server listener
-        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
-            ServerPlayerEntity player = handler.player;
-            if (player != null) {
-                // remove log
-                SUCK_LOG.remove(player.getId());
-                WEAKNESS_LOG.remove(player.getId());
-            }
         });
 
         // regist to client
@@ -285,6 +252,13 @@ public class EnchantUtil {
     }
 
     /**
+     * elasticity
+     */
+    public static int elasticity(ItemStack itemStack) {
+        return BaseEnchantment.get(Elasticity.class).level(itemStack);
+    }
+
+    /**
      * living tick
      *
      * @param living living
@@ -298,7 +272,11 @@ public class EnchantUtil {
         AttrHalo.removeDirty(living);
 
         // tick enchantment
-        StreamSupport.stream(living.getItemsEquipped().spliterator(), true).forEach(stack -> {
+        StreamSupport.stream(living.getItemsEquipped().spliterator(), false).forEach(stack -> {
+            if (stack.getEnchantments().isEmpty()) {
+                return;
+            }
+
             stack.getEnchantments().stream()
                     .filter(n -> BaseEnchantment.isBase(id(n)) && lvl(n) > 0)
                     .forEach(n -> {

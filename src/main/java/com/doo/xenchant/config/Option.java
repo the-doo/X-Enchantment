@@ -94,6 +94,11 @@ public class Option {
     public double haloRange = 9F;
 
     /**
+     * Harmful Target Is Monster
+     */
+    public boolean harmfulTargetOnlyMonster = true;
+
+    /**
      * 雷霆光环
      */
     public boolean thunderHalo = true;

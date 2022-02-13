@@ -27,6 +27,8 @@
   "enchantment.x_enchant.king_kong_legs.desc": "可以最大减免坠落伤害也是正常的吧",
   "enchantment.x_enchant.diffusion": "扩散",
   "enchantment.x_enchant.diffusion.desc": "横扫之刃远程版, 可曰“球扫之箭”",
+  "enchantment.x_enchant.elasticity": "百步穿杨",
+  "enchantment.x_enchant.elasticity.desc": "箭速度成倍增加, 八百里开外一枪一个xx",
 
   "enchantment.x_enchant.halo_effect": "光环 - %s",
   "enchantment.x_enchant.halo_effect.desc": "药水效果的附魔版",
@@ -34,6 +36,8 @@
   "enchantment.x_enchant.halo_attribute.desc": "基础属性的附魔版",
   "enchantment.x_enchant.halo_thunder": "光环 - 雷霆",
   "enchantment.x_enchant.halo_thunder.desc": "闪电有10%的概率劈人",
+  "enchantment.x_enchant.halo_height_advantage": "光环 - 身高优势",
+  "enchantment.x_enchant.halo_height_advantage.desc": "接受高个儿的制裁吧~, 每3秒level点伤害",
 
   "enchantment.x_enchant.chat.more_more_loot": "苟富贵，勿相忘~~~",
   "enchantment.x_enchant.chat.smart": "一花一世界，带师，我悟了!",
@@ -54,6 +58,7 @@
 
   "x_enchant.menu.option.halo": "光环",
   "x_enchant.menu.option.halo_range": "光环范围: %d",
+  "x_enchant.menu.option.harmful_target_only_monster": "有害光环目标仅为怪物",
   "x_enchant.menu.option.halo_interval": "光环触发间隔: %d tick",
   "x_enchant.menu.option.thunder_halo": "雷霆光环",
   "x_enchant.menu.option.thunder_halo_treasure": "雷霆光环是宝藏",

@@ -27,6 +27,8 @@
   "enchantment.x_enchant.king_kong_legs.desc": "Minimize fall damage",
   "enchantment.x_enchant.diffusion": "Diffusion",
   "enchantment.x_enchant.diffusion.desc": "Range Weapon version of Sweeping enchantment",
+  "enchantment.x_enchant.elasticity": "String Strengthen",
+  "enchantment.x_enchant.elasticity.desc": "Arrows fly faster",
 
   "enchantment.x_enchant.halo_effect": "HALO - %s",
   "enchantment.x_enchant.halo_effect.desc": "Enchantment version of Status effect",
@@ -34,6 +36,8 @@
   "enchantment.x_enchant.halo_attribute.desc": "Enchantment version of Attribute",
   "enchantment.x_enchant.halo_thunder": "HALO - Thunder",
   "enchantment.x_enchant.halo_thunder.desc": "10% chance Struck By Lightning",
+  "enchantment.x_enchant.halo_height_advantage": "HALO - Height Advantage",
+  "enchantment.x_enchant.halo_height_advantage.desc": "Attack when it's height is not enough, level damage per 3 second",
 
   "enchantment.x_enchant.chat.more_more_loot": "You're rich man now!!!",
   "enchantment.x_enchant.chat.smart": "Life is insightful in its advance, and years are fragrant in its accumulation",
@@ -54,6 +58,7 @@
 
   "x_enchant.menu.option.halo": "HALO",
   "x_enchant.menu.option.halo_range": "HALO Range: %d",
+  "x_enchant.menu.option.harmful_target_only_monster": "Harmful Halo Target Only Monster",
   "x_enchant.menu.option.halo_interval": "HALO Interval : %d tick",
   "x_enchant.menu.option.thunder_halo": "HALO - Thunder",
   "x_enchant.menu.option.thunder_halo_treasure": "Thunder Halo Is Treasure",

@@ -16,6 +16,7 @@
 - #### King Kong Legs: Minimize fall damage, but it can't ignore all damage
 - #### Climber: Add JUMP BOOST III status effect when Y > 80
 - #### Diffusion: Range Weapon version of Sweeping enchantment, Damage: level x 5
+- #### String Strengthen: Arrows fly faster, the speed is level times
 
 ## Halo Enchantment:
 
@@ -26,6 +27,7 @@
 - #### Effect: Friendly, Instant or Beneficial effect is treasure
 - #### Attribute: Friendly, Add attribute base value addition or multi total
 - #### Thunder: Harmful, 3s to trigger, Struck by lightning, chance: 10% x level, treasure
+- #### Height Advantage: Attack when it's height is not enough, level damage per 3 second
 
 ###### Fixed range
 
