@@ -67,7 +67,7 @@ public class EffectHalo extends LivingHalo {
 
     @Override
     protected int second() {
-        return 2;
+        return 10;
     }
 
     @Override

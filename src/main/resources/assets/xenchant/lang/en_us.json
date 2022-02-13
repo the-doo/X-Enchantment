@@ -4,7 +4,7 @@
   "enchantment.x_enchant.librarian": "Librarian",
   "enchantment.x_enchant.librarian.desc": "Has chance to change common fishing loot be enchantment book: 5% x level",
   "enchantment.x_enchant.suck_blood": "Such Blood",
-  "enchantment.x_enchant.suck_blood.desc": "Heal when you attack: level x (0.1/0.15)",
+  "enchantment.x_enchant.suck_blood.desc": "Heal when you attack: level x 0.1",
   "enchantment.x_enchant.weakness": "Weakness Attack",
   "enchantment.x_enchant.weakness.desc": "3 x damage when you attack: level x 1.5% chance",
   "enchantment.x_enchant.increment_attack_damage": "I'll Be Strong",

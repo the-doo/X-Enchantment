@@ -122,6 +122,53 @@ public abstract class BaseEnchantment extends Enchantment {
     protected void livingTick(LivingEntity living, ItemStack stack, int level) {
     }
 
+    /**
+     * Addition Damage on hit, is effect on armor
+     * <p>
+     * 1 -> amount + 1
+     * 0.5 -> amount + 0.5
+     */
+    public float getAdditionDamage(LivingEntity attacker, LivingEntity target, ItemStack stack, int level) {
+        return 0;
+    }
+
+    /**
+     * Multi total Damage on hit, is effect on armor
+     * <p>
+     * 1 -> amount * (1 + 1)
+     * 0.5 -> amount * (1 + 0.5)
+     */
+    public float getMultiTotalDamage(LivingEntity attacker, LivingEntity target, ItemStack stack, int level) {
+        return 0;
+    }
+
+    /**
+     * Addition Damage on hit, real damage, after armor effect
+     * <p>
+     * 1 -> amount + 1
+     * 0.5 -> amount + 0.5
+     */
+    public float getRealAdditionDamage(LivingEntity attacker, LivingEntity target, ItemStack stack, int level) {
+        return 0;
+    }
+
+    /**
+     * Multi total Damage on hit, real damage, after armor effect
+     * <p>
+     * 1 -> amount * (1 + 1)
+     * 0.5 -> amount * (1 + 0.5)
+     */
+    public float getRealMultiTotalDamage(LivingEntity attacker, LivingEntity target, ItemStack stack, int level) {
+        return 0;
+    }
+
+    /**
+     * damage callback
+     */
+    public void damageCallback(LivingEntity attacker, LivingEntity target, ItemStack stack, int level, float amount) {
+
+    }
+
     @SuppressWarnings("all")
     private static class BaseEnchantmentFactory {
 

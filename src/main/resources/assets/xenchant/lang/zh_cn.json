@@ -4,7 +4,7 @@
   "enchantment.x_enchant.librarian": "图书管理员",
   "enchantment.x_enchant.librarian.desc": "钓鱼中常见物品有几率变成附魔书: 5% x 等级",
   "enchantment.x_enchant.suck_blood": "吸血",
-  "enchantment.x_enchant.suck_blood.desc": "恢复一定比例攻击伤害的血量: 等级 x 伤害 x 0.1/0.15",
+  "enchantment.x_enchant.suck_blood.desc": "恢复一定比例攻击伤害的血量: 等级 x 0.1",
   "enchantment.x_enchant.weakness": "亢龙有悔",
   "enchantment.x_enchant.weakness.desc": "一定概率造成3倍伤害, 几率: 等级 x 5%",
   "enchantment.x_enchant.increment_attack_damage": "潜龙在渊",

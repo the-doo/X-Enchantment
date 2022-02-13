@@ -8,7 +8,6 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.RangedWeaponItem;
-import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -38,29 +37,48 @@ public abstract class LivingEntityMixin {
         }
     }
 
-    @ModifyVariable(method = "applyDamage", at = @At(value = "HEAD"), argsOnly = true)
-    private float returnAmount(float amount, DamageSource source) {
+    @ModifyVariable(method = "applyDamage", at = @At(value = "STORE", ordinal = 0), argsOnly = true)
+    private float damageAmount(float amount, DamageSource source) {
         Entity entity = source.getAttacker();
-        if (Enchant.option.weakness && entity instanceof LivingEntity) {
-            return EnchantUtil.weakness((LivingEntity) entity, amount);
+        if (entity instanceof LivingEntity) {
+            // is addition damage
+            float addition = EnchantUtil.additionDamage((LivingEntity) entity, (LivingEntity) (Object) this);
+            amount += addition;
+            // is multi total damage
+            float multi = EnchantUtil.multiTotalDamage((LivingEntity) entity, (LivingEntity) (Object) this);
+            amount *= multi;
         }
-
         return amount;
     }
 
-    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;setHealth(F)V"), method = "applyDamage")
-    private void applyDamageT(DamageSource source, float amount, CallbackInfo ci) {
+    @ModifyVariable(method = "applyDamage", at = @At(value = "STORE", ordinal = 1), argsOnly = true)
+    private float realDamageAmount(float amount, DamageSource source) {
         Entity entity = source.getAttacker();
-        if (Enchant.option.suckBlood && entity instanceof LivingEntity) {
-            EnchantUtil.suckBlood((LivingEntity) entity, amount, entity.getBoundingBox().expand(1.0D, 0.25D, 1.0D));
+        if (entity instanceof LivingEntity) {
+            // is addition damage
+            float addition = EnchantUtil.realAdditionDamage((LivingEntity) entity, (LivingEntity) (Object) this);
+            amount += addition;
+            // is multi total damage
+            float multi = EnchantUtil.realMultiTotalDamage((LivingEntity) entity, (LivingEntity) (Object) this);
+            amount *= multi;
+        }
+        return amount;
+    }
+
+    @Inject(method = "applyDamage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/damage/DamageTracker;onDamage(Lnet/minecraft/entity/damage/DamageSource;FF)V"))
+    private void damageCallback(DamageSource source, float amount, CallbackInfo ci) {
+        Entity entity = source.getAttacker();
+        if (entity instanceof LivingEntity) {
+            EnchantUtil.damageCallback((LivingEntity) entity, (LivingEntity) (Object) this, amount);
         }
     }
 
-    @Inject(method = "canHaveStatusEffect", at = @At("HEAD"), cancellable = true)
-    private void canHaveStatusEffectH(StatusEffectInstance effect, CallbackInfoReturnable<Boolean> cir) {
+    @Inject(method = "addStatusEffect(Lnet/minecraft/entity/effect/StatusEffectInstance;)Z", at = @At("HEAD"), cancellable = true)
+    private void addStatusEffect(StatusEffectInstance effect, CallbackInfoReturnable<Boolean> cir) {
         LivingEntity e = (LivingEntity) (Object) this;
-        if (Enchant.option.magicImmune && e instanceof ServerPlayerEntity && EnchantUtil.magicImmune((ServerPlayerEntity) e, effect)) {
-            cir.setReturnValue(false);
+        // true is use item and no effect
+        if (Enchant.option.magicImmune && EnchantUtil.magicImmune(e, effect)) {
+            cir.setReturnValue(true);
             cir.cancel();
         }
     }

@@ -17,15 +17,12 @@ import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentLevelEntry;
-import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.*;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
@@ -46,6 +43,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.mutable.MutableFloat;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -157,113 +155,6 @@ public class EnchantUtil {
         Registry.STATUS_EFFECT.stream()
                 .filter(e -> e != null && Identifier.isValid(e.getTranslationKey()) && !Enchant.option.disabledEffect.contains(e.getTranslationKey()))
                 .forEach(EffectHalo::new);
-    }
-
-    public static void suckBlood(LivingEntity attacker, float amount, Box box) {
-        ItemStack itemStack = attacker.getStackInHand(Hand.MAIN_HAND);
-        // no level
-        int level = BaseEnchantment.get(SuckBlood.class).level(itemStack);
-        if (level < 1) {
-            return;
-        }
-
-        // log
-        int id = attacker.getId();
-        Integer age = attacker.getLastAttackTime();
-        if (SUCK_LOG.put(id, age) == age) {
-            return;
-        }
-
-        // attack multi target and has sweep
-        long count = itemStack.getItem() instanceof SwordItem ? attacker.world.getNonSpectatingEntities(LivingEntity.class, box).stream().filter(l -> canAttacked(attacker, l)).count() : 0;
-
-        // suck scale
-        boolean moreWithSweep = count > 1 && EnchantmentHelper.getLevel(Enchantments.SWEEPING, itemStack) > 0;
-        float scale = level * (1F + (moreWithSweep ? Math.min(0.1F * count, 0.5F) : 0F));
-        attacker.heal(scale * amount / 10);
-    }
-
-    /**
-     * 能否攻击
-     * <p>
-     * (判断参考如下)
-     * see PlayerEntity.attack(Entity target)
-     *
-     * @param attacker     玩家
-     * @param livingEntity 存活对象
-     * @return true or false
-     */
-    private static boolean canAttacked(LivingEntity attacker, LivingEntity livingEntity) {
-        // 排除当前对象
-        return livingEntity != attacker
-                // 距离小于9
-                && attacker.squaredDistanceTo(livingEntity) < 9.0
-                // 排除队友
-                && !attacker.isTeammate(livingEntity)
-                // 可攻击
-                && !(livingEntity instanceof ArmorStandEntity && ((ArmorStandEntity) livingEntity).isMarker());
-    }
-
-    /**
-     * 弱点攻击
-     *
-     * @param attack 玩家
-     * @param amount 伤害量
-     */
-    public static float weakness(LivingEntity attack, float amount) {
-        ItemStack itemStack = attack.getStackInHand(Hand.MAIN_HAND);
-        // no sword
-        if (!(itemStack.getItem() instanceof SwordItem || itemStack.getItem() instanceof RangedWeaponItem)) {
-            return amount;
-        }
-
-        // no level
-        int level = BaseEnchantment.get(Weakness.class).level(itemStack);
-        if (level < 1) {
-            return amount;
-        }
-
-        // log
-        int id = attack.getId();
-        Integer age = attack.getLastAttackTime();
-        if (WEAKNESS_LOG.put(id, age) == age) {
-            return amount;
-        }
-
-        // random number
-        return attack.getRandom().nextInt(100) < 5 * level ? amount * 3 : amount;
-    }
-
-    /**
-     * 重生
-     * <p>
-     * (判断参考如下)
-     * see net.minecraft.entity.LivingEntity#tryUseTotem(net.minecraft.entity.damage.DamageSource)
-     *
-     * @param player 玩家
-     */
-    public static boolean rebirth(LivingEntity player) {
-        ItemStack stack = player.getEquippedStack(EquipmentSlot.CHEST);
-        Rebirth rebirth = BaseEnchantment.get(Rebirth.class);
-
-        int level = rebirth.level(stack);
-        if (level < 1) {
-            return true;
-        }
-
-        // use totem effect
-        player.setHealth(player.getMaxHealth());
-        player.clearStatusEffects();
-        player.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 500, 4));
-        player.addStatusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, 500, 4));
-        player.addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 500, 4));
-        player.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 500, 2));
-        player.addStatusEffect(new StatusEffectInstance(StatusEffects.JUMP_BOOST, 500, 2));
-        player.world.sendEntityStatus(player, (byte) 35);
-
-        // decrement 1 level, see ItemStack.addEnchantment
-        stack.getNbt().getList(ItemStack.ENCHANTMENTS_KEY, 10).stream().map(e -> (NbtCompound) e).filter(e -> EnchantmentHelper.getIdFromNbt(e).equals(rebirth.getId())).findFirst().ifPresent(e -> EnchantmentHelper.writeLevelToNbt(e, level - 1));
-        return false;
     }
 
     /**
@@ -381,15 +272,16 @@ public class EnchantUtil {
      * 魔免判断
      *
      * @param uuid   玩家id
+     * @param living
      * @param effect 效果
      * @return 是否需要免疫
      */
-    public static boolean magicImmune(ServerPlayerEntity player, StatusEffectInstance effect) {
-        if (player == null && StatusEffectCategory.HARMFUL.equals(effect.getEffectType().getCategory())) {
+    public static boolean magicImmune(LivingEntity living, StatusEffectInstance effect) {
+        if (living == null || StatusEffectCategory.HARMFUL != effect.getEffectType().getCategory()) {
             return false;
         }
 
-        return BaseEnchantment.get(MagicImmune.class).level(player.getEquippedStack(EquipmentSlot.CHEST)) > 0;
+        return BaseEnchantment.get(MagicImmune.class).level(living.getEquippedStack(EquipmentSlot.CHEST)) > 0;
     }
 
     /**
@@ -499,5 +391,47 @@ public class EnchantUtil {
                     // only BaseEnchantment
                     .filter(enchantment -> enchantment instanceof BaseEnchantment).ifPresent(enchantment -> consumer.accept((BaseEnchantment) enchantment, EnchantmentHelper.getLevelFromNbt(nbtCompound)));
         }
+    }
+
+    public static float additionDamage(LivingEntity attacker, LivingEntity target) {
+        MutableFloat newAmount = new MutableFloat(0);
+        Stream.of(attacker.getMainHandStack(), attacker.getOffHandStack()).forEach(stack -> {
+            forBaseEnchantment((e, l) -> newAmount.add(e.getAdditionDamage(attacker, target, stack, l)), stack);
+        });
+        return newAmount.floatValue();
+    }
+
+    public static float multiTotalDamage(LivingEntity attacker, LivingEntity target) {
+        MutableFloat newAmount = new MutableFloat(1);
+        Stream.of(attacker.getMainHandStack(), attacker.getOffHandStack()).forEach(stack -> {
+            forBaseEnchantment((e, l) -> newAmount.add(e.getMultiTotalDamage(attacker, target, stack, l)), stack);
+        });
+        return newAmount.floatValue();
+    }
+
+    public static float realAdditionDamage(LivingEntity attacker, LivingEntity target) {
+        MutableFloat newAmount = new MutableFloat(0);
+        Stream.of(attacker.getMainHandStack(), attacker.getOffHandStack()).forEach(stack -> {
+            forBaseEnchantment((e, l) -> newAmount.add(e.getRealAdditionDamage(attacker, target, stack, l)), stack);
+        });
+        return newAmount.floatValue();
+    }
+
+    public static float realMultiTotalDamage(LivingEntity attacker, LivingEntity target) {
+        MutableFloat newAmount = new MutableFloat(1);
+        Stream.of(attacker.getMainHandStack(), attacker.getOffHandStack()).forEach(stack -> {
+            forBaseEnchantment((e, l) -> newAmount.add(e.getRealMultiTotalDamage(attacker, target, stack, l)), stack);
+        });
+        return newAmount.floatValue();
+    }
+
+    public static void damageCallback(LivingEntity attacker, LivingEntity target, float amount) {
+        Stream.of(attacker.getMainHandStack(), attacker.getOffHandStack()).forEach(stack -> {
+            forBaseEnchantment((e, l) -> e.damageCallback(attacker, target, stack, l, amount), stack);
+        });
+
+        attacker.getArmorItems().forEach(stack -> {
+            forBaseEnchantment((e, l) -> e.damageCallback(attacker, target, stack, l, amount), stack);
+        });
     }
 }

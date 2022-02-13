@@ -77,9 +77,9 @@ public class IncDamage extends BaseEnchantment {
                 return;
             }
 
-            NbtCompound compound = stack.getOrCreateNbt();
             ToolItem item = (ToolItem) stack.getItem();
 
+            NbtCompound compound = stack.getOrCreateNbt();
             float now = compound.getFloat(nptKey());
             float max = item.getMaterial().getAttackDamage() * level(stack);
             if (now >= max) {
