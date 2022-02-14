@@ -138,6 +138,11 @@ public class Option {
     public int effectOtherMaxLevel = 3;
 
     /**
+     * Disabled All Effect Set
+     */
+    public boolean enabledAllEffect = false;
+
+    /**
      * Disabled Effect Set
      */
     public Collection<String> disabledEffect = new HashSet<>();

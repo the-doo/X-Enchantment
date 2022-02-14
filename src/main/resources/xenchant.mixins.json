@@ -4,7 +4,6 @@
   "package": "com.doo.xenchant.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "EnchantmentHelperMixin",
     "FishingBobberMixin",
     "InfinityMixin",
     "LivingEntityMixin",

@@ -67,13 +67,13 @@ public class EffectHalo extends LivingHalo {
 
     @Override
     protected int second() {
-        return 10;
+        return 5;
     }
 
     @Override
     public void onTarget(LivingEntity entity, Integer level, List<LivingEntity> targets) {
         // default duration 2 * second()
-        StatusEffectInstance instance = new StatusEffectInstance(effect, second() * 25, level - 1);
+        StatusEffectInstance instance = new StatusEffectInstance(effect, second() * 50, level - 1);
         targets.forEach(e -> {
             StatusEffectInstance has = e.getStatusEffect(effect);
 

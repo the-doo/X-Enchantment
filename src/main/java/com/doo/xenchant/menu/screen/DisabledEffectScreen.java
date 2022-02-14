@@ -16,6 +16,7 @@ import net.minecraft.util.registry.Registry;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Disabled status effect list screen
@@ -42,6 +43,27 @@ public class DisabledEffectScreen extends Screen {
     @Override
     protected void init() {
         list = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
+
+        // All Button
+        list.addSingleOptionEntry(CyclingOption.create("x_enchant.menu.option.status_effect_halo.enabled_all", o -> Enchant.option.enabledAllEffect, (g, o, enabled) -> {
+            Enchant.option.enabledAllEffect = enabled;
+            
+            // if enabled
+            if (enabled) {
+                // clear
+                Enchant.option.disabledEffect.clear();
+
+                // register all
+                Registry.STATUS_EFFECT.stream()
+                        .filter(e -> e != null && Identifier.isValid(e.getTranslationKey()))
+                        .forEach(EffectHalo::new);
+            } else {
+                // add all
+                Enchant.option.disabledEffect.addAll(Registry.STATUS_EFFECT.stream()
+                        .map(StatusEffect::getTranslationKey)
+                        .filter(Identifier::isValid).collect(Collectors.toSet()));
+            }
+        }));
 
         // set options
         List<CyclingOption<Boolean>> total = Registry.STATUS_EFFECT.stream()

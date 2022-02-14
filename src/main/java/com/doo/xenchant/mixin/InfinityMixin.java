@@ -14,7 +14,7 @@ public abstract class InfinityMixin {
 
     @Inject(at = @At("HEAD"), method = "canAccept", cancellable = true)
     public void canAcceptH(Enchantment other, CallbackInfoReturnable<Boolean> cir) {
-        if (!cir.getReturnValueZ() && Enchant.option.infinityAcceptMending && other instanceof MendingEnchantment) {
+        if (Enchant.option.infinityAcceptMending && other instanceof MendingEnchantment) {
             cir.setReturnValue(true);
             cir.cancel();
         }

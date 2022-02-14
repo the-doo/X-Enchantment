@@ -1,15 +1,19 @@
 package com.doo.xenchant.enchantment;
 
 import com.doo.xenchant.util.EnchantUtil;
+import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ToolItem;
-import net.minecraft.item.ToolMaterials;
+import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+
+import java.text.DecimalFormat;
+import java.util.List;
 
 /**
  * Increment Attack Damage
@@ -17,6 +21,8 @@ import net.minecraft.nbt.NbtCompound;
 public class IncDamage extends BaseEnchantment {
 
     public static final String NAME = "increment_attack_damage";
+
+    private static final DecimalFormat FORMAT = new DecimalFormat("#.##");
 
     public IncDamage() {
         super(NAME, Rarity.VERY_RARE, EnchantmentTarget.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
@@ -29,12 +35,12 @@ public class IncDamage extends BaseEnchantment {
 
     @Override
     public int getMaxPower(int level) {
-        return this.getMinPower(level) + 50;
+        return level * 150;
     }
 
     @Override
     public int getMaxLevel() {
-        return 3;
+        return 5;
     }
 
     @Override
@@ -65,7 +71,7 @@ public class IncDamage extends BaseEnchantment {
     public void register() {
         super.register();
 
-        // inc point when killed other
+        // inc value when killed other
         ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register(((world, entity, killedEntity) -> {
             if (!(entity instanceof LivingEntity)) {
                 return;
@@ -81,7 +87,14 @@ public class IncDamage extends BaseEnchantment {
 
             NbtCompound compound = stack.getOrCreateNbt();
             float now = compound.getFloat(nptKey());
-            float max = item.getMaterial().getAttackDamage() * level(stack);
+            float max = 0;
+            if (item instanceof SwordItem) {
+                max = ((SwordItem) item).getAttackDamage();
+            } else if (item instanceof MiningToolItem) {
+                max = ((MiningToolItem) item).getAttackDamage();
+            }
+            max *= level(stack);
+
             if (now >= max) {
                 return;
             }
@@ -92,10 +105,17 @@ public class IncDamage extends BaseEnchantment {
                 compound.putFloat(nptKey(), Math.min(max, now + inc));
             }
         }));
+
+        // tooltips
+        ItemTooltipCallback.EVENT.register((ItemStack stack, TooltipContext context, List<Text> lines) -> {
+            if (stack.getOrCreateNbt().contains(nptKey())) {
+                lines.add(new TranslatableText(getTranslationKey()).append(": ↑").append(FORMAT.format(stack.getOrCreateNbt().getFloat(nptKey()))));
+            }
+        });
     }
 
     @Override
-    public float getAttackDamage(ItemStack item, int level, EntityGroup group) {
-        return item.getOrCreateNbt().getFloat(nptKey());
+    public float getAdditionDamage(LivingEntity attacker, LivingEntity target, ItemStack stack, int level) {
+        return stack.getOrCreateNbt().getFloat(nptKey());
     }
 }

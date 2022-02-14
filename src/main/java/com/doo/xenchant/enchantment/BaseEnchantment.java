@@ -5,10 +5,10 @@ import com.doo.xenchant.config.Config;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.context.LootContext;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -17,6 +17,8 @@ import net.minecraft.util.registry.Registry;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 
 /**
  * 附魔基类
@@ -70,23 +72,13 @@ public abstract class BaseEnchantment extends Enchantment {
         return id;
     }
 
+    public String nbtKey(String key) {
+        return id.toString() + key;
+    }
+
     @Override
     public Text getName(int level) {
         return super.getName(level).shallowCopy().formatted(RATE_COLOR[getRarity().ordinal()]);
-    }
-
-    /**
-     * It's final
-     *
-     * @see BaseEnchantment#getAttackDamage(net.minecraft.item.ItemStack, int, net.minecraft.entity.EntityGroup)
-     */
-    @Override
-    public final float getAttackDamage(int level, EntityGroup group) {
-        return super.getAttackDamage(level, group);
-    }
-
-    public float getAttackDamage(ItemStack item, int level, EntityGroup group) {
-        return super.getAttackDamage(level, group);
     }
 
     public int level(ItemStack item) {
@@ -167,6 +159,15 @@ public abstract class BaseEnchantment extends Enchantment {
      */
     public void damageCallback(LivingEntity attacker, LivingEntity target, ItemStack stack, int level, float amount) {
 
+    }
+
+    /**
+     * can change loot consumer
+     *
+     * @return next consumer
+     */
+    public UnaryOperator<ItemStack> lootSetter(LivingEntity killer, ItemStack stack, Integer level, Consumer<ItemStack> baseConsumer, LootContext context) {
+        return null;
     }
 
     @SuppressWarnings("all")

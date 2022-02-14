@@ -65,7 +65,9 @@
   "x_enchant.menu.option.thunder_halo_chance": "雷霆光环击中几率: %d",
   "x_enchant.menu.option.halo_effect_level_treasure": "宝藏效果最大等级: %d",
   "x_enchant.menu.option.halo_effect_level_other": "其他效果最大等级: %d",
+
   "x_enchant.menu.option.status_effect_halo": "药水光环设置",
+  "x_enchant.menu.option.status_effect_halo.enabled_all": "启用所有",
 
   "x_enchant.menu.option.chat_tips": "聊天提示"
 }

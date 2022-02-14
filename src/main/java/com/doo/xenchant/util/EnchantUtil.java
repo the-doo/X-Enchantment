@@ -9,19 +9,19 @@ import com.doo.xenchant.enchantment.halo.ThunderHalo;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.tool.attribute.v1.ToolManager;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.block.BlockState;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.EnchantmentLevelEntry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.item.*;
+import net.minecraft.entity.projectile.FishingBobberEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.RangedWeaponItem;
+import net.minecraft.item.ToolItem;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.nbt.NbtCompound;
@@ -29,24 +29,22 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Rarity;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.mutable.MutableFloat;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.stream.IntStream;
+import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -64,11 +62,6 @@ public class EnchantUtil {
      * ALL HAND
      */
     public static final EquipmentSlot[] ALL_HAND = new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND};
-    /**
-     * 可翻译文本
-     */
-    public static final MutableText MORE_LOOT_TEXT = new TranslatableText("enchantment.x_enchant.chat.more_more_loot")
-            .setStyle(Style.EMPTY.withColor(Formatting.RED));
 
     private EnchantUtil() {
     }
@@ -120,77 +113,6 @@ public class EnchantUtil {
         Registry.STATUS_EFFECT.stream()
                 .filter(e -> e != null && Identifier.isValid(e.getTranslationKey()) && !Enchant.option.disabledEffect.contains(e.getTranslationKey()))
                 .forEach(EffectHalo::new);
-    }
-
-    /**
-     * 更多战利品
-     *
-     * @param rolls   基数
-     * @param context 上下文
-     */
-    public static int loot(LootContext context) {
-        ItemStack itemStack = context.get(LootContextParameters.TOOL);
-        Entity entity = context.get(LootContextParameters.KILLER_ENTITY);
-        if (itemStack == null) {
-            if (entity instanceof LivingEntity) {
-                itemStack = ((LivingEntity) entity).getMainHandStack();
-            }
-        }
-        if (itemStack == null || itemStack.isEmpty()) {
-            return 0;
-        }
-
-        // no effect on
-        BlockState block = context.get(LootContextParameters.BLOCK_STATE);
-        if (block != null && !ToolManager.handleIsEffectiveOn(block, itemStack, null)) {
-            return 0;
-        }
-
-        // no level
-        int level = BaseEnchantment.get(MoreLoot.class).level(itemStack);
-        if (level < 1) {
-            return 0;
-        }
-
-        // 20% 0-19
-        int ran = context.getRandom().nextInt(100);
-        if (ran >= Enchant.option.moreLootRate - 1) {
-            return 0;
-        }
-        // 1% only 1
-        if (ran < Enchant.option.moreMoreLootRate) {
-            level *= Enchant.option.moreMoreLootMultiplier;
-            if (entity instanceof ServerPlayerEntity) {
-                sendMessage((ServerPlayerEntity) entity, itemStack.getName(), MORE_LOOT_TEXT);
-            }
-        }
-
-        return level;
-    }
-
-    public static Consumer<? super ItemStack> lootConsumer(int level, Consumer<ItemStack> lootConsumer) {
-        return i -> {
-            if (!i.isStackable()) {
-                IntStream.range(0, level).forEach(v -> lootConsumer.accept(i.copy()));
-                return;
-            }
-
-            int max = i.getMaxCount();
-            int count = i.getCount() * level;
-            if (count <= max) {
-                i.setCount(count);
-                return;
-            }
-            i.setCount(max);
-            count -= max;
-
-            // need new one
-            for (; count > 0; count -= max) {
-                ItemStack copy = i.copy();
-                copy.setCount(count <= max ? count : max);
-                lootConsumer.accept(copy);
-            }
-        };
     }
 
     /**
@@ -311,44 +233,6 @@ public class EnchantUtil {
     }
 
     /**
-     * replace common loot to enchantment book
-     *
-     * @param player
-     * @param fishingLoots
-     * @param random
-     * @return
-     */
-    public static Collection<ItemStack> replaceEnchantmentBook(Collection<ItemStack> fishingLoots, Random random, ItemStack rod) {
-        if (rod.isEmpty()) {
-            return fishingLoots;
-        }
-
-        int level = BaseEnchantment.get(Librarian.class).level(rod);
-
-        List<ItemStack> enchantments = new ArrayList<>();
-        Enchantment enchantment;
-        for (ItemStack fishingLoot : fishingLoots) {
-            // try to replace --- 5% * level chance
-            if (fishingLoot.getRarity() == Rarity.COMMON && random.nextInt(100) < 5 * level) {
-                fishingLoot.setCount(0);
-
-                // add rondom enchantment
-                enchantment = Registry.ENCHANTMENT.getRandom(random);
-                enchantments.add(EnchantedBookItem.forEnchantment(new EnchantmentLevelEntry(enchantment, random.nextInt(enchantment.getMaxLevel()) + 1)));
-
-                if (enchantments.size() >= level) {
-                    break;
-                }
-            }
-        }
-
-        if (!enchantments.isEmpty()) {
-            fishingLoots.addAll(enchantments);
-        }
-        return fishingLoots;
-    }
-
-    /**
      * foreach
      *
      * @param function
@@ -409,5 +293,40 @@ public class EnchantUtil {
         attacker.getArmorItems().forEach(stack -> {
             forBaseEnchantment((e, l) -> e.damageCallback(attacker, target, stack, l, amount), stack);
         });
+    }
+
+    public static Consumer<ItemStack> lootConsumer(Consumer<ItemStack> lootConsumer, LootContext context) {
+        // defualt is tool loot
+        ItemStack stack = context.get(LootContextParameters.TOOL);
+        Entity entity = Optional.ofNullable(context.get(LootContextParameters.KILLER_ENTITY))
+                .orElse(context.get(LootContextParameters.THIS_ENTITY));
+
+        // if is attack loot, try get on entity
+        if (stack == null && entity instanceof LivingEntity) {
+            stack = ((LivingEntity) entity).getMainHandStack();
+        }
+
+        // if is rod loot, try get owner
+        if (entity instanceof FishingBobberEntity) {
+            entity = ((FishingBobberEntity) entity).getOwner();
+        }
+
+        if (stack == null || stack.isEmpty() || !(entity instanceof LivingEntity)) {
+            return lootConsumer;
+        }
+
+        ItemStack item = stack;
+        LivingEntity killer = (LivingEntity) entity;
+
+        List<Function<ItemStack, ItemStack>> list = new ArrayList<>();
+        BiConsumer<BaseEnchantment, Integer> forEach = (e, l) ->
+                Optional.ofNullable(e.lootSetter(killer, item, l, lootConsumer, context)).ifPresent(list::add);
+        forBaseEnchantment(forEach, stack);
+
+        if (list.isEmpty()) {
+            return lootConsumer;
+        }
+
+        return lootConsumer.andThen(i -> list.stream().reduce((c1, c2) -> c1.andThen(c2)).get().apply(i));
     }
 }
