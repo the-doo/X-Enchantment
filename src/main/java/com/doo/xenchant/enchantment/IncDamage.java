@@ -112,9 +112,11 @@ public class IncDamage extends BaseEnchantment {
 
         // tooltips
         ItemTooltipCallback.EVENT.register((ItemStack stack, TooltipContext context, List<Text> lines) -> {
-            NbtCompound nbt = stack.getOrCreateNbt();
-            if (nbt.contains(nbtKey(KEY))) {
-                lines.add(new TranslatableText(getTranslationKey()).append(": ↑").append(FORMAT.format(nbt.getFloat(nbtKey(KEY)))).formatted(Formatting.GRAY));
+            if (level(stack) > 0) {
+                lines.add(new TranslatableText(getTranslationKey())
+                        .append(": ↑")
+                        .append(FORMAT.format(stack.getOrCreateNbt().getFloat(nbtKey(KEY))))
+                        .formatted(Formatting.GRAY));
             }
         });
     }

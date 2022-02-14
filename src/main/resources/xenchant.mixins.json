@@ -6,6 +6,7 @@
   "mixins": [
     "FishingBobberMixin",
     "InfinityMixin",
+    "ItemStackMixin",
     "LivingEntityMixin",
     "LootTableMixin",
     "PersistentProjectileEntityMixin"

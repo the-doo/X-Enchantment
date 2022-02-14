@@ -51,7 +51,7 @@ public class NightBreak extends BaseEnchantment {
         NbtCompound nbt = stack.getOrCreateNbt();
 
         long count = nbt.getLong(nbtKey(KEY));
-        nbt.putLong(nbtKey(KEY), count + 1);
+        nbt.putLong(nbtKey(KEY), count += 1);
 
         // if attack 3 times, damage is level * 10% * maxHealth
         if (count % 3 == 0) {
@@ -68,9 +68,8 @@ public class NightBreak extends BaseEnchantment {
 
         // tooltips
         ItemTooltipCallback.EVENT.register(((stack, context, lines) -> {
-            NbtCompound nbt = stack.getOrCreateNbt();
-            if (nbt.contains(nbtKey(KEY))) {
-                lines.add(new TranslatableText(getTranslationKey()).append(": ").append(nbt.getLong(nbtKey(KEY)) + "").formatted(Formatting.GRAY));
+            if (level(stack) > 0) {
+                lines.add(new TranslatableText(getTranslationKey()).append(": ").append(stack.getOrCreateNbt().getLong(nbtKey(KEY)) + "").formatted(Formatting.GRAY));
                 lines.add(new TranslatableText(getTranslationKey()).append(" - ").append(TIPS).formatted(Formatting.GRAY));
             }
         }));
