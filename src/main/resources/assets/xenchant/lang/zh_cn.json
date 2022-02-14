@@ -29,6 +29,9 @@
   "enchantment.x_enchant.diffusion.desc": "横扫之刃远程版, 可曰“球扫之箭”",
   "enchantment.x_enchant.elasticity": "百步穿杨",
   "enchantment.x_enchant.elasticity.desc": "箭速度成倍增加, 八百里开外一枪一个xx",
+  "enchantment.x_enchant.night_break": "夜影克星",
+  "enchantment.x_enchant.night_break.desc": "每2次攻击后下次攻击将附加目标最大生命值百分比的真实伤害, 伤害: 10% x level",
+  "enchantment.x_enchant.night_break.tips": "感谢@NightBreak的贡献",
 
   "enchantment.x_enchant.halo_effect": "光环 - %s",
   "enchantment.x_enchant.halo_effect.desc": "药水效果的附魔版",

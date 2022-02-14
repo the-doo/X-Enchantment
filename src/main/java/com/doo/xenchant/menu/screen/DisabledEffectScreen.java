@@ -47,7 +47,7 @@ public class DisabledEffectScreen extends Screen {
         // All Button
         list.addSingleOptionEntry(CyclingOption.create("x_enchant.menu.option.status_effect_halo.enabled_all", o -> Enchant.option.enabledAllEffect, (g, o, enabled) -> {
             Enchant.option.enabledAllEffect = enabled;
-            
+
             // if enabled
             if (enabled) {
                 // clear

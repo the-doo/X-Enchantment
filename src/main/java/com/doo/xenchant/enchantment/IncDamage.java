@@ -11,6 +11,7 @@ import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -21,6 +22,8 @@ import java.util.List;
 public class IncDamage extends BaseEnchantment {
 
     public static final String NAME = "increment_attack_damage";
+
+    private static final String KEY = "Damages";
 
     private static final DecimalFormat FORMAT = new DecimalFormat("#.##");
 
@@ -53,10 +56,6 @@ public class IncDamage extends BaseEnchantment {
         return stack.getItem() instanceof ToolItem;
     }
 
-    private String nptKey() {
-        return getId().toString() + "Damages";
-    }
-
     /**
      * Default DIAMOND is 1 base
      *
@@ -65,6 +64,11 @@ public class IncDamage extends BaseEnchantment {
      */
     private float inc(int durability) {
         return 1F * durability / ToolMaterials.DIAMOND.getDurability();
+    }
+
+    @Override
+    public float getAdditionDamage(LivingEntity attacker, LivingEntity target, ItemStack stack, int level) {
+        return stack.getOrCreateNbt().getFloat(nbtKey(KEY));
     }
 
     @Override
@@ -86,7 +90,7 @@ public class IncDamage extends BaseEnchantment {
             ToolItem item = (ToolItem) stack.getItem();
 
             NbtCompound compound = stack.getOrCreateNbt();
-            float now = compound.getFloat(nptKey());
+            float now = compound.getFloat(nbtKey(KEY));
             float max = 0;
             if (item instanceof SwordItem) {
                 max = ((SwordItem) item).getAttackDamage();
@@ -102,20 +106,16 @@ public class IncDamage extends BaseEnchantment {
             // inc = random scale * inc()
             float inc = ((LivingEntity) entity).getRandom().nextFloat() * inc(item.getMaterial().getDurability());
             if (inc > 0) {
-                compound.putFloat(nptKey(), Math.min(max, now + inc));
+                compound.putFloat(nbtKey(KEY), Math.min(max, now + inc));
             }
         }));
 
         // tooltips
         ItemTooltipCallback.EVENT.register((ItemStack stack, TooltipContext context, List<Text> lines) -> {
-            if (stack.getOrCreateNbt().contains(nptKey())) {
-                lines.add(new TranslatableText(getTranslationKey()).append(": ↑").append(FORMAT.format(stack.getOrCreateNbt().getFloat(nptKey()))));
+            NbtCompound nbt = stack.getOrCreateNbt();
+            if (nbt.contains(nbtKey(KEY))) {
+                lines.add(new TranslatableText(getTranslationKey()).append(": ↑").append(FORMAT.format(nbt.getFloat(nbtKey(KEY)))).formatted(Formatting.GRAY));
             }
         });
-    }
-
-    @Override
-    public float getAdditionDamage(LivingEntity attacker, LivingEntity target, ItemStack stack, int level) {
-        return stack.getOrCreateNbt().getFloat(nptKey());
     }
 }

@@ -29,6 +29,9 @@
   "enchantment.x_enchant.diffusion.desc": "Range Weapon version of Sweeping enchantment",
   "enchantment.x_enchant.elasticity": "String Strengthen",
   "enchantment.x_enchant.elasticity.desc": "Arrows fly faster",
+  "enchantment.x_enchant.night_break": "Night Break",
+  "enchantment.x_enchant.night_break.desc": "After every 2 attacks, the next attack will add true damage as a percentage of the target's maximum health, Damage: 10% x level",
+  "enchantment.x_enchant.night_break.tips": "Thanks to @NightBreak for the contribution",
 
   "enchantment.x_enchant.halo_effect": "HALO - %s",
   "enchantment.x_enchant.halo_effect.desc": "Enchantment version of Status effect",
