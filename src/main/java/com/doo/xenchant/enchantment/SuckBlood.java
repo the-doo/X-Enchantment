@@ -6,7 +6,6 @@ import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Hand;
@@ -85,26 +84,5 @@ public class SuckBlood extends BaseEnchantment {
 
         count++;
         compound.putInt("count", count);
-    }
-
-    /**
-     * 能否攻击
-     * <p>
-     * (判断参考如下)
-     * see PlayerEntity.attack(Entity target)
-     *
-     * @param attacker     玩家
-     * @param livingEntity 存活对象
-     * @return true or false
-     */
-    private static boolean canAttacked(LivingEntity attacker, LivingEntity livingEntity) {
-        // 排除当前对象
-        return livingEntity != attacker
-                // 距离小于9
-                && attacker.squaredDistanceTo(livingEntity) < 9.0
-                // 排除队友
-                && !attacker.isTeammate(livingEntity)
-                // 可攻击
-                && !(livingEntity instanceof ArmorStandEntity && ((ArmorStandEntity) livingEntity).isMarker());
     }
 }
