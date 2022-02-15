@@ -34,10 +34,10 @@
   "enchantment.x_enchant.night_break.tips": "感谢@NightBreak的贡献",
   "enchantment.x_enchant.broken_dawn": "破晓",
   "enchantment.x_enchant.broken_dawn.desc": "它将进化于破晓之时, 或许吧......见风雨也未必有彩虹",
-  "enchantment.x_enchant.broken_dawn.done": "黎明已至",
+  "enchantment.x_enchant.broken_dawn.done": "第一缕曙光",
   "enchantment.x_enchant.broken_dawn.tips": "感谢@BrokenDawn627的贡献",
   "enchantment.x_enchant.timor": "提莫",
-  "enchantment.x_enchant.timor.desc": "站立不动3秒会隐身, 解除时会提高攻击速度",
+  "enchantment.x_enchant.timor.desc": "蹲伏3秒后会隐身, 解除时会提高攻击速度",
 
   "enchantment.x_enchant.regicide": "弑君者",
   "enchantment.x_enchant.regicide.desc": "攻击伤害小于附魔等级时, 该伤害同样会落在你身上, 软弱之时, 毙命之日",

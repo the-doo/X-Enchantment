@@ -20,6 +20,8 @@ public class Timor extends BaseEnchantment {
 
     private static final String COUNT = "Count";
 
+    private static final String POS = "Pos";
+
     public Timor() {
         super(NAME, Rarity.COMMON, EnchantmentTarget.ARMOR_FEET, new EquipmentSlot[]{EquipmentSlot.FEET});
     }
@@ -35,22 +37,18 @@ public class Timor extends BaseEnchantment {
     }
 
     @Override
-    public int getMaxLevel() {
-        return 5;
-    }
-
-    @Override
     protected void livingTick(LivingEntity living, ItemStack stack, int level) {
         NbtCompound nbt = stack.getOrCreateNbt();
         long id = nbt.getLong(nbtKey(ID));
         if (living.getId() != id) {
             nbt.putLong(nbtKey(ID), living.getId());
             nbt.putLong(nbtKey(COUNT), 1);
+            nbt.remove(nbtKey(POS));
         }
         long count = nbt.getLong(nbtKey(COUNT));
 
         // if it's not standing
-        if (living.getPose() != EntityPose.STANDING) {
+        if (living.getPose() != EntityPose.CROUCHING) {
             if (count >= 3) {
                 living.addStatusEffect(new StatusEffectInstance(StatusEffects.HASTE, 300, 3));
             }

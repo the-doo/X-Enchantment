@@ -35,7 +35,7 @@ public class BrokenDawn extends BaseEnchantment {
     private static final TranslatableText TIPS = new TranslatableText("enchantment.x_enchant.broken_dawn.tips");
 
     public BrokenDawn() {
-        super(NAME, Rarity.RARE, EnchantmentTarget.BREAKABLE, EquipmentSlot.values());
+        super(NAME, Rarity.VERY_RARE, EnchantmentTarget.BREAKABLE, EquipmentSlot.values());
     }
 
     @Override
@@ -78,6 +78,9 @@ public class BrokenDawn extends BaseEnchantment {
         if (!done) {
             return;
         }
+        // log done
+        stack.getOrCreateNbt().putBoolean(nbtKey(DONE), true);
+        stack.getOrCreateNbt().remove(nbtKey(KEY));
 
         // default increment
         int inc = 1;
@@ -90,12 +93,9 @@ public class BrokenDawn extends BaseEnchantment {
             if (next == Items.AIR) {
                 inc *= 3;
             } else {
-                drop = new ItemStack(next);
+                drop = next.getDefaultStack();
                 drop.setNbt(stack.getNbt());
-                drop.removeSubNbt(ItemStack.ENCHANTMENTS_KEY);
-
-                // log done
-                drop.getOrCreateNbt().putBoolean(DONE, true);
+                drop.setDamage(0);
             }
         }
 
@@ -115,7 +115,6 @@ public class BrokenDawn extends BaseEnchantment {
         if (drop.isEmpty()) {
             // log done
             stack.setSubNbt(ItemStack.ENCHANTMENTS_KEY, enchantments);
-            stack.getOrCreateNbt().putBoolean(DONE, true);
             return;
         }
 
@@ -154,7 +153,7 @@ public class BrokenDawn extends BaseEnchantment {
             // not done
             if (level(stack) > 0) {
                 lines.add(new TranslatableText(getTranslationKey()).append(": ")
-                        .append(FORMAT.format(nbt.getLong(nbtKey(KEY)) / max(stack)) + "%").formatted(Formatting.GRAY));
+                        .append(FORMAT.format(10D * nbt.getLong(nbtKey(KEY)) / max(stack)) + "%").formatted(Formatting.GRAY));
                 lines.add(new TranslatableText(getTranslationKey()).append(" - ")
                         .append(TIPS).formatted(Formatting.GRAY));
             }

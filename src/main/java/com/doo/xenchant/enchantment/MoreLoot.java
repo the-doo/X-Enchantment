@@ -69,6 +69,10 @@ public class MoreLoot extends BaseEnchantment {
 
     @Override
     public UnaryOperator<ItemStack> lootSetter(LivingEntity killer, ItemStack stack, Integer level, Consumer<ItemStack> baseConsumer, LootContext context) {
+        if (!Enchant.option.moreLoot) {
+            return null;
+        }
+
         // no effect on
         BlockState block = context.get(LootContextParameters.BLOCK_STATE);
         if (block != null && !ToolManager.handleIsEffectiveOn(block, stack, null)) {
