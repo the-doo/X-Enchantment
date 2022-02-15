@@ -58,11 +58,6 @@ public class MoreLoot extends BaseEnchantment {
     }
 
     @Override
-    public void register() {
-        super.register();
-    }
-
-    @Override
     public boolean isAcceptableItem(ItemStack stack) {
         return !(stack.getItem() instanceof Wearable);
     }

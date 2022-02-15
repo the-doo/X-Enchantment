@@ -316,7 +316,8 @@ public class EnchantUtil {
             return lootConsumer;
         }
 
-        return lootConsumer.andThen(i -> list.stream().reduce((c1, c2) -> c1.andThen(c2)).get().apply(i));
+        Function<ItemStack, ItemStack> function = list.stream().reduce((c1, c2) -> c1.andThen(c2)).get();
+        return lootConsumer.andThen(i -> function.apply(i));
     }
 
     public static void itemUsedCallback(LivingEntity owner, ItemStack stack, float amount) {
