@@ -38,7 +38,7 @@ public class DownArmor extends Cursed {
     }
 
     @Override
-    public float getMultiTotalArmor(LivingEntity living, float damage, ItemStack stack, Integer level) {
+    public float getMultiTotalArmor(LivingEntity living, double base, ItemStack stack, Integer level) {
         return -(0.1F * level);
     }
 }

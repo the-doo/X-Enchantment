@@ -75,7 +75,7 @@ public class EnchantUtil {
                         MoreLoot.class, HitRateUp.class, QuickShoot.class, MagicImmune.class,
                         Librarian.class, IncDamage.class, Climber.class, Smart.class,
                         KingKongLegs.class, Diffusion.class, Elasticity.class,
-                        NightBreak.class, BrokenDawn.class)
+                        NightBreak.class, BrokenDawn.class, Timor.class)
                 .forEach(c -> BaseEnchantment.get(c).register());
 
         // cursed enchantments
@@ -266,18 +266,10 @@ public class EnchantUtil {
         return newAmount.floatValue();
     }
 
-    public static float additionArmor(LivingEntity living, float damage) {
-        MutableFloat newAmount = new MutableFloat(0);
-        Stream.of(living.getMainHandStack(), living.getOffHandStack()).forEach(stack -> {
-            forBaseEnchantment((e, l) -> newAmount.add(e.getAdditionArmor(living, damage, stack, l)), stack);
-        });
-        return newAmount.floatValue();
-    }
-
-    public static float multiTotalArmor(LivingEntity living, float damage) {
+    public static float multiTotalArmor(LivingEntity living, double base) {
         MutableFloat newAmount = new MutableFloat(1);
         Stream.of(living.getMainHandStack(), living.getOffHandStack()).forEach(stack -> {
-            forBaseEnchantment((e, l) -> newAmount.add(e.getMultiTotalArmor(living, damage, stack, l)), stack);
+            forBaseEnchantment((e, l) -> newAmount.add(e.getMultiTotalArmor(living, base, stack, l)), stack);
         });
         return newAmount.floatValue();
     }

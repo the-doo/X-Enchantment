@@ -9,7 +9,6 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.context.LootContext;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -25,8 +24,6 @@ import java.util.function.UnaryOperator;
  * 附魔基类
  */
 public abstract class BaseEnchantment extends Enchantment {
-
-    private static final Map<String, BaseEnchantment> ID_MAP = new HashMap<>();
 
     static final DecimalFormat FORMAT = new DecimalFormat("#.##");
 
@@ -44,27 +41,11 @@ public abstract class BaseEnchantment extends Enchantment {
             return;
         }
 
-        ID_MAP.put(id.toString(), Registry.register(Registry.ENCHANTMENT, id, this));
-        BaseEnchantmentFactory.register(this);
+        BaseEnchantmentFactory.register(Registry.register(Registry.ENCHANTMENT, id, this));
     }
 
     public static <T extends BaseEnchantment> T get(Class<T> clazz) {
         return BaseEnchantmentFactory.getInstance(clazz);
-    }
-
-    @SuppressWarnings("all")
-    public static <T extends BaseEnchantment> T get(String id) {
-        return (T) ID_MAP.get(id);
-    }
-
-    @SuppressWarnings("all")
-    public static <T extends BaseEnchantment> T get(Identifier id) {
-        return (T) ID_MAP.get(id);
-    }
-
-    @SuppressWarnings("all")
-    public static <T extends BaseEnchantment> T get(NbtCompound tag) {
-        return (T) ID_MAP.get(EnchantmentHelper.getIdFromNbt(tag));
     }
 
     public Identifier getId() {
@@ -117,6 +98,7 @@ public abstract class BaseEnchantment extends Enchantment {
      * Addition Damage on hit, is effect on armor
      * <p>
      * 1 -> amount + 1
+     * <p>
      * 0.5 -> amount + 0.5
      */
     public float getAdditionDamage(LivingEntity attacker, LivingEntity target, ItemStack stack, int level) {
@@ -127,6 +109,7 @@ public abstract class BaseEnchantment extends Enchantment {
      * Multi total Damage on hit, is effect on armor
      * <p>
      * 1 -> amount * (1 + 1)
+     * <p>
      * 0.5 -> amount * (1 + 0.5)
      */
     public float getMultiTotalDamage(LivingEntity attacker, LivingEntity target, ItemStack stack, int level) {
@@ -137,17 +120,21 @@ public abstract class BaseEnchantment extends Enchantment {
      * Addition Damage on hit, real damage, after armor effect
      * <p>
      * 1 -> amount + 1
+     * <p>
      * 0.5 -> amount + 0.5
      */
     public float getRealAdditionDamage(LivingEntity attacker, LivingEntity target, ItemStack stack, int level) {
         return 0;
     }
 
-    public float getAdditionArmor(LivingEntity living, float damage, ItemStack stack, Integer level) {
-        return 0;
-    }
-
-    public float getMultiTotalArmor(LivingEntity living, float damage, ItemStack stack, Integer level) {
+    /**
+     * Multi total armor
+     * <p>
+     * 1 -> armor * (1 + 1)
+     * <p>
+     * 0.5 -> armor * (1 + 0.5)
+     */
+    public float getMultiTotalArmor(LivingEntity living, double base, ItemStack stack, Integer level) {
         return 0;
     }
 
