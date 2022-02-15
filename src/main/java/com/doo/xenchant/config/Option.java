@@ -94,6 +94,11 @@ public class Option {
     public double haloRange = 9F;
 
     /**
+     * Harmful Target Is Monster
+     */
+    public boolean harmfulTargetOnlyMonster = true;
+
+    /**
      * 雷霆光环
      */
     public boolean thunderHalo = true;
@@ -131,6 +136,11 @@ public class Option {
      * Effect Halo Level of Harmful
      */
     public int effectOtherMaxLevel = 3;
+
+    /**
+     * Disabled All Effect Set
+     */
+    public boolean enabledAllEffect = false;
 
     /**
      * Disabled Effect Set

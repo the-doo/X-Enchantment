@@ -1,9 +1,13 @@
 package com.doo.xenchant.enchantment;
 
-import com.doo.xenchant.util.EnchantUtil;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 
 /**
  * 重生
@@ -35,6 +39,33 @@ public class Rebirth extends BaseEnchantment {
     public void register() {
         super.register();
 
-        ServerPlayerEvents.ALLOW_DEATH.register(((player, damageSource, damageAmount) -> EnchantUtil.rebirth(player)));
+        // true is allow death
+        ServerPlayerEvents.ALLOW_DEATH.register(((player, damageSource, damageAmount) -> {
+            ItemStack stack = player.getEquippedStack(EquipmentSlot.CHEST);
+            Rebirth rebirth = BaseEnchantment.get(Rebirth.class);
+
+            int level = rebirth.level(stack);
+            if (level < 1) {
+                return true;
+            }
+
+            // use totem effect
+            // see net.minecraft.entity.LivingEntity#tryUseTotem(net.minecraft.entity.damage.DamageSource)
+            player.setHealth(player.getMaxHealth());
+            player.clearStatusEffects();
+            player.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 500, 4));
+            player.addStatusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, 500, 4));
+            player.addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 500, 4));
+            player.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 500, 2));
+            player.addStatusEffect(new StatusEffectInstance(StatusEffects.JUMP_BOOST, 500, 2));
+            player.world.sendEntityStatus(player, (byte) 35);
+
+            // decrement 1 level, see ItemStack.addEnchantment
+            stack.getNbt().getList(ItemStack.ENCHANTMENTS_KEY, 10).stream()
+                    .map(e -> (NbtCompound) e).filter(e -> EnchantmentHelper.getIdFromNbt(e).equals(rebirth.getId()))
+                    .findFirst()
+                    .ifPresent(e -> EnchantmentHelper.writeLevelToNbt(e, level - 1));
+            return false;
+        }));
     }
 }

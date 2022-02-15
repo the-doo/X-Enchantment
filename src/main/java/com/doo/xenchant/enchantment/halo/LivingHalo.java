@@ -1,6 +1,8 @@
 package com.doo.xenchant.enchantment.halo;
 
+import com.doo.xenchant.Enchant;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.mob.Monster;
 import net.minecraft.util.math.Box;
 
 import java.util.Collections;
@@ -40,9 +42,13 @@ public abstract class LivingHalo extends HaloEnchantment<LivingEntity> {
      * Target is who in halo
      */
     public enum Type {
-        FRIENDLY((self, target) -> !target.isSpectator() && (target == self || target.isTeammate(self))),
+        FRIENDLY((self, target) ->
+                !target.isSpectator() && (target == self || target.isTeammate(self))),
 
-        HARMFUL((self, target) -> !target.isSpectator() && target != self && !target.isTeammate(self)),
+        HARMFUL((self, target) ->
+                !target.isSpectator() && target != self && !target.isTeammate(self) &&
+                        // if open
+                        (!Enchant.option.harmfulTargetOnlyMonster || target instanceof Monster)),
 
         ;
 

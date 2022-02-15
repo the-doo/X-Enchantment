@@ -78,6 +78,9 @@ public class ModMenuScreen extends Screen {
             (o, d) -> Enchant.option.haloRange = d,
             (g, o) -> new TranslatableText("x_enchant.menu.option.halo_range", Enchant.option.haloRange));
 
+    private static final CyclingOption<Boolean> HARMFUL_TARGET_ONLY_MONSTER = CyclingOption.create("x_enchant.menu.option.harmful_target_only_monster",
+            o -> Enchant.option.harmfulTargetOnlyMonster, (g, o, d) -> Enchant.option.harmfulTargetOnlyMonster = d);
+
     private static final CyclingOption<Boolean> THUNDER_HALO = CyclingOption.create("x_enchant.menu.option.thunder_halo",
             o -> Enchant.option.thunderHalo, (g, o, d) -> Enchant.option.thunderHalo = d);
 
@@ -110,9 +113,11 @@ public class ModMenuScreen extends Screen {
         }
     };
     private static final Option[] HALO_OPTION = {
-            HALO, HALO_RANGE, THUNDER_HALO, THUNDER_HALO_TREASURE, THUNDER_HALO_CHANCE,
-            TREASURE_EFFECT_LEVEL, OTHER_EFFECT_LEVEL,
-            STATUS_EFFECT
+            HALO, HALO_RANGE,
+            HARMFUL_TARGET_ONLY_MONSTER, null,
+            THUNDER_HALO, THUNDER_HALO_TREASURE,
+            THUNDER_HALO_CHANCE, TREASURE_EFFECT_LEVEL,
+            OTHER_EFFECT_LEVEL, STATUS_EFFECT
     };
     private static final Option[] ENCHANT_OPTION = {
             AUTO_FISHING, SUCK_BLOOD, WEAKNESS, REBIRTH,

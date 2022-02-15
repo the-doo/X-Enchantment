@@ -4,7 +4,7 @@
   "enchantment.x_enchant.librarian": "Librarian",
   "enchantment.x_enchant.librarian.desc": "Has chance to change common fishing loot be enchantment book: 5% x level",
   "enchantment.x_enchant.suck_blood": "Such Blood",
-  "enchantment.x_enchant.suck_blood.desc": "Heal when you attack: level x (0.1/0.15)",
+  "enchantment.x_enchant.suck_blood.desc": "Heal when you attack: level x 0.1",
   "enchantment.x_enchant.weakness": "Weakness Attack",
   "enchantment.x_enchant.weakness.desc": "3 x damage when you attack: level x 1.5% chance",
   "enchantment.x_enchant.increment_attack_damage": "I'll Be Strong",
@@ -27,6 +27,26 @@
   "enchantment.x_enchant.king_kong_legs.desc": "Minimize fall damage",
   "enchantment.x_enchant.diffusion": "Diffusion",
   "enchantment.x_enchant.diffusion.desc": "Range Weapon version of Sweeping enchantment",
+  "enchantment.x_enchant.elasticity": "String Strengthen",
+  "enchantment.x_enchant.elasticity.desc": "Arrows fly faster",
+  "enchantment.x_enchant.night_break": "Night Break",
+  "enchantment.x_enchant.night_break.desc": "After every 2 attacks, the next attack will add true damage as a percentage of the target's maximum health, Damage: 10% x level",
+  "enchantment.x_enchant.night_break.tips": "Thanks to @NightBreak for the contribution",
+  "enchantment.x_enchant.broken_dawn": "Broken Dawn",
+  "enchantment.x_enchant.broken_dawn.desc": "It will eventually evolve when the dawn is coming, it hopes...",
+  "enchantment.x_enchant.broken_dawn.done": "Dawn Coming",
+  "enchantment.x_enchant.broken_dawn.tips": "Thanks to @BrokenDawn627 for the contribution",
+  "enchantment.x_enchant.timor": "Timor",
+  "enchantment.x_enchant.timor.desc": "Stand still for 3 seconds to become invisible, and increase attack speed when removed",
+
+  "enchantment.x_enchant.regicide": "Regicide",
+  "enchantment.x_enchant.regicide.desc": "When the attack damage is less than the enchantment level, the damage will also fall on you, what happens when you show weakness?",
+  "enchantment.x_enchant.thin": "Thin",
+  "enchantment.x_enchant.thin.desc": "When used, it will ignore the durability enchantment and force the durability to be consumed, amount: level x 2",
+  "enchantment.x_enchant.down_damage": "Decayed Blade",
+  "enchantment.x_enchant.down_damage.desc": "Percentage reduction in attack damage, reduction: 10% x level",
+  "enchantment.x_enchant.down_armor": "Decayed Armor",
+  "enchantment.x_enchant.down_armor.desc": "Percentage reduction in armor, reduction: 10% x level",
 
   "enchantment.x_enchant.halo_effect": "HALO - %s",
   "enchantment.x_enchant.halo_effect.desc": "Enchantment version of Status effect",
@@ -34,6 +54,8 @@
   "enchantment.x_enchant.halo_attribute.desc": "Enchantment version of Attribute",
   "enchantment.x_enchant.halo_thunder": "HALO - Thunder",
   "enchantment.x_enchant.halo_thunder.desc": "10% chance Struck By Lightning",
+  "enchantment.x_enchant.halo_height_advantage": "HALO - Height Advantage",
+  "enchantment.x_enchant.halo_height_advantage.desc": "Attack when it's height is not enough, level damage per 3 second",
 
   "enchantment.x_enchant.chat.more_more_loot": "You're rich man now!!!",
   "enchantment.x_enchant.chat.smart": "Life is insightful in its advance, and years are fragrant in its accumulation",
@@ -54,13 +76,16 @@
 
   "x_enchant.menu.option.halo": "HALO",
   "x_enchant.menu.option.halo_range": "HALO Range: %d",
+  "x_enchant.menu.option.harmful_target_only_monster": "Harmful Halo Target Only Monster",
   "x_enchant.menu.option.halo_interval": "HALO Interval : %d tick",
   "x_enchant.menu.option.thunder_halo": "HALO - Thunder",
   "x_enchant.menu.option.thunder_halo_treasure": "Thunder Halo Is Treasure",
   "x_enchant.menu.option.thunder_halo_chance": "Thunder Halo Struck Chance: %d",
   "x_enchant.menu.option.halo_effect_level_treasure": "Treasure Effect Max Level: %d",
   "x_enchant.menu.option.halo_effect_level_other": "Other Effect Max Level: %d",
+
   "x_enchant.menu.option.status_effect_halo": "Status Effect Halo Settings",
+  "x_enchant.menu.option.status_effect_halo.enabled_all": "Enabled All",
 
   "x_enchant.menu.option.chat_tips": "Chat Tips"
 }

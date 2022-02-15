@@ -4,12 +4,13 @@
   "package": "com.doo.xenchant.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "EnchantmentHelperMixin",
     "FishingBobberMixin",
     "InfinityMixin",
+    "ItemStackMixin",
     "LivingEntityMixin",
     "LootTableMixin",
-    "PersistentProjectileEntityMixin"
+    "PersistentProjectileEntityMixin",
+    "PlayerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

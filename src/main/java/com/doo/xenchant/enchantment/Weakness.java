@@ -1,9 +1,12 @@
 package com.doo.xenchant.enchantment;
 
-import com.doo.xenchant.util.EnchantUtil;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.RangedWeaponItem;
+import net.minecraft.item.ToolItem;
 
 /**
  * 弱点攻击
@@ -23,7 +26,7 @@ public class Weakness extends BaseEnchantment {
 
     @Override
     public int getMaxPower(int level) {
-        return this.getMinPower(level) + 30;
+        return this.getMinPower(level) + 100;
     }
 
     @Override
@@ -38,6 +41,13 @@ public class Weakness extends BaseEnchantment {
 
     @Override
     public boolean isAcceptableItem(ItemStack stack) {
-        return EnchantUtil.hasAttackDamage(stack) || super.isAcceptableItem(stack);
+        return stack.getItem() instanceof ToolItem ||
+                stack.getItem() instanceof RangedWeaponItem ||
+                stack.getAttributeModifiers(EquipmentSlot.MAINHAND).containsKey(EntityAttributes.GENERIC_ATTACK_DAMAGE);
+    }
+
+    @Override
+    public float getMultiTotalDamage(LivingEntity attacker, LivingEntity target, ItemStack stack, int level) {
+        return stack == attacker.getMainHandStack() && attacker.getRandom().nextInt(100) < 5 * level ? 2 : 0;
     }
 }
