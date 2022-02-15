@@ -37,6 +37,15 @@
   "enchantment.x_enchant.broken_dawn.done": "黎明已至",
   "enchantment.x_enchant.broken_dawn.tips": "感谢@BrokenDawn627的贡献",
 
+  "enchantment.x_enchant.regicide": "弑君者",
+  "enchantment.x_enchant.regicide.desc": "攻击伤害小于附魔等级时, 该伤害同样会落在你身上, 软弱之时, 毙命之日",
+  "enchantment.x_enchant.thin": "劣质",
+  "enchantment.x_enchant.thin.desc": "使用时会无视耐久附魔强制消耗耐久, 值: 2 x level",
+  "enchantment.x_enchant.down_damage": "腐朽之刃",
+  "enchantment.x_enchant.down_damage.desc": "百分比降低攻击伤害, 降低值: 10% x level",
+  "enchantment.x_enchant.down_armor": "腐朽护甲",
+  "enchantment.x_enchant.down_armor.desc": "百分比降低护甲值, reduction: 10% x level",
+
   "enchantment.x_enchant.halo_effect": "光环 - %s",
   "enchantment.x_enchant.halo_effect.desc": "药水效果的附魔版",
   "enchantment.x_enchant.halo_attribute": "光环 - ↑%s",

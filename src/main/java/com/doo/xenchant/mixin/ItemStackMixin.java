@@ -17,7 +17,7 @@ public abstract class ItemStackMixin {
             method = "damage(ILjava/util/Random;Lnet/minecraft/server/network/ServerPlayerEntity;)Z",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/EnchantmentHelper;getLevel(Lnet/minecraft/enchantment/Enchantment;Lnet/minecraft/item/ItemStack;)I")
     )
-    private void damageCallback(int amount, Random random, ServerPlayerEntity player, CallbackInfoReturnable<Boolean> cir) {
+    private void itemUsedCallback(int amount, Random random, ServerPlayerEntity player, CallbackInfoReturnable<Boolean> cir) {
         EnchantUtil.itemUsedCallback(player, (ItemStack) (Object) this, amount);
     }
 }

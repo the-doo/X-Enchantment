@@ -2,6 +2,10 @@ package com.doo.xenchant.util;
 
 import com.doo.xenchant.Enchant;
 import com.doo.xenchant.enchantment.*;
+import com.doo.xenchant.enchantment.curse.DownArmor;
+import com.doo.xenchant.enchantment.curse.DownDamage;
+import com.doo.xenchant.enchantment.curse.Regicide;
+import com.doo.xenchant.enchantment.curse.Thin;
 import com.doo.xenchant.enchantment.halo.AttrHalo;
 import com.doo.xenchant.enchantment.halo.EffectHalo;
 import com.doo.xenchant.enchantment.halo.HeightAdvantageHalo;
@@ -70,7 +74,12 @@ public class EnchantUtil {
         Stream.of(AutoFish.class, SuckBlood.class, Weakness.class, Rebirth.class,
                         MoreLoot.class, HitRateUp.class, QuickShoot.class, MagicImmune.class,
                         Librarian.class, IncDamage.class, Climber.class, Smart.class,
-                        KingKongLegs.class, Diffusion.class, Elasticity.class, NightBreak.class, BrokenDawn.class)
+                        KingKongLegs.class, Diffusion.class, Elasticity.class,
+                        NightBreak.class, BrokenDawn.class)
+                .forEach(c -> BaseEnchantment.get(c).register());
+
+        // cursed enchantments
+        Stream.of(Regicide.class, Thin.class, DownDamage.class, DownArmor.class)
                 .forEach(c -> BaseEnchantment.get(c).register());
 
         // Halo enchantments
@@ -257,10 +266,18 @@ public class EnchantUtil {
         return newAmount.floatValue();
     }
 
-    public static float realMultiTotalDamage(LivingEntity attacker, LivingEntity target) {
+    public static float additionArmor(LivingEntity living, float damage) {
+        MutableFloat newAmount = new MutableFloat(0);
+        Stream.of(living.getMainHandStack(), living.getOffHandStack()).forEach(stack -> {
+            forBaseEnchantment((e, l) -> newAmount.add(e.getAdditionArmor(living, damage, stack, l)), stack);
+        });
+        return newAmount.floatValue();
+    }
+
+    public static float multiTotalArmor(LivingEntity living, float damage) {
         MutableFloat newAmount = new MutableFloat(1);
-        Stream.of(attacker.getMainHandStack(), attacker.getOffHandStack()).forEach(stack -> {
-            forBaseEnchantment((e, l) -> newAmount.add(e.getRealMultiTotalDamage(attacker, target, stack, l)), stack);
+        Stream.of(living.getMainHandStack(), living.getOffHandStack()).forEach(stack -> {
+            forBaseEnchantment((e, l) -> newAmount.add(e.getMultiTotalArmor(living, damage, stack, l)), stack);
         });
         return newAmount.floatValue();
     }

@@ -48,10 +48,6 @@ public abstract class BaseEnchantment extends Enchantment {
         BaseEnchantmentFactory.register(this);
     }
 
-    public static boolean isBase(String id) {
-        return id != null && id.contains(Enchant.ID);
-    }
-
     public static <T extends BaseEnchantment> T get(Class<T> clazz) {
         return BaseEnchantmentFactory.getInstance(clazz);
     }
@@ -147,13 +143,11 @@ public abstract class BaseEnchantment extends Enchantment {
         return 0;
     }
 
-    /**
-     * Multi total Damage on hit, real damage, after armor effect
-     * <p>
-     * 1 -> amount * (1 + 1)
-     * 0.5 -> amount * (1 + 0.5)
-     */
-    public float getRealMultiTotalDamage(LivingEntity attacker, LivingEntity target, ItemStack stack, int level) {
+    public float getAdditionArmor(LivingEntity living, float damage, ItemStack stack, Integer level) {
+        return 0;
+    }
+
+    public float getMultiTotalArmor(LivingEntity living, float damage, ItemStack stack, Integer level) {
         return 0;
     }
 

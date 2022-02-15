@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -37,6 +38,17 @@ public abstract class LivingEntityMixin {
         }
     }
 
+    @ModifyArg(method = "applyArmorToDamage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/DamageUtil;getDamageLeft(FFF)F"), index = 1)
+    private float damageAmount(float damage, float armor, float armorToughness) {
+        // is addition armor
+        float addition = EnchantUtil.additionArmor((LivingEntity) (Object) this, damage);
+        armor += addition;
+        // is multi total armor
+        float multi = EnchantUtil.multiTotalArmor((LivingEntity) (Object) this, damage);
+        armor *= multi;
+        return armor;
+    }
+
     @ModifyVariable(method = "applyDamage", at = @At(value = "STORE", ordinal = 0), argsOnly = true)
     private float damageAmount(float amount, DamageSource source) {
         Entity entity = source.getAttacker();
@@ -58,9 +70,6 @@ public abstract class LivingEntityMixin {
             // is addition damage
             float addition = EnchantUtil.realAdditionDamage((LivingEntity) entity, (LivingEntity) (Object) this);
             amount += addition;
-            // is multi total damage
-            float multi = EnchantUtil.realMultiTotalDamage((LivingEntity) entity, (LivingEntity) (Object) this);
-            amount *= multi;
         }
         return amount;
     }
