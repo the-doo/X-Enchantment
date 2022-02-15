@@ -13,7 +13,6 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -24,8 +23,6 @@ public class IncDamage extends BaseEnchantment {
     public static final String NAME = "increment_attack_damage";
 
     private static final String KEY = "Damages";
-
-    private static final DecimalFormat FORMAT = new DecimalFormat("#.##");
 
     public IncDamage() {
         super(NAME, Rarity.VERY_RARE, EnchantmentTarget.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND});

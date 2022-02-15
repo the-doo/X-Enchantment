@@ -15,6 +15,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -26,6 +27,8 @@ import java.util.function.UnaryOperator;
 public abstract class BaseEnchantment extends Enchantment {
 
     private static final Map<String, BaseEnchantment> ID_MAP = new HashMap<>();
+
+    static final DecimalFormat FORMAT = new DecimalFormat("#.##");
 
     private static final Formatting[] RATE_COLOR = {Formatting.GRAY, Formatting.BLUE, Formatting.YELLOW, Formatting.GOLD};
 
@@ -168,6 +171,13 @@ public abstract class BaseEnchantment extends Enchantment {
      */
     public UnaryOperator<ItemStack> lootSetter(LivingEntity killer, ItemStack stack, Integer level, Consumer<ItemStack> baseConsumer, LootContext context) {
         return null;
+    }
+
+    /**
+     * callback for item will be damage
+     */
+    public void itemUsedCallback(LivingEntity owner, ItemStack stack, Integer level, float amount) {
+
     }
 
     @SuppressWarnings("all")

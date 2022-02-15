@@ -14,18 +14,14 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.RangedWeaponItem;
-import net.minecraft.item.ToolItem;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -74,7 +70,7 @@ public class EnchantUtil {
         Stream.of(AutoFish.class, SuckBlood.class, Weakness.class, Rebirth.class,
                         MoreLoot.class, HitRateUp.class, QuickShoot.class, MagicImmune.class,
                         Librarian.class, IncDamage.class, Climber.class, Smart.class,
-                        KingKongLegs.class, Diffusion.class, Elasticity.class, NightBreak.class)
+                        KingKongLegs.class, Diffusion.class, Elasticity.class, NightBreak.class, BrokenDawn.class)
                 .forEach(c -> BaseEnchantment.get(c).register());
 
         // Halo enchantments
@@ -197,28 +193,12 @@ public class EnchantUtil {
                 return;
             }
 
-            stack.getEnchantments().stream()
-                    .filter(n -> BaseEnchantment.isBase(id(n)) && lvl(n) > 0)
-                    .forEach(n -> {
-                        // old enchantment is null
-                        Optional.ofNullable((BaseEnchantment) BaseEnchantment.get(id(n))).ifPresent(e -> e.tryTrigger(living, stack, lvl(n)));
-                    });
+            EnchantmentHelper.get(stack).forEach((e, l) -> {
+                if (e instanceof BaseEnchantment && l > 0) {
+                    ((BaseEnchantment) e).tryTrigger(living, stack, l);
+                }
+            });
         });
-    }
-
-    public static String id(NbtElement n) {
-        return ((NbtCompound) n).getString("id");
-    }
-
-    public static int lvl(NbtElement n) {
-        return ((NbtCompound) n).getInt("lvl");
-    }
-
-    public static boolean hasAttackDamage(ItemStack stack) {
-        return !stack.isEmpty() &&
-                (stack.getItem() instanceof RangedWeaponItem || stack.getItem() instanceof ToolItem ||
-                        !stack.getItem().getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_DAMAGE).isEmpty() ||
-                        !stack.getItem().getAttributeModifiers(EquipmentSlot.OFFHAND).get(EntityAttributes.GENERIC_ATTACK_DAMAGE).isEmpty());
     }
 
     public static ItemStack getHandStack(LivingEntity entity, Class<? extends Item> type) {
@@ -328,5 +308,9 @@ public class EnchantUtil {
         }
 
         return lootConsumer.andThen(i -> list.stream().reduce((c1, c2) -> c1.andThen(c2)).get().apply(i));
+    }
+
+    public static void itemUsedCallback(LivingEntity owner, ItemStack stack, float amount) {
+        forBaseEnchantment((e, l) -> e.itemUsedCallback(owner, stack, l, amount), stack);
     }
 }

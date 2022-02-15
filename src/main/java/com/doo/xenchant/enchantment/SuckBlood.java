@@ -1,12 +1,14 @@
 package com.doo.xenchant.enchantment;
 
-import com.doo.xenchant.util.EnchantUtil;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.RangedWeaponItem;
+import net.minecraft.item.ToolItem;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Hand;
 
@@ -43,7 +45,9 @@ public class SuckBlood extends BaseEnchantment {
 
     @Override
     public boolean isAcceptableItem(ItemStack stack) {
-        return EnchantUtil.hasAttackDamage(stack) || super.isAcceptableItem(stack);
+        return stack.getItem() instanceof ToolItem ||
+                stack.getItem() instanceof RangedWeaponItem ||
+                stack.getAttributeModifiers(EquipmentSlot.MAINHAND).containsKey(EntityAttributes.GENERIC_ATTACK_DAMAGE);
     }
 
     @Override
