@@ -261,8 +261,6 @@ public class ModMenuScreen extends Screen {
     protected void init() {
         list = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
         // 显示基础高度
-        list.addSingleOptionEntry(CyclingOption.create("x_enchant.menu.option.enchantment.normal", g -> true, (g, o, v) -> {
-        }));
         list.addAll(ENCHANT_OPTION);
         list.addAll(HALO_OPTION);
         this.addSelectableChild(list);
