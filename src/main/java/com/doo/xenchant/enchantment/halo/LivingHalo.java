@@ -19,11 +19,6 @@ public abstract class LivingHalo extends HaloEnchantment<LivingEntity> {
         super(name);
     }
 
-    @Override
-    protected boolean needTick() {
-        return true;
-    }
-
     public Type getType() {
         return Type.FRIENDLY;
     }

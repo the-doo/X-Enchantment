@@ -1,6 +1,8 @@
 package com.doo.xenchant.enchantment;
 
+import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -67,11 +69,13 @@ public class NightBreak extends BaseEnchantment {
         super.register();
 
         // tooltips
-        ItemTooltipCallback.EVENT.register(((stack, context, lines) -> {
-            if (level(stack) > 0) {
-                lines.add(new TranslatableText(getTranslationKey()).append(": ").append(stack.getOrCreateNbt().getLong(nbtKey(KEY)) + "").formatted(Formatting.GRAY));
-                lines.add(new TranslatableText(getTranslationKey()).append(" - ").append(TIPS).formatted(Formatting.GRAY));
-            }
-        }));
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+            ItemTooltipCallback.EVENT.register(((stack, context, lines) -> {
+                if (level(stack) > 0) {
+                    lines.add(new TranslatableText(getTranslationKey()).append(": ").append(stack.getOrCreateNbt().getLong(nbtKey(KEY)) + "").formatted(Formatting.GRAY));
+                    lines.add(new TranslatableText(getTranslationKey()).append(" - ").append(TIPS).formatted(Formatting.GRAY));
+                }
+            }));
+        }
     }
 }

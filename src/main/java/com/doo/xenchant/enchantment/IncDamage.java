@@ -1,8 +1,10 @@
 package com.doo.xenchant.enchantment;
 
 import com.doo.xenchant.util.EnchantUtil;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
@@ -108,13 +110,15 @@ public class IncDamage extends BaseEnchantment {
         }));
 
         // tooltips
-        ItemTooltipCallback.EVENT.register((ItemStack stack, TooltipContext context, List<Text> lines) -> {
-            if (level(stack) > 0) {
-                lines.add(new TranslatableText(getTranslationKey())
-                        .append(": ↑")
-                        .append(FORMAT.format(stack.getOrCreateNbt().getFloat(nbtKey(KEY))))
-                        .formatted(Formatting.GRAY));
-            }
-        });
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+            ItemTooltipCallback.EVENT.register((ItemStack stack, TooltipContext context, List<Text> lines) -> {
+                if (level(stack) > 0) {
+                    lines.add(new TranslatableText(getTranslationKey())
+                            .append(": ↑")
+                            .append(FORMAT.format(stack.getOrCreateNbt().getFloat(nbtKey(KEY))))
+                            .formatted(Formatting.GRAY));
+                }
+            });
+        }
     }
 }

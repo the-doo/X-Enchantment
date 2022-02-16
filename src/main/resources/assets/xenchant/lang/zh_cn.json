@@ -60,6 +60,13 @@
   "enchantment.x_enchant.chat.more_more_loot": "苟富贵，勿相忘~~~",
   "enchantment.x_enchant.chat.smart": "一花一世界，带师，我悟了!",
 
+  "x_enchant.menu.option.enchantment.normal": "通用附魔",
+  "x_enchant.menu.option.enchantment.halo": "光环附魔",
+  "x_enchant.menu.option.enchantment.curse": "诅咒附魔",
+
+  "x_enchant.menu.option.open.tips": "重新打开后, 需要重启游戏",
+  "x_enchant.menu.option.close.tips": "关闭后, 需要重启游戏",
+
   "x_enchant.menu.option.auto_fish": "自动钓鱼",
   "x_enchant.menu.option.suck_blood": "吸血",
   "x_enchant.menu.option.weakness": "弱点攻击",
@@ -72,7 +79,8 @@
   "x_enchant.menu.option.infinity_accept_mending": "无限与经验修复并存",
   "x_enchant.menu.option.quick_shoot": "快速射击",
   "x_enchant.menu.option.magic_immune": "魔免",
-  "x_enchant.menu.option.diffusion": "扩散基础伤害: %d",
+  "x_enchant.menu.option.diffusion": "扩散",
+  "x_enchant.menu.option.diffusion.damage": "扩散基础伤害: %d",
 
   "x_enchant.menu.option.halo": "光环",
   "x_enchant.menu.option.halo_range": "光环范围: %d",

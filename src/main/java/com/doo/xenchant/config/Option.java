@@ -14,6 +14,11 @@ import java.util.stream.Stream;
 public class Option {
 
     /**
+     * Disabled Enchantment, contain class name
+     */
+    public Collection<String> disabled = new HashSet<>();
+
+    /**
      * 自动钓鱼
      */
     public boolean autoFishing = true;
@@ -69,9 +74,14 @@ public class Option {
     public boolean magicImmune = true;
 
     /**
+     * Diffusion
+     */
+    public boolean diffusion = true;
+
+    /**
      * Diffusion base value
      */
-    public double diffusion = 5;
+    public double diffusionDamage = 5;
 
     /**
      * 无限与修补

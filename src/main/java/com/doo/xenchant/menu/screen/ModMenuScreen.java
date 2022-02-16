@@ -2,6 +2,8 @@ package com.doo.xenchant.menu.screen;
 
 import com.doo.xenchant.Enchant;
 import com.doo.xenchant.config.Config;
+import com.doo.xenchant.enchantment.*;
+import com.doo.xenchant.enchantment.halo.ThunderHalo;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.ButtonListWidget;
@@ -13,6 +15,7 @@ import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.Option;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
 /**
@@ -20,84 +23,191 @@ import net.minecraft.text.TranslatableText;
  */
 public class ModMenuScreen extends Screen {
 
-    private static final CyclingOption<Boolean> AUTO_FISHING = CyclingOption.create("x_enchant.menu.option.auto_fish",
-            o -> Enchant.option.autoFishing, (g, o, d) -> Enchant.option.autoFishing = d);
+    public static final Text REOPEN = new TranslatableText("x_enchant.menu.option.open.tips");
+    public static final Text CLOSE = new TranslatableText("x_enchant.menu.option.close.tips");
 
-    private static final CyclingOption<Boolean> SUCK_BLOOD = CyclingOption.create("x_enchant.menu.option.suck_blood",
-            o -> Enchant.option.suckBlood, (g, o, d) -> Enchant.option.suckBlood = d);
+    private static final Option AUTO_FISHING = CyclingOption.create("x_enchant.menu.option.auto_fish", CLOSE,
+            o -> Enchant.option.autoFishing, (g, o, d) -> {
+                Enchant.option.autoFishing = d;
 
-    private static final CyclingOption<Boolean> WEAKNESS = CyclingOption.create("x_enchant.menu.option.weakness",
-            o -> Enchant.option.weakness, (g, o, d) -> Enchant.option.weakness = d);
+                if (d) {
+                    Enchant.option.disabled.remove(AutoFish.class.getName());
 
-    private static final CyclingOption<Boolean> REBIRTH = CyclingOption.create("x_enchant.menu.option.rebirth",
-            o -> Enchant.option.rebirth, (g, o, d) -> Enchant.option.rebirth = d);
+                    new AutoFish();
+                } else {
+                    Enchant.option.disabled.add(AutoFish.class.getName());
+                }
+            });
 
-    private static final CyclingOption<Boolean> MORE_LOOT = CyclingOption.create("x_enchant.menu.option.more_loot",
-            o -> Enchant.option.moreLoot, (g, o, d) -> Enchant.option.moreLoot = d);
+    private static final Option SUCK_BLOOD = CyclingOption.create("x_enchant.menu.option.suck_blood", CLOSE,
+            o -> Enchant.option.suckBlood, (g, o, d) -> {
+                Enchant.option.suckBlood = d;
 
-    private static final DoubleOption MORE_LOOT_RATE = new DoubleOption("", 1, 100, 1,
+                if (d) {
+                    Enchant.option.disabled.remove(SuckBlood.class.getName());
+
+                    new SuckBlood();
+                } else {
+                    Enchant.option.disabled.add(SuckBlood.class.getName());
+                }
+            });
+
+    private static final Option WEAKNESS = CyclingOption.create("x_enchant.menu.option.weakness", CLOSE,
+            o -> Enchant.option.weakness, (g, o, d) -> {
+                Enchant.option.weakness = d;
+
+                if (d) {
+                    Enchant.option.disabled.remove(Weakness.class.getName());
+
+                    new Weakness();
+                } else {
+                    Enchant.option.disabled.add(Weakness.class.getName());
+                }
+            });
+
+    private static final Option REBIRTH = CyclingOption.create("x_enchant.menu.option.rebirth", CLOSE,
+            o -> Enchant.option.rebirth, (g, o, d) -> {
+                Enchant.option.rebirth = d;
+
+                if (d) {
+                    Enchant.option.disabled.remove(Rebirth.class.getName());
+
+                    new Rebirth();
+                } else {
+                    Enchant.option.disabled.add(Rebirth.class.getName());
+                }
+            });
+
+    private static final Option MORE_LOOT = CyclingOption.create("x_enchant.menu.option.more_loot", CLOSE,
+            o -> Enchant.option.moreLoot, (g, o, d) -> {
+                Enchant.option.moreLoot = d;
+
+                if (d) {
+                    Enchant.option.disabled.remove(MoreLoot.class.getName());
+
+                    new MoreLoot();
+                } else {
+                    Enchant.option.disabled.add(MoreLoot.class.getName());
+                }
+            });
+
+    private static final Option MORE_LOOT_RATE = new DoubleOption("", 1, 100, 1,
             o -> Enchant.option.moreLootRate,
             (o, d) -> Enchant.option.moreLootRate = d,
             (g, o) -> new TranslatableText("x_enchant.menu.option.more_loot_rate", Enchant.option.moreLootRate));
 
-    private static final DoubleOption MORE_MORE_LOOT_RATE = new DoubleOption("", 1, 100, 1,
+    private static final Option MORE_MORE_LOOT_RATE = new DoubleOption("", 1, 100, 1,
             o -> Enchant.option.moreMoreLootRate,
             (o, d) -> Enchant.option.moreMoreLootRate = d,
             (g, o) -> new TranslatableText("x_enchant.menu.option.more_more_loot_rate", Enchant.option.moreMoreLootRate));
 
-    private static final DoubleOption MORE_MORE_LOOT_MULTIPLIER = new DoubleOption("", 1, 100, 1,
+    private static final Option MORE_MORE_LOOT_MULTIPLIER = new DoubleOption("", 1, 100, 1,
             o -> Enchant.option.moreMoreLootMultiplier,
             (o, d) -> Enchant.option.moreMoreLootMultiplier = d,
             (g, o) -> new TranslatableText("x_enchant.menu.option.more_more_loot_multiplier", Enchant.option.moreMoreLootMultiplier));
 
-    private static final CyclingOption<Boolean> INFINITY_ACCEPT_MENDING = CyclingOption.create("x_enchant.menu.option.infinity_accept_mending",
+    private static final Option INFINITY_ACCEPT_MENDING = CyclingOption.create("x_enchant.menu.option.infinity_accept_mending",
             o -> Enchant.option.infinityAcceptMending, (g, o, d) -> Enchant.option.infinityAcceptMending = d);
 
-    private static final CyclingOption<Boolean> HIT_RATE_UP = CyclingOption.create("x_enchant.menu.option.hit_rate_up",
-            o -> Enchant.option.hitRateUp, (g, o, d) -> Enchant.option.hitRateUp = d);
+    private static final Option HIT_RATE_UP = CyclingOption.create("x_enchant.menu.option.hit_rate_up", CLOSE,
+            o -> Enchant.option.hitRateUp, (g, o, d) -> {
+                Enchant.option.hitRateUp = d;
 
-    private static final CyclingOption<Boolean> QUICK_SHOOT = CyclingOption.create("x_enchant.menu.option.quick_shoot",
-            o -> Enchant.option.quickShoot, (g, o, d) -> Enchant.option.quickShoot = d);
+                if (d) {
+                    Enchant.option.disabled.remove(HitRateUp.class.getName());
 
-    private static final CyclingOption<Boolean> MAGIC_IMMUNE = CyclingOption.create("x_enchant.menu.option.magic_immune",
-            o -> Enchant.option.magicImmune, (g, o, d) -> Enchant.option.magicImmune = d);
+                    new HitRateUp();
+                } else {
+                    Enchant.option.disabled.add(HitRateUp.class.getName());
+                }
+            });
 
-    private static final DoubleOption DIFFUSION = new DoubleOption("", 1, 40, 0.5F,
-            o -> Enchant.option.diffusion,
-            (o, d) -> Enchant.option.diffusion = d,
-            (g, o) -> new TranslatableText("x_enchant.menu.option.diffusion", Enchant.option.diffusion));
+    private static final Option QUICK_SHOOT = CyclingOption.create("x_enchant.menu.option.quick_shoot", CLOSE,
+            o -> Enchant.option.quickShoot, (g, o, d) -> {
+                Enchant.option.quickShoot = d;
 
-    private static final CyclingOption<Boolean> CHAT_TIPS = CyclingOption.create("x_enchant.menu.option.chat_tips",
+                if (d) {
+                    Enchant.option.disabled.remove(QuickShoot.class.getName());
+
+                    new QuickShoot();
+                } else {
+                    Enchant.option.disabled.add(QuickShoot.class.getName());
+                }
+            });
+
+    private static final Option MAGIC_IMMUNE = CyclingOption.create("x_enchant.menu.option.magic_immune", CLOSE,
+            o -> Enchant.option.magicImmune, (g, o, d) -> {
+                Enchant.option.magicImmune = d;
+
+                if (d) {
+                    Enchant.option.disabled.remove(MagicImmune.class.getName());
+
+                    new MagicImmune();
+                } else {
+                    Enchant.option.disabled.add(MagicImmune.class.getName());
+                }
+            });
+
+    private static final Option DIFFUSION = CyclingOption.create("x_enchant.menu.option.diffusion", CLOSE,
+            o -> Enchant.option.diffusion, (g, o, d) -> {
+                Enchant.option.diffusion = d;
+
+                if (d) {
+                    Enchant.option.disabled.remove(Diffusion.class.getName());
+
+                    new Diffusion();
+                } else {
+                    Enchant.option.disabled.add(Diffusion.class.getName());
+                }
+            });
+
+    private static final Option DIFFUSION_DAMAGE = new DoubleOption("", 1, 40, 0.5F,
+            o -> Enchant.option.diffusionDamage,
+            (o, d) -> Enchant.option.diffusionDamage = d,
+            (g, o) -> new TranslatableText("x_enchant.menu.option.diffusion.damage", Enchant.option.diffusionDamage));
+
+    private static final Option CHAT_TIPS = CyclingOption.create("x_enchant.menu.option.chat_tips",
             o -> Enchant.option.chatTips, (g, o, d) -> Enchant.option.chatTips = d);
 
-    private static final CyclingOption<Boolean> HALO = CyclingOption.create("x_enchant.menu.option.halo",
-            o -> Enchant.option.halo, (g, o, d) -> Enchant.option.halo = d);
+    private static final Option HALO =
+            CyclingOption.create("x_enchant.menu.option.halo", REOPEN,
+                    o -> Enchant.option.halo, (g, o, d) -> Enchant.option.halo = d);
 
-    private static final DoubleOption HALO_RANGE = new DoubleOption("", 1, 20, 1,
+    private static final Option HALO_RANGE = new DoubleOption("", 1, 20, 1,
             o -> Enchant.option.haloRange,
             (o, d) -> Enchant.option.haloRange = d,
             (g, o) -> new TranslatableText("x_enchant.menu.option.halo_range", Enchant.option.haloRange));
 
-    private static final CyclingOption<Boolean> HARMFUL_TARGET_ONLY_MONSTER = CyclingOption.create("x_enchant.menu.option.harmful_target_only_monster",
+    private static final Option HARMFUL_TARGET_ONLY_MONSTER = CyclingOption.create("x_enchant.menu.option.harmful_target_only_monster",
             o -> Enchant.option.harmfulTargetOnlyMonster, (g, o, d) -> Enchant.option.harmfulTargetOnlyMonster = d);
 
-    private static final CyclingOption<Boolean> THUNDER_HALO = CyclingOption.create("x_enchant.menu.option.thunder_halo",
-            o -> Enchant.option.thunderHalo, (g, o, d) -> Enchant.option.thunderHalo = d);
+    private static final Option THUNDER_HALO = CyclingOption.create("x_enchant.menu.option.thunder_halo", REOPEN,
+            o -> Enchant.option.thunderHalo, (g, o, d) -> {
+                Enchant.option.thunderHalo = d;
 
-    private static final CyclingOption<Boolean> THUNDER_HALO_TREASURE = CyclingOption.create("x_enchant.menu.option.thunder_halo_treasure",
+                if (d) {
+                    Enchant.option.disabled.remove(ThunderHalo.class.getName());
+
+                    new ThunderHalo();
+                } else {
+                    Enchant.option.disabled.add(ThunderHalo.class.getName());
+                }
+            });
+
+    private static final Option THUNDER_HALO_TREASURE = CyclingOption.create("x_enchant.menu.option.thunder_halo_treasure",
             o -> Enchant.option.thunderHaloIsTreasure, (g, o, d) -> Enchant.option.thunderHaloIsTreasure = d);
 
-    private static final DoubleOption THUNDER_HALO_CHANCE = new DoubleOption("", 1, 100, 1,
+    private static final Option THUNDER_HALO_CHANCE = new DoubleOption("", 1, 100, 1,
             o -> (double) Enchant.option.thunderHaloStruckChance,
             (o, d) -> Enchant.option.thunderHaloStruckChance = d.intValue(),
             (g, o) -> new TranslatableText("x_enchant.menu.option.thunder_halo_chance", Enchant.option.thunderHaloStruckChance));
 
-    private static final DoubleOption TREASURE_EFFECT_LEVEL = new DoubleOption("", 1, 10, 1,
+    private static final Option TREASURE_EFFECT_LEVEL = new DoubleOption("", 1, 10, 1,
             o -> (double) Enchant.option.effectTreasureMaxLevel,
             (o, d) -> Enchant.option.effectTreasureMaxLevel = d.intValue(),
             (g, o) -> new TranslatableText("x_enchant.menu.option.halo_effect_level_treasure", Enchant.option.effectTreasureMaxLevel));
 
-    private static final DoubleOption OTHER_EFFECT_LEVEL = new DoubleOption("", 1, 10, 1,
+    private static final Option OTHER_EFFECT_LEVEL = new DoubleOption("", 1, 10, 1,
             o -> (double) Enchant.option.effectOtherMaxLevel,
             (o, d) -> Enchant.option.effectOtherMaxLevel = d.intValue(),
             (g, o) -> new TranslatableText("x_enchant.menu.option.halo_effect_level_other", Enchant.option.effectOtherMaxLevel));
@@ -120,10 +230,14 @@ public class ModMenuScreen extends Screen {
             OTHER_EFFECT_LEVEL, STATUS_EFFECT
     };
     private static final Option[] ENCHANT_OPTION = {
-            AUTO_FISHING, SUCK_BLOOD, WEAKNESS, REBIRTH,
-            MORE_LOOT, MORE_LOOT_RATE, MORE_MORE_LOOT_RATE, MORE_MORE_LOOT_MULTIPLIER,
+            AUTO_FISHING, SUCK_BLOOD,
+            WEAKNESS, REBIRTH,
+            MORE_LOOT, MORE_LOOT_RATE,
+            MORE_MORE_LOOT_RATE, MORE_MORE_LOOT_MULTIPLIER,
             INFINITY_ACCEPT_MENDING, HIT_RATE_UP,
-            QUICK_SHOOT, MAGIC_IMMUNE, DIFFUSION, CHAT_TIPS,
+            QUICK_SHOOT, MAGIC_IMMUNE,
+            DIFFUSION, DIFFUSION_DAMAGE,
+            CHAT_TIPS,
     };
 
     private static final ModMenuScreen INSTANCE = new ModMenuScreen();
@@ -147,6 +261,8 @@ public class ModMenuScreen extends Screen {
     protected void init() {
         list = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
         // 显示基础高度
+        list.addSingleOptionEntry(CyclingOption.create("x_enchant.menu.option.enchantment.normal", g -> true, (g, o, v) -> {
+        }));
         list.addAll(ENCHANT_OPTION);
         list.addAll(HALO_OPTION);
         this.addSelectableChild(list);

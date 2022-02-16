@@ -56,8 +56,8 @@ public class EffectHalo extends LivingHalo {
     }
 
     @Override
-    protected boolean needTick() {
-        return !Enchant.option.disabledEffect.contains(effect.getTranslationKey());
+    protected boolean ban() {
+        return Enchant.option.disabledEffect.contains(effect.getTranslationKey());
     }
 
     @Override

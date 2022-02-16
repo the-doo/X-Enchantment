@@ -1,6 +1,8 @@
 package com.doo.xenchant.enchantment;
 
+import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentTarget;
@@ -141,22 +143,24 @@ public class BrokenDawn extends BaseEnchantment {
         super.register();
 
         // tooltips
-        ItemTooltipCallback.EVENT.register(((stack, context, lines) -> {
-            NbtCompound nbt = stack.getOrCreateNbt();
-            // if done
-            if (nbt.getBoolean(nbtKey(DONE))) {
-                lines.add(DONE_TIPS.formatted(Formatting.GOLD));
-                lines.add(new TranslatableText(getTranslationKey()).append(" - ").append(TIPS).formatted(Formatting.GRAY));
-                return;
-            }
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+            ItemTooltipCallback.EVENT.register(((stack, context, lines) -> {
+                NbtCompound nbt = stack.getOrCreateNbt();
+                // if done
+                if (nbt.getBoolean(nbtKey(DONE))) {
+                    lines.add(DONE_TIPS.formatted(Formatting.GOLD));
+                    lines.add(new TranslatableText(getTranslationKey()).append(" - ").append(TIPS).formatted(Formatting.GRAY));
+                    return;
+                }
 
-            // not done
-            if (level(stack) > 0) {
-                lines.add(new TranslatableText(getTranslationKey()).append(": ")
-                        .append(FORMAT.format(10D * nbt.getLong(nbtKey(KEY)) / max(stack)) + "%").formatted(Formatting.GRAY));
-                lines.add(new TranslatableText(getTranslationKey()).append(" - ")
-                        .append(TIPS).formatted(Formatting.GRAY));
-            }
-        }));
+                // not done
+                if (level(stack) > 0) {
+                    lines.add(new TranslatableText(getTranslationKey()).append(": ")
+                            .append(FORMAT.format(10D * nbt.getLong(nbtKey(KEY)) / max(stack)) + "%").formatted(Formatting.GRAY));
+                    lines.add(new TranslatableText(getTranslationKey()).append(" - ")
+                            .append(TIPS).formatted(Formatting.GRAY));
+                }
+            }));
+        }
     }
 }
