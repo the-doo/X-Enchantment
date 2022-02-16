@@ -47,7 +47,7 @@ public class Diffusion extends BaseEnchantment {
     public void onTargetDamaged(LivingEntity user, Entity target, int level) {
         if (target instanceof LivingEntity) {
             DamageSource source = DamageSource.mob(user);
-            float damage = (float) (Enchant.option.diffusion + user.getRandom().nextInt((int) (level * Enchant.option.diffusion)));
+            float damage = (float) (Enchant.option.diffusionDamage + user.getRandom().nextInt((int) (level * Enchant.option.diffusionDamage)));
             Predicate<LivingEntity> test = e -> LivingHalo.Type.HARMFUL.predicate.and((u, t) -> t != target).test(user, e);
 
             target.world.getEntitiesByClass(LivingEntity.class, target.getBoundingBox().expand(3), test).forEach(e -> e.damage(source, damage));

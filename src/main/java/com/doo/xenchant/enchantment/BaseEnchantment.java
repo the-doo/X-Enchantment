@@ -58,7 +58,8 @@ public abstract class BaseEnchantment extends Enchantment {
 
     @Override
     public Text getName(int level) {
-        return super.getName(level).shallowCopy().formatted(RATE_COLOR[getRarity().ordinal()]);
+        Text name = super.getName(level);
+        return isCursed() ? name : name.shallowCopy().formatted(RATE_COLOR[getRarity().ordinal()]);
     }
 
     public int level(ItemStack item) {

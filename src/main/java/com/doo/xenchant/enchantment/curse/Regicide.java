@@ -29,7 +29,7 @@ public class Regicide extends Cursed {
 
     @Override
     public int getMaxLevel() {
-        return 3;
+        return 4;
     }
 
     @Override

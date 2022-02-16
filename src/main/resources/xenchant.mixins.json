@@ -10,7 +10,8 @@
     "LivingEntityMixin",
     "LootTableMixin",
     "PersistentProjectileEntityMixin",
-    "PlayerEntityMixin"
+    "PlayerEntityMixin",
+    "LootCapturingConsumerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

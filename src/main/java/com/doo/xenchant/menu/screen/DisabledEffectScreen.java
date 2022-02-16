@@ -45,25 +45,26 @@ public class DisabledEffectScreen extends Screen {
         list = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
 
         // All Button
-        list.addSingleOptionEntry(CyclingOption.create("x_enchant.menu.option.status_effect_halo.enabled_all", o -> Enchant.option.enabledAllEffect, (g, o, enabled) -> {
-            Enchant.option.enabledAllEffect = enabled;
+        list.addSingleOptionEntry(CyclingOption.create("x_enchant.menu.option.status_effect_halo.enabled_all", ModMenuScreen.CLOSE, o -> Enchant.option.enabledAllEffect,
+                (g, o, enabled) -> {
+                    Enchant.option.enabledAllEffect = enabled;
 
-            // if enabled
-            if (enabled) {
-                // clear
-                Enchant.option.disabledEffect.clear();
+                    // if enabled
+                    if (enabled) {
+                        // clear
+                        Enchant.option.disabledEffect.clear();
 
-                // register all
-                Registry.STATUS_EFFECT.stream()
-                        .filter(e -> e != null && Identifier.isValid(e.getTranslationKey()))
-                        .forEach(EffectHalo::new);
-            } else {
-                // add all
-                Enchant.option.disabledEffect.addAll(Registry.STATUS_EFFECT.stream()
-                        .map(StatusEffect::getTranslationKey)
-                        .filter(Identifier::isValid).collect(Collectors.toSet()));
-            }
-        }));
+                        // register all
+                        Registry.STATUS_EFFECT.stream()
+                                .filter(e -> e != null && Identifier.isValid(e.getTranslationKey()))
+                                .forEach(EffectHalo::new);
+                    } else {
+                        // add all
+                        Enchant.option.disabledEffect.addAll(Registry.STATUS_EFFECT.stream()
+                                .map(StatusEffect::getTranslationKey)
+                                .filter(Identifier::isValid).collect(Collectors.toSet()));
+                    }
+                }));
 
         // set options
         List<CyclingOption<Boolean>> total = Registry.STATUS_EFFECT.stream()
@@ -79,7 +80,7 @@ public class DisabledEffectScreen extends Screen {
 
     private CyclingOption<Boolean> getButton(StatusEffect effect, Collection<String> disabled) {
         String key = effect.getTranslationKey();
-        return CyclingOption.create(key, o -> !disabled.contains(key), (g, o, enabled) -> {
+        return CyclingOption.create(key, ModMenuScreen.CLOSE, o -> !disabled.contains(key), (g, o, enabled) -> {
             // if enabled
             if (enabled) {
                 disabled.remove(key);

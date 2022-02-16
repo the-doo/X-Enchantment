@@ -1,5 +1,6 @@
 package com.doo.xenchant.enchantment;
 
+import com.doo.xenchant.Enchant;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentTarget;
@@ -41,6 +42,10 @@ public class Rebirth extends BaseEnchantment {
 
         // true is allow death
         ServerPlayerEvents.ALLOW_DEATH.register(((player, damageSource, damageAmount) -> {
+            if (!Enchant.option.rebirth) {
+                return true;
+            }
+
             ItemStack stack = player.getEquippedStack(EquipmentSlot.CHEST);
             Rebirth rebirth = BaseEnchantment.get(Rebirth.class);
 

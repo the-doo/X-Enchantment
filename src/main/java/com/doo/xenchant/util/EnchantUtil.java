@@ -76,29 +76,35 @@ public class EnchantUtil {
                         Librarian.class, IncDamage.class, Climber.class, Smart.class,
                         KingKongLegs.class, Diffusion.class, Elasticity.class,
                         NightBreak.class, BrokenDawn.class, Timor.class)
+                .filter(c -> !Enchant.option.disabled.contains(c.getName()))
                 .forEach(c -> BaseEnchantment.get(c).register());
 
         // cursed enchantments
         Stream.of(Regicide.class, Thin.class, DownDamage.class, DownArmor.class)
+                .filter(c -> !Enchant.option.disabled.contains(c.getName()))
                 .forEach(c -> BaseEnchantment.get(c).register());
 
         // Halo enchantments
-        Stream.of(ThunderHalo.class, HeightAdvantageHalo.class).forEach(c -> BaseEnchantment.get(c).register());
+        if (Enchant.option.halo) {
+            Stream.of(ThunderHalo.class, HeightAdvantageHalo.class)
+                    .filter(c -> !Enchant.option.disabled.contains(c.getName()))
+                    .forEach(c -> BaseEnchantment.get(c).register());
 
-        // regist to server
-        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-            registEffect();
-
-            registAttr();
-        });
-
-        // regist to client
-        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-            ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
+            // regist to server
+            ServerLifecycleEvents.SERVER_STARTED.register(server -> {
                 registEffect();
 
                 registAttr();
             });
+
+            // regist to client
+            if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+                ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
+                    registEffect();
+
+                    registAttr();
+                });
+            }
         }
     }
 
@@ -316,7 +322,8 @@ public class EnchantUtil {
             return lootConsumer;
         }
 
-        return lootConsumer.andThen(i -> list.stream().reduce((c1, c2) -> c1.andThen(c2)).get().apply(i));
+        Function<ItemStack, ItemStack> function = list.stream().reduce((c1, c2) -> c1.andThen(c2)).get();
+        return lootConsumer.andThen(i -> function.apply(i));
     }
 
     public static void itemUsedCallback(LivingEntity owner, ItemStack stack, float amount) {

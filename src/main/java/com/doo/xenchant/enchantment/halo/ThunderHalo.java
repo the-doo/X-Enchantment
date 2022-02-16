@@ -26,8 +26,8 @@ public class ThunderHalo extends LivingHalo {
     }
 
     @Override
-    protected boolean needTick() {
-        return Enchant.option.thunderHalo;
+    protected boolean ban() {
+        return !Enchant.option.thunderHalo;
     }
 
     @Override

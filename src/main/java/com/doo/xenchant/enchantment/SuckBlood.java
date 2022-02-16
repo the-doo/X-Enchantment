@@ -1,5 +1,6 @@
 package com.doo.xenchant.enchantment;
 
+import com.doo.xenchant.Enchant;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.enchantment.Enchantments;
@@ -52,6 +53,10 @@ public class SuckBlood extends BaseEnchantment {
 
     @Override
     public void damageCallback(LivingEntity attacker, LivingEntity target, ItemStack stack, int level, float amount) {
+        if (!Enchant.option.suckBlood) {
+            return;
+        }
+
         if (stack != attacker.getStackInHand(Hand.MAIN_HAND)) {
             return;
         }

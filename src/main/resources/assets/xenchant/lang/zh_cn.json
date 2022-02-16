@@ -34,19 +34,19 @@
   "enchantment.x_enchant.night_break.tips": "感谢@NightBreak的贡献",
   "enchantment.x_enchant.broken_dawn": "破晓",
   "enchantment.x_enchant.broken_dawn.desc": "它将进化于破晓之时, 或许吧......见风雨也未必有彩虹",
-  "enchantment.x_enchant.broken_dawn.done": "黎明已至",
+  "enchantment.x_enchant.broken_dawn.done": "第一缕曙光",
   "enchantment.x_enchant.broken_dawn.tips": "感谢@BrokenDawn627的贡献",
   "enchantment.x_enchant.timor": "提莫",
-  "enchantment.x_enchant.timor.desc": "站立不动3秒会隐身, 解除时会提高攻击速度",
+  "enchantment.x_enchant.timor.desc": "蹲伏3秒后会隐身, 解除时会提高攻击速度",
 
   "enchantment.x_enchant.regicide": "弑君者",
-  "enchantment.x_enchant.regicide.desc": "攻击伤害小于附魔等级时, 该伤害同样会落在你身上, 软弱之时, 毙命之日",
+  "enchantment.x_enchant.regicide.desc": "攻击伤害小于level * 2时, 该伤害同样会落在你身上, 软弱之时, 毙命之日",
   "enchantment.x_enchant.thin": "劣质",
   "enchantment.x_enchant.thin.desc": "使用时会无视耐久附魔强制消耗耐久, 值: 2 x level",
   "enchantment.x_enchant.down_damage": "腐朽之刃",
-  "enchantment.x_enchant.down_damage.desc": "百分比降低攻击伤害, 降低值: 10% x level",
+  "enchantment.x_enchant.down_damage.desc": "百分比降低攻击伤害, 降低: 10% x level",
   "enchantment.x_enchant.down_armor": "腐朽护甲",
-  "enchantment.x_enchant.down_armor.desc": "百分比降低护甲值, reduction: 10% x level",
+  "enchantment.x_enchant.down_armor.desc": "百分比降低护甲值, 降低: 10% x level",
 
   "enchantment.x_enchant.halo_effect": "光环 - %s",
   "enchantment.x_enchant.halo_effect.desc": "药水效果的附魔版",
@@ -60,6 +60,13 @@
   "enchantment.x_enchant.chat.more_more_loot": "苟富贵，勿相忘~~~",
   "enchantment.x_enchant.chat.smart": "一花一世界，带师，我悟了!",
 
+  "x_enchant.menu.option.enchantment.normal": "通用附魔",
+  "x_enchant.menu.option.enchantment.halo": "光环附魔",
+  "x_enchant.menu.option.enchantment.curse": "诅咒附魔",
+
+  "x_enchant.menu.option.open.tips": "重新打开后, 需要重启游戏",
+  "x_enchant.menu.option.close.tips": "关闭后, 需要重启游戏",
+
   "x_enchant.menu.option.auto_fish": "自动钓鱼",
   "x_enchant.menu.option.suck_blood": "吸血",
   "x_enchant.menu.option.weakness": "弱点攻击",
@@ -72,7 +79,8 @@
   "x_enchant.menu.option.infinity_accept_mending": "无限与经验修复并存",
   "x_enchant.menu.option.quick_shoot": "快速射击",
   "x_enchant.menu.option.magic_immune": "魔免",
-  "x_enchant.menu.option.diffusion": "扩散基础伤害: %d",
+  "x_enchant.menu.option.diffusion": "扩散",
+  "x_enchant.menu.option.diffusion.damage": "扩散基础伤害: %d",
 
   "x_enchant.menu.option.halo": "光环",
   "x_enchant.menu.option.halo_range": "光环范围: %d",
