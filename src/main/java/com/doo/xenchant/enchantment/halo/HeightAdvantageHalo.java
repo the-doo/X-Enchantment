@@ -27,7 +27,7 @@ public class HeightAdvantageHalo extends LivingHalo {
     }
 
     @Override
-    protected int second() {
+    protected float second() {
         return 3;
     }
 

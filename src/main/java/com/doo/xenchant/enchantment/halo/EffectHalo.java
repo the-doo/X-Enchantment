@@ -5,6 +5,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
@@ -66,15 +67,23 @@ public class EffectHalo extends LivingHalo {
     }
 
     @Override
-    protected int second() {
-        return 5;
-    }
-
-    @Override
     public void onTarget(LivingEntity entity, Integer level, List<LivingEntity> targets) {
-        // default duration 2 * second()
-        StatusEffectInstance instance = new StatusEffectInstance(effect, second() * 50, level - 1);
+        // default duration 1.5 * second()
+        int duration = (int) (second() * 30);
+        // NIGHT_VISION has special effects in duration < 200
+        // see net.minecraft.client.render.GameRenderer.getNightVisionStrength
+        if (effect == StatusEffects.NIGHT_VISION) {
+            duration *= 10;
+        }
+
+        StatusEffectInstance instance = new StatusEffectInstance(effect, duration, level - 1);
         targets.forEach(e -> {
+            if (effect != StatusEffects.HEALTH_BOOST) {
+                e.addStatusEffect(instance);
+                return;
+            }
+
+            // if it is HEALTH_BOOST
             StatusEffectInstance has = e.getStatusEffect(effect);
 
             if (has == null) {

@@ -86,7 +86,7 @@ public class AttrHalo extends LivingHalo {
             EntityAttributeModifier.Operation op = attr.getBaseValue() == 0 ?
                     EntityAttributeModifier.Operation.MULTIPLY_TOTAL : EntityAttributeModifier.Operation.ADDITION;
 
-            addOrResetModifier(attr, LimitTimeModifier.get(getId().toString(), value, op, e.age + second() * 25, e));
+            addOrResetModifier(attr, LimitTimeModifier.get(getId().toString(), value, op, (int) (e.age + second() * 25), e));
         });
     }
 
