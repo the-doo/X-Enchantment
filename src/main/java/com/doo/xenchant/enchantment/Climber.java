@@ -32,7 +32,7 @@ public class Climber extends BaseEnchantment {
     protected void livingTick(LivingEntity living, ItemStack stack, int level) {
         if (living.getY() >= 80) {
             // default level 3
-            living.addStatusEffect(new StatusEffectInstance(StatusEffects.JUMP_BOOST, second() * 25, 2));
+            living.addStatusEffect(new StatusEffectInstance(StatusEffects.JUMP_BOOST, (int) (second() * 25), 2));
         }
     }
 }

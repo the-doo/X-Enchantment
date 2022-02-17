@@ -47,7 +47,7 @@ public class Smart extends BaseEnchantment {
     }
 
     @Override
-    protected int second() {
+    protected float second() {
         return 5;
     }
 

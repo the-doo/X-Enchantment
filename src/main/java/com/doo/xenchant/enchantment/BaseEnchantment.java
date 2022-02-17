@@ -77,15 +77,16 @@ public abstract class BaseEnchantment extends Enchantment {
      */
     public final void tryTrigger(LivingEntity living, ItemStack stack, int level) {
         // 20 tick == 1s
-        if (living.age % (second() * 20) == 0) {
+        if (living.age % (int) (second() * 20) == 0) {
             livingTick(living, stack, level);
         }
     }
 
     /**
      * default 1s
+     * @return
      */
-    protected int second() {
+    protected float second() {
         return 1;
     }
 
