@@ -17,6 +17,27 @@
 - #### Climber: Add JUMP BOOST III status effect when Y > 80
 - #### Diffusion: Range Weapon version of Sweeping enchantment, Damage: level x 5
 - #### String Strengthen: Arrows fly faster, the speed is level times
+- #### Night Break:
+    - ##### After every 2 attacks, the next attack will add real damage as a percentage of the target's maximum health
+    - ##### Damage: 10% x level
+    - ##### Real damage: ignored armor and resistance
+- #### Broken Dawn:
+    - ##### Evolves when progress is complete, done is item's max durability x l.5
+    - ##### Default +1 level to all enchantments of the item if enchantment max level > 1
+    - ##### 20% chance to level up item, and change to +3 level if not exist next item
+    - ##### Only enchanted once chance per item
+- #### Timor: Just like Timor, has invisible effect if you're sneaking 3 seconds, and has HASTE effect if you're broken
+
+#
+
+## Cursed Enchantment:
+
+- #### Regicide: When the attack damage is less than the enchantment level, the same damage will also fall on you
+- #### Thin: When used, it will ignore the durability enchantment and force the durability to be consumed, amount: level x 2
+- #### Decayed Blade: Percentage reduction in attack damage, reduction: 10% x level
+- #### Decayed Armor: Percentage reduction in armor, reduction: 10% x level
+
+#
 
 ## Halo Enchantment:
 
