@@ -2,6 +2,8 @@ package com.doo.xenchant.config;
 
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -109,9 +111,32 @@ public class Option {
     public boolean harmfulTargetOnlyMonster = true;
 
     /**
+     * 光环能否被其他东西使用
+     */
+    public AllowTarget haloAllowOther = AllowTarget.ALL;
+
+    public enum AllowTarget {
+        ALL(new TranslatableText("x_enchant.menu.option.halo_allow_target.all")),
+        PLAYER(new TranslatableText("x_enchant.menu.option.halo_allow_target.player")),
+
+        ;
+
+        public final Text key;
+
+        AllowTarget(Text key) {
+            this.key = key;
+        }
+    }
+
+    /**
      * 雷霆光环
      */
     public boolean thunderHalo = true;
+
+    /**
+     * Thunder Halo allow target
+     */
+    public AllowTarget thunderHaloAllowOther = AllowTarget.ALL;
 
     /**
      * 雷霆光环 是否是宝藏

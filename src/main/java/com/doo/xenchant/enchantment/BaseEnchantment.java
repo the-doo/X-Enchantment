@@ -85,7 +85,6 @@ public abstract class BaseEnchantment extends Enchantment {
 
     /**
      * default 1s
-     * @return
      */
     protected float second() {
         return 1;

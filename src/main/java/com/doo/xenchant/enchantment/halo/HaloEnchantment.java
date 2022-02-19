@@ -1,6 +1,7 @@
 package com.doo.xenchant.enchantment.halo;
 
 import com.doo.xenchant.Enchant;
+import com.doo.xenchant.config.Option;
 import com.doo.xenchant.enchantment.BaseEnchantment;
 import com.doo.xenchant.util.EnchantUtil;
 import net.minecraft.enchantment.Enchantment;
@@ -8,6 +9,7 @@ import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Box;
 
 import java.util.List;
@@ -45,7 +47,7 @@ public abstract class HaloEnchantment<T extends Entity> extends BaseEnchantment 
 
     @Override
     public void livingTick(LivingEntity living, ItemStack stack, int level) {
-        if (!Enchant.option.halo || ban()) {
+        if (!Enchant.option.halo || Enchant.option.haloAllowOther == Option.AllowTarget.PLAYER && !(living instanceof ServerPlayerEntity) || ban(living)) {
             return;
         }
 
@@ -54,7 +56,7 @@ public abstract class HaloEnchantment<T extends Entity> extends BaseEnchantment 
         halo(living, level, box);
     }
 
-    protected boolean ban() {
+    protected boolean ban(LivingEntity living) {
         return false;
     }
 

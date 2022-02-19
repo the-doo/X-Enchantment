@@ -1,6 +1,7 @@
 package com.doo.xenchant.enchantment.halo;
 
 import com.doo.xenchant.Enchant;
+import com.doo.xenchant.config.Option;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LightningEntity;
 import net.minecraft.entity.LivingEntity;
@@ -26,8 +27,8 @@ public class ThunderHalo extends LivingHalo {
     }
 
     @Override
-    protected boolean ban() {
-        return !Enchant.option.thunderHalo;
+    protected boolean ban(LivingEntity living) {
+        return !Enchant.option.thunderHalo || Enchant.option.thunderHaloAllowOther == Option.AllowTarget.PLAYER && !(living instanceof ServerPlayerEntity);
     }
 
     @Override

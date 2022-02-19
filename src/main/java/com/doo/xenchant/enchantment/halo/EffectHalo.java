@@ -57,7 +57,7 @@ public class EffectHalo extends LivingHalo {
     }
 
     @Override
-    protected boolean ban() {
+    protected boolean ban(LivingEntity living) {
         return Enchant.option.disabledEffect.contains(effect.getTranslationKey());
     }
 
