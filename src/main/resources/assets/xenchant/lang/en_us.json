@@ -42,7 +42,7 @@
   "enchantment.x_enchant.regicide": "Regicide",
   "enchantment.x_enchant.regicide.desc": "When the attack damage is less than the enchantment level, the damage will also fall on you, what happens when you show weakness?",
   "enchantment.x_enchant.thin": "Thin",
-  "enchantment.x_enchant.thin.desc": "When used, it will ignore the durability enchantment and force the durability to be consumed, amount: level x 2",
+  "enchantment.x_enchant.thin.desc": "25% chance to consume additional forced durability when used, amount: level x 2",
   "enchantment.x_enchant.down_damage": "Decayed Blade",
   "enchantment.x_enchant.down_damage.desc": "Percentage reduction in attack damage, reduction: 10% x level",
   "enchantment.x_enchant.down_armor": "Decayed Armor",

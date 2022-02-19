@@ -14,6 +14,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
+import javax.annotation.Nullable;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -159,7 +160,7 @@ public abstract class BaseEnchantment extends Enchantment {
     /**
      * callback for item will be damage
      */
-    public void itemUsedCallback(LivingEntity owner, ItemStack stack, Integer level, float amount) {
+    public void itemUsedCallback(@Nullable LivingEntity owner, ItemStack stack, Integer level, float amount) {
 
     }
 

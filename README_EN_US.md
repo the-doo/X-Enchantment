@@ -33,7 +33,7 @@
 ## Cursed Enchantment:
 
 - #### Regicide: When the attack damage is less than the enchantment level, the same damage will also fall on you
-- #### Thin: When used, it will ignore the durability enchantment and force the durability to be consumed, amount: level x 2
+- #### Thin: 25% chance to consume additional forced durability when used, amount: level x 2
 - #### Decayed Blade: Percentage reduction in attack damage, reduction: 10% x level
 - #### Decayed Armor: Percentage reduction in armor, reduction: 10% x level
 

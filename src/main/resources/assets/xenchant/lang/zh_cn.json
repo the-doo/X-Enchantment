@@ -42,7 +42,7 @@
   "enchantment.x_enchant.regicide": "弑君者",
   "enchantment.x_enchant.regicide.desc": "攻击伤害小于level * 2时, 该伤害同样会落在你身上, 软弱之时, 毙命之日",
   "enchantment.x_enchant.thin": "劣质",
-  "enchantment.x_enchant.thin.desc": "使用时会无视耐久附魔强制消耗耐久, 值: 2 x level",
+  "enchantment.x_enchant.thin.desc": "使用时有25%的几率会消耗额外耐久, 值: 2 x level",
   "enchantment.x_enchant.down_damage": "腐朽之刃",
   "enchantment.x_enchant.down_damage.desc": "百分比降低攻击伤害, 降低: 10% x level",
   "enchantment.x_enchant.down_armor": "腐朽护甲",
