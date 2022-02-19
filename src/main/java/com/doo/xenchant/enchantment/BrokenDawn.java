@@ -157,7 +157,7 @@ public class BrokenDawn extends BaseEnchantment {
                 // not done
                 if (level(stack) > 0) {
                     lines.add(new TranslatableText(getTranslationKey()).append(": ")
-                            .append(FORMAT.format(10D * nbt.getLong(nbtKey(KEY)) / max(stack)) + "%").formatted(Formatting.GRAY));
+                            .append(FORMAT.format(100D * nbt.getLong(nbtKey(KEY)) / max(stack)) + "%").formatted(Formatting.GRAY));
                     lines.add(new TranslatableText(getTranslationKey()).append(" - ")
                             .append(TIPS).formatted(Formatting.GRAY));
                 }
