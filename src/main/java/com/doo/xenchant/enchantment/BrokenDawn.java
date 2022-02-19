@@ -17,6 +17,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.registry.Registry;
 
+import javax.annotation.Nullable;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Random;
@@ -62,8 +63,8 @@ public class BrokenDawn extends BaseEnchantment {
     }
 
     @Override
-    public void itemUsedCallback(LivingEntity owner, ItemStack stack, Integer level, float amount) {
-        if (amount < 1) {
+    public void itemUsedCallback(@Nullable LivingEntity owner, ItemStack stack, Integer level, float amount) {
+        if (amount < 1 || owner == null) {
             return;
         }
 

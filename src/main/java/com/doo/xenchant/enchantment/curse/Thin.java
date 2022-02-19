@@ -5,6 +5,8 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nullable;
+
 /**
  * Thin
  */
@@ -32,7 +34,13 @@ public class Thin extends Cursed {
     }
 
     @Override
-    public void itemUsedCallback(LivingEntity owner, ItemStack stack, Integer level, float amount) {
-        stack.setDamage(stack.getDamage() + level * 2);
+    public void itemUsedCallback(@Nullable LivingEntity owner, ItemStack stack, Integer level, float amount) {
+        if (owner == null) {
+            return;
+        }
+
+        if (owner.getRandom().nextBoolean() && owner.getRandom().nextBoolean()) {
+            stack.setDamage(stack.getDamage() + level * 2);
+        }
     }
 }

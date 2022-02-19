@@ -181,6 +181,9 @@ public class ModMenuScreen extends Screen {
     private static final Option HARMFUL_TARGET_ONLY_MONSTER = CyclingOption.create("x_enchant.menu.option.harmful_target_only_monster",
             o -> Enchant.option.harmfulTargetOnlyMonster, (g, o, d) -> Enchant.option.harmfulTargetOnlyMonster = d);
 
+    private static final Option HALO_TARGET = CyclingOption.create("x_enchant.menu.option.halo_allow_target", com.doo.xenchant.config.Option.AllowTarget.values(), t -> t.key,
+            g -> Enchant.option.haloAllowOther, (g, O, v) -> Enchant.option.haloAllowOther = v);
+
     private static final Option THUNDER_HALO = CyclingOption.create("x_enchant.menu.option.thunder_halo", REOPEN,
             o -> Enchant.option.thunderHalo, (g, o, d) -> {
                 Enchant.option.thunderHalo = d;
@@ -193,6 +196,9 @@ public class ModMenuScreen extends Screen {
                     Enchant.option.disabled.add(ThunderHalo.class.getName());
                 }
             });
+
+    private static final Option THUNDER_HALO_TARGET = CyclingOption.create("x_enchant.menu.option.thunder_halo_allow_target", com.doo.xenchant.config.Option.AllowTarget.values(), t -> t.key,
+            g -> Enchant.option.thunderHaloAllowOther, (g, O, v) -> Enchant.option.thunderHaloAllowOther = v);
 
     private static final Option THUNDER_HALO_TREASURE = CyclingOption.create("x_enchant.menu.option.thunder_halo_treasure",
             o -> Enchant.option.thunderHaloIsTreasure, (g, o, d) -> Enchant.option.thunderHaloIsTreasure = d);
@@ -224,10 +230,11 @@ public class ModMenuScreen extends Screen {
     };
     private static final Option[] HALO_OPTION = {
             HALO, HALO_RANGE,
-            HARMFUL_TARGET_ONLY_MONSTER, null,
-            THUNDER_HALO, THUNDER_HALO_TREASURE,
-            THUNDER_HALO_CHANCE, TREASURE_EFFECT_LEVEL,
-            OTHER_EFFECT_LEVEL, STATUS_EFFECT
+            HALO_TARGET, HARMFUL_TARGET_ONLY_MONSTER,
+            THUNDER_HALO, THUNDER_HALO_TARGET,
+            THUNDER_HALO_TREASURE, THUNDER_HALO_CHANCE,
+            TREASURE_EFFECT_LEVEL, OTHER_EFFECT_LEVEL,
+            STATUS_EFFECT
     };
     private static final Option[] ENCHANT_OPTION = {
             AUTO_FISHING, SUCK_BLOOD,

@@ -1,6 +1,7 @@
 package com.doo.xenchant.enchantment.halo;
 
 import com.doo.xenchant.Enchant;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.Monster;
 import net.minecraft.util.math.Box;
@@ -30,6 +31,11 @@ public abstract class LivingHalo extends HaloEnchantment<LivingEntity> {
         }
 
         Predicate<LivingEntity> filter = e -> getType().predicate.test(living, e);
+        // if harmful is monster used, target only player
+        if (getType() == Type.HARMFUL && living instanceof Monster) {
+            filter = Entity::isPlayer;
+        }
+
         return living.world.getEntitiesByClass(LivingEntity.class, box, filter);
     }
 
