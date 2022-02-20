@@ -25,8 +25,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
 import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -46,7 +44,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 /**
  * 附魔工具
@@ -203,16 +200,12 @@ public class EnchantUtil {
         AttrHalo.removeDirty(living);
 
         // tick enchantment
-        StreamSupport.stream(living.getItemsEquipped().spliterator(), false).forEach(stack -> {
-            if (stack.getEnchantments().isEmpty()) {
+        living.getItemsEquipped().forEach(stack -> {
+            if (stack.isEmpty() || !stack.hasEnchantments()) {
                 return;
             }
 
-            EnchantmentHelper.get(stack).forEach((e, l) -> {
-                if (e instanceof BaseEnchantment && l > 0) {
-                    ((BaseEnchantment) e).tryTrigger(living, stack, l);
-                }
-            });
+            forBaseEnchantment((e, l) -> e.tryTrigger(living, stack, l), stack);
         });
     }
 
@@ -236,17 +229,15 @@ public class EnchantUtil {
      * @see EnchantmentHelper#forEachEnchantment(net.minecraft.enchantment.EnchantmentHelper.Consumer, net.minecraft.item.ItemStack)
      */
     public static void forBaseEnchantment(BiConsumer<BaseEnchantment, Integer> consumer, ItemStack stack) {
-        if (stack.isEmpty()) {
+        if (stack.isEmpty() || !stack.hasEnchantments()) {
             return;
         }
-        NbtList nbtList = stack.getEnchantments();
-        for (int i = 0; i < nbtList.size(); ++i) {
-            NbtCompound nbtCompound = nbtList.getCompound(i);
-            Registry.ENCHANTMENT.getOrEmpty(EnchantmentHelper.getIdFromNbt(nbtCompound))
-                    // only BaseEnchantment
-                    .filter(enchantment -> enchantment instanceof BaseEnchantment)
-                    .ifPresent(enchantment -> consumer.accept((BaseEnchantment) enchantment, EnchantmentHelper.getLevelFromNbt(nbtCompound)));
-        }
+
+        EnchantmentHelper.get(stack).forEach((e, l) -> {
+            if (e instanceof BaseEnchantment && l > 0) {
+                consumer.accept((BaseEnchantment) e, l);
+            }
+        });
     }
 
     public static float additionDamage(LivingEntity attacker, LivingEntity target) {
