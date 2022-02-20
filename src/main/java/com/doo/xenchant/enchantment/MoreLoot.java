@@ -96,6 +96,11 @@ public class MoreLoot extends BaseEnchantment {
                 nbt.putBoolean(nbtKey(key), true);
             }
 
+            // Add level xp
+            if (killer instanceof ServerPlayerEntity) {
+                ((ServerPlayerEntity) killer).addExperience(level);
+            }
+
             if (!i.isStackable()) {
                 // isn't stackable only half
                 IntStream.range(0, rand / 2).forEach(v -> baseConsumer.accept(i.copy()));

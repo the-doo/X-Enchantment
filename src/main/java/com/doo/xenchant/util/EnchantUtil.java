@@ -10,10 +10,12 @@ import com.doo.xenchant.enchantment.halo.AttrHalo;
 import com.doo.xenchant.enchantment.halo.EffectHalo;
 import com.doo.xenchant.enchantment.halo.HeightAdvantageHalo;
 import com.doo.xenchant.enchantment.halo.ThunderHalo;
+import com.doo.xenchant.enchantment.special.RemoveCursed;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
@@ -37,12 +39,11 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.mutable.MutableFloat;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -68,24 +69,27 @@ public class EnchantUtil {
      */
     public static void registerAll() {
         // normal enchantments
-        Stream.of(AutoFish.class, SuckBlood.class, Weakness.class, Rebirth.class,
-                        MoreLoot.class, HitRateUp.class, QuickShoot.class, MagicImmune.class,
-                        Librarian.class, IncDamage.class, Climber.class, Smart.class,
-                        KingKongLegs.class, Diffusion.class, Elasticity.class,
-                        NightBreak.class, BrokenDawn.class, Timor.class)
-                .filter(c -> !Enchant.option.disabled.contains(c.getName()))
-                .forEach(c -> BaseEnchantment.get(c).register());
+        Stream<Class<? extends BaseEnchantment>> stream = Stream.of(AutoFish.class, SuckBlood.class, Weakness.class, Rebirth.class,
+                MoreLoot.class, HitRateUp.class, QuickShoot.class, MagicImmune.class,
+                Librarian.class, IncDamage.class, Climber.class, Smart.class,
+                KingKongLegs.class, Diffusion.class, Elasticity.class,
+                NightBreak.class, BrokenDawn.class, Timor.class);
+        processStream(stream);
 
         // cursed enchantments
-        Stream.of(Regicide.class, Thin.class, DownDamage.class, DownArmor.class)
-                .filter(c -> !Enchant.option.disabled.contains(c.getName()))
-                .forEach(c -> BaseEnchantment.get(c).register());
+        stream = Stream.of(Regicide.class, Thin.class, DownDamage.class, DownArmor.class);
+        processStream(stream);
+
+        // Special enchantments
+        if (Enchant.option.special) {
+            stream = Stream.of(RemoveCursed.class);
+            processStream(stream);
+        }
 
         // Halo enchantments
         if (Enchant.option.halo) {
-            Stream.of(ThunderHalo.class, HeightAdvantageHalo.class)
-                    .filter(c -> !Enchant.option.disabled.contains(c.getName()))
-                    .forEach(c -> BaseEnchantment.get(c).register());
+            stream = Stream.of(ThunderHalo.class, HeightAdvantageHalo.class);
+            processStream(stream);
 
             // regist to server
             ServerLifecycleEvents.SERVER_STARTED.register(server -> {
@@ -105,13 +109,22 @@ public class EnchantUtil {
         }
     }
 
+    private static void processStream(Stream<Class<? extends BaseEnchantment>> stream) {
+        stream.filter(c -> !Enchant.option.disabled.contains(c.getName()))
+                .map(c -> BaseEnchantment.get(c))
+                .sorted(Comparator.comparing(e -> ((BaseEnchantment) e).getRarity().getWeight()).reversed())
+                .forEach(BaseEnchantment::register);
+    }
+
     private static void registAttr() {
         // Status effect halo must regist after all mod loaded
         // need filter(s -> Identifier.isValid(s.getTranslationKey()))
         // if not exsits
         Registry.ATTRIBUTE.getEntries().stream()
                 .filter(e -> Enchant.option.attributes.contains(e.getValue().getTranslationKey()))
-                .forEach(e -> new AttrHalo(e.getValue()));
+                .map(e -> new AttrHalo(e.getValue()))
+                .sorted(Comparator.comparing(e -> ((BaseEnchantment) e).getRarity().getWeight()).reversed())
+                .forEach(BaseEnchantment::register);
     }
 
     private static void registEffect() {
@@ -120,7 +133,9 @@ public class EnchantUtil {
         // if not exsits
         Registry.STATUS_EFFECT.stream()
                 .filter(e -> e != null && Identifier.isValid(e.getTranslationKey()) && !Enchant.option.disabledEffect.contains(e.getTranslationKey()))
-                .forEach(EffectHalo::new);
+                .map(EffectHalo::new)
+                .sorted(Comparator.comparing(e -> ((BaseEnchantment) e).getRarity().getWeight()).reversed())
+                .forEach(BaseEnchantment::register);
     }
 
     /**
@@ -320,5 +335,15 @@ public class EnchantUtil {
 
     public static void itemUsedCallback(LivingEntity owner, ItemStack stack, float amount) {
         forBaseEnchantment((e, l) -> e.itemUsedCallback(owner, stack, l, amount), stack);
+    }
+
+    public static Map<Enchantment, Integer> useOnAnvil(Map<Enchantment, Integer> enchantments, ItemStack newOne) {
+        Set<BaseEnchantment> set = enchantments.keySet().stream()
+                .filter(e -> e instanceof BaseEnchantment && enchantments.get(e) > 0)
+                .map(e -> (BaseEnchantment) e)
+                .collect(Collectors.toSet());
+
+        set.forEach(e -> e.onAnvil(enchantments, enchantments.get(e), newOne));
+        return enchantments;
     }
 }

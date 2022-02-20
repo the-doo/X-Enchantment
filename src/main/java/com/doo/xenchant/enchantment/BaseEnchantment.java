@@ -36,13 +36,6 @@ public abstract class BaseEnchantment extends Enchantment {
     protected BaseEnchantment(String name, Rarity weight, EnchantmentTarget type, EquipmentSlot[] slotTypes) {
         super(weight, type, slotTypes);
         this.id = new Identifier(Enchant.ID, name);
-
-        // Don't replace if exist
-        if (Registry.ENCHANTMENT.containsId(id)) {
-            return;
-        }
-
-        BaseEnchantmentFactory.register(Registry.register(Registry.ENCHANTMENT, id, this));
     }
 
     public static <T extends BaseEnchantment> T get(Class<T> clazz) {
@@ -71,6 +64,12 @@ public abstract class BaseEnchantment extends Enchantment {
      * Can regis to any event or other things
      */
     public void register() {
+        // Don't replace if exist
+        if (Registry.ENCHANTMENT.containsId(id)) {
+            return;
+        }
+
+        BaseEnchantmentFactory.register(Registry.register(Registry.ENCHANTMENT, id, this));
     }
 
     /**
@@ -167,6 +166,10 @@ public abstract class BaseEnchantment extends Enchantment {
      * callback for item will be damage
      */
     public void itemUsedCallback(@Nullable LivingEntity owner, ItemStack stack, Integer level, float amount) {
+
+    }
+
+    public void onAnvil(Map<Enchantment, Integer> map, int level, ItemStack stack) {
 
     }
 
