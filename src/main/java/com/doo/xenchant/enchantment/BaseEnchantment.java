@@ -74,6 +74,13 @@ public abstract class BaseEnchantment extends Enchantment {
     }
 
     /**
+     * Todo check slot
+     */
+    public boolean isRight(EquipmentSlot slot) {
+        return true;
+    }
+
+    /**
      * Add enchantment trigger callback
      */
     public final void tryTrigger(LivingEntity living, ItemStack stack, int level) {
