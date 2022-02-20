@@ -39,8 +39,8 @@
   "enchantment.x_enchant.timor": "Timor",
   "enchantment.x_enchant.timor.desc": "Crouching for 3 seconds to become invisible, and increase attack speed when cancel",
 
-  "enchantment.x_enchant.special.remove_cursed": "Curse Killer",
-  "enchantment.x_enchant.special.remove_cursed.desc": "Remove cursed enchantment at anvil",
+  "enchantment.x_enchant.remove_cursed": "Curse Killer",
+  "enchantment.x_enchant.remove_cursed.desc": "Remove cursed enchantment at anvil",
 
   "enchantment.x_enchant.regicide": "Regicide",
   "enchantment.x_enchant.regicide.desc": "When the attack damage is less than the enchantment level, the damage will also fall on you, what happens when you show weakness?",

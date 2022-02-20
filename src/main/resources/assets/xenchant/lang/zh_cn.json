@@ -39,8 +39,8 @@
   "enchantment.x_enchant.timor": "提莫",
   "enchantment.x_enchant.timor.desc": "蹲伏3秒后会隐身, 解除时会提高攻击速度",
 
-  "enchantment.x_enchant.special.remove_cursed": "诅咒杀手",
-  "enchantment.x_enchant.special.remove_cursed.desc": "可在铁砧处移除诅咒",
+  "enchantment.x_enchant.remove_cursed": "诅咒杀手",
+  "enchantment.x_enchant.remove_cursed.desc": "可在铁砧处移除诅咒",
 
   "enchantment.x_enchant.regicide": "弑君者",
   "enchantment.x_enchant.regicide.desc": "攻击伤害小于level * 2时, 该伤害同样会落在你身上, 软弱之时, 毙命之日",
