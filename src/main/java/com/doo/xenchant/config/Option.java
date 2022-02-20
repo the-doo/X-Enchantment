@@ -86,6 +86,21 @@ public class Option {
     public double diffusionDamage = 5;
 
     /**
+     * BrokenDawn
+     */
+    public boolean brokenDawn = true;
+
+    /**
+     * BrokenDawn Process
+     */
+    public double brokenDawnProcess = 1.5;
+
+    /**
+     * BrokenDawn Success
+     */
+    public double brokenDawnSuccess = 20;
+
+    /**
      * 无限与修补
      */
     public boolean infinityAcceptMending = true;

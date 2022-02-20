@@ -1,5 +1,6 @@
 package com.doo.xenchant.enchantment;
 
+import com.doo.xenchant.Enchant;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.loader.api.FabricLoader;
@@ -64,7 +65,7 @@ public class BrokenDawn extends BaseEnchantment {
 
     @Override
     public void itemUsedCallback(@Nullable LivingEntity owner, ItemStack stack, Integer level, float amount) {
-        if (amount < 1 || owner == null) {
+        if (!Enchant.option.brokenDawn || amount < 1 || owner == null) {
             return;
         }
 
@@ -88,7 +89,7 @@ public class BrokenDawn extends BaseEnchantment {
         // default increment
         int inc = 1;
         Item next = nextLevelItem(stack.getItem());
-        boolean needLevelUp = random.nextInt(100) < 20;
+        boolean needLevelUp = random.nextInt(100) < Enchant.option.brokenDawnSuccess;
 
         // if level up but no next level
         ItemStack drop = ItemStack.EMPTY;
@@ -129,7 +130,7 @@ public class BrokenDawn extends BaseEnchantment {
     }
 
     private long max(ItemStack stack) {
-        return (long) (stack.getMaxDamage() * 1.5);
+        return (long) (stack.getMaxDamage() * Enchant.option.brokenDawnProcess);
     }
 
     private Item nextLevelItem(Item item) {
@@ -144,7 +145,7 @@ public class BrokenDawn extends BaseEnchantment {
         super.register();
 
         // tooltips
-        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT && Enchant.option.brokenDawn) {
             ItemTooltipCallback.EVENT.register(((stack, context, lines) -> {
                 NbtCompound nbt = stack.getOrCreateNbt();
                 // if done
@@ -157,7 +158,7 @@ public class BrokenDawn extends BaseEnchantment {
                 // not done
                 if (level(stack) > 0) {
                     lines.add(new TranslatableText(getTranslationKey()).append(": ")
-                            .append(FORMAT.format(10D * nbt.getLong(nbtKey(KEY)) / max(stack)) + "%").formatted(Formatting.GRAY));
+                            .append(FORMAT.format(100D * nbt.getLong(nbtKey(KEY)) / max(stack)) + "%").formatted(Formatting.GRAY));
                     lines.add(new TranslatableText(getTranslationKey()).append(" - ")
                             .append(TIPS).formatted(Formatting.GRAY));
                 }

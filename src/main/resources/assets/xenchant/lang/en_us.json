@@ -81,6 +81,9 @@
   "x_enchant.menu.option.magic_immune": "Magic Immune",
   "x_enchant.menu.option.diffusion": "Diffusion",
   "x_enchant.menu.option.diffusion.damage": "Diffusion base value: %d",
+  "x_enchant.menu.option.broken_dawn": "Broken Dawn",
+  "x_enchant.menu.option.broken_dawn.process": "Dawn total progress multiplier: %d",
+  "x_enchant.menu.option.broken_dawn.success": "Dawn Advancement Success Rate: %d",
 
   "x_enchant.menu.option.halo": "HALO",
   "x_enchant.menu.option.halo_range": "HALO Range: %d",

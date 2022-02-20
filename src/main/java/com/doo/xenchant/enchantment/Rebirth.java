@@ -9,6 +9,8 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
 
 /**
  * 重生
@@ -66,10 +68,15 @@ public class Rebirth extends BaseEnchantment {
             player.world.sendEntityStatus(player, (byte) 35);
 
             // decrement 1 level, see ItemStack.addEnchantment
-            stack.getNbt().getList(ItemStack.ENCHANTMENTS_KEY, 10).stream()
-                    .map(e -> (NbtCompound) e).filter(e -> EnchantmentHelper.getIdFromNbt(e).equals(rebirth.getId()))
-                    .findFirst()
-                    .ifPresent(e -> EnchantmentHelper.writeLevelToNbt(e, level - 1));
+            NbtList list = stack.getOrCreateNbt().getList(ItemStack.ENCHANTMENTS_KEY, NbtElement.COMPOUND_TYPE);
+            list.stream().filter(e -> rebirth.getId().equals(EnchantmentHelper.getIdFromNbt((NbtCompound) e)))
+                    .findFirst().ifPresent(e -> {
+                        if (level - 1 < 1) {
+                            list.remove(e);
+                            return;
+                        }
+                        EnchantmentHelper.writeLevelToNbt((NbtCompound) e, level - 1);
+                    });
             return false;
         }));
     }

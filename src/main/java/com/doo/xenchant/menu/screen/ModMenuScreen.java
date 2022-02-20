@@ -166,6 +166,29 @@ public class ModMenuScreen extends Screen {
             (o, d) -> Enchant.option.diffusionDamage = d,
             (g, o) -> new TranslatableText("x_enchant.menu.option.diffusion.damage", Enchant.option.diffusionDamage));
 
+    private static final Option BROKEN_DAWN = CyclingOption.create("x_enchant.menu.option.broken_dawn", CLOSE,
+            o -> Enchant.option.brokenDawn, (g, o, d) -> {
+                Enchant.option.brokenDawn = d;
+
+                if (d) {
+                    Enchant.option.disabled.remove(BrokenDawn.class.getName());
+
+                    new BrokenDawn();
+                } else {
+                    Enchant.option.disabled.add(BrokenDawn.class.getName());
+                }
+            });
+
+    private static final Option BROKEN_DAWN_PROCESS = new DoubleOption("", 0.5, 10, 0.5F,
+            o -> Enchant.option.brokenDawnProcess,
+            (o, d) -> Enchant.option.brokenDawnProcess = d,
+            (g, o) -> new TranslatableText("x_enchant.menu.option.broken_dawn.process", Enchant.option.brokenDawnProcess));
+
+    private static final Option BROKEN_DAWN_SUCCESS = new DoubleOption("", 0, 100, 1F,
+            o -> Enchant.option.brokenDawnSuccess,
+            (o, d) -> Enchant.option.brokenDawnSuccess = d,
+            (g, o) -> new TranslatableText("x_enchant.menu.option.broken_dawn.success", Enchant.option.brokenDawnSuccess));
+
     private static final Option CHAT_TIPS = CyclingOption.create("x_enchant.menu.option.chat_tips",
             o -> Enchant.option.chatTips, (g, o, d) -> Enchant.option.chatTips = d);
 
@@ -244,7 +267,8 @@ public class ModMenuScreen extends Screen {
             INFINITY_ACCEPT_MENDING, HIT_RATE_UP,
             QUICK_SHOOT, MAGIC_IMMUNE,
             DIFFUSION, DIFFUSION_DAMAGE,
-            CHAT_TIPS,
+            BROKEN_DAWN, BROKEN_DAWN_PROCESS,
+            BROKEN_DAWN_SUCCESS, CHAT_TIPS
     };
 
     private static final ModMenuScreen INSTANCE = new ModMenuScreen();

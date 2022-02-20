@@ -244,7 +244,8 @@ public class EnchantUtil {
             NbtCompound nbtCompound = nbtList.getCompound(i);
             Registry.ENCHANTMENT.getOrEmpty(EnchantmentHelper.getIdFromNbt(nbtCompound))
                     // only BaseEnchantment
-                    .filter(enchantment -> enchantment instanceof BaseEnchantment).ifPresent(enchantment -> consumer.accept((BaseEnchantment) enchantment, EnchantmentHelper.getLevelFromNbt(nbtCompound)));
+                    .filter(enchantment -> enchantment instanceof BaseEnchantment)
+                    .ifPresent(enchantment -> consumer.accept((BaseEnchantment) enchantment, EnchantmentHelper.getLevelFromNbt(nbtCompound)));
         }
     }
 
