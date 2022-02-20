@@ -38,6 +38,7 @@ import net.minecraft.world.World;
 import org.apache.commons.lang3.mutable.MutableFloat;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -68,24 +69,21 @@ public class EnchantUtil {
      */
     public static void registerAll() {
         // normal enchantments
-        Stream.of(AutoFish.class, SuckBlood.class, Weakness.class, Rebirth.class,
-                        MoreLoot.class, HitRateUp.class, QuickShoot.class, MagicImmune.class,
-                        Librarian.class, IncDamage.class, Climber.class, Smart.class,
-                        KingKongLegs.class, Diffusion.class, Elasticity.class,
-                        NightBreak.class, BrokenDawn.class, Timor.class)
-                .filter(c -> !Enchant.option.disabled.contains(c.getName()))
-                .forEach(c -> BaseEnchantment.get(c).register());
+        Stream<Class<? extends BaseEnchantment>> stream = Stream.of(AutoFish.class, SuckBlood.class, Weakness.class, Rebirth.class,
+                MoreLoot.class, HitRateUp.class, QuickShoot.class, MagicImmune.class,
+                Librarian.class, IncDamage.class, Climber.class, Smart.class,
+                KingKongLegs.class, Diffusion.class, Elasticity.class,
+                NightBreak.class, BrokenDawn.class, Timor.class);
+        processStream(stream);
 
         // cursed enchantments
-        Stream.of(Regicide.class, Thin.class, DownDamage.class, DownArmor.class)
-                .filter(c -> !Enchant.option.disabled.contains(c.getName()))
-                .forEach(c -> BaseEnchantment.get(c).register());
+        stream = Stream.of(Regicide.class, Thin.class, DownDamage.class, DownArmor.class);
+        processStream(stream);
 
         // Halo enchantments
         if (Enchant.option.halo) {
-            Stream.of(ThunderHalo.class, HeightAdvantageHalo.class)
-                    .filter(c -> !Enchant.option.disabled.contains(c.getName()))
-                    .forEach(c -> BaseEnchantment.get(c).register());
+            stream = Stream.of(ThunderHalo.class, HeightAdvantageHalo.class);
+            processStream(stream);
 
             // regist to server
             ServerLifecycleEvents.SERVER_STARTED.register(server -> {
@@ -105,13 +103,22 @@ public class EnchantUtil {
         }
     }
 
+    private static void processStream(Stream<Class<? extends BaseEnchantment>> stream) {
+        stream.filter(c -> !Enchant.option.disabled.contains(c.getName()))
+                .map(c -> BaseEnchantment.get(c))
+                .sorted(Comparator.comparing(e -> ((BaseEnchantment) e).getRarity().getWeight()).reversed())
+                .forEach(BaseEnchantment::register);
+    }
+
     private static void registAttr() {
         // Status effect halo must regist after all mod loaded
         // need filter(s -> Identifier.isValid(s.getTranslationKey()))
         // if not exsits
         Registry.ATTRIBUTE.getEntries().stream()
                 .filter(e -> Enchant.option.attributes.contains(e.getValue().getTranslationKey()))
-                .forEach(e -> new AttrHalo(e.getValue()));
+                .map(e -> new AttrHalo(e.getValue()))
+                .sorted(Comparator.comparing(e -> ((BaseEnchantment) e).getRarity().getWeight()).reversed())
+                .forEach(BaseEnchantment::register);
     }
 
     private static void registEffect() {
@@ -120,7 +127,9 @@ public class EnchantUtil {
         // if not exsits
         Registry.STATUS_EFFECT.stream()
                 .filter(e -> e != null && Identifier.isValid(e.getTranslationKey()) && !Enchant.option.disabledEffect.contains(e.getTranslationKey()))
-                .forEach(EffectHalo::new);
+                .map(EffectHalo::new)
+                .sorted(Comparator.comparing(e -> ((BaseEnchantment) e).getRarity().getWeight()).reversed())
+                .forEach(BaseEnchantment::register);
     }
 
     /**
