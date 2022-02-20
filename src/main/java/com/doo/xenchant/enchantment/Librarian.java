@@ -72,7 +72,7 @@ public class Librarian extends BaseEnchantment {
             if (i.getRarity() == net.minecraft.util.Rarity.COMMON && random.nextInt(100) < 5 * level) {
                 i.setCount(0);
 
-                // Add rondom enchantment
+                // Add random enchantment
                 Enchantment enchantment = Registry.ENCHANTMENT.getRandom(random);
                 if (enchantment == null) {
                     return i;
@@ -80,7 +80,7 @@ public class Librarian extends BaseEnchantment {
 
                 // increment count
                 stack.getOrCreateNbt().putInt(nbtKey(key), count + 1);
-                return EnchantedBookItem.forEnchantment(new EnchantmentLevelEntry(enchantment, random.nextInt(enchantment.getMaxLevel()) + 1));
+                killer.dropStack(EnchantedBookItem.forEnchantment(new EnchantmentLevelEntry(enchantment, random.nextInt(enchantment.getMaxLevel()) + 1)));
             }
             return i;
         };

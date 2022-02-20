@@ -196,4 +196,9 @@ public class Option {
      * Disabled Effect Set
      */
     public Collection<String> disabledEffect = new HashSet<>();
+
+    /**
+     * special
+     */
+    public boolean special = false;
 }

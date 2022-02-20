@@ -169,6 +169,10 @@ public abstract class BaseEnchantment extends Enchantment {
 
     }
 
+    public void onAnvil(Map<Enchantment, Integer> map, int level, ItemStack stack) {
+
+    }
+
     @SuppressWarnings("all")
     private static class BaseEnchantmentFactory {
 

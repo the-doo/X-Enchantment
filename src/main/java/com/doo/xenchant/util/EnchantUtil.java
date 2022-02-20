@@ -10,10 +10,12 @@ import com.doo.xenchant.enchantment.halo.AttrHalo;
 import com.doo.xenchant.enchantment.halo.EffectHalo;
 import com.doo.xenchant.enchantment.halo.HeightAdvantageHalo;
 import com.doo.xenchant.enchantment.halo.ThunderHalo;
+import com.doo.xenchant.enchantment.special.RemoveCursed;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
@@ -37,13 +39,11 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.mutable.MutableFloat;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -79,6 +79,12 @@ public class EnchantUtil {
         // cursed enchantments
         stream = Stream.of(Regicide.class, Thin.class, DownDamage.class, DownArmor.class);
         processStream(stream);
+
+        // Special enchantments
+        if (Enchant.option.special) {
+            stream = Stream.of(RemoveCursed.class);
+            processStream(stream);
+        }
 
         // Halo enchantments
         if (Enchant.option.halo) {
@@ -329,5 +335,15 @@ public class EnchantUtil {
 
     public static void itemUsedCallback(LivingEntity owner, ItemStack stack, float amount) {
         forBaseEnchantment((e, l) -> e.itemUsedCallback(owner, stack, l, amount), stack);
+    }
+
+    public static Map<Enchantment, Integer> useOnAnvil(Map<Enchantment, Integer> enchantments, ItemStack newOne) {
+        Set<BaseEnchantment> set = enchantments.keySet().stream()
+                .filter(e -> e instanceof BaseEnchantment && enchantments.get(e) > 0)
+                .map(e -> (BaseEnchantment) e)
+                .collect(Collectors.toSet());
+
+        set.forEach(e -> e.onAnvil(enchantments, enchantments.get(e), newOne));
+        return enchantments;
     }
 }
