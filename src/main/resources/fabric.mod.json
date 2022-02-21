@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "x-enchant",
-  "version": "1.18-6",
+  "version": "1.18-6.1",
 
   "name": "X-Enchant",
   "description": "添加附魔\n(Add Some Enchantment)",
