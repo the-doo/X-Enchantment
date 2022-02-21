@@ -11,6 +11,7 @@ import com.doo.xenchant.enchantment.halo.EffectHalo;
 import com.doo.xenchant.enchantment.halo.HeightAdvantageHalo;
 import com.doo.xenchant.enchantment.halo.ThunderHalo;
 import com.doo.xenchant.enchantment.special.RemoveCursed;
+import dev.emi.trinkets.api.TrinketsApi;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -214,6 +215,12 @@ public class EnchantUtil {
         // remove dirty arributes
         AttrHalo.removeDirty(living);
 
+
+
+        // if has trinkets
+        TrinketsApi.getTrinketComponent(living).ifPresent(c -> c.forEach((slot, stack) -> {
+
+        }));
         // tick enchantment
         living.getItemsEquipped().forEach(stack -> {
             if (stack.isEmpty() || !stack.hasEnchantments()) {
@@ -294,6 +301,20 @@ public class EnchantUtil {
 
         attacker.getArmorItems().forEach(stack -> {
             forBaseEnchantment((e, l) -> e.damageCallback(attacker, target, stack, l, amount), stack);
+        });
+
+//        ifTrinket(stack -> {
+//            forBaseEnchantment((e, l) -> e.damageCallback(attacker, target, stack, l, amount), stack);
+//        }, attacker);
+    }
+
+    public static void ifTrinket(Consumer<ItemStack> consumer, LivingEntity living) {
+        if (!FabricLoader.getInstance().isModLoaded("trinkets")) {
+            return;
+        }
+
+        TrinketsApi.getTrinketComponent(living).ifPresent(c -> {
+            c.getAllEquipped().forEach(p -> consumer.accept(p.getRight()));
         });
     }
 
