@@ -12,6 +12,7 @@ import net.minecraft.item.FishingRodItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.registry.Registry;
 
 import java.util.Random;
@@ -81,6 +82,10 @@ public class Librarian extends BaseEnchantment {
                 // increment count
                 stack.getOrCreateNbt().putInt(nbtKey(key), count + 1);
                 killer.dropStack(EnchantedBookItem.forEnchantment(new EnchantmentLevelEntry(enchantment, random.nextInt(enchantment.getMaxLevel()) + 1)));
+
+                if (killer instanceof ServerPlayerEntity) {
+                    ((ServerPlayerEntity) killer).addExperience(2);
+                }
             }
             return i;
         };
