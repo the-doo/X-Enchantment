@@ -34,6 +34,10 @@ public class Regicide extends Cursed {
 
     @Override
     public void damageCallback(LivingEntity attacker, LivingEntity target, ItemStack stack, int level, float amount) {
+        if (attacker == target) {
+            return;
+        }
+
         float damage = level * 2;
         if (amount < damage) {
             attacker.damage(DamageSource.mob(attacker), damage);
