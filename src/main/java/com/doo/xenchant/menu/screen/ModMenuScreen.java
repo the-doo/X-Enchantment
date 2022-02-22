@@ -189,8 +189,12 @@ public class ModMenuScreen extends Screen {
             (o, d) -> Enchant.option.brokenDawnSuccess = d,
             (g, o) -> new TranslatableText("x_enchant.menu.option.broken_dawn.success", Enchant.option.brokenDawnSuccess));
 
+    private static final Option SPECIAL = CyclingOption.create("x_enchant.menu.option.special",
+            o -> Enchant.option.special, (g, o, d) -> Enchant.option.special = d);
+
     private static final Option CHAT_TIPS = CyclingOption.create("x_enchant.menu.option.chat_tips",
             o -> Enchant.option.chatTips, (g, o, d) -> Enchant.option.chatTips = d);
+
 
     private static final Option HALO =
             CyclingOption.create("x_enchant.menu.option.halo", REOPEN,
@@ -293,6 +297,7 @@ public class ModMenuScreen extends Screen {
         list = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
         // 显示基础高度
         list.addAll(ENCHANT_OPTION);
+        list.addSingleOptionEntry(SPECIAL);
         list.addAll(HALO_OPTION);
         this.addSelectableChild(list);
         // 返回按钮

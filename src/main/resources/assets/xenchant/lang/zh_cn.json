@@ -39,8 +39,12 @@
   "enchantment.x_enchant.timor": "提莫",
   "enchantment.x_enchant.timor.desc": "蹲伏3秒后会隐身, 解除时会提高攻击速度",
 
+  "enchantment.x_enchant.special": "特殊附魔",
+
   "enchantment.x_enchant.remove_cursed": "诅咒杀手",
   "enchantment.x_enchant.remove_cursed.desc": "可在铁砧处移除诅咒",
+  "enchantment.x_enchant.health_converter": "血肉转化",
+  "enchantment.x_enchant.health_converter.desc": "手握该附魔书时每10秒扣除5颗心去完全修复一个物品, 无法附魔任何其他物品",
 
   "enchantment.x_enchant.regicide": "弑君者",
   "enchantment.x_enchant.regicide.desc": "攻击伤害小于level * 2时, 该伤害同样会落在你身上, 软弱之时, 毙命之日",

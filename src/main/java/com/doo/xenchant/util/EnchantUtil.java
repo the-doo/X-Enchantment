@@ -10,6 +10,7 @@ import com.doo.xenchant.enchantment.halo.AttrHalo;
 import com.doo.xenchant.enchantment.halo.EffectHalo;
 import com.doo.xenchant.enchantment.halo.HeightAdvantageHalo;
 import com.doo.xenchant.enchantment.halo.ThunderHalo;
+import com.doo.xenchant.enchantment.special.HealthConverter;
 import com.doo.xenchant.enchantment.special.RemoveCursed;
 import dev.emi.trinkets.api.TrinketsApi;
 import net.fabricmc.api.EnvType;
@@ -83,7 +84,7 @@ public class EnchantUtil {
 
         // Special enchantments
         if (Enchant.option.special) {
-            stream = Stream.of(RemoveCursed.class);
+            stream = Stream.of(RemoveCursed.class, HealthConverter.class);
             processStream(stream);
         }
 
