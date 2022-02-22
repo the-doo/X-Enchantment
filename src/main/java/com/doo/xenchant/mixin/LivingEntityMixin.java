@@ -42,7 +42,7 @@ public abstract class LivingEntityMixin {
     private double damageAmount(double value) {
         // is multi total armor
         float multi = EnchantUtil.multiTotalArmor((LivingEntity) (Object) this, value);
-        value *= multi;
+        value = Math.max(0, value * multi);
         return value;
     }
 
@@ -52,10 +52,10 @@ public abstract class LivingEntityMixin {
         if (entity instanceof LivingEntity) {
             // is addition damage
             float addition = EnchantUtil.additionDamage((LivingEntity) entity, (LivingEntity) (Object) this);
-            amount += addition;
+            amount = Math.max(0, amount + addition);
             // is multi total damage
             float multi = EnchantUtil.multiTotalDamage((LivingEntity) entity, (LivingEntity) (Object) this);
-            amount *= multi;
+            amount = Math.max(0, amount * multi);
         }
         return amount;
     }
@@ -66,7 +66,7 @@ public abstract class LivingEntityMixin {
         if (entity instanceof LivingEntity) {
             // is addition damage
             float addition = EnchantUtil.realAdditionDamage((LivingEntity) entity, (LivingEntity) (Object) this);
-            amount += addition;
+            amount = Math.max(0, amount + addition);
         }
         return amount;
     }
