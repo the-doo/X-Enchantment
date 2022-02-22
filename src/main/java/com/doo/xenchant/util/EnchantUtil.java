@@ -286,10 +286,10 @@ public class EnchantUtil {
         return newAmount.floatValue();
     }
 
-    public static float multiTotalArmor(LivingEntity living, double base) {
+    public static float multiTotalArmor(LivingEntity living, double total) {
         MutableFloat newAmount = new MutableFloat(1);
-        Stream.of(living.getMainHandStack(), living.getOffHandStack()).forEach(stack -> {
-            forBaseEnchantment((e, l) -> newAmount.add(e.getMultiTotalArmor(living, base, stack, l)), stack);
+        living.getArmorItems().forEach(stack -> {
+            forBaseEnchantment((e, l) -> newAmount.add(e.getMultiTotalArmor(living, total, stack, l)), stack);
         });
         return newAmount.floatValue();
     }
@@ -342,8 +342,7 @@ public class EnchantUtil {
         LivingEntity killer = (LivingEntity) entity;
 
         List<Function<ItemStack, ItemStack>> list = new ArrayList<>();
-        BiConsumer<BaseEnchantment, Integer> forEach = (e, l) ->
-                Optional.ofNullable(e.lootSetter(killer, item, l, lootConsumer, context)).ifPresent(list::add);
+        BiConsumer<BaseEnchantment, Integer> forEach = (e, l) -> Optional.ofNullable(e.lootSetter(killer, item, l, lootConsumer, context)).ifPresent(list::add);
         forBaseEnchantment(forEach, stack);
 
         if (list.isEmpty()) {
