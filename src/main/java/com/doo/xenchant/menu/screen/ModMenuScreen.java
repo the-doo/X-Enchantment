@@ -192,6 +192,9 @@ public class ModMenuScreen extends Screen {
     private static final Option SPECIAL = CyclingOption.create("x_enchant.menu.option.special",
             o -> Enchant.option.special, (g, o, d) -> Enchant.option.special = d);
 
+    private static final Option TRINKETS = CyclingOption.create("x_enchant.menu.option.trinkets",
+            o -> Enchant.option.trinkets, (g, o, d) -> Enchant.option.trinkets = d);
+
     private static final Option CHAT_TIPS = CyclingOption.create("x_enchant.menu.option.chat_tips",
             o -> Enchant.option.chatTips, (g, o, d) -> Enchant.option.chatTips = d);
 
@@ -297,8 +300,8 @@ public class ModMenuScreen extends Screen {
         list = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
         // 显示基础高度
         list.addAll(ENCHANT_OPTION);
-        list.addSingleOptionEntry(SPECIAL);
         list.addAll(HALO_OPTION);
+        list.addOptionEntry(SPECIAL, TRINKETS);
         this.addSelectableChild(list);
         // 返回按钮
         this.addDrawableChild(new ButtonWidget(this.width / 2 - 150 / 2, this.height - 28, 150, 20,

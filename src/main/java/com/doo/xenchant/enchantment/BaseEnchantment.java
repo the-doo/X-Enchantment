@@ -75,7 +75,7 @@ public abstract class BaseEnchantment extends Enchantment {
     /**
      * Todo check slot
      */
-    public boolean isRight(EquipmentSlot slot) {
+    public boolean isRight(EquipmentSlot slot, ItemStack stack) {
         return true;
     }
 

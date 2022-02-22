@@ -12,6 +12,7 @@ import com.doo.xenchant.enchantment.halo.HeightAdvantageHalo;
 import com.doo.xenchant.enchantment.halo.ThunderHalo;
 import com.doo.xenchant.enchantment.special.HealthConverter;
 import com.doo.xenchant.enchantment.special.RemoveCursed;
+import com.doo.xenchant.enchantment.trinkets.WithPower;
 import dev.emi.trinkets.api.TrinketsApi;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
@@ -90,24 +91,30 @@ public class EnchantUtil {
             processStream(stream);
         }
 
+        // Trinkets enchantments
+        if (Enchant.option.trinkets) {
+            stream = Stream.of(WithPower.class);
+            processStream(stream);
+        }
+
         // Halo enchantments
         if (Enchant.option.halo) {
             stream = Stream.of(ThunderHalo.class, HeightAdvantageHalo.class);
             processStream(stream);
 
-            // regist to server
+            // regis to server
             ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-                registEffect();
+                regisEffect();
 
-                registAttr();
+                regisAttr();
             });
 
-            // regist to client
+            // regis to client
             if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
                 ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
-                    registEffect();
+                    regisEffect();
 
-                    registAttr();
+                    regisAttr();
                 });
             }
         }
@@ -120,10 +127,10 @@ public class EnchantUtil {
                 .forEach(BaseEnchantment::register);
     }
 
-    private static void registAttr() {
-        // Status effect halo must regist after all mod loaded
+    private static void regisAttr() {
+        // Status effect halo must regis after all mod loaded
         // need filter(s -> Identifier.isValid(s.getTranslationKey()))
-        // if not exsits
+        // if not exists
         Registry.ATTRIBUTE.getEntries().stream()
                 .filter(e -> Enchant.option.attributes.contains(e.getValue().getTranslationKey()))
                 .map(e -> new AttrHalo(e.getValue()))
@@ -131,10 +138,10 @@ public class EnchantUtil {
                 .forEach(BaseEnchantment::register);
     }
 
-    private static void registEffect() {
-        // Attribute halo must regist after all mod loaded
+    private static void regisEffect() {
+        // Attribute halo must regis after all mod loaded
         // need filter(s -> Identifier.isValid(s.getTranslationKey()))
-        // if not exsits
+        // if not exists
         Registry.STATUS_EFFECT.stream()
                 .filter(e -> e != null && Identifier.isValid(e.getTranslationKey()) && !Enchant.option.disabledEffect.contains(e.getTranslationKey()))
                 .map(EffectHalo::new)
@@ -313,17 +320,17 @@ public class EnchantUtil {
     }
 
     public static Consumer<ItemStack> lootConsumer(Consumer<ItemStack> lootConsumer, LootContext context) {
-        // defualt is tool loot
+        // default is tool loot
         ItemStack stack = context.get(LootContextParameters.TOOL);
         Entity entity = Optional.ofNullable(context.get(LootContextParameters.KILLER_ENTITY))
                 .orElse(context.get(LootContextParameters.THIS_ENTITY));
 
-        // if is attack loot, try get on entity
+        // if is attack loot, try to get on entity
         if (stack == null && entity instanceof LivingEntity) {
             stack = ((LivingEntity) entity).getMainHandStack();
         }
 
-        // if is rod loot, try get owner
+        // if is rod loot, try to get owner
         if (entity instanceof FishingBobberEntity) {
             entity = ((FishingBobberEntity) entity).getOwner();
         }

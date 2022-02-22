@@ -16,11 +16,6 @@ public abstract class Special extends BaseEnchantment {
     }
 
     @Override
-    public final int getMaxLevel() {
-        return super.getMaxLevel();
-    }
-
-    @Override
     public Text getName(int level) {
         return super.getName(level).shallowCopy().formatted(Formatting.DARK_PURPLE);
     }

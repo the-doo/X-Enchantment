@@ -201,4 +201,9 @@ public class Option {
      * special
      */
     public boolean special = false;
+
+    /**
+     * trinkets
+     */
+    public boolean trinkets = false;
 }
