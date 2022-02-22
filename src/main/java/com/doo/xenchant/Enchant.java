@@ -4,6 +4,7 @@ import com.doo.xenchant.config.Config;
 import com.doo.xenchant.config.Option;
 import com.doo.xenchant.util.EnchantUtil;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
 
 public class Enchant implements ModInitializer {
 
@@ -18,5 +19,8 @@ public class Enchant implements ModInitializer {
 
         // 注册附魔
         EnchantUtil.registerAll();
+
+        // has trinkets
+        EnchantUtil.hasTrinkets = FabricLoader.getInstance().isModLoaded("trinkets");
     }
 }
