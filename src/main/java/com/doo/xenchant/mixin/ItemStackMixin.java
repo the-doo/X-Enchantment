@@ -2,12 +2,17 @@ package com.doo.xenchant.mixin;
 
 import com.doo.xenchant.events.ItemApi;
 import com.doo.xenchant.util.EnchantUtil;
+import com.google.common.collect.Multimap;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -24,5 +29,11 @@ public abstract class ItemStackMixin {
     @Inject(method = "addEnchantment", at = @At("TAIL"))
     private void addEnchantmentT(Enchantment enchantment, int level, CallbackInfo ci) {
         ItemApi.ON_ENCHANTMENT_EVENT.invoker().call(EnchantUtil.get(this), enchantment, level);
+    }
+
+    @ModifyVariable(method = "getAttributeModifiers", at = @At(value = "LOAD"))
+    private Multimap<EntityAttribute, EntityAttributeModifier> addEnchantmentT(Multimap<EntityAttribute, EntityAttributeModifier> map, EquipmentSlot slot) {
+        ItemApi.GET_MODIFIER.invoker().mod(map, EnchantUtil.get(this), slot);
+        return map;
     }
 }
