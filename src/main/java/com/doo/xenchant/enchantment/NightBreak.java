@@ -1,5 +1,6 @@
 package com.doo.xenchant.enchantment;
 
+import com.doo.xenchant.mixin.interfaces.EntityDamageApi;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.loader.api.FabricLoader;
@@ -49,24 +50,28 @@ public class NightBreak extends BaseEnchantment {
     }
 
     @Override
-    public float getRealAdditionDamage(LivingEntity attacker, LivingEntity target, ItemStack stack, int level) {
-        NbtCompound nbt = stack.getOrCreateNbt();
-
-        long count = nbt.getLong(nbtKey(KEY));
-        nbt.putLong(nbtKey(KEY), count += 1);
-
-        // if attack 3 times, damage is level * 10% * maxHealth
-        if (count % 3 == 0) {
-            nbt.putLong(nbtKey(KEY), 0);
-            return target.getMaxHealth() * level / 10;
-        }
-
-        return 0;
-    }
-
-    @Override
     public void register() {
         super.register();
+
+        EntityDamageApi.REAL_ADD.register(((attacker, target, stack) -> {
+            int level = level(stack);
+            if (level < 1) {
+                return 0;
+            }
+
+            NbtCompound nbt = stack.getOrCreateNbt();
+
+            long count = nbt.getLong(nbtKey(KEY));
+            nbt.putLong(nbtKey(KEY), count += 1);
+
+            // if attack 3 times, damage is level * 10% * maxHealth
+            if (count % 3 == 0) {
+                nbt.putLong(nbtKey(KEY), 0);
+                return target.getMaxHealth() * level / 10;
+            }
+
+            return 0;
+        }));
 
         // tooltips
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {

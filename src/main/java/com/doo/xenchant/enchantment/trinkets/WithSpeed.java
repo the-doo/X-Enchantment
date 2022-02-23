@@ -1,5 +1,6 @@
 package com.doo.xenchant.enchantment.trinkets;
 
+import com.doo.xenchant.mixin.interfaces.EntityDamageApi;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 
@@ -15,7 +16,9 @@ public class WithSpeed extends Trinkets {
     }
 
     @Override
-    public float getMultiTotalDamage(LivingEntity attacker, LivingEntity target, ItemStack stack, int level) {
-        return .2F;
+    public void register() {
+        super.register();
+
+        EntityDamageApi.MULTIPLIER.register(((attacker, target, stack) -> level(stack) > 0 ? .2F : 0));
     }
 }

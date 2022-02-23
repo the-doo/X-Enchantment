@@ -1,5 +1,6 @@
 package com.doo.xenchant.mixin;
 
+import com.doo.xenchant.mixin.interfaces.ItemDamageApi;
 import com.doo.xenchant.util.EnchantUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -18,6 +19,6 @@ public abstract class ItemStackMixin {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/EnchantmentHelper;getLevel(Lnet/minecraft/enchantment/Enchantment;Lnet/minecraft/item/ItemStack;)I")
     )
     private void itemUsedCallback(int amount, Random random, ServerPlayerEntity player, CallbackInfoReturnable<Boolean> cir) {
-        EnchantUtil.itemUsedCallback(player, (ItemStack) (Object) this, amount);
+        ItemDamageApi.WILL_DAMAGE.invoker().call(player, EnchantUtil.get(this), amount);
     }
 }

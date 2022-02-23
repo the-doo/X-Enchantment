@@ -32,9 +32,9 @@ public class ThunderHalo extends LivingHalo {
     }
 
     @Override
-    protected float second() {
-        // 3s
-        return 3;
+    protected float triggerTime() {
+        // 5s
+        return 5;
     }
 
     @Override

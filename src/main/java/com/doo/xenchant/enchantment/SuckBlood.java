@@ -1,17 +1,16 @@
 package com.doo.xenchant.enchantment;
 
 import com.doo.xenchant.Enchant;
+import com.doo.xenchant.mixin.interfaces.EntityDamageApi;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.RangedWeaponItem;
 import net.minecraft.item.ToolItem;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.Hand;
 
 /**
  * 吸血
@@ -52,46 +51,55 @@ public class SuckBlood extends BaseEnchantment {
     }
 
     @Override
-    public void damageCallback(LivingEntity attacker, LivingEntity target, ItemStack stack, int level, float amount) {
-        if (!Enchant.option.suckBlood) {
-            return;
-        }
+    public void register() {
+        super.register();
 
-        if (stack != attacker.getStackInHand(Hand.MAIN_HAND)) {
-            return;
-        }
+        EntityDamageApi.ON_DAMAGED.register(((attacker, target, stack, amount) -> {
+            if (!Enchant.option.suckBlood) {
+                return;
+            }
 
-        // try log
-        String key = getId().toString();
-        NbtCompound compound = stack.getOrCreateNbt();
-        if (!compound.contains(key)) {
-            compound.put(key, new NbtCompound());
-        }
-        compound = compound.getCompound(key);
+            if (!getEquipment(attacker).containsValue(stack)) {
+                return;
+            }
 
-        long id = compound.getInt("id");
-        long age = compound.getLong("age");
-        int count = compound.getInt("count");
-        if (id == attacker.getId() && age >= attacker.age && count > 5) {
-            return;
-        }
+            int level = level(stack);
+            if (level < 0) {
+                return;
+            }
 
-        compound.putInt("id", attacker.getId());
-        compound.putLong("age", attacker.age);
+            // try log
+            String key = getId().toString();
+            NbtCompound compound = stack.getOrCreateNbt();
+            if (!compound.contains(key)) {
+                compound.put(key, new NbtCompound());
+            }
+            compound = compound.getCompound(key);
 
-        // if change user or next attack
-        if (id != attacker.getId() || age < attacker.age) {
-            count = 0;
-        }
+            long id = compound.getInt("id");
+            long age = compound.getLong("age");
+            int count = compound.getInt("count");
+            if (id == attacker.getId() && age >= attacker.age && count > 5) {
+                return;
+            }
 
-        // suck scale
-        float scale = level;
-        if (count >= 1) {
-            scale *= EnchantmentHelper.getLevel(Enchantments.SWEEPING, stack) > 0 ? 0.2F : 0.1F;
-        }
-        attacker.heal(scale * amount / 10);
+            compound.putInt("id", attacker.getId());
+            compound.putLong("age", attacker.age);
 
-        count++;
-        compound.putInt("count", count);
+            // if change user or next attack
+            if (id != attacker.getId() || age < attacker.age) {
+                count = 0;
+            }
+
+            // suck scale
+            if (count >= 1) {
+                level *= EnchantmentHelper.getLevel(Enchantments.SWEEPING, stack) > 0 ? 0.2F : 0.1F;
+            }
+
+            attacker.heal(level * amount / 10);
+
+            count++;
+            compound.putInt("count", count);
+        }));
     }
 }

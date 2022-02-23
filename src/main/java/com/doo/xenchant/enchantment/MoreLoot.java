@@ -1,6 +1,7 @@
 package com.doo.xenchant.enchantment;
 
 import com.doo.xenchant.Enchant;
+import com.doo.xenchant.mixin.interfaces.LootApi;
 import com.doo.xenchant.util.EnchantUtil;
 import net.fabricmc.fabric.api.tool.attribute.v1.ToolManager;
 import net.minecraft.block.BlockState;
@@ -49,7 +50,7 @@ public class MoreLoot extends BaseEnchantment {
 
     @Override
     public int getMaxPower(int level) {
-        return this.getMinPower(level) + 50;
+        return level * 50;
     }
 
     @Override
@@ -63,67 +64,76 @@ public class MoreLoot extends BaseEnchantment {
     }
 
     @Override
-    public UnaryOperator<ItemStack> lootSetter(LivingEntity killer, ItemStack stack, Integer level, Consumer<ItemStack> baseConsumer, LootContext context) {
-        if (!Enchant.option.moreLoot) {
-            return null;
-        }
+    public void register() {
+        super.register();
 
-        // no effect on
-        BlockState block = context.get(LootContextParameters.BLOCK_STATE);
-        if (block != null && !ToolManager.handleIsEffectiveOn(block, stack, null)) {
-            return null;
-        }
+        LootApi.HANDLER.register(((killer, stack, baseConsumer, context) -> {
+            if (!Enchant.option.moreLoot) {
+                return null;
+            }
 
-        // reset count
-        String key = "Chat";
-        NbtCompound nbt = stack.getOrCreateNbt();
-        nbt.putBoolean(nbtKey(key), false);
-        return i -> {
-            // if is block item, need return
-            if (i.getItem() instanceof BlockItem) {
+            int level = level(stack);
+            if (level < 1) {
+                return null;
+            }
+
+            // no effect on
+            BlockState block = context.get(LootContextParameters.BLOCK_STATE);
+            if (block != null && !ToolManager.handleIsEffectiveOn(block, stack, null)) {
+                return null;
+            }
+
+            // reset count
+            String key = "Chat";
+            NbtCompound nbt = stack.getOrCreateNbt();
+            nbt.putBoolean(nbtKey(key), false);
+            return i -> {
+                // if is block item, need return
+                if (i.getItem() instanceof BlockItem) {
+                    return i;
+                }
+
+                boolean tips = nbt.getBoolean(nbtKey(key));
+                MutableBoolean isCrit = new MutableBoolean();
+                int rand = rand(level, context.getRandom(), isCrit::setValue);
+                if (rand < 1) {
+                    return i;
+                }
+
+                if (killer instanceof ServerPlayerEntity && isCrit.isTrue() && !tips) {
+                    EnchantUtil.sendMessage((ServerPlayerEntity) killer, stack.getName(), MORE_LOOT_TEXT);
+                    nbt.putBoolean(nbtKey(key), true);
+                }
+
+                // Add level xp
+                if (killer instanceof ServerPlayerEntity) {
+                    ((ServerPlayerEntity) killer).addExperience(level);
+                }
+
+                if (!i.isStackable()) {
+                    // isn't stackable only half
+                    IntStream.range(0, rand / 2).forEach(v -> baseConsumer.accept(i.copy()));
+                    return i;
+                }
+
+                int max = i.getMaxCount();
+                int count = i.getCount() * (1 + rand);
+                if (count <= max) {
+                    i.setCount(count);
+                    return i;
+                }
+                i.setCount(max);
+                count -= max;
+
+                // need new one
+                for (; count > 0; count -= max) {
+                    ItemStack copy = i.copy();
+                    copy.setCount(Math.min(count, max));
+                    baseConsumer.accept(copy);
+                }
                 return i;
-            }
-
-            boolean tips = nbt.getBoolean(nbtKey(key));
-            MutableBoolean isCrit = new MutableBoolean();
-            int rand = rand(level, context.getRandom(), isCrit::setValue);
-            if (rand < 1) {
-                return i;
-            }
-
-            if (killer instanceof ServerPlayerEntity && isCrit.isTrue() && !tips) {
-                EnchantUtil.sendMessage((ServerPlayerEntity) killer, stack.getName(), MORE_LOOT_TEXT);
-                nbt.putBoolean(nbtKey(key), true);
-            }
-
-            // Add level xp
-            if (killer instanceof ServerPlayerEntity) {
-                ((ServerPlayerEntity) killer).addExperience(level);
-            }
-
-            if (!i.isStackable()) {
-                // isn't stackable only half
-                IntStream.range(0, rand / 2).forEach(v -> baseConsumer.accept(i.copy()));
-                return i;
-            }
-
-            int max = i.getMaxCount();
-            int count = i.getCount() * (1 + rand);
-            if (count <= max) {
-                i.setCount(count);
-                return i;
-            }
-            i.setCount(max);
-            count -= max;
-
-            // need new one
-            for (; count > 0; count -= max) {
-                ItemStack copy = i.copy();
-                copy.setCount(Math.min(count, max));
-                baseConsumer.accept(copy);
-            }
-            return i;
-        };
+            };
+        }));
     }
 
     private int rand(int level, Random random, Consumer<Boolean> ifCrit) {

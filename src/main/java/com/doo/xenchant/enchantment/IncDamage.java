@@ -1,5 +1,6 @@
 package com.doo.xenchant.enchantment;
 
+import com.doo.xenchant.mixin.interfaces.EntityDamageApi;
 import com.doo.xenchant.util.EnchantUtil;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
@@ -55,24 +56,12 @@ public class IncDamage extends BaseEnchantment {
         return stack.getItem() instanceof ToolItem;
     }
 
-    /**
-     * Default DIAMOND is 1 base
-     *
-     * @param durability tool durability
-     * @return inc value
-     */
-    private float inc(int durability) {
-        return 1F * durability / ToolMaterials.DIAMOND.getDurability();
-    }
-
-    @Override
-    public float getAdditionDamage(LivingEntity attacker, LivingEntity target, ItemStack stack, int level) {
-        return stack.getOrCreateNbt().getFloat(nbtKey(KEY));
-    }
-
     @Override
     public void register() {
         super.register();
+
+        // DamageApi
+        EntityDamageApi.ADD.register(((attacker, target, stack) -> level(stack) > 0 ? stack.getOrCreateNbt().getFloat(nbtKey(KEY)) : 0));
 
         // inc value when killed other
         ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register(((world, entity, killedEntity) -> {
@@ -120,5 +109,15 @@ public class IncDamage extends BaseEnchantment {
                 }
             });
         }
+    }
+
+    /**
+     * Default DIAMOND is 1 base
+     *
+     * @param durability tool durability
+     * @return inc value
+     */
+    private float inc(int durability) {
+        return 1F * durability / ToolMaterials.DIAMOND.getDurability();
     }
 }

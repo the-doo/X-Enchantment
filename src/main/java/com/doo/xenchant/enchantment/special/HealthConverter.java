@@ -1,13 +1,16 @@
 package com.doo.xenchant.enchantment.special;
 
+import com.doo.xenchant.mixin.interfaces.ServerLivingApi;
+import com.doo.xenchant.util.EnchantUtil;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.server.network.ServerPlayerEntity;
+
+import java.util.Comparator;
 
 /**
  * Health Converter
@@ -31,22 +34,27 @@ public class HealthConverter extends Special {
     }
 
     @Override
-    protected float second() {
-        return super.second() * 10;
-    }
+    public void register() {
+        super.register();
 
-    @Override
-    protected void livingTick(LivingEntity living, ItemStack stack, int level) {
-        if (!(living instanceof ServerPlayerEntity) || !stack.isOf(Items.ENCHANTED_BOOK)) {
-            return;
-        }
+        ServerLivingApi.TAIL_TICK.register(living -> {
+            if (!(living instanceof ServerPlayerEntity) || living.age % (10 * second()) != 0) {
+                return;
+            }
 
-        ((ServerPlayerEntity) living).getInventory().main.stream()
-                .filter(ItemStack::isDamaged)
-                .findFirst()
-                .ifPresent(s -> {
-                    s.setDamage(0);
-                    living.damage(DamageSource.mob(living), 10);
-                });
+            ItemStack stack = EnchantUtil.getHandStack(living, EnchantedBookItem.class, s -> level(s) > 0);
+            if (stack.isEmpty()) {
+                return;
+            }
+
+            // fix max damaged
+            ((ServerPlayerEntity) living).getInventory().main.stream()
+                    .filter(ItemStack::isDamaged)
+                    .max(Comparator.comparing(ItemStack::getDamage))
+                    .ifPresent(s -> {
+                        s.setDamage(0);
+                        living.damage(DamageSource.mob(living), 10);
+                    });
+        });
     }
 }

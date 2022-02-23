@@ -1,6 +1,7 @@
 package com.doo.xenchant.enchantment.halo;
 
 import com.doo.xenchant.attribute.LimitTimeModifier;
+import com.doo.xenchant.mixin.interfaces.ServerLivingApi;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.AttributeContainer;
 import net.minecraft.entity.attribute.EntityAttribute;
@@ -33,20 +34,6 @@ public class AttrHalo extends LivingHalo {
         ATTRIBUTES.add(attribute);
     }
 
-    public static void removeDirty(LivingEntity living) {
-        AttributeContainer attributes = living.getAttributes();
-        ATTRIBUTES.forEach(a -> {
-            EntityAttributeInstance instance = attributes.getCustomInstance(a);
-            if (instance != null) {
-                instance.getModifiers().forEach(m -> {
-                    if ((m instanceof LimitTimeModifier && ((LimitTimeModifier) m).isExpire())) {
-                        instance.removeModifier(m);
-                    }
-                });
-            }
-        });
-    }
-
     @Override
     public String getTranslationKey() {
         return "enchantment.x_enchant.halo_attribute";
@@ -75,6 +62,25 @@ public class AttrHalo extends LivingHalo {
     }
 
     @Override
+    public void register() {
+        super.register();
+
+        ServerLivingApi.TAIL_TICK.register(living -> {
+            AttributeContainer attributes = living.getAttributes();
+            ATTRIBUTES.forEach(a -> {
+                EntityAttributeInstance instance = attributes.getCustomInstance(a);
+                if (instance != null) {
+                    instance.getModifiers().forEach(m -> {
+                        if ((m instanceof LimitTimeModifier && ((LimitTimeModifier) m).isExpire())) {
+                            instance.removeModifier(m);
+                        }
+                    });
+                }
+            });
+        });
+    }
+
+    @Override
     public void onTarget(LivingEntity entity, Integer level, List<LivingEntity> targets) {
         targets.forEach(e -> {
             EntityAttributeInstance attr = e.getAttributes().getCustomInstance(attribute);
@@ -86,7 +92,7 @@ public class AttrHalo extends LivingHalo {
             EntityAttributeModifier.Operation op = attr.getBaseValue() == 0 ?
                     EntityAttributeModifier.Operation.MULTIPLY_TOTAL : EntityAttributeModifier.Operation.ADDITION;
 
-            addOrResetModifier(attr, LimitTimeModifier.get(getId().toString(), value, op, (int) (e.age + second() * 25), e));
+            addOrResetModifier(attr, LimitTimeModifier.get(getId().toString(), value, op, (int) (e.age + SECOND * 1.2), e));
         });
     }
 
@@ -101,7 +107,7 @@ public class AttrHalo extends LivingHalo {
                 .filter(m -> m.getName().equals(getId().toString()) && m instanceof LimitTimeModifier).findAny();
 
         if (optional.isPresent()) {
-            ((LimitTimeModifier) optional.get()).reset(second());
+            ((LimitTimeModifier) optional.get()).reset((float) (SECOND * 1.2));
         } else {
             attr.addTemporaryModifier(modifier);
         }

@@ -1,5 +1,6 @@
 package com.doo.xenchant.mixin;
 
+import com.doo.xenchant.mixin.interfaces.AnvilApi;
 import com.doo.xenchant.util.EnchantUtil;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
@@ -15,6 +16,8 @@ public abstract class AnvilScreenHandlerMixin {
 
     @ModifyArg(at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/EnchantmentHelper;set(Ljava/util/Map;Lnet/minecraft/item/ItemStack;)V"), method = "updateResult")
     public Map<Enchantment, Integer> enchantmentOnAnvil(Map<Enchantment, Integer> enchantments, ItemStack newOne) {
-        return EnchantUtil.useOnAnvil(enchantments, newOne);
+        AnvilScreenHandler handler = EnchantUtil.get(this);
+        AnvilApi.ON_ENCHANT.invoker().handle(enchantments, handler.slots.get(0).getStack(), handler.slots.get(1).getStack(), newOne);
+        return enchantments;
     }
 }

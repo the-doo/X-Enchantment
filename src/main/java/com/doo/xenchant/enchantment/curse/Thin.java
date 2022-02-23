@@ -1,5 +1,6 @@
 package com.doo.xenchant.enchantment.curse;
 
+import com.doo.xenchant.mixin.interfaces.ItemDamageApi;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -34,13 +35,22 @@ public class Thin extends Cursed {
     }
 
     @Override
-    public void itemUsedCallback(@Nullable LivingEntity owner, ItemStack stack, Integer level, float amount) {
-        if (owner == null) {
-            return;
-        }
+    public void register() {
+        super.register();
 
-        if (owner.getRandom().nextBoolean() && owner.getRandom().nextBoolean()) {
-            stack.setDamage(stack.getDamage() + level * 2);
-        }
+        ItemDamageApi.WILL_DAMAGE.register(((owner, stack, amount) -> {
+            if (owner == null) {
+                return;
+            }
+
+            int level = level(stack);
+            if (level < 1) {
+                return;
+            }
+
+            if (owner.getRandom().nextInt(100) < 25) {
+                stack.setDamage(stack.getDamage() + level * 2);
+            }
+        }));
     }
 }

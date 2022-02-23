@@ -1,9 +1,9 @@
 package com.doo.xenchant.enchantment;
 
+import com.doo.xenchant.mixin.interfaces.ServerLivingApi;
 import com.doo.xenchant.util.EnchantUtil;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -33,7 +33,7 @@ public class Smart extends BaseEnchantment {
 
     @Override
     public int getMinPower(int level) {
-        return 150;
+        return 30;
     }
 
     @Override
@@ -47,13 +47,24 @@ public class Smart extends BaseEnchantment {
     }
 
     @Override
-    protected float second() {
-        return 5;
-    }
+    public void register() {
+        super.register();
 
-    @Override
-    protected void livingTick(LivingEntity living, ItemStack stack, int level) {
-        if (living instanceof ServerPlayerEntity) {
+        ServerLivingApi.TAIL_TICK.register(living -> {
+            if (!(living instanceof ServerPlayerEntity) || living.age % (SECOND * 5) != 0) {
+                return;
+            }
+
+            ItemStack stack = living.getEquippedStack(EquipmentSlot.HEAD);
+            if (stack.isEmpty()) {
+                return;
+            }
+
+            int level = level(stack);
+            if (level < 1) {
+                return;
+            }
+
             // add level xp
             int amount = level;
             // if epiphany - 0.0005
@@ -63,6 +74,6 @@ public class Smart extends BaseEnchantment {
             }
 
             ((PlayerEntity) living).addExperience(amount);
-        }
+        });
     }
 }

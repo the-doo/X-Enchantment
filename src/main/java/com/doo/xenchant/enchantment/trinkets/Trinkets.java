@@ -1,7 +1,9 @@
 package com.doo.xenchant.enchantment.trinkets;
 
 import com.doo.xenchant.enchantment.BaseEnchantment;
+import com.doo.xenchant.mixin.interfaces.ServerLivingApi;
 import dev.emi.trinkets.api.TrinketItem;
+import dev.emi.trinkets.api.TrinketsApi;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
@@ -36,5 +38,17 @@ public abstract class Trinkets extends BaseEnchantment {
     @Override
     protected final boolean canAccept(Enchantment other) {
         return false;
+    }
+
+    @Override
+    public final void register() {
+        super.register();
+
+        // if it is a trigger enchantment
+        ServerLivingApi.TAIL_TICK.register(living -> {
+            TrinketsApi.getTrinketComponent(living).ifPresent(c -> {
+                // todo
+            });
+        });
     }
 }

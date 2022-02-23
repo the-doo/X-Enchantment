@@ -1,6 +1,8 @@
 package com.doo.xenchant.mixin;
 
 import com.doo.xenchant.Enchant;
+import com.doo.xenchant.mixin.interfaces.EntityDamageApi;
+import com.doo.xenchant.mixin.interfaces.ServerLivingApi;
 import com.doo.xenchant.util.EnchantUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -28,7 +30,10 @@ public abstract class LivingEntityMixin {
 
     @Inject(method = "tick", at = @At(value = "TAIL"))
     private void tickT(CallbackInfo ci) {
-        EnchantUtil.livingTick((LivingEntity) (Object) this);
+        LivingEntity living = EnchantUtil.get(this);
+        if (!living.world.isClient()) {
+            ServerLivingApi.TAIL_TICK.invoker().tick(living);
+        }
     }
 
     @Inject(method = "tickActiveItemStack", at = @At(value = "HEAD"))

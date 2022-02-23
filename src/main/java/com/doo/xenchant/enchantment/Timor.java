@@ -1,5 +1,6 @@
 package com.doo.xenchant.enchantment;
 
+import com.doo.xenchant.mixin.interfaces.ServerLivingApi;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EquipmentSlot;
@@ -37,33 +38,46 @@ public class Timor extends BaseEnchantment {
     }
 
     @Override
-    protected void livingTick(LivingEntity living, ItemStack stack, int level) {
-        NbtCompound nbt = stack.getOrCreateNbt();
-        long id = nbt.getLong(nbtKey(ID));
-        if (living.getId() != id) {
-            nbt.putLong(nbtKey(ID), living.getId());
-            nbt.putLong(nbtKey(COUNT), 1);
-            nbt.remove(nbtKey(POS));
-        }
-        long count = nbt.getLong(nbtKey(COUNT));
+    public void register() {
+        super.register();
 
-        // if it's not standing
-        if (living.getPose() != EntityPose.CROUCHING) {
-            if (count >= 3) {
-                living.addStatusEffect(new StatusEffectInstance(StatusEffects.HASTE, 300, 3));
+        ServerLivingApi.TAIL_TICK.register(living -> {
+            if (living.age % SECOND != 0) {
+                return;
             }
 
-            nbt.remove(nbtKey(COUNT));
-            nbt.remove(nbtKey(ID));
-            return;
-        }
+            ItemStack stack = living.getEquippedStack(EquipmentSlot.FEET);
+            if (stack.isEmpty() || level(stack) < 1) {
+                return;
+            }
 
-        // hide on 1.5s
-        if (count >= 3) {
-            living.addStatusEffect(new StatusEffectInstance(StatusEffects.INVISIBILITY, 30));
-        }
+            NbtCompound nbt = stack.getOrCreateNbt();
+            long id = nbt.getLong(nbtKey(ID));
+            if (living.getId() != id) {
+                nbt.putLong(nbtKey(ID), living.getId());
+                nbt.putLong(nbtKey(COUNT), 1);
+                nbt.remove(nbtKey(POS));
+            }
+            long count = nbt.getLong(nbtKey(COUNT));
 
-        // log count
-        nbt.putLong(nbtKey(COUNT), count + 1);
+            // if it's not standing
+            if (living.getPose() != EntityPose.CROUCHING) {
+                if (count >= 3) {
+                    living.addStatusEffect(new StatusEffectInstance(StatusEffects.HASTE, 300, 3));
+                }
+
+                nbt.remove(nbtKey(COUNT));
+                nbt.remove(nbtKey(ID));
+                return;
+            }
+
+            // hide on 1.5s
+            if (count >= 3) {
+                living.addStatusEffect(new StatusEffectInstance(StatusEffects.INVISIBILITY, 30));
+            }
+
+            // log count
+            nbt.putLong(nbtKey(COUNT), count + 1);
+        });
     }
 }

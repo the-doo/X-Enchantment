@@ -1,9 +1,8 @@
 package com.doo.xenchant.enchantment.curse;
 
+import com.doo.xenchant.mixin.interfaces.EntityDamageApi;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
 
 /**
  * DownDamage
@@ -17,22 +16,15 @@ public class DownDamage extends Cursed {
     }
 
     @Override
-    public int getMinPower(int level) {
-        return 1 + (level - 1) * 10;
-    }
-
-    @Override
-    public int getMaxPower(int level) {
-        return this.getMinPower(level) + 15;
-    }
-
-    @Override
     public int getMaxLevel() {
         return 5;
     }
 
     @Override
-    public float getMultiTotalDamage(LivingEntity attacker, LivingEntity target, ItemStack stack, int level) {
-        return -(0.1F * level);
+    public void register() {
+        super.register();
+
+        // Multiplier Total
+        EntityDamageApi.MULTIPLIER.register(((attacker, target, stack) -> -Math.max(0, level(stack)) / 10F));
     }
 }

@@ -1,6 +1,7 @@
 package com.doo.xenchant.enchantment;
 
 import com.doo.xenchant.Enchant;
+import com.doo.xenchant.mixin.interfaces.EntityDamageApi;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -48,7 +49,9 @@ public class Weakness extends BaseEnchantment {
     }
 
     @Override
-    public float getMultiTotalDamage(LivingEntity attacker, LivingEntity target, ItemStack stack, int level) {
-        return Enchant.option.weakness && stack == attacker.getMainHandStack() && attacker.getRandom().nextInt(100) < 5 * level ? 2 : 0;
+    public void register() {
+        super.register();
+
+        EntityDamageApi.MULTIPLIER.register(((attacker, target, stack) -> Enchant.option.weakness && attacker.getRandom().nextInt(100) < 5 * level(stack) ? 2 : 0));
     }
 }

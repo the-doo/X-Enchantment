@@ -13,6 +13,7 @@ import com.doo.xenchant.enchantment.halo.ThunderHalo;
 import com.doo.xenchant.enchantment.special.HealthConverter;
 import com.doo.xenchant.enchantment.special.RemoveCursed;
 import com.doo.xenchant.enchantment.trinkets.WithPower;
+import com.doo.xenchant.mixin.interfaces.LootApi;
 import dev.emi.trinkets.api.TrinketsApi;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
@@ -46,6 +47,7 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -149,6 +151,11 @@ public class EnchantUtil {
                 .forEach(BaseEnchantment::register);
     }
 
+    @SuppressWarnings("unchecked")
+    public static <T> T get(Object o) {
+        return (T) o;
+    }
+
     /**
      * 聊天框发送信息
      *
@@ -207,45 +214,17 @@ public class EnchantUtil {
         return BaseEnchantment.get(Elasticity.class).level(itemStack);
     }
 
-    /**
-     * living tick
-     *
-     * @param living living
-     */
-    public static void livingTick(LivingEntity living) {
-        if (living.world.isClient()) {
-            return;
-        }
-
-        // remove dirty arributes
-        AttrHalo.removeDirty(living);
-
-        // tick enchantment
-        living.getItemsEquipped().forEach(stack -> {
-            if (stack.isEmpty() || !stack.hasEnchantments()) {
-                return;
-            }
-
-            forBaseEnchantment((e, l) -> e.tryTrigger(living, stack, l), stack);
-        });
-
-        // if has trinkets
-        ifTrinket(stack -> {
-            if (stack.isEmpty() || !stack.hasEnchantments()) {
-                return;
-            }
-
-            forBaseEnchantment((e, l) -> e.tryTrigger(living, stack, l), stack);
-        }, living);
+    public static ItemStack getHandStack(LivingEntity entity, Class<? extends Item> type) {
+        return getHandStack(entity, type, null);
     }
 
-    public static ItemStack getHandStack(LivingEntity entity, Class<? extends Item> type) {
+    public static ItemStack getHandStack(LivingEntity entity, Class<? extends Item> type, Predicate<ItemStack> test) {
         if (entity != null) {
             ItemStack item = entity.getStackInHand(Hand.MAIN_HAND);
-            if (!type.isInstance(item.getItem())) {
+            if (!type.isInstance(item.getItem()) || !(test != null && test.test(item))) {
                 item = entity.getStackInHand(Hand.OFF_HAND);
             }
-            return !type.isInstance(item.getItem()) ? ItemStack.EMPTY : item;
+            return !type.isInstance(item.getItem()) || !(test != null && test.test(item)) ? ItemStack.EMPTY : item;
         }
         return ItemStack.EMPTY;
     }
@@ -339,32 +318,11 @@ public class EnchantUtil {
             return lootConsumer;
         }
 
-        ItemStack item = stack;
-        LivingEntity killer = (LivingEntity) entity;
-
-        List<Function<ItemStack, ItemStack>> list = new ArrayList<>();
-        BiConsumer<BaseEnchantment, Integer> forEach = (e, l) -> Optional.ofNullable(e.lootSetter(killer, item, l, lootConsumer, context)).ifPresent(list::add);
-        forBaseEnchantment(forEach, stack);
-
-        if (list.isEmpty()) {
+        Function<ItemStack, ItemStack> handle = LootApi.HANDLER.invoker().handle((LivingEntity) entity, stack, lootConsumer, context);
+        if (handle == null) {
             return lootConsumer;
         }
 
-        Function<ItemStack, ItemStack> function = list.stream().reduce(Function::andThen).get();
-        return lootConsumer.andThen(function::apply);
-    }
-
-    public static void itemUsedCallback(LivingEntity owner, ItemStack stack, float amount) {
-        forBaseEnchantment((e, l) -> e.itemUsedCallback(owner, stack, l, amount), stack);
-    }
-
-    public static Map<Enchantment, Integer> useOnAnvil(Map<Enchantment, Integer> enchantments, ItemStack newOne) {
-        Set<BaseEnchantment> set = enchantments.keySet().stream()
-                .filter(e -> e instanceof BaseEnchantment && enchantments.get(e) > 0)
-                .map(e -> (BaseEnchantment) e)
-                .collect(Collectors.toSet());
-
-        set.forEach(e -> e.onAnvil(enchantments, enchantments.get(e), newOne));
-        return enchantments;
+        return lootConsumer.andThen(handle::apply);
     }
 }
