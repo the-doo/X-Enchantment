@@ -1,7 +1,7 @@
 package com.doo.xenchant.enchantment.halo;
 
 import com.doo.xenchant.attribute.LimitTimeModifier;
-import com.doo.xenchant.mixin.interfaces.ServerLivingApi;
+import com.doo.xenchant.events.ServerLivingApi;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.AttributeContainer;
 import net.minecraft.entity.attribute.EntityAttribute;

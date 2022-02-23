@@ -3,7 +3,7 @@ package com.doo.xenchant.enchantment.halo;
 import com.doo.xenchant.Enchant;
 import com.doo.xenchant.config.Option;
 import com.doo.xenchant.enchantment.BaseEnchantment;
-import com.doo.xenchant.mixin.interfaces.ServerLivingApi;
+import com.doo.xenchant.events.ServerLivingApi;
 import com.doo.xenchant.util.EnchantUtil;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -13,7 +13,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Box;
-import org.apache.commons.lang3.mutable.MutableInt;
 
 import java.util.HashMap;
 import java.util.List;

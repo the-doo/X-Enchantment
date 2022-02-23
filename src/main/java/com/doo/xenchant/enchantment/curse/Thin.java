@@ -1,12 +1,8 @@
 package com.doo.xenchant.enchantment.curse;
 
-import com.doo.xenchant.mixin.interfaces.ItemDamageApi;
+import com.doo.xenchant.events.ItemApi;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-
-import javax.annotation.Nullable;
 
 /**
  * Thin
@@ -38,7 +34,7 @@ public class Thin extends Cursed {
     public void register() {
         super.register();
 
-        ItemDamageApi.WILL_DAMAGE.register(((owner, stack, amount) -> {
+        ItemApi.WILL_DAMAGE.register(((owner, stack, amount) -> {
             if (owner == null) {
                 return;
             }

@@ -1,6 +1,5 @@
-package com.doo.xenchant.mixin.interfaces;
+package com.doo.xenchant.events;
 
-import com.doo.xenchant.enchantment.BaseEnchantment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.entity.LivingEntity;
@@ -8,11 +7,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.loot.context.LootContext;
 
 import javax.annotation.Nullable;
-import java.util.*;
-import java.util.function.BiConsumer;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.UnaryOperator;
 
 /**
  * Item is damaged
@@ -24,6 +22,7 @@ public interface LootApi {
 
     @FunctionalInterface
     interface Handler {
-        @Nullable Function<ItemStack, ItemStack> handle(LivingEntity trigger, ItemStack stack, Consumer<ItemStack> baseConsumer, LootContext context);
+        @Nullable
+        Function<ItemStack, ItemStack> handle(LivingEntity trigger, ItemStack stack, Consumer<ItemStack> baseConsumer, LootContext context);
     }
 }

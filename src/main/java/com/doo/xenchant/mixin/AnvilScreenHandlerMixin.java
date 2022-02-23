@@ -1,6 +1,6 @@
 package com.doo.xenchant.mixin;
 
-import com.doo.xenchant.mixin.interfaces.AnvilApi;
+import com.doo.xenchant.events.AnvilApi;
 import com.doo.xenchant.util.EnchantUtil;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;

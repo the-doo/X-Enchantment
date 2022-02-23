@@ -1,17 +1,15 @@
 package com.doo.xenchant.enchantment;
 
 import com.doo.xenchant.Enchant;
-import com.doo.xenchant.mixin.interfaces.LootApi;
+import com.doo.xenchant.events.LootApi;
 import com.doo.xenchant.util.EnchantUtil;
 import net.fabricmc.fabric.api.tool.attribute.v1.ToolManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Wearable;
-import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -23,7 +21,6 @@ import org.apache.commons.lang3.mutable.MutableBoolean;
 
 import java.util.Random;
 import java.util.function.Consumer;
-import java.util.function.UnaryOperator;
 import java.util.stream.IntStream;
 
 /**

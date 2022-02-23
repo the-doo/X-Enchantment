@@ -2,7 +2,7 @@ package com.doo.xenchant.mixin;
 
 import com.blamejared.crafttweaker.api.loot.LootCapturingConsumer;
 import com.doo.xenchant.config.Config;
-import com.doo.xenchant.mixin.interfaces.ILootCapturingConsumer;
+import com.doo.xenchant.interfaces.ILootCapturingConsumer;
 import net.minecraft.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * This class is dangerous, and CraftWeaker can't accept another consumer in this class
+ * This class is dangerous, and CraftTweaker can't accept another consumer in this class
  */
 @Mixin(value = LootCapturingConsumer.class, priority = Integer.MAX_VALUE)
 public abstract class LootCapturingConsumerMixin implements Consumer<ItemStack>, ILootCapturingConsumer {

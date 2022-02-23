@@ -5,13 +5,13 @@ import com.doo.xenchant.events.EntityDamageApi;
 import java.util.Optional;
 
 /**
- * With Power
+ * With Speed
  */
-public class WithPower extends Trinkets {
+public class WithArmor extends Trinkets {
 
-    public static final String NAME = "with_power";
+    public static final String NAME = "with_speed";
 
-    public WithPower() {
+    public WithArmor() {
         super(NAME);
     }
 

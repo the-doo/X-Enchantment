@@ -1,6 +1,6 @@
 package com.doo.xenchant.enchantment;
 
-import com.doo.xenchant.mixin.interfaces.ServerLivingApi;
+import com.doo.xenchant.events.ServerLivingApi;
 import com.doo.xenchant.util.EnchantUtil;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;

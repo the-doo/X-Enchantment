@@ -1,12 +1,9 @@
 package com.doo.xenchant.enchantment.special;
 
-import com.doo.xenchant.mixin.interfaces.AnvilApi;
+import com.doo.xenchant.events.AnvilApi;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.ItemStack;
-
-import java.util.Map;
 
 /**
  * Remove Cursed

@@ -12,18 +12,23 @@ import com.doo.xenchant.enchantment.halo.HeightAdvantageHalo;
 import com.doo.xenchant.enchantment.halo.ThunderHalo;
 import com.doo.xenchant.enchantment.special.HealthConverter;
 import com.doo.xenchant.enchantment.special.RemoveCursed;
+import com.doo.xenchant.enchantment.trinkets.WithHealth;
 import com.doo.xenchant.enchantment.trinkets.WithPower;
-import com.doo.xenchant.mixin.interfaces.LootApi;
+import com.doo.xenchant.enchantment.trinkets.WithToughness;
+import com.doo.xenchant.events.EntityArmorApi;
+import com.doo.xenchant.events.EntityDamageApi;
+import com.doo.xenchant.events.LootApi;
+import com.google.common.collect.Maps;
 import dev.emi.trinkets.api.TrinketsApi;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.projectile.FishingBobberEntity;
@@ -41,14 +46,11 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
-import org.apache.commons.lang3.mutable.MutableFloat;
 
 import java.util.*;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -57,7 +59,6 @@ import java.util.stream.Stream;
 public class EnchantUtil {
 
     public static boolean hasTrinkets = false;
-
 
     /**
      * 所有盔甲
@@ -94,8 +95,8 @@ public class EnchantUtil {
         }
 
         // Trinkets enchantments
-        if (Enchant.option.trinkets) {
-            stream = Stream.of(WithPower.class);
+        if (hasTrinkets && Enchant.option.trinkets) {
+            stream = Stream.of(WithPower.class, WithToughness.class, WithHealth.class);
             processStream(stream);
         }
 
@@ -168,6 +169,21 @@ public class EnchantUtil {
         }
     }
 
+    public static ItemStack getHandStack(LivingEntity entity, Class<? extends Item> type) {
+        return getHandStack(entity, type, null);
+    }
+
+    public static ItemStack getHandStack(LivingEntity entity, Class<? extends Item> type, Predicate<ItemStack> test) {
+        if (entity != null) {
+            ItemStack item = entity.getStackInHand(Hand.MAIN_HAND);
+            if (!type.isInstance(item.getItem()) || !(test != null && test.test(item))) {
+                item = entity.getStackInHand(Hand.OFF_HAND);
+            }
+            return !type.isInstance(item.getItem()) || !(test != null && test.test(item)) ? ItemStack.EMPTY : item;
+        }
+        return ItemStack.EMPTY;
+    }
+
     /**
      * 命中
      *
@@ -214,90 +230,6 @@ public class EnchantUtil {
         return BaseEnchantment.get(Elasticity.class).level(itemStack);
     }
 
-    public static ItemStack getHandStack(LivingEntity entity, Class<? extends Item> type) {
-        return getHandStack(entity, type, null);
-    }
-
-    public static ItemStack getHandStack(LivingEntity entity, Class<? extends Item> type, Predicate<ItemStack> test) {
-        if (entity != null) {
-            ItemStack item = entity.getStackInHand(Hand.MAIN_HAND);
-            if (!type.isInstance(item.getItem()) || !(test != null && test.test(item))) {
-                item = entity.getStackInHand(Hand.OFF_HAND);
-            }
-            return !type.isInstance(item.getItem()) || !(test != null && test.test(item)) ? ItemStack.EMPTY : item;
-        }
-        return ItemStack.EMPTY;
-    }
-
-    /**
-     * foreach
-     *
-     * @see EnchantmentHelper#forEachEnchantment(net.minecraft.enchantment.EnchantmentHelper.Consumer, net.minecraft.item.ItemStack)
-     */
-    public static void forBaseEnchantment(BiConsumer<BaseEnchantment, Integer> consumer, ItemStack stack) {
-        if (stack.isEmpty() || !stack.hasEnchantments()) {
-            return;
-        }
-
-        EnchantmentHelper.get(stack).forEach((e, l) -> {
-            if (e instanceof BaseEnchantment && l > 0) {
-                consumer.accept((BaseEnchantment) e, l);
-            }
-        });
-    }
-
-    public static float additionDamage(LivingEntity attacker, LivingEntity target) {
-        MutableFloat newAmount = new MutableFloat(0);
-        Stream.of(attacker.getMainHandStack(), attacker.getOffHandStack()).forEach(stack -> forBaseEnchantment((e, l) -> newAmount.add(e.getAdditionDamage(attacker, target, stack, l)), stack));
-
-        // if it has trinkets
-        ifTrinket(stack -> forBaseEnchantment((e, l) -> newAmount.add(e.getAdditionDamage(attacker, target, stack, l)), stack), attacker);
-        return newAmount.floatValue();
-    }
-
-    public static float multiTotalDamage(LivingEntity attacker, LivingEntity target) {
-        MutableFloat newAmount = new MutableFloat(1);
-        Stream.of(attacker.getMainHandStack(), attacker.getOffHandStack()).forEach(stack -> forBaseEnchantment((e, l) -> newAmount.add(e.getMultiTotalDamage(attacker, target, stack, l)), stack));
-
-        // if it has trinkets
-        ifTrinket(stack -> forBaseEnchantment((e, l) -> newAmount.add(e.getMultiTotalDamage(attacker, target, stack, l)), stack), attacker);
-        return newAmount.floatValue();
-    }
-
-    public static float realAdditionDamage(LivingEntity attacker, LivingEntity target) {
-        MutableFloat newAmount = new MutableFloat(0);
-        Stream.of(attacker.getMainHandStack(), attacker.getOffHandStack()).forEach(stack -> forBaseEnchantment((e, l) -> newAmount.add(e.getRealAdditionDamage(attacker, target, stack, l)), stack));
-
-        // if it has trinkets
-        ifTrinket(stack -> forBaseEnchantment((e, l) -> newAmount.add(e.getRealAdditionDamage(attacker, target, stack, l)), stack), attacker);
-        return newAmount.floatValue();
-    }
-
-    public static float multiTotalArmor(LivingEntity living, double total) {
-        MutableFloat newAmount = new MutableFloat(1);
-        living.getArmorItems().forEach(stack -> forBaseEnchantment((e, l) -> newAmount.add(e.getMultiTotalArmor(living, total, stack, l)), stack));
-
-        // if it has trinkets
-        ifTrinket(stack -> forBaseEnchantment((e, l) -> newAmount.add(e.getMultiTotalArmor(living, total, stack, l)), stack), living);
-        return newAmount.floatValue();
-    }
-
-    public static void damageCallback(LivingEntity attacker, LivingEntity target, float amount) {
-        Stream.of(attacker.getMainHandStack(), attacker.getOffHandStack()).forEach(stack -> forBaseEnchantment((e, l) -> e.damageCallback(attacker, target, stack, l, amount), stack));
-
-        attacker.getArmorItems().forEach(stack -> forBaseEnchantment((e, l) -> e.damageCallback(attacker, target, stack, l, amount), stack));
-
-        ifTrinket(stack -> forBaseEnchantment((e, l) -> e.damageCallback(attacker, target, stack, l, amount), stack), attacker);
-    }
-
-    public static void ifTrinket(Consumer<ItemStack> consumer, LivingEntity living) {
-        if (!hasTrinkets) {
-            return;
-        }
-
-        TrinketsApi.getTrinketComponent(living).ifPresent(c -> c.getAllEquipped().forEach(p -> consumer.accept(p.getRight())));
-    }
-
     public static Consumer<ItemStack> lootConsumer(Consumer<ItemStack> lootConsumer, LootContext context) {
         // default is tool loot
         ItemStack stack = context.get(LootContextParameters.TOOL);
@@ -324,5 +256,80 @@ public class EnchantUtil {
         }
 
         return lootConsumer.andThen(handle::apply);
+    }
+
+    public static float damage(float amount, DamageSource source, LivingEntity target) {
+        Entity entity = source.getAttacker();
+        if (entity instanceof LivingEntity) {
+            LivingEntity attacker = (LivingEntity) entity;
+            Map<BaseEnchantment, Integer> map = EnchantUtil.mergeOf(attacker);
+            // is addition damage
+            amount += Math.max(0, EntityDamageApi.ADD.invoker().get(attacker, target, map));
+            if (amount <= 0) {
+                return 0;
+            }
+
+            amount *= (1 + EntityDamageApi.MULTIPLIER.invoker().get(attacker, target, map));
+            if (amount <= 0) {
+                return 0;
+            }
+        }
+        return amount;
+    }
+
+    public static float realDamage(float amount, DamageSource source, LivingEntity target) {
+        Entity entity = source.getAttacker();
+        if (entity instanceof LivingEntity) {
+            LivingEntity attacker = (LivingEntity) entity;
+            Map<BaseEnchantment, Integer> map = EnchantUtil.mergeOf(attacker);
+            // is addition damage
+            amount += Math.max(0, EntityDamageApi.REAL_ADD.invoker().get(attacker, target, map));
+            if (amount <= 0) {
+                return 0;
+            }
+
+            amount *= (1 + EntityDamageApi.REAL_MULTIPLIER.invoker().get(attacker, target, map));
+            if (amount <= 0) {
+                return 0;
+            }
+        }
+        return amount;
+    }
+
+    public static double armor(double base, LivingEntity living) {
+        Map<BaseEnchantment, Integer> map = EnchantUtil.mergeOf(living);
+        // is addition damage
+        base += Math.max(0, EntityArmorApi.ADD.invoker().get(living, base, map));
+        if (base <= 0) {
+            return 0;
+        }
+
+        base *= (1 + EntityArmorApi.MULTIPLIER.invoker().get(living, base, map));
+        if (base <= 0) {
+            return 0;
+        }
+        return base;
+    }
+
+    /**
+     * Get enchantments on merge
+     */
+    public static Map<BaseEnchantment, Integer> mergeOf(LivingEntity living) {
+        List<ItemStack> temps = new ArrayList<>();
+        living.getItemsEquipped().forEach(temps::add);
+        if (hasTrinkets) {
+            TrinketsApi.getTrinketComponent(living).ifPresent(c -> c.getAllEquipped().forEach(p -> temps.add(p.getRight())));
+        }
+
+
+        Map<BaseEnchantment, Integer> map = Maps.newHashMap();
+        temps.stream().filter(ItemStack::hasEnchantments)
+                .flatMap(i -> EnchantmentHelper.get(i).entrySet().stream())
+                .forEach(e -> {
+                    if (e.getKey() instanceof BaseEnchantment && e.getValue() != null && e.getValue() > 0) {
+                        map.compute((BaseEnchantment) e.getKey(), (k, v) -> Optional.ofNullable(v).orElse(0) + e.getValue());
+                    }
+                });
+        return map;
     }
 }

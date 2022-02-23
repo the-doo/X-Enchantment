@@ -1,15 +1,18 @@
 package com.doo.xenchant.enchantment.trinkets;
 
 import com.doo.xenchant.enchantment.BaseEnchantment;
-import com.doo.xenchant.mixin.interfaces.ServerLivingApi;
 import dev.emi.trinkets.api.TrinketItem;
-import dev.emi.trinkets.api.TrinketsApi;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.registry.Registry;
 
 /**
  * It's trinkets enchantment, maybe you don't like it
@@ -40,15 +43,49 @@ public abstract class Trinkets extends BaseEnchantment {
         return false;
     }
 
-    @Override
-    public final void register() {
-        super.register();
+    public final void writeModifier(ItemStack item) {
+        EntityAttributeModifier modifier = getModifier();
+        if (modifier == null) {
+            return;
+        }
+        EntityAttribute attribute = getAttribute();
+        if (attribute == null) {
+            return;
+        }
 
-        // if it is a trigger enchantment
-        ServerLivingApi.TAIL_TICK.register(living -> {
-            TrinketsApi.getTrinketComponent(living).ifPresent(c -> {
-                // todo
-            });
-        });
+        NbtCompound nbt = item.getOrCreateNbt();
+        if (!nbt.contains("TrinketAttributeModifiers", 9)) {
+            nbt.put("TrinketAttributeModifiers", new NbtList());
+        }
+        NbtList nbtList = nbt.getList("TrinketAttributeModifiers", 10);
+        NbtCompound nbtCompound = modifier.toNbt();
+        nbtCompound.putString("AttributeName", Registry.ATTRIBUTE.getId(attribute).toString());
+        nbtList.add(nbtCompound);
+    }
+
+    public final void removeModifier(ItemStack item) {
+        EntityAttributeModifier modifier = getModifier();
+        if (modifier == null) {
+            return;
+        }
+        EntityAttribute attribute = getAttribute();
+        if (attribute == null) {
+            return;
+        }
+
+        NbtCompound nbt = item.getOrCreateNbt();
+        if (!nbt.contains("TrinketAttributeModifiers", 9)) {
+            nbt.put("TrinketAttributeModifiers", new NbtList());
+        }
+        NbtList nbtList = nbt.getList("TrinketAttributeModifiers", 10);
+        nbtList.removeIf(n -> ((NbtCompound) n).getString("AttributeName").equals(Registry.ATTRIBUTE.getId(attribute).toString()));
+    }
+
+    public EntityAttribute getAttribute() {
+        return null;
+    }
+
+    public EntityAttributeModifier getModifier() {
+        return null;
     }
 }

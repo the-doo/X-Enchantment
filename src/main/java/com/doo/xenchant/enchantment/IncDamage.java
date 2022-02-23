@@ -1,6 +1,6 @@
 package com.doo.xenchant.enchantment;
 
-import com.doo.xenchant.mixin.interfaces.EntityDamageApi;
+import com.doo.xenchant.events.EntityDamageApi;
 import com.doo.xenchant.util.EnchantUtil;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
@@ -61,7 +61,18 @@ public class IncDamage extends BaseEnchantment {
         super.register();
 
         // DamageApi
-        EntityDamageApi.ADD.register(((attacker, target, stack) -> level(stack) > 0 ? stack.getOrCreateNbt().getFloat(nbtKey(KEY)) : 0));
+        EntityDamageApi.ADD.register(((attacker, target, map) -> {
+            if (!map.containsKey(this)) {
+                return 0;
+            }
+
+            ItemStack stack = attacker.getMainHandStack();
+            if (stack.isEmpty()) {
+                return 0;
+            }
+
+            return level(stack) > 0 ? stack.getOrCreateNbt().getFloat(nbtKey(KEY)) : 0;
+        }));
 
         // inc value when killed other
         ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register(((world, entity, killedEntity) -> {

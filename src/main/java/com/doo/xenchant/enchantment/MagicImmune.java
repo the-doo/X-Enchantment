@@ -1,9 +1,8 @@
 package com.doo.xenchant.enchantment;
 
-import com.doo.xenchant.mixin.interfaces.ServerLivingApi;
+import com.doo.xenchant.events.ServerLivingApi;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.effect.StatusEffectInstance;

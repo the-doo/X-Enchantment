@@ -1,4 +1,4 @@
-package com.doo.xenchant.mixin.interfaces;
+package com.doo.xenchant.events;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;

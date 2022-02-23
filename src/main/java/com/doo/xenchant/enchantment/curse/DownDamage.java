@@ -1,6 +1,6 @@
 package com.doo.xenchant.enchantment.curse;
 
-import com.doo.xenchant.mixin.interfaces.EntityDamageApi;
+import com.doo.xenchant.events.EntityDamageApi;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
 
@@ -25,6 +25,6 @@ public class DownDamage extends Cursed {
         super.register();
 
         // Multiplier Total
-        EntityDamageApi.MULTIPLIER.register(((attacker, target, stack) -> -Math.max(0, level(stack)) / 10F));
+        EntityDamageApi.MULTIPLIER.register(((attacker, target, map) -> map.containsKey(this) ? -Math.max(0, map.get(this)) / 10F : 0));
     }
 }

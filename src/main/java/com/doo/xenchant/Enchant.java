@@ -14,13 +14,13 @@ public class Enchant implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        // has trinkets
+        EnchantUtil.hasTrinkets = FabricLoader.getInstance().isModLoaded("trinkets");
+
         // 读取配置
         option = Config.read(ID, Option.class, option);
 
         // 注册附魔
         EnchantUtil.registerAll();
-
-        // has trinkets
-        EnchantUtil.hasTrinkets = FabricLoader.getInstance().isModLoaded("trinkets");
     }
 }

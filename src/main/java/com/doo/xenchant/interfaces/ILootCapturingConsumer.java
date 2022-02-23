@@ -1,4 +1,4 @@
-package com.doo.xenchant.mixin.interfaces;
+package com.doo.xenchant.interfaces;
 
 import net.minecraft.item.ItemStack;
 

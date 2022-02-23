@@ -170,6 +170,7 @@ public class Option {
                     EntityAttributes.GENERIC_ATTACK_DAMAGE,
                     EntityAttributes.GENERIC_ATTACK_SPEED,
                     EntityAttributes.GENERIC_ARMOR,
+                    EntityAttributes.GENERIC_ARMOR_TOUGHNESS,
                     EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE,
                     EntityAttributes.GENERIC_FLYING_SPEED,
                     EntityAttributes.GENERIC_MOVEMENT_SPEED,

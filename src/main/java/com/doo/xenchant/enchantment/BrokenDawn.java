@@ -1,7 +1,7 @@
 package com.doo.xenchant.enchantment;
 
 import com.doo.xenchant.Enchant;
-import com.doo.xenchant.mixin.interfaces.ItemDamageApi;
+import com.doo.xenchant.events.ItemApi;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.loader.api.FabricLoader;
@@ -9,7 +9,6 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -19,7 +18,6 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.registry.Registry;
 
-import javax.annotation.Nullable;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Random;
@@ -68,7 +66,7 @@ public class BrokenDawn extends BaseEnchantment {
     public void register() {
         super.register();
 
-        ItemDamageApi.WILL_DAMAGE.register(((owner, stack, amount) -> {
+        ItemApi.WILL_DAMAGE.register(((owner, stack, amount) -> {
             if (!Enchant.option.brokenDawn || amount < 1 || owner == null || owner.world.isClient()) {
                 return;
             }

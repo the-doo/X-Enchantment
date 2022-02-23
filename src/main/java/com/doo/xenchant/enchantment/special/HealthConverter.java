@@ -1,6 +1,6 @@
 package com.doo.xenchant.enchantment.special;
 
-import com.doo.xenchant.mixin.interfaces.ServerLivingApi;
+import com.doo.xenchant.events.ServerLivingApi;
 import com.doo.xenchant.util.EnchantUtil;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
@@ -38,7 +38,7 @@ public class HealthConverter extends Special {
         super.register();
 
         ServerLivingApi.TAIL_TICK.register(living -> {
-            if (!(living instanceof ServerPlayerEntity) || living.age % (10 * second()) != 0) {
+            if (!(living instanceof ServerPlayerEntity) || living.age % (10 * SECOND) != 0) {
                 return;
             }
 

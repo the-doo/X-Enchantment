@@ -1,7 +1,7 @@
 package com.doo.xenchant.enchantment;
 
 import com.doo.xenchant.Enchant;
-import com.doo.xenchant.mixin.interfaces.EntityDamageApi;
+import com.doo.xenchant.events.EntityDamageApi;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.enchantment.Enchantments;
@@ -54,17 +54,18 @@ public class SuckBlood extends BaseEnchantment {
     public void register() {
         super.register();
 
-        EntityDamageApi.ON_DAMAGED.register(((attacker, target, stack, amount) -> {
+        EntityDamageApi.ON_DAMAGED.register(((attacker, target, amount, map) -> {
             if (!Enchant.option.suckBlood) {
                 return;
             }
-
-            if (!getEquipment(attacker).containsValue(stack)) {
+            // need check enchantment
+            if (!map.containsKey(this)) {
                 return;
             }
-
+            // need check stack
+            ItemStack stack = attacker.getMainHandStack();
             int level = level(stack);
-            if (level < 0) {
+            if (level < 1 || level(stack = attacker.getOffHandStack()) < 1 || !(stack.getItem() instanceof RangedWeaponItem)) {
                 return;
             }
 

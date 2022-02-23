@@ -1,6 +1,6 @@
 package com.doo.xenchant.enchantment;
 
-import com.doo.xenchant.mixin.interfaces.LootApi;
+import com.doo.xenchant.events.LootApi;
 import com.doo.xenchant.util.EnchantUtil;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentLevelEntry;
