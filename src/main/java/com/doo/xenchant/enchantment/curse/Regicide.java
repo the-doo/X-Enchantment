@@ -32,7 +32,7 @@ public class Regicide extends Cursed {
 
             float limit = map.get(this) * 2;
             if (amount < limit) {
-                attacker.damage(DamageSource.mob(attacker), limit);
+                attacker.damage(DamageSource.mob(attacker), amount);
             }
         }));
     }
