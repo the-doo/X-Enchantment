@@ -70,12 +70,11 @@
   "enchantment.x_enchant.halo_height_advantage": "HALO - Height Advantage",
   "enchantment.x_enchant.halo_height_advantage.desc": "Attack when it's height is not enough, level damage per 3 second",
 
-  "enchantment.x_enchant.chat.more_more_loot": "You're rich man now!!!",
-  "enchantment.x_enchant.chat.smart": "Life is insightful in its advance, and years are fragrant in its accumulation",
-
   "x_enchant.menu.option.enchantment.normal": "Normal Enchantment",
   "x_enchant.menu.option.enchantment.halo": "Halo Enchantment",
   "x_enchant.menu.option.enchantment.curse": "Cursed Enchantment",
+  "x_enchant.menu.option.enchantment.trinkets": "Trinkets Enchantment",
+  "x_enchant.menu.option.enchantment.special": "Special Enchantment",
 
   "x_enchant.menu.option.open.tips": "After reopen, a restart game is required",
   "x_enchant.menu.option.close.tips": "After close, a restart game is required",
@@ -113,7 +112,5 @@
   "x_enchant.menu.option.halo_effect_level_other": "Other Effect Max Level: %d",
 
   "x_enchant.menu.option.status_effect_halo": "Status Effect Halo Settings",
-  "x_enchant.menu.option.status_effect_halo.enabled_all": "Enabled All",
-
-  "x_enchant.menu.option.chat_tips": "Chat Tips"
+  "x_enchant.menu.option.status_effect_halo.enabled_all": "Enabled All"
 }

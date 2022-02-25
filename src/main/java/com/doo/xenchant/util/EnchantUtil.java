@@ -162,18 +162,6 @@ public class EnchantUtil {
         return (T) o;
     }
 
-    /**
-     * 聊天框发送信息
-     *
-     * @param senderName sender
-     * @param text       text
-     */
-    public static void sendMessage(ServerPlayerEntity player, Text senderName, Text text) {
-        if (Enchant.option.chatTips) {
-            player.networkHandler.onChatMessage(new ChatMessageC2SPacket(senderName.shallowCopy().formatted(Formatting.GOLD).append(": ").append(text).getString()));
-        }
-    }
-
     public static ItemStack getHandStack(LivingEntity entity, Class<? extends Item> type) {
         return getHandStack(entity, type, null);
     }

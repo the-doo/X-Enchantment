@@ -2,7 +2,6 @@ package com.doo.xenchant.enchantment;
 
 import com.doo.xenchant.Enchant;
 import com.doo.xenchant.events.LootApi;
-import com.doo.xenchant.util.EnchantUtil;
 import net.fabricmc.fabric.api.tool.attribute.v1.ToolManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentTarget;
@@ -16,13 +15,8 @@ import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import org.apache.commons.lang3.mutable.MutableBoolean;
 
 import java.util.Random;
 import java.util.function.Consumer;
@@ -34,12 +28,6 @@ import java.util.stream.IntStream;
 public class MoreLoot extends BaseEnchantment {
 
     public static final String NAME = "more_loot";
-
-    /**
-     * chat tips
-     */
-    private static final MutableText MORE_LOOT_TEXT = new TranslatableText("enchantment.x_enchant.chat.more_more_loot")
-            .setStyle(Style.EMPTY.withColor(Formatting.RED));
 
     public MoreLoot() {
         super(NAME, Rarity.RARE, EnchantmentTarget.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND});
@@ -86,8 +74,7 @@ public class MoreLoot extends BaseEnchantment {
                 return null;
             }
 
-            MutableBoolean isCrit = new MutableBoolean();
-            int rand = rand(level, context.getRandom(), isCrit::setValue);
+            int rand = rand(level, context.getRandom());
             if (rand < 1) {
                 return null;
             }
@@ -97,11 +84,6 @@ public class MoreLoot extends BaseEnchantment {
                 // if is block item, need return
                 if (i.getItem() instanceof BlockItem) {
                     return i;
-                }
-
-                if (killer instanceof ServerPlayerEntity && isCrit.isTrue()) {
-                    isCrit.setFalse();
-                    EnchantUtil.sendMessage((ServerPlayerEntity) killer, stack.getName(), MORE_LOOT_TEXT);
                 }
 
                 // Add level xp
@@ -135,18 +117,16 @@ public class MoreLoot extends BaseEnchantment {
         }));
     }
 
-    private int rand(int level, Random random, Consumer<Boolean> ifCrit) {
+    private int rand(int level, Random random) {
         // 19% only 0, 2-19
         int ran = random.nextInt(100);
         if (ran >= Enchant.option.moreLootRate - 1) {
             return 0;
         }
-        ifCrit.accept(false);
 
         // 1% only 0
         if (ran < Enchant.option.moreMoreLootRate) {
             level *= Enchant.option.moreMoreLootMultiplier;
-            ifCrit.accept(true);
         }
 
         // rand min: 1 ~ level * 1.5

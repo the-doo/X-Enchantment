@@ -106,11 +106,6 @@ public class Option {
     public boolean infinityAcceptMending = true;
 
     /**
-     * 聊天框提示
-     */
-    public boolean chatTips = true;
-
-    /**
      * 光环
      */
     public boolean halo = true;
