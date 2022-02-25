@@ -15,6 +15,7 @@ import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -35,7 +36,7 @@ public class MoreLoot extends BaseEnchantment {
 
     @Override
     public int getMinPower(int level) {
-        return 1 + (level - 1) * 20;
+        return 20;
     }
 
     @Override
@@ -89,11 +90,12 @@ public class MoreLoot extends BaseEnchantment {
                 // Add level xp
                 if (killer instanceof ServerPlayerEntity) {
                     ((ServerPlayerEntity) killer).addExperience(rand);
+                    ((ServerPlayerEntity) killer).sendMessage(Text.of("hhhh"), true);
                 }
 
                 if (!i.isStackable()) {
                     // isn't stackable only half
-                    IntStream.range(0, rand / 2).forEach(v -> dropper.accept(i.copy()));
+                    IntStream.range(0, Math.max(level, rand / 5)).forEach(v -> dropper.accept(i.copy()));
                     return i;
                 }
 
