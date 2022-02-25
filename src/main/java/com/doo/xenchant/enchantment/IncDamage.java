@@ -1,7 +1,6 @@
 package com.doo.xenchant.enchantment;
 
 import com.doo.xenchant.events.EntityDamageApi;
-import com.doo.xenchant.util.EnchantUtil;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
@@ -62,16 +61,12 @@ public class IncDamage extends BaseEnchantment {
 
         // DamageApi
         EntityDamageApi.ADD.register(((attacker, target, map) -> {
-            if (!map.containsKey(this)) {
+            ItemStack stack;
+            if (!map.containsKey(this) || (stack = attacker.getMainHandStack()).isEmpty() || level(stack) < 1) {
                 return 0;
             }
 
-            ItemStack stack = attacker.getMainHandStack();
-            if (stack.isEmpty()) {
-                return 0;
-            }
-
-            return level(stack) > 0 ? stack.getOrCreateNbt().getFloat(nbtKey(KEY)) : 0;
+            return stack.getOrCreateNbt().getFloat(nbtKey(KEY));
         }));
 
         // inc value when killed other
@@ -81,8 +76,9 @@ public class IncDamage extends BaseEnchantment {
             }
 
             // check level
-            ItemStack stack = EnchantUtil.getHandStack((LivingEntity) entity, ToolItem.class);
-            if (stack.isEmpty()) {
+            ItemStack stack = ((LivingEntity) entity).getMainHandStack();
+            int level;
+            if (stack.isEmpty() || (level = level(stack)) < 1) {
                 return;
             }
 
@@ -96,7 +92,7 @@ public class IncDamage extends BaseEnchantment {
             } else if (item instanceof MiningToolItem) {
                 max = ((MiningToolItem) item).getAttackDamage();
             }
-            max *= level(stack);
+            max *= level;
 
             if (now >= max) {
                 return;

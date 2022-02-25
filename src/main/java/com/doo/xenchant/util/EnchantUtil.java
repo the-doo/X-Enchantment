@@ -181,10 +181,10 @@ public class EnchantUtil {
     public static ItemStack getHandStack(LivingEntity entity, Class<? extends Item> type, Predicate<ItemStack> test) {
         if (entity != null) {
             ItemStack item = entity.getStackInHand(Hand.MAIN_HAND);
-            if (!type.isInstance(item.getItem()) || !(test != null && test.test(item))) {
+            if (!type.isInstance(item.getItem()) || (test != null && !test.test(item))) {
                 item = entity.getStackInHand(Hand.OFF_HAND);
             }
-            return !type.isInstance(item.getItem()) || !(test != null && test.test(item)) ? ItemStack.EMPTY : item;
+            return type.isInstance(item.getItem()) && (test == null || test.test(item)) ? item : ItemStack.EMPTY;
         }
         return ItemStack.EMPTY;
     }

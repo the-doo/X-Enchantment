@@ -49,18 +49,20 @@ public class ThunderHalo extends LivingHalo {
 
     @Override
     public void onTarget(LivingEntity entity, Integer level, List<LivingEntity> targets) {
+        boolean needHit = entity.getRandom().nextInt(100) < Enchant.option.thunderHaloStruckChance * level;
+        if (!needHit) {
+            return;
+        }
+
         LightningEntity lightning = EntityType.LIGHTNING_BOLT.create(entity.getWorld());
         if (lightning == null) {
             return;
         }
 
         lightning.setChanneler(entity instanceof ServerPlayerEntity ? (ServerPlayerEntity) entity : null);
-
-        targets.forEach(e -> {
-            if (entity.getRandom().nextInt(100) < Enchant.option.thunderHaloStruckChance * level) {
-                lightning.refreshPositionAfterTeleport(Vec3d.ofBottomCenter(e.getBlockPos()));
-                e.world.spawnEntity(lightning);
-            }
+        targets.stream().findFirst().ifPresent(e -> {
+            lightning.refreshPositionAfterTeleport(Vec3d.ofBottomCenter(e.getBlockPos()));
+            e.world.spawnEntity(lightning);
         });
     }
 }

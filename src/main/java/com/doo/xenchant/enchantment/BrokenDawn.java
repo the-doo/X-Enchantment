@@ -9,6 +9,8 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -33,6 +35,8 @@ public class BrokenDawn extends BaseEnchantment {
     public static final String NAME = "broken_dawn";
     private static final String KEY = "Count";
     private static final String DONE = "Done";
+
+    private static final EntityAttributeModifier DAMAGE = new EntityAttributeModifier("", 1, EntityAttributeModifier.Operation.MULTIPLY_TOTAL);
 
     private static final TranslatableText DONE_TIPS = new TranslatableText("enchantment.x_enchant.broken_dawn.done");
     private static final TranslatableText TIPS = new TranslatableText("enchantment.x_enchant.broken_dawn.tips");
@@ -84,6 +88,13 @@ public class BrokenDawn extends BaseEnchantment {
             ifDone(stack, owner.getRandom(), count, owner::dropStack);
         }));
 
+        // if done
+        ItemApi.GET_MODIFIER.register(((map, stack, slot) -> {
+            if (stack.getOrCreateNbt().getBoolean(nbtKey(DONE)) && slot == EquipmentSlot.MAINHAND) {
+                map.put(EntityAttributes.GENERIC_ATTACK_DAMAGE, DAMAGE);
+            }
+        }));
+
         // tooltips
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT && Enchant.option.brokenDawn) {
             ItemTooltipCallback.EVENT.register(((stack, context, lines) -> {
@@ -120,7 +131,7 @@ public class BrokenDawn extends BaseEnchantment {
         Item next = nextLevelItem(stack.getItem());
         boolean needLevelUp = random.nextInt(100) < Enchant.option.brokenDawnSuccess;
 
-        // if level up but no next level
+        // need level up but hasn't next level
         ItemStack drop = ItemStack.EMPTY;
         if (needLevelUp) {
             if (next == Items.AIR) {

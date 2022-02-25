@@ -3,7 +3,6 @@ package com.doo.xenchant.mixin;
 import com.doo.xenchant.events.ItemApi;
 import com.doo.xenchant.util.EnchantUtil;
 import com.google.common.collect.Multimap;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
@@ -13,7 +12,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Random;
@@ -24,11 +22,6 @@ public abstract class ItemStackMixin {
     @Inject(method = "damage(ILjava/util/Random;Lnet/minecraft/server/network/ServerPlayerEntity;)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/EnchantmentHelper;getLevel(Lnet/minecraft/enchantment/Enchantment;Lnet/minecraft/item/ItemStack;)I"))
     private void itemUsedCallback(int amount, Random random, ServerPlayerEntity player, CallbackInfoReturnable<Boolean> cir) {
         ItemApi.WILL_DAMAGE.invoker().call(player, EnchantUtil.get(this), amount);
-    }
-
-    @Inject(method = "addEnchantment", at = @At("TAIL"))
-    private void addEnchantmentT(Enchantment enchantment, int level, CallbackInfo ci) {
-        ItemApi.ON_ENCHANTMENT_EVENT.invoker().call(EnchantUtil.get(this), enchantment, level);
     }
 
     @ModifyVariable(method = "getAttributeModifiers", at = @At(value = "LOAD"))

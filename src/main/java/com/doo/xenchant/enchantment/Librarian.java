@@ -62,33 +62,20 @@ public class Librarian extends BaseEnchantment {
                 return null;
             }
 
-            // reset count
-            String key = "Count";
-            stack.getOrCreateNbt().putInt(nbtKey(key), 0);
+            Random random = context.getRandom();
+            boolean replace = random.nextInt(100) < 5 * level;
+            if (!replace) {
+                return null;
+            }
+
             return i -> {
-                // get count
-                int count = stack.getOrCreateNbt().getInt(nbtKey(key));
-                if (count >= level) {
-                    return i;
-                }
-
-                Random random = context.getRandom();
-                // try to replace --- 5% * level chance
-                if (i.getRarity() == net.minecraft.util.Rarity.COMMON && random.nextInt(100) < 5 * level) {
-                    i.setCount(0);
-
-                    // Add random enchantment
-                    Enchantment enchantment = Registry.ENCHANTMENT.getRandom(random);
-                    if (enchantment == null) {
-                        return i;
-                    }
-
-                    // increment count
-                    stack.getOrCreateNbt().putInt(nbtKey(key), count + 1);
-                    trigger.dropStack(EnchantedBookItem.forEnchantment(new EnchantmentLevelEntry(enchantment, random.nextInt(enchantment.getMaxLevel()) + 1)));
+                Enchantment e = Registry.ENCHANTMENT.getRandom(random);
+                if (e != null) {
+                    int l = random.nextInt(e.getMaxLevel());
+                    trigger.dropStack(EnchantedBookItem.forEnchantment(new EnchantmentLevelEntry(e, l)));
 
                     if (trigger instanceof ServerPlayerEntity) {
-                        ((ServerPlayerEntity) trigger).addExperience(2);
+                        ((ServerPlayerEntity) trigger).addExperience(l);
                     }
                 }
                 return i;

@@ -1,13 +1,13 @@
 package com.doo.xenchant.mixin;
 
 import com.blamejared.crafttweaker.api.loot.LootCapturingConsumer;
-import com.doo.xenchant.config.Config;
 import com.doo.xenchant.interfaces.ILootCapturingConsumer;
 import net.minecraft.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -18,28 +18,30 @@ import java.util.function.Function;
  */
 @Mixin(value = LootCapturingConsumer.class, priority = Integer.MAX_VALUE)
 public abstract class LootCapturingConsumerMixin implements Consumer<ItemStack>, ILootCapturingConsumer {
+
+    @Shadow(remap = false)
+    @Final
     private List<ItemStack> capture;
+
+    @Shadow(remap = false)
+    @Final
     private Consumer<ItemStack> wrapped;
+
+    private Consumer<ItemStack> andThen;
 
     public void release(Function<List<ItemStack>, List<ItemStack>> captureModifier) {
         List<ItemStack> temp = new ArrayList<>(capture);
         capture.clear();
-        captureModifier.apply(temp).forEach(this.wrapped);
-        this.capture.addAll(temp);
+        Consumer<ItemStack> consumer = andThen == null ? wrapped : wrapped.andThen(andThen);
+        captureModifier.apply(temp).forEach(consumer);
+        capture.addAll(temp);
     }
 
     @NotNull
     @Override
+    @SuppressWarnings("unchecked")
     public Consumer<ItemStack> andThen(@NotNull Consumer<? super ItemStack> after) {
-        try {
-            Field wrapped = LootCapturingConsumer.class.getDeclaredField("wrapped");
-            wrapped.setAccessible(true);
-            wrapped.set(this, ((Consumer<ItemStack>) wrapped.get(this)).andThen(after));
-            wrapped.setAccessible(false);
-        } catch (Exception e) {
-            Config.LOGGER.error("Can't reset wrapper field", e);
-            return this;
-        }
+        andThen = andThen == null ? (Consumer<ItemStack>) after : andThen.andThen(after);
         return this;
     }
 }
