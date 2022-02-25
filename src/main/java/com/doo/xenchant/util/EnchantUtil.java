@@ -12,9 +12,7 @@ import com.doo.xenchant.enchantment.halo.HeightAdvantageHalo;
 import com.doo.xenchant.enchantment.halo.ThunderHalo;
 import com.doo.xenchant.enchantment.special.HealthConverter;
 import com.doo.xenchant.enchantment.special.RemoveCursed;
-import com.doo.xenchant.enchantment.trinkets.WithHealth;
-import com.doo.xenchant.enchantment.trinkets.WithPower;
-import com.doo.xenchant.enchantment.trinkets.WithToughness;
+import com.doo.xenchant.enchantment.trinkets.Trinkets;
 import com.doo.xenchant.events.EntityArmorApi;
 import com.doo.xenchant.events.EntityDamageApi;
 import com.doo.xenchant.events.LootApi;
@@ -96,8 +94,7 @@ public class EnchantUtil {
 
         // Trinkets enchantments
         if (hasTrinkets && Enchant.option.trinkets) {
-            stream = Stream.of(WithPower.class, WithToughness.class, WithHealth.class);
-            processStream(stream);
+            regisTrinkets();
         }
 
         // Halo enchantments
@@ -148,6 +145,14 @@ public class EnchantUtil {
         Registry.STATUS_EFFECT.stream()
                 .filter(e -> e != null && Identifier.isValid(e.getTranslationKey()) && !Enchant.option.disabledEffect.contains(e.getTranslationKey()))
                 .map(EffectHalo::new)
+                .sorted(Comparator.comparing(e -> ((BaseEnchantment) e).getRarity().getWeight()).reversed())
+                .forEach(BaseEnchantment::register);
+    }
+
+    private static void regisTrinkets() {
+        // Trinkets
+        Arrays.stream(Trinkets.Attrs.values())
+                .map(Trinkets::new)
                 .sorted(Comparator.comparing(e -> ((BaseEnchantment) e).getRarity().getWeight()).reversed())
                 .forEach(BaseEnchantment::register);
     }

@@ -6,6 +6,7 @@
   "mixins": [
     "AnvilScreenHandlerMixin",
     "FishingBobberMixin",
+    "GrindstoneScreenHandlerMixin",
     "InfinityMixin",
     "ItemStackMixin",
     "LivingEntityMixin",

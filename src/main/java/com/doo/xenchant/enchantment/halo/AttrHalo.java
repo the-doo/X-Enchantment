@@ -22,6 +22,8 @@ public class AttrHalo extends LivingHalo {
 
     public static final String NAME = "attribute";
 
+    public static boolean regis = false;
+
     private static final List<EntityAttribute> ATTRIBUTES = new ArrayList<>();
 
     private final EntityAttribute attribute;
@@ -64,6 +66,11 @@ public class AttrHalo extends LivingHalo {
     @Override
     public void register() {
         super.register();
+
+        if (regis) {
+            return;
+        }
+        regis = true;
 
         ServerLivingApi.TAIL_TICK.register(living -> {
             AttributeContainer attributes = living.getAttributes();

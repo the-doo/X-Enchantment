@@ -46,8 +46,11 @@
   "enchantment.x_enchant.health_converter.desc": "手握该附魔书时每10秒扣除5颗心去完全修复一个物品, 无法附魔任何其他物品",
 
   "enchantment.x_enchant.trinkets": "小饰品附魔",
-  "enchantment.x_enchant.with_power": "伤害增幅",
-  "enchantment.x_enchant.with_power.desc": "微微加强力量, 伤害提高20%",
+  "enchantment.x_enchant.trinkets.attr": "%s增幅 ",
+  "enchantment.x_enchant.trinkets.attr.desc": "微微加强属性, 仅用于附魔小饰品",
+  "enchantment.x_enchant.trinkets.attr.small": "小",
+  "enchantment.x_enchant.trinkets.attr.mid": "中",
+  "enchantment.x_enchant.trinkets.attr.large": "大",
 
   "enchantment.x_enchant.regicide": "弑君者",
   "enchantment.x_enchant.regicide.desc": "攻击伤害小于level * 2时, 该伤害同样会落在你身上, 软弱之时, 毙命之日",

@@ -46,8 +46,11 @@
   "enchantment.x_enchant.health_converter.desc": "Holding this, consumer 5 hearts make damaged item new, every 10s, cannot enchant any other items expect book",
 
   "enchantment.x_enchant.trinkets": "Trinkets Enchantment",
-  "enchantment.x_enchant.with_power": "With Power",
-  "enchantment.x_enchant.with_power.desc": "Slightly strengthens strength, increases damage by 20%",
+  "enchantment.x_enchant.trinkets.attr": "With %s ",
+  "enchantment.x_enchant.trinkets.attr.desc": "Slightly strengthens attribute, use on trinkets",
+  "enchantment.x_enchant.trinkets.attr.small": "small",
+  "enchantment.x_enchant.trinkets.attr.mid": "middle",
+  "enchantment.x_enchant.trinkets.attr.large": "large",
 
   "enchantment.x_enchant.regicide": "Regicide",
   "enchantment.x_enchant.regicide.desc": "When the attack damage is less than the enchantment level, the damage will also fall on you, what happens when you show weakness?",
