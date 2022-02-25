@@ -9,6 +9,8 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.RangedWeaponItem;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.world.ServerWorld;
 
 import java.util.function.Predicate;
 
@@ -50,6 +52,9 @@ public class Diffusion extends BaseEnchantment {
             float damage = (float) (Enchant.option.diffusionDamage + user.getRandom().nextInt((int) (level * Enchant.option.diffusionDamage)));
             Predicate<LivingEntity> test = e -> LivingHalo.Type.HARMFUL.predicate.and((u, t) -> t != target).test(user, e);
 
+            if (target.world instanceof ServerWorld) {
+                ((ServerWorld) target.world).spawnParticles(ParticleTypes.ELECTRIC_SPARK, target.getX(), target.getY(), target.getZ(), 30, 2, -2, 2, 1);
+            }
             target.world.getEntitiesByClass(LivingEntity.class, target.getBoundingBox().expand(3), test).forEach(e -> e.damage(source, damage));
         }
     }
