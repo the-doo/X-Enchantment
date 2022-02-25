@@ -1,6 +1,7 @@
 package com.doo.xenchant.enchantment;
 
 import com.doo.xenchant.Enchant;
+import com.doo.xenchant.events.ItemApi;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.loader.api.FabricLoader;
@@ -8,7 +9,8 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -18,7 +20,6 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.registry.Registry;
 
-import javax.annotation.Nullable;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Random;
@@ -35,6 +36,8 @@ public class BrokenDawn extends BaseEnchantment {
     private static final String KEY = "Count";
     private static final String DONE = "Done";
 
+    private static final EntityAttributeModifier DAMAGE = new EntityAttributeModifier("", 1, EntityAttributeModifier.Operation.MULTIPLY_TOTAL);
+
     private static final TranslatableText DONE_TIPS = new TranslatableText("enchantment.x_enchant.broken_dawn.done");
     private static final TranslatableText TIPS = new TranslatableText("enchantment.x_enchant.broken_dawn.tips");
 
@@ -44,12 +47,12 @@ public class BrokenDawn extends BaseEnchantment {
 
     @Override
     public int getMinPower(int level) {
-        return 1 + (level - 1) * 50;
+        return 1 + (level - 1) * 20;
     }
 
     @Override
     public int getMaxPower(int level) {
-        return level + 150;
+        return level * 50;
     }
 
     @Override
@@ -64,17 +67,54 @@ public class BrokenDawn extends BaseEnchantment {
     }
 
     @Override
-    public void itemUsedCallback(@Nullable LivingEntity owner, ItemStack stack, Integer level, float amount) {
-        if (!Enchant.option.brokenDawn || amount < 1 || owner == null) {
-            return;
-        }
+    public void register() {
+        super.register();
 
-        NbtCompound nbt = stack.getOrCreateNbt();
-        long count = nbt.getLong(nbtKey(KEY));
-        nbt.putLong(nbtKey(KEY), count += amount);
+        ItemApi.WILL_DAMAGE.register(((owner, stack, amount) -> {
+            if (!Enchant.option.brokenDawn || amount < 1 || owner == null || owner.world.isClient()) {
+                return;
+            }
+
+            int level = level(stack);
+            if (level < 1) {
+                return;
+            }
+
+            NbtCompound nbt = stack.getOrCreateNbt();
+            long count = nbt.getLong(nbtKey(KEY));
+            nbt.putLong(nbtKey(KEY), count += amount);
+
+            // if done
+            ifDone(stack, owner.getRandom(), count, owner::dropStack);
+        }));
 
         // if done
-        ifDone(stack, owner.getRandom(), count, owner::dropStack);
+        ItemApi.GET_MODIFIER.register(((map, stack, slot) -> {
+            if (stack.getOrCreateNbt().getBoolean(nbtKey(DONE)) && slot == EquipmentSlot.MAINHAND) {
+                map.put(EntityAttributes.GENERIC_ATTACK_DAMAGE, DAMAGE);
+            }
+        }));
+
+        // tooltips
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT && Enchant.option.brokenDawn) {
+            ItemTooltipCallback.EVENT.register(((stack, context, lines) -> {
+                NbtCompound nbt = stack.getOrCreateNbt();
+                // if done
+                if (nbt.getBoolean(nbtKey(DONE))) {
+                    lines.add(DONE_TIPS.formatted(Formatting.GOLD));
+                    lines.add(new TranslatableText(getTranslationKey()).append(" - ").append(TIPS).formatted(Formatting.GRAY));
+                    return;
+                }
+
+                // not done
+                if (level(stack) > 0) {
+                    lines.add(new TranslatableText(getTranslationKey()).append(": ")
+                            .append(FORMAT.format(100D * nbt.getLong(nbtKey(KEY)) / max(stack)) + "%").formatted(Formatting.GRAY));
+                    lines.add(new TranslatableText(getTranslationKey()).append(" - ")
+                            .append(TIPS).formatted(Formatting.GRAY));
+                }
+            }));
+        }
     }
 
     private void ifDone(ItemStack stack, Random random, long count, Consumer<ItemStack> dropper) {
@@ -91,7 +131,7 @@ public class BrokenDawn extends BaseEnchantment {
         Item next = nextLevelItem(stack.getItem());
         boolean needLevelUp = random.nextInt(100) < Enchant.option.brokenDawnSuccess;
 
-        // if level up but no next level
+        // need level up but hasn't next level
         ItemStack drop = ItemStack.EMPTY;
         if (needLevelUp) {
             if (next == Items.AIR) {
@@ -138,31 +178,5 @@ public class BrokenDawn extends BaseEnchantment {
                 .filter(i -> item.getClass().isInstance(i) && i.getMaxDamage() > item.getMaxDamage())
                 .min(Comparator.comparing(Item::getMaxDamage))
                 .orElse(Items.AIR);
-    }
-
-    @Override
-    public void register() {
-        super.register();
-
-        // tooltips
-        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT && Enchant.option.brokenDawn) {
-            ItemTooltipCallback.EVENT.register(((stack, context, lines) -> {
-                NbtCompound nbt = stack.getOrCreateNbt();
-                // if done
-                if (nbt.getBoolean(nbtKey(DONE))) {
-                    lines.add(DONE_TIPS.formatted(Formatting.GOLD));
-                    lines.add(new TranslatableText(getTranslationKey()).append(" - ").append(TIPS).formatted(Formatting.GRAY));
-                    return;
-                }
-
-                // not done
-                if (level(stack) > 0) {
-                    lines.add(new TranslatableText(getTranslationKey()).append(": ")
-                            .append(FORMAT.format(100D * nbt.getLong(nbtKey(KEY)) / max(stack)) + "%").formatted(Formatting.GRAY));
-                    lines.add(new TranslatableText(getTranslationKey()).append(" - ")
-                            .append(TIPS).formatted(Formatting.GRAY));
-                }
-            }));
-        }
     }
 }

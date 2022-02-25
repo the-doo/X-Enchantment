@@ -4,6 +4,8 @@ import com.doo.xenchant.config.Config;
 import com.doo.xenchant.config.Option;
 import com.doo.xenchant.util.EnchantUtil;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.loader.api.FabricLoader;
 
 public class Enchant implements ModInitializer {
 
@@ -13,6 +15,9 @@ public class Enchant implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        // has trinkets
+        EnchantUtil.hasTrinkets = FabricLoader.getInstance().isModLoaded("trinkets");
+
         // 读取配置
         option = Config.read(ID, Option.class, option);
 

@@ -10,16 +10,23 @@ import com.doo.xenchant.enchantment.halo.AttrHalo;
 import com.doo.xenchant.enchantment.halo.EffectHalo;
 import com.doo.xenchant.enchantment.halo.HeightAdvantageHalo;
 import com.doo.xenchant.enchantment.halo.ThunderHalo;
+import com.doo.xenchant.enchantment.special.HealthConverter;
 import com.doo.xenchant.enchantment.special.RemoveCursed;
+import com.doo.xenchant.enchantment.trinkets.Trinkets;
+import com.doo.xenchant.events.EntityArmorApi;
+import com.doo.xenchant.events.EntityDamageApi;
+import com.doo.xenchant.events.LootApi;
+import com.google.common.collect.Maps;
+import dev.emi.trinkets.api.TrinketsApi;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.projectile.FishingBobberEntity;
@@ -37,20 +44,19 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
-import org.apache.commons.lang3.mutable.MutableFloat;
 
 import java.util.*;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
  * 附魔工具
  */
-@SuppressWarnings("all")
 public class EnchantUtil {
+
+    public static boolean hasTrinkets = false;
 
     /**
      * 所有盔甲
@@ -82,8 +88,13 @@ public class EnchantUtil {
 
         // Special enchantments
         if (Enchant.option.special) {
-            stream = Stream.of(RemoveCursed.class);
+            stream = Stream.of(RemoveCursed.class, HealthConverter.class);
             processStream(stream);
+        }
+
+        // Trinkets enchantments
+        if (hasTrinkets && Enchant.option.trinkets) {
+            regisTrinkets();
         }
 
         // Halo enchantments
@@ -91,19 +102,19 @@ public class EnchantUtil {
             stream = Stream.of(ThunderHalo.class, HeightAdvantageHalo.class);
             processStream(stream);
 
-            // regist to server
+            // regis to server
             ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-                registEffect();
+                regisEffect();
 
-                registAttr();
+                regisAttr();
             });
 
-            // regist to client
+            // regis to client
             if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
                 ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
-                    registEffect();
+                    regisEffect();
 
-                    registAttr();
+                    regisAttr();
                 });
             }
         }
@@ -111,15 +122,15 @@ public class EnchantUtil {
 
     private static void processStream(Stream<Class<? extends BaseEnchantment>> stream) {
         stream.filter(c -> !Enchant.option.disabled.contains(c.getName()))
-                .map(c -> BaseEnchantment.get(c))
+                .map(BaseEnchantment::get)
                 .sorted(Comparator.comparing(e -> ((BaseEnchantment) e).getRarity().getWeight()).reversed())
                 .forEach(BaseEnchantment::register);
     }
 
-    private static void registAttr() {
-        // Status effect halo must regist after all mod loaded
+    private static void regisAttr() {
+        // Status effect halo must regis after all mod loaded
         // need filter(s -> Identifier.isValid(s.getTranslationKey()))
-        // if not exsits
+        // if not exists
         Registry.ATTRIBUTE.getEntries().stream()
                 .filter(e -> Enchant.option.attributes.contains(e.getValue().getTranslationKey()))
                 .map(e -> new AttrHalo(e.getValue()))
@@ -127,10 +138,10 @@ public class EnchantUtil {
                 .forEach(BaseEnchantment::register);
     }
 
-    private static void registEffect() {
-        // Attribute halo must regist after all mod loaded
+    private static void regisEffect() {
+        // Attribute halo must regis after all mod loaded
         // need filter(s -> Identifier.isValid(s.getTranslationKey()))
-        // if not exsits
+        // if not exists
         Registry.STATUS_EFFECT.stream()
                 .filter(e -> e != null && Identifier.isValid(e.getTranslationKey()) && !Enchant.option.disabledEffect.contains(e.getTranslationKey()))
                 .map(EffectHalo::new)
@@ -138,16 +149,32 @@ public class EnchantUtil {
                 .forEach(BaseEnchantment::register);
     }
 
-    /**
-     * 聊天框发送信息
-     *
-     * @param senderName sender
-     * @param text       text
-     */
-    public static void sendMessage(ServerPlayerEntity player, Text senderName, Text text) {
-        if (Enchant.option.chatTips) {
-            player.networkHandler.onChatMessage(new ChatMessageC2SPacket(senderName.shallowCopy().formatted(Formatting.GOLD).append(": ").append(text).getString()));
+    private static void regisTrinkets() {
+        // Trinkets
+        Arrays.stream(Trinkets.Attrs.values())
+                .map(Trinkets::new)
+                .sorted(Comparator.comparing(e -> ((BaseEnchantment) e).getRarity().getWeight()).reversed())
+                .forEach(BaseEnchantment::register);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T get(Object o) {
+        return (T) o;
+    }
+
+    public static ItemStack getHandStack(LivingEntity entity, Class<? extends Item> type) {
+        return getHandStack(entity, type, null);
+    }
+
+    public static ItemStack getHandStack(LivingEntity entity, Class<? extends Item> type, Predicate<ItemStack> test) {
+        if (entity != null) {
+            ItemStack item = entity.getStackInHand(Hand.MAIN_HAND);
+            if (!type.isInstance(item.getItem()) || (test != null && !test.test(item))) {
+                item = entity.getStackInHand(Hand.OFF_HAND);
+            }
+            return type.isInstance(item.getItem()) && (test == null || test.test(item)) ? item : ItemStack.EMPTY;
         }
+        return ItemStack.EMPTY;
     }
 
     /**
@@ -179,12 +206,7 @@ public class EnchantUtil {
     }
 
     /**
-     * 魔免判断
-     *
-     * @param uuid   玩家id
-     * @param living
-     * @param effect 效果
-     * @return 是否需要免疫
+     * return: is effect on
      */
     public static boolean magicImmune(LivingEntity living, StatusEffectInstance effect) {
         if (living == null || StatusEffectCategory.HARMFUL != effect.getEffectType().getCategory()) {
@@ -201,114 +223,18 @@ public class EnchantUtil {
         return BaseEnchantment.get(Elasticity.class).level(itemStack);
     }
 
-    /**
-     * living tick
-     *
-     * @param living living
-     */
-    public static void livingTick(LivingEntity living) {
-        if (living.world.isClient()) {
-            return;
-        }
-
-        // remove dirty arributes
-        AttrHalo.removeDirty(living);
-
-        // tick enchantment
-        living.getItemsEquipped().forEach(stack -> {
-            if (stack.isEmpty() || !stack.hasEnchantments()) {
-                return;
-            }
-
-            forBaseEnchantment((e, l) -> e.tryTrigger(living, stack, l), stack);
-        });
-    }
-
-    public static ItemStack getHandStack(LivingEntity entity, Class<? extends Item> type) {
-        if (entity != null) {
-            ItemStack item = entity.getStackInHand(Hand.MAIN_HAND);
-            if (!type.isInstance(item.getItem())) {
-                item = entity.getStackInHand(Hand.OFF_HAND);
-            }
-            return !type.isInstance(item.getItem()) ? ItemStack.EMPTY : item;
-        }
-        return ItemStack.EMPTY;
-    }
-
-    /**
-     * foreach
-     *
-     * @param function
-     * @param stack
-     * @return
-     * @see EnchantmentHelper#forEachEnchantment(net.minecraft.enchantment.EnchantmentHelper.Consumer, net.minecraft.item.ItemStack)
-     */
-    public static void forBaseEnchantment(BiConsumer<BaseEnchantment, Integer> consumer, ItemStack stack) {
-        if (stack.isEmpty() || !stack.hasEnchantments()) {
-            return;
-        }
-
-        EnchantmentHelper.get(stack).forEach((e, l) -> {
-            if (e instanceof BaseEnchantment && l > 0) {
-                consumer.accept((BaseEnchantment) e, l);
-            }
-        });
-    }
-
-    public static float additionDamage(LivingEntity attacker, LivingEntity target) {
-        MutableFloat newAmount = new MutableFloat(0);
-        Stream.of(attacker.getMainHandStack(), attacker.getOffHandStack()).forEach(stack -> {
-            forBaseEnchantment((e, l) -> newAmount.add(e.getAdditionDamage(attacker, target, stack, l)), stack);
-        });
-        return newAmount.floatValue();
-    }
-
-    public static float multiTotalDamage(LivingEntity attacker, LivingEntity target) {
-        MutableFloat newAmount = new MutableFloat(1);
-        Stream.of(attacker.getMainHandStack(), attacker.getOffHandStack()).forEach(stack -> {
-            forBaseEnchantment((e, l) -> newAmount.add(e.getMultiTotalDamage(attacker, target, stack, l)), stack);
-        });
-        return newAmount.floatValue();
-    }
-
-    public static float realAdditionDamage(LivingEntity attacker, LivingEntity target) {
-        MutableFloat newAmount = new MutableFloat(0);
-        Stream.of(attacker.getMainHandStack(), attacker.getOffHandStack()).forEach(stack -> {
-            forBaseEnchantment((e, l) -> newAmount.add(e.getRealAdditionDamage(attacker, target, stack, l)), stack);
-        });
-        return newAmount.floatValue();
-    }
-
-    public static float multiTotalArmor(LivingEntity living, double base) {
-        MutableFloat newAmount = new MutableFloat(1);
-        Stream.of(living.getMainHandStack(), living.getOffHandStack()).forEach(stack -> {
-            forBaseEnchantment((e, l) -> newAmount.add(e.getMultiTotalArmor(living, base, stack, l)), stack);
-        });
-        return newAmount.floatValue();
-    }
-
-    public static void damageCallback(LivingEntity attacker, LivingEntity target, float amount) {
-        Stream.of(attacker.getMainHandStack(), attacker.getOffHandStack()).forEach(stack -> {
-            forBaseEnchantment((e, l) -> e.damageCallback(attacker, target, stack, l, amount), stack);
-        });
-
-        attacker.getArmorItems().forEach(stack -> {
-            forBaseEnchantment((e, l) -> e.damageCallback(attacker, target, stack, l, amount), stack);
-        });
-    }
-
     public static Consumer<ItemStack> lootConsumer(Consumer<ItemStack> lootConsumer, LootContext context) {
-        // defualt is tool loot
+        // default is tool loot
         ItemStack stack = context.get(LootContextParameters.TOOL);
         Entity entity = Optional.ofNullable(context.get(LootContextParameters.KILLER_ENTITY))
                 .orElse(context.get(LootContextParameters.THIS_ENTITY));
 
-        // if is attack loot, try get on entity
+        // if is attack loot, try to get on entity
         if (stack == null && entity instanceof LivingEntity) {
             stack = ((LivingEntity) entity).getMainHandStack();
         }
 
-        // if is rod loot, try get owner
+        // if is rod loot, try to get owner
         if (entity instanceof FishingBobberEntity) {
             entity = ((FishingBobberEntity) entity).getOwner();
         }
@@ -317,33 +243,86 @@ public class EnchantUtil {
             return lootConsumer;
         }
 
-        ItemStack item = stack;
-        LivingEntity killer = (LivingEntity) entity;
-
-        List<Function<ItemStack, ItemStack>> list = new ArrayList<>();
-        BiConsumer<BaseEnchantment, Integer> forEach = (e, l) ->
-                Optional.ofNullable(e.lootSetter(killer, item, l, lootConsumer, context)).ifPresent(list::add);
-        forBaseEnchantment(forEach, stack);
-
-        if (list.isEmpty()) {
+        Function<ItemStack, ItemStack> handle = LootApi.HANDLER.invoker().handle((LivingEntity) entity, stack, lootConsumer, context);
+        if (handle == null) {
             return lootConsumer;
         }
 
-        Function<ItemStack, ItemStack> function = list.stream().reduce((c1, c2) -> c1.andThen(c2)).get();
-        return lootConsumer.andThen(i -> function.apply(i));
+        return lootConsumer.andThen(handle::apply);
     }
 
-    public static void itemUsedCallback(LivingEntity owner, ItemStack stack, float amount) {
-        forBaseEnchantment((e, l) -> e.itemUsedCallback(owner, stack, l, amount), stack);
+    public static float damage(float amount, DamageSource source, LivingEntity target) {
+        Entity entity = source.getAttacker();
+        if (entity instanceof LivingEntity) {
+            LivingEntity attacker = (LivingEntity) entity;
+            Map<BaseEnchantment, Integer> map = EnchantUtil.mergeOf(attacker);
+            // is addition damage
+            amount += Math.max(0, EntityDamageApi.ADD.invoker().get(attacker, target, map));
+            if (amount <= 0) {
+                return 0;
+            }
+
+            amount *= (1 + EntityDamageApi.MULTIPLIER.invoker().get(attacker, target, map));
+            if (amount <= 0) {
+                return 0;
+            }
+        }
+        return amount;
     }
 
-    public static Map<Enchantment, Integer> useOnAnvil(Map<Enchantment, Integer> enchantments, ItemStack newOne) {
-        Set<BaseEnchantment> set = enchantments.keySet().stream()
-                .filter(e -> e instanceof BaseEnchantment && enchantments.get(e) > 0)
-                .map(e -> (BaseEnchantment) e)
-                .collect(Collectors.toSet());
+    public static float realDamage(float amount, DamageSource source, LivingEntity target) {
+        Entity entity = source.getAttacker();
+        if (entity instanceof LivingEntity) {
+            LivingEntity attacker = (LivingEntity) entity;
+            Map<BaseEnchantment, Integer> map = EnchantUtil.mergeOf(attacker);
+            // is addition damage
+            amount += Math.max(0, EntityDamageApi.REAL_ADD.invoker().get(attacker, target, map));
+            if (amount <= 0) {
+                return 0;
+            }
 
-        set.forEach(e -> e.onAnvil(enchantments, enchantments.get(e), newOne));
-        return enchantments;
+            amount *= (1 + EntityDamageApi.REAL_MULTIPLIER.invoker().get(attacker, target, map));
+            if (amount <= 0) {
+                return 0;
+            }
+        }
+        return amount;
+    }
+
+    public static double armor(double base, LivingEntity living) {
+        Map<BaseEnchantment, Integer> map = EnchantUtil.mergeOf(living);
+        // is addition damage
+        base += Math.max(0, EntityArmorApi.ADD.invoker().get(living, base, map));
+        if (base <= 0) {
+            return 0;
+        }
+
+        base *= (1 + EntityArmorApi.MULTIPLIER.invoker().get(living, base, map));
+        if (base <= 0) {
+            return 0;
+        }
+        return base;
+    }
+
+    /**
+     * Get enchantments on merge
+     */
+    public static Map<BaseEnchantment, Integer> mergeOf(LivingEntity living) {
+        List<ItemStack> temps = new ArrayList<>();
+        living.getItemsEquipped().forEach(temps::add);
+        if (hasTrinkets) {
+            TrinketsApi.getTrinketComponent(living).ifPresent(c -> c.getAllEquipped().forEach(p -> temps.add(p.getRight())));
+        }
+
+
+        Map<BaseEnchantment, Integer> map = Maps.newHashMap();
+        temps.stream().filter(ItemStack::hasEnchantments)
+                .flatMap(i -> EnchantmentHelper.get(i).entrySet().stream())
+                .forEach(e -> {
+                    if (e.getKey() instanceof BaseEnchantment && e.getValue() != null && e.getValue() > 0) {
+                        map.compute((BaseEnchantment) e.getKey(), (k, v) -> Optional.ofNullable(v).orElse(0) + e.getValue());
+                    }
+                });
+        return map;
     }
 }

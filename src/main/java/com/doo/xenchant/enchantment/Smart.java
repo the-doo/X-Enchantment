@@ -1,16 +1,11 @@
 package com.doo.xenchant.enchantment;
 
-import com.doo.xenchant.util.EnchantUtil;
+import com.doo.xenchant.events.ServerLivingApi;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Formatting;
 
 /**
  * Smart
@@ -18,9 +13,6 @@ import net.minecraft.util.Formatting;
 public class Smart extends BaseEnchantment {
 
     public static final String NAME = "smart";
-
-    public static final MutableText EPIPHANY = new TranslatableText("enchantment.x_enchant.chat.smart")
-            .setStyle(Style.EMPTY.withColor(Formatting.GOLD));
 
     public Smart() {
         super(NAME, Rarity.VERY_RARE, EnchantmentTarget.ARMOR_HEAD, new EquipmentSlot[]{EquipmentSlot.HEAD});
@@ -33,7 +25,7 @@ public class Smart extends BaseEnchantment {
 
     @Override
     public int getMinPower(int level) {
-        return 150;
+        return 30;
     }
 
     @Override
@@ -47,22 +39,32 @@ public class Smart extends BaseEnchantment {
     }
 
     @Override
-    protected float second() {
-        return 5;
-    }
+    public void register() {
+        super.register();
 
-    @Override
-    protected void livingTick(LivingEntity living, ItemStack stack, int level) {
-        if (living instanceof ServerPlayerEntity) {
+        ServerLivingApi.TAIL_TICK.register(living -> {
+            if (!(living instanceof ServerPlayerEntity) || living.age % (SECOND * 5) != 0) {
+                return;
+            }
+
+            ItemStack stack = living.getEquippedStack(EquipmentSlot.HEAD);
+            if (stack.isEmpty()) {
+                return;
+            }
+
+            int level = level(stack);
+            if (level < 1) {
+                return;
+            }
+
             // add level xp
             int amount = level;
             // if epiphany - 0.0005
             if (living.getRandom().nextInt(1000) < 5) {
                 amount *= 1000;
-                EnchantUtil.sendMessage((ServerPlayerEntity) living, living.getDisplayName(), EPIPHANY);
             }
 
             ((PlayerEntity) living).addExperience(amount);
-        }
+        });
     }
 }

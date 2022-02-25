@@ -106,11 +106,6 @@ public class Option {
     public boolean infinityAcceptMending = true;
 
     /**
-     * 聊天框提示
-     */
-    public boolean chatTips = true;
-
-    /**
      * 光环
      */
     public boolean halo = true;
@@ -170,6 +165,7 @@ public class Option {
                     EntityAttributes.GENERIC_ATTACK_DAMAGE,
                     EntityAttributes.GENERIC_ATTACK_SPEED,
                     EntityAttributes.GENERIC_ARMOR,
+                    EntityAttributes.GENERIC_ARMOR_TOUGHNESS,
                     EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE,
                     EntityAttributes.GENERIC_FLYING_SPEED,
                     EntityAttributes.GENERIC_MOVEMENT_SPEED,
@@ -201,4 +197,9 @@ public class Option {
      * special
      */
     public boolean special = false;
+
+    /**
+     * trinkets
+     */
+    public boolean trinkets = false;
 }

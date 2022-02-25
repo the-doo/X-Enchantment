@@ -1,6 +1,6 @@
 package com.doo.xenchant.enchantment;
 
-import com.doo.xenchant.util.EnchantUtil;
+import com.doo.xenchant.events.EntityDamageApi;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
@@ -55,24 +55,19 @@ public class IncDamage extends BaseEnchantment {
         return stack.getItem() instanceof ToolItem;
     }
 
-    /**
-     * Default DIAMOND is 1 base
-     *
-     * @param durability tool durability
-     * @return inc value
-     */
-    private float inc(int durability) {
-        return 1F * durability / ToolMaterials.DIAMOND.getDurability();
-    }
-
-    @Override
-    public float getAdditionDamage(LivingEntity attacker, LivingEntity target, ItemStack stack, int level) {
-        return stack.getOrCreateNbt().getFloat(nbtKey(KEY));
-    }
-
     @Override
     public void register() {
         super.register();
+
+        // DamageApi
+        EntityDamageApi.ADD.register(((attacker, target, map) -> {
+            ItemStack stack;
+            if (!map.containsKey(this) || (stack = attacker.getMainHandStack()).isEmpty() || level(stack) < 1) {
+                return 0;
+            }
+
+            return stack.getOrCreateNbt().getFloat(nbtKey(KEY));
+        }));
 
         // inc value when killed other
         ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register(((world, entity, killedEntity) -> {
@@ -81,8 +76,9 @@ public class IncDamage extends BaseEnchantment {
             }
 
             // check level
-            ItemStack stack = EnchantUtil.getHandStack((LivingEntity) entity, ToolItem.class);
-            if (stack.isEmpty()) {
+            ItemStack stack = ((LivingEntity) entity).getMainHandStack();
+            int level;
+            if (stack.isEmpty() || (level = level(stack)) < 1) {
                 return;
             }
 
@@ -96,7 +92,7 @@ public class IncDamage extends BaseEnchantment {
             } else if (item instanceof MiningToolItem) {
                 max = ((MiningToolItem) item).getAttackDamage();
             }
-            max *= level(stack);
+            max *= level;
 
             if (now >= max) {
                 return;
@@ -120,5 +116,15 @@ public class IncDamage extends BaseEnchantment {
                 }
             });
         }
+    }
+
+    /**
+     * Default DIAMOND is 1 base
+     *
+     * @param durability tool durability
+     * @return inc value
+     */
+    private float inc(int durability) {
+        return 1F * durability / ToolMaterials.DIAMOND.getDurability();
     }
 }

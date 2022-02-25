@@ -1,11 +1,9 @@
 package com.doo.xenchant.enchantment.special;
 
+import com.doo.xenchant.events.AnvilApi;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.ItemStack;
-
-import java.util.Map;
 
 /**
  * Remove Cursed
@@ -34,12 +32,19 @@ public class RemoveCursed extends Special {
     }
 
     @Override
-    public void onAnvil(Map<Enchantment, Integer> map, int level, ItemStack stack) {
-        // remove this
-        map.remove(this);
+    public void register() {
+        super.register();
 
-        // If map has cursed remove First
-        map.keySet().stream().filter(Enchantment::isCursed).findFirst()
-                .ifPresent(map::remove);
+        AnvilApi.ON_ENCHANT.register(((map, first, second, result) -> {
+            int level = level(second);
+            if (level < 1) {
+                return;
+            }
+
+            // remove first cursed if map has cursed
+            map.keySet().stream().filter(Enchantment::isCursed).findFirst().ifPresent(map::remove);
+            // remove this
+            map.remove(this);
+        }));
     }
 }

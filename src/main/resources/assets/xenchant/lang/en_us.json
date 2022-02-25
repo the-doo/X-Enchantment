@@ -39,8 +39,18 @@
   "enchantment.x_enchant.timor": "Timor",
   "enchantment.x_enchant.timor.desc": "Crouching for 3 seconds to become invisible, and increase attack speed when cancel",
 
+  "enchantment.x_enchant.special": "Special Enchantment",
   "enchantment.x_enchant.remove_cursed": "Curse Killer",
   "enchantment.x_enchant.remove_cursed.desc": "Remove cursed enchantment at anvil",
+  "enchantment.x_enchant.health_converter": "Health Converter",
+  "enchantment.x_enchant.health_converter.desc": "Holding this, consumer 5 hearts make damaged item new, every 10s, cannot enchant any other items expect book",
+
+  "enchantment.x_enchant.trinkets": "Trinkets Enchantment",
+  "enchantment.x_enchant.trinkets.attr": "With %s ",
+  "enchantment.x_enchant.trinkets.attr.desc": "Slightly strengthens attribute, use on trinkets",
+  "enchantment.x_enchant.trinkets.attr.small": "small",
+  "enchantment.x_enchant.trinkets.attr.mid": "middle",
+  "enchantment.x_enchant.trinkets.attr.large": "large",
 
   "enchantment.x_enchant.regicide": "Regicide",
   "enchantment.x_enchant.regicide.desc": "When the attack damage is less than the enchantment level, the damage will also fall on you, what happens when you show weakness?",
@@ -60,12 +70,11 @@
   "enchantment.x_enchant.halo_height_advantage": "HALO - Height Advantage",
   "enchantment.x_enchant.halo_height_advantage.desc": "Attack when it's height is not enough, level damage per 3 second",
 
-  "enchantment.x_enchant.chat.more_more_loot": "You're rich man now!!!",
-  "enchantment.x_enchant.chat.smart": "Life is insightful in its advance, and years are fragrant in its accumulation",
-
   "x_enchant.menu.option.enchantment.normal": "Normal Enchantment",
   "x_enchant.menu.option.enchantment.halo": "Halo Enchantment",
   "x_enchant.menu.option.enchantment.curse": "Cursed Enchantment",
+  "x_enchant.menu.option.enchantment.trinkets": "Trinkets Enchantment",
+  "x_enchant.menu.option.enchantment.special": "Special Enchantment",
 
   "x_enchant.menu.option.open.tips": "After reopen, a restart game is required",
   "x_enchant.menu.option.close.tips": "After close, a restart game is required",
@@ -103,7 +112,5 @@
   "x_enchant.menu.option.halo_effect_level_other": "Other Effect Max Level: %d",
 
   "x_enchant.menu.option.status_effect_halo": "Status Effect Halo Settings",
-  "x_enchant.menu.option.status_effect_halo.enabled_all": "Enabled All",
-
-  "x_enchant.menu.option.chat_tips": "Chat Tips"
+  "x_enchant.menu.option.status_effect_halo.enabled_all": "Enabled All"
 }

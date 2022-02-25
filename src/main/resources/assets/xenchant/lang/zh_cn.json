@@ -39,8 +39,18 @@
   "enchantment.x_enchant.timor": "提莫",
   "enchantment.x_enchant.timor.desc": "蹲伏3秒后会隐身, 解除时会提高攻击速度",
 
+  "enchantment.x_enchant.special": "特殊附魔",
   "enchantment.x_enchant.remove_cursed": "诅咒杀手",
   "enchantment.x_enchant.remove_cursed.desc": "可在铁砧处移除诅咒",
+  "enchantment.x_enchant.health_converter": "血肉转化",
+  "enchantment.x_enchant.health_converter.desc": "手握该附魔书时每10秒扣除5颗心去完全修复一个物品, 无法附魔任何其他物品",
+
+  "enchantment.x_enchant.trinkets": "小饰品附魔",
+  "enchantment.x_enchant.trinkets.attr": "%s增幅 ",
+  "enchantment.x_enchant.trinkets.attr.desc": "微微加强属性, 仅用于附魔小饰品",
+  "enchantment.x_enchant.trinkets.attr.small": "小",
+  "enchantment.x_enchant.trinkets.attr.mid": "中",
+  "enchantment.x_enchant.trinkets.attr.large": "大",
 
   "enchantment.x_enchant.regicide": "弑君者",
   "enchantment.x_enchant.regicide.desc": "攻击伤害小于level * 2时, 该伤害同样会落在你身上, 软弱之时, 毙命之日",
@@ -60,12 +70,11 @@
   "enchantment.x_enchant.halo_height_advantage": "光环 - 身高优势",
   "enchantment.x_enchant.halo_height_advantage.desc": "接受高个儿的制裁吧~, 每3秒level点伤害",
 
-  "enchantment.x_enchant.chat.more_more_loot": "苟富贵，勿相忘~~~",
-  "enchantment.x_enchant.chat.smart": "一花一世界，带师，我悟了!",
-
   "x_enchant.menu.option.enchantment.normal": "通用附魔",
   "x_enchant.menu.option.enchantment.halo": "光环附魔",
   "x_enchant.menu.option.enchantment.curse": "诅咒附魔",
+  "x_enchant.menu.option.enchantment.trinkets": "小饰品附魔",
+  "x_enchant.menu.option.enchantment.special": "特殊附魔",
 
   "x_enchant.menu.option.open.tips": "重新打开后, 需要重启游戏",
   "x_enchant.menu.option.close.tips": "关闭后, 需要重启游戏",
@@ -88,7 +97,6 @@
   "x_enchant.menu.option.broken_dawn.process": "破晓总进度倍数: %d",
   "x_enchant.menu.option.broken_dawn.success": "破晓进阶成功率: %d",
 
-  "x_enchant.menu.option.halo": "光环",
   "x_enchant.menu.option.halo_range": "光环范围: %d",
   "x_enchant.menu.option.harmful_target_only_monster": "有害光环目标仅为怪物",
   "x_enchant.menu.option.halo_allow_target": "允许使用光环",
@@ -103,7 +111,5 @@
   "x_enchant.menu.option.halo_effect_level_other": "其他效果最大等级: %d",
 
   "x_enchant.menu.option.status_effect_halo": "药水光环设置",
-  "x_enchant.menu.option.status_effect_halo.enabled_all": "启用所有",
-
-  "x_enchant.menu.option.chat_tips": "聊天提示"
+  "x_enchant.menu.option.status_effect_halo.enabled_all": "启用所有"
 }

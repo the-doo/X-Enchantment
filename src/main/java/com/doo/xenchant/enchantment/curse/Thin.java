@@ -1,11 +1,8 @@
 package com.doo.xenchant.enchantment.curse;
 
+import com.doo.xenchant.events.ItemApi;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-
-import javax.annotation.Nullable;
 
 /**
  * Thin
@@ -34,13 +31,22 @@ public class Thin extends Cursed {
     }
 
     @Override
-    public void itemUsedCallback(@Nullable LivingEntity owner, ItemStack stack, Integer level, float amount) {
-        if (owner == null) {
-            return;
-        }
+    public void register() {
+        super.register();
 
-        if (owner.getRandom().nextBoolean() && owner.getRandom().nextBoolean()) {
-            stack.setDamage(stack.getDamage() + level * 2);
-        }
+        ItemApi.WILL_DAMAGE.register(((owner, stack, amount) -> {
+            if (owner == null) {
+                return;
+            }
+
+            int level = level(stack);
+            if (level < 1) {
+                return;
+            }
+
+            if (owner.getRandom().nextInt(100) < 25) {
+                stack.setDamage(stack.getDamage() + level * 2);
+            }
+        }));
     }
 }

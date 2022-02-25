@@ -69,7 +69,7 @@ public class EffectHalo extends LivingHalo {
     @Override
     public void onTarget(LivingEntity entity, Integer level, List<LivingEntity> targets) {
         // default duration 1.5 * second()
-        int duration = (int) (second() * 30);
+        int duration = (int) (SECOND * 1.5F);
         // NIGHT_VISION has special effects in duration < 200
         // see net.minecraft.client.render.GameRenderer.getNightVisionStrength
         if (effect == StatusEffects.NIGHT_VISION) {

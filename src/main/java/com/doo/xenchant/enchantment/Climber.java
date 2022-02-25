@@ -1,8 +1,8 @@
 package com.doo.xenchant.enchantment;
 
+import com.doo.xenchant.events.ServerLivingApi;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.ItemStack;
@@ -20,19 +20,29 @@ public class Climber extends BaseEnchantment {
 
     @Override
     public int getMinPower(int level) {
-        return 50;
+        return 20;
     }
 
     @Override
     public int getMaxPower(int level) {
-        return 100;
+        return 50;
     }
 
     @Override
-    protected void livingTick(LivingEntity living, ItemStack stack, int level) {
-        if (living.getY() >= 80) {
-            // default level 3
-            living.addStatusEffect(new StatusEffectInstance(StatusEffects.JUMP_BOOST, (int) (second() * 25), 2));
-        }
+    public void register() {
+        super.register();
+
+        ServerLivingApi.TAIL_TICK.register(living -> {
+            if (living.getY() < 80 || living.age % SECOND != 0) {
+                return;
+            }
+
+            ItemStack feet = living.getEquippedStack(EquipmentSlot.FEET);
+            if (feet.isEmpty() || level(feet) < 1) {
+                return;
+            }
+
+            living.addStatusEffect(new StatusEffectInstance(StatusEffects.JUMP_BOOST, (int) (SECOND * 1.5), 2));
+        });
     }
 }

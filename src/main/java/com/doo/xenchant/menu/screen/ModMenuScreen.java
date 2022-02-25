@@ -189,11 +189,15 @@ public class ModMenuScreen extends Screen {
             (o, d) -> Enchant.option.brokenDawnSuccess = d,
             (g, o) -> new TranslatableText("x_enchant.menu.option.broken_dawn.success", Enchant.option.brokenDawnSuccess));
 
-    private static final Option CHAT_TIPS = CyclingOption.create("x_enchant.menu.option.chat_tips",
-            o -> Enchant.option.chatTips, (g, o, d) -> Enchant.option.chatTips = d);
+    private static final Option SPECIAL = CyclingOption.create("x_enchant.menu.option.enchantment.special",
+            o -> Enchant.option.special, (g, o, d) -> Enchant.option.special = d);
+
+    private static final Option TRINKETS = CyclingOption.create("x_enchant.menu.option.enchantment.trinkets",
+            o -> Enchant.option.trinkets, (g, o, d) -> Enchant.option.trinkets = d);
+
 
     private static final Option HALO =
-            CyclingOption.create("x_enchant.menu.option.halo", REOPEN,
+            CyclingOption.create("x_enchant.menu.option.enchantment.halo", REOPEN,
                     o -> Enchant.option.halo, (g, o, d) -> Enchant.option.halo = d);
 
     private static final Option HALO_RANGE = new DoubleOption("", 1, 20, 1,
@@ -268,7 +272,7 @@ public class ModMenuScreen extends Screen {
             QUICK_SHOOT, MAGIC_IMMUNE,
             DIFFUSION, DIFFUSION_DAMAGE,
             BROKEN_DAWN, BROKEN_DAWN_PROCESS,
-            BROKEN_DAWN_SUCCESS, CHAT_TIPS
+            BROKEN_DAWN_SUCCESS
     };
 
     private static final ModMenuScreen INSTANCE = new ModMenuScreen();
@@ -294,6 +298,7 @@ public class ModMenuScreen extends Screen {
         // 显示基础高度
         list.addAll(ENCHANT_OPTION);
         list.addAll(HALO_OPTION);
+        list.addOptionEntry(SPECIAL, TRINKETS);
         this.addSelectableChild(list);
         // 返回按钮
         this.addDrawableChild(new ButtonWidget(this.width / 2 - 150 / 2, this.height - 28, 150, 20,

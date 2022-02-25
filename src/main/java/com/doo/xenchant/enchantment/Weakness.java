@@ -1,9 +1,9 @@
 package com.doo.xenchant.enchantment;
 
 import com.doo.xenchant.Enchant;
+import com.doo.xenchant.events.EntityDamageApi;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.RangedWeaponItem;
@@ -22,12 +22,12 @@ public class Weakness extends BaseEnchantment {
 
     @Override
     public int getMinPower(int level) {
-        return 5 + (level - 1) * 15;
+        return 30;
     }
 
     @Override
     public int getMaxPower(int level) {
-        return this.getMinPower(level) + 100;
+        return level * 50;
     }
 
     @Override
@@ -48,7 +48,21 @@ public class Weakness extends BaseEnchantment {
     }
 
     @Override
-    public float getMultiTotalDamage(LivingEntity attacker, LivingEntity target, ItemStack stack, int level) {
-        return Enchant.option.weakness && stack == attacker.getMainHandStack() && attacker.getRandom().nextInt(100) < 5 * level ? 2 : 0;
+    public void register() {
+        super.register();
+
+        EntityDamageApi.MULTIPLIER.register(((attacker, target, map) -> {
+            if (map.isEmpty() || !Enchant.option.weakness) {
+                return 0;
+            }
+
+            int level;
+            ItemStack stack = attacker.getMainHandStack();
+            if (stack.isEmpty() || (level = level(stack)) < 1) {
+                return 0;
+            }
+
+            return attacker.getRandom().nextInt(100) < 5 * level ? 2 : 0;
+        }));
     }
 }

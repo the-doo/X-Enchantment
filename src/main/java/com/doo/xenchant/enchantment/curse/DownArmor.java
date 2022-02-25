@@ -1,10 +1,8 @@
 package com.doo.xenchant.enchantment.curse;
 
+import com.doo.xenchant.events.EntityArmorApi;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.item.ItemStack;
 
 /**
  * DownArmor
@@ -18,27 +16,14 @@ public class DownArmor extends Cursed {
     }
 
     @Override
-    public int getMinPower(int level) {
-        return 1 + (level - 1) * 10;
-    }
-
-    @Override
-    public int getMaxPower(int level) {
-        return this.getMinPower(level) + 15;
-    }
-
-    @Override
     public int getMaxLevel() {
         return 5;
     }
 
     @Override
-    public int getProtectionAmount(int level, DamageSource source) {
-        return super.getProtectionAmount(level, source);
-    }
+    public void register() {
+        super.register();
 
-    @Override
-    public float getMultiTotalArmor(LivingEntity living, double base, ItemStack stack, Integer level) {
-        return -(0.1F * level);
+        EntityArmorApi.MULTIPLIER.register(((living, base, map) -> map.containsKey(this) ? -Math.max(0, map.get(this)) / 10F : 0));
     }
 }

@@ -24,6 +24,10 @@ repositories {
         url = 'https://maven.blamejared.com'
         name = 'BlameJared Maven'
     }
+    maven {
+        name = "Ladysnake Libs"
+        url = "https://ladysnake.jfrog.io/artifactory/mods"
+    }
 }
 
 dependencies {
@@ -36,6 +40,7 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     modImplementation "com.terraformersmc:modmenu:${project.modmeun}"
     modImplementation "com.blamejared.crafttweaker:CraftTweaker-fabric-1.18.1:${project.craft_tweaker}"
+    modImplementation "dev.emi:trinkets:${project.trinkets_version}"
 }
 
 processResources {
