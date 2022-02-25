@@ -17,4 +17,19 @@ public abstract class Cursed extends BaseEnchantment {
     public boolean isCursed() {
         return true;
     }
+
+    @Override
+    public int getMinPower(int level) {
+        return 25;
+    }
+
+    @Override
+    public int getMaxPower(int level) {
+        return 50;
+    }
+
+    @Override
+    public boolean isTreasure() {
+        return true;
+    }
 }
