@@ -57,7 +57,7 @@ public abstract class BaseEnchantment extends Enchantment {
     }
 
     public int level(ItemStack item) {
-        return EnchantmentHelper.getLevel(this, item);
+        return EnchantmentHelper.get(item).getOrDefault(this, 0);
     }
 
     /**
