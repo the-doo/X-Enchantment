@@ -34,10 +34,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
-import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
@@ -253,7 +249,7 @@ public class EnchantUtil {
 
     public static float damage(float amount, DamageSource source, LivingEntity target) {
         Entity entity = source.getAttacker();
-        if (entity instanceof LivingEntity) {
+        if (entity instanceof LivingEntity && entity != target) {
             LivingEntity attacker = (LivingEntity) entity;
             Map<BaseEnchantment, Integer> map = EnchantUtil.mergeOf(attacker);
             // is addition damage
@@ -272,7 +268,7 @@ public class EnchantUtil {
 
     public static float realDamage(float amount, DamageSource source, LivingEntity target) {
         Entity entity = source.getAttacker();
-        if (entity instanceof LivingEntity) {
+        if (entity instanceof LivingEntity && entity != target) {
             LivingEntity attacker = (LivingEntity) entity;
             Map<BaseEnchantment, Integer> map = EnchantUtil.mergeOf(attacker);
             // is addition damage
