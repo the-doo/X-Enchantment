@@ -4,7 +4,6 @@ import com.doo.xenchant.config.Config;
 import com.doo.xenchant.config.Option;
 import com.doo.xenchant.util.EnchantUtil;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class Enchant implements ModInitializer {
