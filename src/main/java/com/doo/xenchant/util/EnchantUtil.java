@@ -72,7 +72,7 @@ public class EnchantUtil {
     public static void registerAll() {
         // normal enchantments
         Stream<Class<? extends BaseEnchantment>> stream = Stream.of(AutoFish.class, SuckBlood.class, Weakness.class, Rebirth.class,
-                MoreLoot.class, HitRateUp.class, QuickShoot.class, MagicImmune.class,
+                MoreLoot.class, HitRateUp.class, QuickShot.class, MagicImmune.class,
                 Librarian.class, IncDamage.class, Climber.class, Smart.class,
                 KingKongLegs.class, Diffusion.class, Elasticity.class,
                 NightBreak.class, BrokenDawn.class, Timor.class);
@@ -197,8 +197,8 @@ public class EnchantUtil {
      * @param itemStack 物品栈
      * @return level tick
      */
-    public static int quickShooting(ItemStack itemStack) {
-        return BaseEnchantment.get(QuickShoot.class).level(itemStack);
+    public static int quickShot(ItemStack itemStack) {
+        return BaseEnchantment.get(QuickShot.class).level(itemStack);
     }
 
     /**

@@ -6,11 +6,11 @@ import net.minecraft.entity.EquipmentSlot;
 /**
  * 快速射击
  */
-public class QuickShoot extends BaseEnchantment {
+public class QuickShot extends BaseEnchantment {
 
-    public static final String NAME = "quick_shoot";
+    public static final String NAME = "quick_shot";
 
-    public QuickShoot() {
+    public QuickShot() {
         super(NAME, Rarity.UNCOMMON, EnchantmentTarget.BOW, new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND});
     }
 

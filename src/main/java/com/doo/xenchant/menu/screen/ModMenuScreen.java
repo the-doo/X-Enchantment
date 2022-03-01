@@ -122,16 +122,16 @@ public class ModMenuScreen extends Screen {
                 }
             });
 
-    private static final Option QUICK_SHOOT = CyclingOption.create("x_enchant.menu.option.quick_shoot", CLOSE,
-            o -> Enchant.option.quickShoot, (g, o, d) -> {
-                Enchant.option.quickShoot = d;
+    private static final Option QUICK_SHOOT = CyclingOption.create("x_enchant.menu.option.quick_shot", CLOSE,
+            o -> Enchant.option.quickShot, (g, o, d) -> {
+                Enchant.option.quickShot = d;
 
                 if (d) {
-                    Enchant.option.disabled.remove(QuickShoot.class.getName());
+                    Enchant.option.disabled.remove(QuickShot.class.getName());
 
-                    new QuickShoot();
+                    new QuickShot();
                 } else {
-                    Enchant.option.disabled.add(QuickShoot.class.getName());
+                    Enchant.option.disabled.add(QuickShot.class.getName());
                 }
             });
 

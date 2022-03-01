@@ -68,7 +68,7 @@ public class Option {
     /**
      * 快速射击
      */
-    public boolean quickShoot = true;
+    public boolean quickShot = true;
 
     /**
      * 魔免
