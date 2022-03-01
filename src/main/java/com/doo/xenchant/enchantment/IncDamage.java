@@ -70,13 +70,13 @@ public class IncDamage extends BaseEnchantment {
         })));
 
         // inc value when killed other
-        ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register(((world, entity, killedEntity) -> {
-            if (!(entity instanceof LivingEntity)) {
+        ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register(((world, killer, killedEntity) -> {
+            if (!(killer instanceof LivingEntity)) {
                 return;
             }
 
             // check level
-            ItemStack stack = ((LivingEntity) entity).getMainHandStack();
+            ItemStack stack = ((LivingEntity) killer).getMainHandStack();
             int level;
             if (stack.isEmpty() || (level = level(stack)) < 1) {
                 return;
@@ -99,7 +99,8 @@ public class IncDamage extends BaseEnchantment {
             }
 
             // inc = random scale * inc()
-            float inc = ((LivingEntity) entity).getRandom().nextFloat() * inc(item.getMaterial().getDurability());
+            float inc = ((LivingEntity) killer).getRandom().nextFloat() * inc(item.getMaterial().getDurability());
+            inc += killedEntity.getMaxHealth() / ((LivingEntity) killer).getMaxHealth() / 10;
             if (inc > 0) {
                 compound.putFloat(nbtKey(KEY), Math.min(max, now + inc));
             }
