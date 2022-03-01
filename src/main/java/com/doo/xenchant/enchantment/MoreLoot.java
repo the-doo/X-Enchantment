@@ -2,7 +2,6 @@ package com.doo.xenchant.enchantment;
 
 import com.doo.xenchant.Enchant;
 import com.doo.xenchant.events.LootApi;
-import net.fabricmc.fabric.api.tool.attribute.v1.ToolManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.Entity;
@@ -70,8 +69,7 @@ public class MoreLoot extends BaseEnchantment {
 
             // no effect on
             BlockState block = context.get(LootContextParameters.BLOCK_STATE);
-            boolean isBlock = block != null;
-            if (isBlock && !ToolManager.handleIsEffectiveOn(block, stack, null)) {
+            if (block != null && stack.getItem().isSuitableFor(block)) {
                 return null;
             }
 

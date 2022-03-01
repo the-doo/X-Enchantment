@@ -63,23 +63,41 @@ public class Librarian extends BaseEnchantment {
             }
 
             Random random = context.getRandom();
-            boolean replace = random.nextInt(100) < 5 * level;
-            if (!replace) {
+            boolean dropped = random.nextInt(100) < 5 * level;
+            if (!dropped) {
                 return null;
             }
 
+            // check rarity
+            Rarity rarity = randRarityByLevel(random, level);
             return i -> {
-                Enchantment e = Registry.ENCHANTMENT.getRandom(random);
-                if (e != null) {
-                    int l = random.nextInt(e.getMaxLevel());
-                    trigger.dropStack(EnchantedBookItem.forEnchantment(new EnchantmentLevelEntry(e, l)));
+                EnchantUtil.rand(rarity, random).ifPresent(e -> {
+                        int l = random.nextInt(e.getMaxLevel());
+                        trigger.dropStack(EnchantedBookItem.forEnchantment(new EnchantmentLevelEntry(e, l)));
 
-                    if (trigger instanceof ServerPlayerEntity) {
-                        ((ServerPlayerEntity) trigger).addExperience(l);
-                    }
-                }
+                        if (trigger instanceof ServerPlayerEntity) {
+                            ((ServerPlayerEntity) trigger).addExperience(l);
+                        }
+                });
                 return i;
             };
         }));
+    }
+
+    /*
+     * base: 5-very_rare 10-rare 30-uncommon 55-common
+     */
+    private Rarity randRarityByLevel(Random random, int level) {
+        int rand = random.nextInt(100);
+        if (rand < level * 5) {
+            return Rarity.VERY_RARE;
+        }
+        if (rand < level * 15) {
+            return Rarity.RARE;
+        }
+        if (rand < level * 45) {
+            return Rarity.UNCOMMON;
+        }
+        return Rarity.COMMON;
     }
 }
