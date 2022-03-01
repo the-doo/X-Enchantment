@@ -51,7 +51,7 @@ public class Weakness extends BaseEnchantment {
     public void register() {
         super.register();
 
-        EntityDamageApi.MULTIPLIER.register(((attacker, target, map) -> {
+        EntityDamageApi.MULTIPLIER.register(((source, attacker, target, map) -> {
             if (map.isEmpty() || !Enchant.option.weakness) {
                 return 0;
             }
@@ -62,7 +62,7 @@ public class Weakness extends BaseEnchantment {
                 return 0;
             }
 
-            return attacker.getRandom().nextInt(100) < 5 * level ? 2 : 0;
+            return attacker.getRandom().nextInt(100) < 5 * level ? 200 : 0;
         }));
     }
 }

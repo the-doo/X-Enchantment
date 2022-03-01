@@ -24,6 +24,6 @@ public class DownArmor extends Cursed {
     public void register() {
         super.register();
 
-        EntityArmorApi.MULTIPLIER.register(((living, base, map) -> map.containsKey(this) ? -Math.max(0, map.get(this).getRight()) / 10F : 0));
+        EntityArmorApi.MULTIPLIER.register(((living, base, map) -> map.containsKey(this) ? -Math.max(0, map.get(this).getRight()) * 10F : 0));
     }
 }

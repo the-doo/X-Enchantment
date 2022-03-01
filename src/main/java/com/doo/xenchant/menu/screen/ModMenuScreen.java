@@ -305,7 +305,7 @@ public class ModMenuScreen extends Screen {
                 ScreenTexts.BACK, b -> INSTANCE.close()));
     }
 
-    private void close() {
+    public void close() {
         if (client != null) {
             // 返回上个页面
             client.currentScreen = this.pre;

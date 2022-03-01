@@ -16,12 +16,12 @@ public class Elasticity extends BaseEnchantment {
 
     @Override
     public int getMinPower(int level) {
-        return 1 + (level - 1) * 10;
+        return 20;
     }
 
     @Override
     public int getMaxPower(int level) {
-        return this.getMinPower(level) + 150;
+        return level * 50;
     }
 
     @Override

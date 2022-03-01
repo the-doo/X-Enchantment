@@ -1,8 +1,8 @@
 {
   "enchantment.x_enchant.auto_fish": "Auto Fishing",
-  "enchantment.x_enchant.auto_fish.desc": "Auto click rightClick when catching fish and 50% chance to add 1 durational time",
+  "enchantment.x_enchant.auto_fish.desc": "Automatically fishes, and has a 25% chance to add 10 durability.",
   "enchantment.x_enchant.librarian": "Librarian",
-  "enchantment.x_enchant.librarian.desc": "Has chance to change common fishing loot be enchantment book: 5% x level",
+  "enchantment.x_enchant.librarian.desc": "20% chance for discover the enchanted book in fishing.",
   "enchantment.x_enchant.suck_blood": "Such Blood",
   "enchantment.x_enchant.suck_blood.desc": "Heal when you attack: level x 0.1",
   "enchantment.x_enchant.weakness": "Weakness Attack",

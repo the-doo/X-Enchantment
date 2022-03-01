@@ -52,7 +52,7 @@ public class NightBreak extends BaseEnchantment {
     public void register() {
         super.register();
 
-        EntityDamageApi.REAL_ADD.register(((attacker, target, map) -> {
+        EntityDamageApi.REAL_ADD.register((((source, attacker, target, map) -> {
             if (!map.containsKey(this)) {
                 return 0;
             }
@@ -79,7 +79,7 @@ public class NightBreak extends BaseEnchantment {
             }
 
             return 0;
-        }));
+        })));
 
         // tooltips
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {

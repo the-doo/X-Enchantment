@@ -62,7 +62,7 @@ public abstract class LivingEntityMixin {
     private void damageCallback(DamageSource source, float amount, CallbackInfo ci) {
         Entity entity = source.getAttacker();
         if (entity instanceof LivingEntity) {
-            EntityDamageApi.ON_DAMAGED.invoker().call((LivingEntity) entity, (LivingEntity) (Object) this, amount, EnchantUtil.mergeOf((LivingEntity) entity));
+            EntityDamageApi.ON_DAMAGED.invoker().call(source, (LivingEntity) entity, (LivingEntity) (Object) this, amount, EnchantUtil.mergeOf((LivingEntity) entity));
         }
     }
 

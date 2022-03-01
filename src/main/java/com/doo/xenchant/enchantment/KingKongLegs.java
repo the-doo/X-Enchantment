@@ -1,5 +1,6 @@
 package com.doo.xenchant.enchantment;
 
+import com.doo.xenchant.events.EntityDamageApi;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.damage.DamageSource;
@@ -23,5 +24,19 @@ public class KingKongLegs extends BaseEnchantment {
     @Override
     public int getProtectionAmount(int level, DamageSource source) {
         return !source.isOutOfWorld() && source.isFromFalling() ? Integer.MAX_VALUE : 0;
+    }
+
+    @Override
+    public void register() {
+        super.register();
+
+        // regis
+        EntityDamageApi.MULTIPLIER.register(((source, attacker, target, map) -> {
+            if (!source.isOutOfWorld() && source.isFromFalling() && map.containsKey(this)) {
+                return -95;
+            }
+
+            return 0;
+        }));
     }
 }

@@ -27,11 +27,6 @@ public class RemoveCursed extends Special {
     }
 
     @Override
-    public boolean isAvailableForRandomSelection() {
-        return false;
-    }
-
-    @Override
     public void register() {
         super.register();
 

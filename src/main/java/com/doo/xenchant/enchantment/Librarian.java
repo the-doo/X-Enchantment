@@ -2,7 +2,6 @@ package com.doo.xenchant.enchantment;
 
 import com.doo.xenchant.events.LootApi;
 import com.doo.xenchant.util.EnchantUtil;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentLevelEntry;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.Entity;
@@ -11,7 +10,6 @@ import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.FishingRodItem;
 import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.registry.Registry;
 
 import java.util.Random;
 
@@ -72,12 +70,12 @@ public class Librarian extends BaseEnchantment {
             Rarity rarity = randRarityByLevel(random, level);
             return i -> {
                 EnchantUtil.rand(rarity, random).ifPresent(e -> {
-                        int l = random.nextInt(e.getMaxLevel());
-                        trigger.dropStack(EnchantedBookItem.forEnchantment(new EnchantmentLevelEntry(e, l)));
+                    int l = random.nextInt(e.getMaxLevel());
+                    trigger.dropStack(EnchantedBookItem.forEnchantment(new EnchantmentLevelEntry(e, l)));
 
-                        if (trigger instanceof ServerPlayerEntity) {
-                            ((ServerPlayerEntity) trigger).addExperience(l);
-                        }
+                    if (trigger instanceof ServerPlayerEntity) {
+                        ((ServerPlayerEntity) trigger).addExperience(l);
+                    }
                 });
                 return i;
             };

@@ -38,7 +38,6 @@ import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
-import net.minecraft.util.Rarity;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
@@ -257,12 +256,12 @@ public class EnchantUtil {
             LivingEntity attacker = (LivingEntity) entity;
             Map<BaseEnchantment, Pair<Integer, Integer>> map = EnchantUtil.mergeOf(attacker);
             // is addition damage
-            amount += Math.max(0, EntityDamageApi.ADD.invoker().get(attacker, target, map));
+            amount += Math.max(0, EntityDamageApi.ADD.invoker().get(source, attacker, target, map));
             if (amount <= 0) {
                 return 0;
             }
 
-            amount *= (1 + EntityDamageApi.MULTIPLIER.invoker().get(attacker, target, map));
+            amount *= (1 + EntityDamageApi.MULTIPLIER.invoker().get(source, attacker, target, map) / 100F);
             if (amount <= 0) {
                 return 0;
             }
@@ -276,12 +275,12 @@ public class EnchantUtil {
             LivingEntity attacker = (LivingEntity) entity;
             Map<BaseEnchantment, Pair<Integer, Integer>> map = EnchantUtil.mergeOf(attacker);
             // is addition damage
-            amount += Math.max(0, EntityDamageApi.REAL_ADD.invoker().get(attacker, target, map));
+            amount += Math.max(0, EntityDamageApi.REAL_ADD.invoker().get(source, attacker, target, map));
             if (amount <= 0) {
                 return 0;
             }
 
-            amount *= (1 + EntityDamageApi.REAL_MULTIPLIER.invoker().get(attacker, target, map));
+            amount *= (1 + EntityDamageApi.REAL_MULTIPLIER.invoker().get(source, attacker, target, map) / 100F);
             if (amount <= 0) {
                 return 0;
             }
@@ -297,7 +296,7 @@ public class EnchantUtil {
             return 0;
         }
 
-        base *= (1 + EntityArmorApi.MULTIPLIER.invoker().get(living, base, map));
+        base *= (1 + EntityArmorApi.MULTIPLIER.invoker().get(living, base, map) / 100F);
         if (base <= 0) {
             return 0;
         }

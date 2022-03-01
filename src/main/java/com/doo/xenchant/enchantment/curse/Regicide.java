@@ -25,7 +25,7 @@ public class Regicide extends Cursed {
     public void register() {
         super.register();
 
-        EntityDamageApi.ON_DAMAGED.register(((attacker, target, amount, map) -> {
+        EntityDamageApi.ON_DAMAGED.register(((source, attacker, target, amount, map) -> {
             if (attacker == target || !map.containsKey(this)) {
                 return;
             }

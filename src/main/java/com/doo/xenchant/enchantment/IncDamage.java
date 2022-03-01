@@ -32,7 +32,7 @@ public class IncDamage extends BaseEnchantment {
 
     @Override
     public int getMinPower(int level) {
-        return 5 + (level - 1) * 25;
+        return 50;
     }
 
     @Override
@@ -60,14 +60,14 @@ public class IncDamage extends BaseEnchantment {
         super.register();
 
         // DamageApi
-        EntityDamageApi.ADD.register(((attacker, target, map) -> {
+        EntityDamageApi.ADD.register((((source, attacker, target, map) -> {
             ItemStack stack;
             if (!map.containsKey(this) || (stack = attacker.getMainHandStack()).isEmpty() || level(stack) < 1) {
                 return 0;
             }
 
             return stack.getOrCreateNbt().getFloat(nbtKey(KEY));
-        }));
+        })));
 
         // inc value when killed other
         ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register(((world, entity, killedEntity) -> {

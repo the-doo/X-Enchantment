@@ -4,6 +4,7 @@ import com.doo.xenchant.enchantment.BaseEnchantment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.util.Pair;
 
 import java.util.Arrays;
@@ -24,12 +25,12 @@ public interface EntityDamageApi {
      * -2 -> amount - 2
      */
     Event<EntityDamageApi.Add> ADD = EventFactory.createArrayBacked(EntityDamageApi.Add.class,
-            callback -> ((attacker, target, map) -> {
+            callback -> ((source, attacker, target, map) -> {
                 if (map.isEmpty()) {
                     return 0;
                 }
 
-                return (float) Arrays.stream(callback).mapToDouble(c -> c.get(attacker, target, map)).sum();
+                return (float) Arrays.stream(callback).mapToDouble(c -> c.get(source, attacker, target, map)).sum();
             }));
 
     /**
@@ -42,12 +43,12 @@ public interface EntityDamageApi {
      * -20 -> total * (1 - 0.2)
      */
     Event<EntityDamageApi.Multiplier> MULTIPLIER = EventFactory.createArrayBacked(EntityDamageApi.Multiplier.class,
-            callback -> ((attacker, target, map) -> {
+            callback -> ((source, attacker, target, map) -> {
                 if (map.isEmpty()) {
                     return 0;
                 }
 
-                return (float) Arrays.stream(callback).mapToDouble(c -> c.get(attacker, target, map)).sum();
+                return (float) Arrays.stream(callback).mapToDouble(c -> c.get(source, attacker, target, map)).sum();
             }));
 
     /**
@@ -60,12 +61,12 @@ public interface EntityDamageApi {
      * -2 -> amount - 2
      */
     Event<EntityDamageApi.RealAdd> REAL_ADD = EventFactory.createArrayBacked(EntityDamageApi.RealAdd.class,
-            callback -> ((attacker, target, map) -> {
+            callback -> ((source, attacker, target, map) -> {
                 if (map.isEmpty()) {
                     return 0;
                 }
 
-                return (float) Arrays.stream(callback).mapToDouble(c -> c.get(attacker, target, map)).sum();
+                return (float) Arrays.stream(callback).mapToDouble(c -> c.get(source, attacker, target, map)).sum();
             }));
 
     /**
@@ -78,12 +79,12 @@ public interface EntityDamageApi {
      * -20 -> total * (1 - 0.2)
      */
     Event<EntityDamageApi.Multiplier> REAL_MULTIPLIER = EventFactory.createArrayBacked(EntityDamageApi.Multiplier.class,
-            callback -> ((attacker, target, map) -> {
+            callback -> ((source, attacker, target, map) -> {
                 if (map.isEmpty()) {
                     return 0;
                 }
 
-                return (float) Arrays.stream(callback).mapToDouble(c -> c.get(attacker, target, map)).sum();
+                return (float) Arrays.stream(callback).mapToDouble(c -> c.get(source, attacker, target, map)).sum();
             }));
 
     /**
@@ -91,31 +92,31 @@ public interface EntityDamageApi {
      * <p>
      * amount - value of target health is changed
      */
-    Event<OnDamaged> ON_DAMAGED = EventFactory.createArrayBacked(OnDamaged.class, callback -> ((attacker, target, amount, map) -> {
+    Event<OnDamaged> ON_DAMAGED = EventFactory.createArrayBacked(OnDamaged.class, callback -> ((source, attacker, target, amount, map) -> {
         if (map.isEmpty()) {
             return;
         }
 
-        Arrays.stream(callback).forEach(c -> c.call(attacker, target, amount, map));
+        Arrays.stream(callback).forEach(c -> c.call(source, attacker, target, amount, map));
     }));
 
     @FunctionalInterface
     interface Add {
-        float get(LivingEntity attacker, LivingEntity target, Map<BaseEnchantment, Pair<Integer, Integer>> map);
+        float get(DamageSource source, LivingEntity attacker, LivingEntity target, Map<BaseEnchantment, Pair<Integer, Integer>> map);
     }
 
     @FunctionalInterface
     interface RealAdd {
-        float get(LivingEntity attacker, LivingEntity target, Map<BaseEnchantment, Pair<Integer, Integer>> map);
+        float get(DamageSource source, LivingEntity attacker, LivingEntity target, Map<BaseEnchantment, Pair<Integer, Integer>> map);
     }
 
     @FunctionalInterface
     interface Multiplier {
-        float get(LivingEntity attacker, LivingEntity target, Map<BaseEnchantment, Pair<Integer, Integer>> map);
+        float get(DamageSource source, LivingEntity attacker, LivingEntity target, Map<BaseEnchantment, Pair<Integer, Integer>> map);
     }
 
     @FunctionalInterface
     interface OnDamaged {
-        void call(LivingEntity attacker, LivingEntity target, float amount, Map<BaseEnchantment, Pair<Integer, Integer>> map);
+        void call(DamageSource source, LivingEntity attacker, LivingEntity target, float amount, Map<BaseEnchantment, Pair<Integer, Integer>> map);
     }
 }
