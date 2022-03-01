@@ -22,6 +22,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
@@ -36,6 +37,8 @@ import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Pair;
+import net.minecraft.util.Rarity;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
@@ -45,6 +48,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -127,9 +131,9 @@ public class EnchantUtil {
         // Status effect halo must regis after all mod loaded
         // need filter(s -> Identifier.isValid(s.getTranslationKey()))
         // if not exists
-        Registry.ATTRIBUTE.getEntries().stream()
-                .filter(e -> Enchant.option.attributes.contains(e.getValue().getTranslationKey()))
-                .map(e -> new AttrHalo(e.getValue()))
+        Registry.ATTRIBUTE.stream()
+                .filter(e -> Enchant.option.attributes.contains(e.getTranslationKey()))
+                .map(AttrHalo::new)
                 .sorted(Comparator.comparing(e -> ((BaseEnchantment) e).getRarity().getWeight()).reversed())
                 .forEach(BaseEnchantment::register);
     }
@@ -251,7 +255,7 @@ public class EnchantUtil {
         Entity entity = source.getAttacker();
         if (entity instanceof LivingEntity && entity != target) {
             LivingEntity attacker = (LivingEntity) entity;
-            Map<BaseEnchantment, Integer> map = EnchantUtil.mergeOf(attacker);
+            Map<BaseEnchantment, Pair<Integer, Integer>> map = EnchantUtil.mergeOf(attacker);
             // is addition damage
             amount += Math.max(0, EntityDamageApi.ADD.invoker().get(attacker, target, map));
             if (amount <= 0) {
@@ -270,7 +274,7 @@ public class EnchantUtil {
         Entity entity = source.getAttacker();
         if (entity instanceof LivingEntity && entity != target) {
             LivingEntity attacker = (LivingEntity) entity;
-            Map<BaseEnchantment, Integer> map = EnchantUtil.mergeOf(attacker);
+            Map<BaseEnchantment, Pair<Integer, Integer>> map = EnchantUtil.mergeOf(attacker);
             // is addition damage
             amount += Math.max(0, EntityDamageApi.REAL_ADD.invoker().get(attacker, target, map));
             if (amount <= 0) {
@@ -286,7 +290,7 @@ public class EnchantUtil {
     }
 
     public static double armor(double base, LivingEntity living) {
-        Map<BaseEnchantment, Integer> map = EnchantUtil.mergeOf(living);
+        Map<BaseEnchantment, Pair<Integer, Integer>> map = EnchantUtil.mergeOf(living);
         // is addition damage
         base += Math.max(0, EntityArmorApi.ADD.invoker().get(living, base, map));
         if (base <= 0) {
@@ -303,7 +307,7 @@ public class EnchantUtil {
     /**
      * Get enchantments on merge
      */
-    public static Map<BaseEnchantment, Integer> mergeOf(LivingEntity living) {
+    public static Map<BaseEnchantment, Pair<Integer, Integer>> mergeOf(LivingEntity living) {
         List<ItemStack> temps = new ArrayList<>();
         living.getItemsEquipped().forEach(temps::add);
         if (hasTrinkets) {
@@ -311,14 +315,34 @@ public class EnchantUtil {
         }
 
 
-        Map<BaseEnchantment, Integer> map = Maps.newHashMap();
+        Map<BaseEnchantment, Pair<Integer, Integer>> map = Maps.newHashMap();
         temps.stream().filter(ItemStack::hasEnchantments)
                 .flatMap(i -> EnchantmentHelper.get(i).entrySet().stream())
                 .forEach(e -> {
                     if (e.getKey() instanceof BaseEnchantment && e.getValue() != null && e.getValue() > 0) {
-                        map.compute((BaseEnchantment) e.getKey(), (k, v) -> Optional.ofNullable(v).orElse(0) + e.getValue());
+                        map.compute((BaseEnchantment) e.getKey(), (k, v) -> {
+                            int level = e.getValue();
+                            v = v == null ? new Pair<>(0, 0) : v;
+
+                            // total level
+                            v.setLeft(v.getLeft() + level);
+
+                            // max level
+                            if (v.getRight() < level) {
+                                v.setLeft(v.getLeft() + level);
+                            }
+                            return v;
+                        });
                     }
                 });
         return map;
+    }
+
+    public static Optional<Enchantment> rand(Enchantment.Rarity rarity, Random random) {
+        List<Enchantment> list = Registry.ENCHANTMENT.stream()
+                .filter(e -> (rarity == null || e.getRarity() == rarity) && e.isAvailableForRandomSelection())
+                .collect(Collectors.toList());
+
+        return list.isEmpty() ? Optional.empty() : Optional.of(list.get(random.nextInt(list.size())));
     }
 }

@@ -4,6 +4,7 @@ import com.doo.xenchant.enchantment.BaseEnchantment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.Pair;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -100,21 +101,21 @@ public interface EntityDamageApi {
 
     @FunctionalInterface
     interface Add {
-        float get(LivingEntity attacker, LivingEntity target, Map<BaseEnchantment, Integer> map);
+        float get(LivingEntity attacker, LivingEntity target, Map<BaseEnchantment, Pair<Integer, Integer>> map);
     }
 
     @FunctionalInterface
     interface RealAdd {
-        float get(LivingEntity attacker, LivingEntity target, Map<BaseEnchantment, Integer> map);
+        float get(LivingEntity attacker, LivingEntity target, Map<BaseEnchantment, Pair<Integer, Integer>> map);
     }
 
     @FunctionalInterface
     interface Multiplier {
-        float get(LivingEntity attacker, LivingEntity target, Map<BaseEnchantment, Integer> map);
+        float get(LivingEntity attacker, LivingEntity target, Map<BaseEnchantment, Pair<Integer, Integer>> map);
     }
 
     @FunctionalInterface
     interface OnDamaged {
-        void call(LivingEntity attacker, LivingEntity target, float amount, Map<BaseEnchantment, Integer> map);
+        void call(LivingEntity attacker, LivingEntity target, float amount, Map<BaseEnchantment, Pair<Integer, Integer>> map);
     }
 }
