@@ -6,7 +6,9 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -14,6 +16,8 @@ import java.util.stream.Stream;
  * 设置选项
  */
 public class Option {
+
+    public Map<String, Map<String, Object>> settings = new HashMap<>();
 
     /**
      * Disabled Enchantment, contain class name
@@ -68,7 +72,7 @@ public class Option {
     /**
      * 快速射击
      */
-    public boolean quickShoot = true;
+    public boolean quickShot = true;
 
     /**
      * 魔免
@@ -84,6 +88,16 @@ public class Option {
      * Diffusion base value
      */
     public double diffusionDamage = 5;
+
+    /**
+     * Night Break Max Level
+     */
+    public int nightBreakMaxLevel = 5;
+
+    /**
+     * Night Break Per Level
+     */
+    public double nightBreakPerLevel = 10;
 
     /**
      * BrokenDawn

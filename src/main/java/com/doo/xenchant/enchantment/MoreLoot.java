@@ -2,7 +2,6 @@ package com.doo.xenchant.enchantment;
 
 import com.doo.xenchant.Enchant;
 import com.doo.xenchant.events.LootApi;
-import net.fabricmc.fabric.api.tool.attribute.v1.ToolManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.Entity;
@@ -15,7 +14,6 @@ import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -32,16 +30,6 @@ public class MoreLoot extends BaseEnchantment {
 
     public MoreLoot() {
         super(NAME, Rarity.RARE, EnchantmentTarget.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND});
-    }
-
-    @Override
-    public int getMinPower(int level) {
-        return 20;
-    }
-
-    @Override
-    public int getMaxPower(int level) {
-        return level * 50;
     }
 
     @Override
@@ -70,8 +58,7 @@ public class MoreLoot extends BaseEnchantment {
 
             // no effect on
             BlockState block = context.get(LootContextParameters.BLOCK_STATE);
-            boolean isBlock = block != null;
-            if (isBlock && !ToolManager.handleIsEffectiveOn(block, stack, null)) {
+            if (block != null && stack.getItem().isSuitableFor(block)) {
                 return null;
             }
 
@@ -90,7 +77,6 @@ public class MoreLoot extends BaseEnchantment {
                 // Add level xp
                 if (killer instanceof ServerPlayerEntity) {
                     ((ServerPlayerEntity) killer).addExperience(rand);
-                    ((ServerPlayerEntity) killer).sendMessage(Text.of("hhhh"), true);
                 }
 
                 if (!i.isStackable()) {

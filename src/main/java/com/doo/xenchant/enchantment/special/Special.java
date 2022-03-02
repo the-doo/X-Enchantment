@@ -19,4 +19,10 @@ public abstract class Special extends BaseEnchantment {
     public Text getName(int level) {
         return super.getName(level).shallowCopy().formatted(Formatting.DARK_PURPLE);
     }
+
+
+    @Override
+    public final boolean isTreasure() {
+        return true;
+    }
 }

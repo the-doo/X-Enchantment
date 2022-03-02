@@ -24,16 +24,6 @@ public class SuckBlood extends BaseEnchantment {
     }
 
     @Override
-    public int getMinPower(int level) {
-        return 1 + (level - 1) * 20;
-    }
-
-    @Override
-    public int getMaxPower(int level) {
-        return this.getMinPower(level) + 50;
-    }
-
-    @Override
     public int getMaxLevel() {
         return 3;
     }
@@ -54,7 +44,7 @@ public class SuckBlood extends BaseEnchantment {
     public void register() {
         super.register();
 
-        EntityDamageApi.ON_DAMAGED.register(((attacker, target, amount, map) -> {
+        EntityDamageApi.ON_DAMAGED.register(((source, attacker, target, amount, map) -> {
             if (!Enchant.option.suckBlood) {
                 return;
             }

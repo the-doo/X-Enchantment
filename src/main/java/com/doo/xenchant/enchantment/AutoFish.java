@@ -1,5 +1,6 @@
 package com.doo.xenchant.enchantment;
 
+import com.doo.xenchant.Enchant;
 import com.doo.xenchant.events.S2CFishCaughtCallback;
 import com.doo.xenchant.util.EnchantUtil;
 import net.fabricmc.api.EnvType;
@@ -12,6 +13,8 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
+import net.minecraft.item.FishingRodItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.lwjgl.glfw.GLFW;
 
@@ -27,37 +30,27 @@ public class AutoFish extends BaseEnchantment {
     }
 
     @Override
-    public int getMaxLevel() {
-        return 1;
-    }
-
-    @Override
-    public int getMinPower(int level) {
-        return 20;
-    }
-
-    @Override
-    public int getMaxPower(int level) {
-        return 50;
-    }
-
-    @Override
     public void register() {
         super.register();
 
-        S2CFishCaughtCallback.EVENT.register(getId(), ((player, item) -> {
+        S2CFishCaughtCallback.EVENT.register(getId(), player -> {
             // check enchantment
-            if (item.isEmpty() || level(item) < 1) {
+            if (!Enchant.option.autoFishing) {
+                return;
+            }
+
+            ItemStack stack = EnchantUtil.getHandStack(player, FishingRodItem.class, s -> level(s) > 0);
+            if (stack == null || stack.isEmpty()) {
                 return;
             }
 
             // 25% chance to return 10 damage
             if (player.getRandom().nextBoolean() && player.getRandom().nextBoolean()) {
-                item.setDamage(item.getDamage() - 10);
+                stack.setDamage(stack.getDamage() - 10);
             }
 
             ServerPlayNetworking.send((ServerPlayerEntity) player, getId(), PacketByteBufs.create());
-        }));
+        });
 
         // client register
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {

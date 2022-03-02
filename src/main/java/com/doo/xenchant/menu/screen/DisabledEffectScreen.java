@@ -69,7 +69,7 @@ public class DisabledEffectScreen extends Screen {
         // set options
         List<CyclingOption<Boolean>> total = Registry.STATUS_EFFECT.stream()
                 .filter(e -> Identifier.isValid(e.getTranslationKey()))
-                .map(e -> getButton(e, Enchant.option.disabledEffect)).toList();
+                .map(e -> getButton(e, Enchant.option.disabledEffect)).collect(Collectors.toList());
         list.addAll(total.toArray(new Option[]{}));
 
 
@@ -92,7 +92,7 @@ public class DisabledEffectScreen extends Screen {
         });
     }
 
-    private void close() {
+    public void close() {
         if (client != null) {
             // 返回上个页面
             client.currentScreen = this.pre;

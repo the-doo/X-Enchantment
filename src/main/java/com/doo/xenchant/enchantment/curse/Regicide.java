@@ -25,14 +25,14 @@ public class Regicide extends Cursed {
     public void register() {
         super.register();
 
-        EntityDamageApi.ON_DAMAGED.register(((attacker, target, amount, map) -> {
+        EntityDamageApi.ON_DAMAGED.register(((source, attacker, target, amount, map) -> {
             if (attacker == target || !map.containsKey(this)) {
                 return;
             }
 
-            float limit = map.get(this) * 2;
+            float limit = map.get(this).getRight() * 2;
             if (amount < limit) {
-                attacker.damage(DamageSource.mob(attacker), limit);
+                attacker.damage(DamageSource.mob(attacker), amount);
             }
         }));
     }

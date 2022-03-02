@@ -1,6 +1,6 @@
 package com.doo.xenchant.enchantment;
 
-import com.doo.xenchant.events.ServerLivingApi;
+import com.doo.xenchant.events.LivingApi;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EquipmentSlot;
@@ -27,20 +27,10 @@ public class Timor extends BaseEnchantment {
     }
 
     @Override
-    public int getMinPower(int level) {
-        return 1 + (level - 1) * 10;
-    }
-
-    @Override
-    public int getMaxPower(int level) {
-        return this.getMinPower(level) + 15;
-    }
-
-    @Override
     public void register() {
         super.register();
 
-        ServerLivingApi.TAIL_TICK.register(living -> {
+        LivingApi.SEVER_TAIL_TICK.register(living -> {
             if (living.age % SECOND != 0) {
                 return;
             }

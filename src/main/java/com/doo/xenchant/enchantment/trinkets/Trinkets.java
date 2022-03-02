@@ -36,9 +36,6 @@ public class Trinkets extends BaseEnchantment {
 
     private static final Map<String, Trinkets> KEY_MAP = Maps.newHashMap();
 
-    private static final EntityAttributeModifier MODIFIER =
-            new EntityAttributeModifier("trinkets", 1, EntityAttributeModifier.Operation.MULTIPLY_TOTAL);
-
     private static final Text SMALL = new TranslatableText(TS_KEY + ".small");
 
     private static final Text MID = new TranslatableText(TS_KEY + ".mid");
@@ -105,7 +102,7 @@ public class Trinkets extends BaseEnchantment {
         regis = true;
 
         // write modifier
-        AnvilApi.ON_ENCHANT.register(((map, first, second, result) -> {
+        AnvilApi.ON_ENCHANT.register(((player, map, first, second, result) -> {
             if (!(result.getItem() instanceof TrinketItem)) {
                 return;
             }
@@ -118,8 +115,10 @@ public class Trinkets extends BaseEnchantment {
                     nbt.put("TrinketAttributeModifiers", new NbtList());
                 }
                 NbtList nbtList = nbt.getList("TrinketAttributeModifiers", 10);
-                NbtCompound nbtCompound = MODIFIER.toNbt();
-                nbtCompound.putDouble("Amount", MODIFIER.getValue() * (level == 1 ? 0.05 : level == 2 ? 0.1 : 0.25));
+
+                double value = level == 1 ? 0.05 : level == 2 ? 0.1 : 0.25;
+                NbtCompound nbtCompound = new EntityAttributeModifier("trinkets", value, EntityAttributeModifier.Operation.MULTIPLY_TOTAL).toNbt();
+                nbtCompound.putDouble("Amount", value);
                 nbtCompound.putString("AttributeName", Registry.ATTRIBUTE.getId(((Trinkets) enchantment).attr).toString());
                 nbtList.add(nbtCompound);
                 nbt.putString(nbtKey(FLAG), ((Trinkets) enchantment).attr.getTranslationKey());

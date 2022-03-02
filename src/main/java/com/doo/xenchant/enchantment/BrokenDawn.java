@@ -11,6 +11,7 @@ import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -43,21 +44,6 @@ public class BrokenDawn extends BaseEnchantment {
 
     public BrokenDawn() {
         super(NAME, Rarity.VERY_RARE, EnchantmentTarget.BREAKABLE, EquipmentSlot.values());
-    }
-
-    @Override
-    public int getMinPower(int level) {
-        return 1 + (level - 1) * 20;
-    }
-
-    @Override
-    public int getMaxPower(int level) {
-        return level * 50;
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return true;
     }
 
     @Override
@@ -98,6 +84,11 @@ public class BrokenDawn extends BaseEnchantment {
         // tooltips
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT && Enchant.option.brokenDawn) {
             ItemTooltipCallback.EVENT.register(((stack, context, lines) -> {
+                if (stack.getItem() instanceof EnchantedBookItem && level(stack) > 0) {
+                    lines.add(TIPS.formatted(Formatting.GRAY));
+                    return;
+                }
+
                 NbtCompound nbt = stack.getOrCreateNbt();
                 // if done
                 if (nbt.getBoolean(nbtKey(DONE))) {

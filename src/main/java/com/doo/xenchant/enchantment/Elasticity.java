@@ -1,5 +1,6 @@
 package com.doo.xenchant.enchantment;
 
+import com.doo.xenchant.events.PersistentApi;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
 
@@ -15,22 +16,14 @@ public class Elasticity extends BaseEnchantment {
     }
 
     @Override
-    public int getMinPower(int level) {
-        return 1 + (level - 1) * 10;
-    }
-
-    @Override
-    public int getMaxPower(int level) {
-        return this.getMinPower(level) + 150;
-    }
-
-    @Override
     public int getMaxLevel() {
         return 3;
     }
 
     @Override
-    public boolean isTreasure() {
-        return true;
+    public void register() {
+        super.register();
+
+        PersistentApi.MULTIPLIER.register(((owner, shooter) -> Math.max(level(shooter), 0) * 100));
     }
 }

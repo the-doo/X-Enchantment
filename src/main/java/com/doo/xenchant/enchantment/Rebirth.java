@@ -29,16 +29,6 @@ public class Rebirth extends BaseEnchantment {
     }
 
     @Override
-    public int getMinPower(int level) {
-        return level * 25;
-    }
-
-    @Override
-    public int getMaxPower(int level) {
-        return this.getMinPower(level) + 50;
-    }
-
-    @Override
     public void register() {
         super.register();
 
@@ -49,9 +39,8 @@ public class Rebirth extends BaseEnchantment {
             }
 
             ItemStack stack = player.getEquippedStack(EquipmentSlot.CHEST);
-            Rebirth rebirth = BaseEnchantment.get(Rebirth.class);
 
-            int level = rebirth.level(stack);
+            int level = level(stack);
             if (level < 1) {
                 return true;
             }
@@ -69,7 +58,7 @@ public class Rebirth extends BaseEnchantment {
 
             // decrement 1 level, see ItemStack.addEnchantment
             NbtList list = stack.getOrCreateNbt().getList(ItemStack.ENCHANTMENTS_KEY, NbtElement.COMPOUND_TYPE);
-            list.stream().filter(e -> rebirth.getId().equals(EnchantmentHelper.getIdFromNbt((NbtCompound) e)))
+            list.stream().filter(e -> getId().equals(EnchantmentHelper.getIdFromNbt((NbtCompound) e)))
                     .findFirst().ifPresent(e -> {
                         if (level - 1 < 1) {
                             list.remove(e);

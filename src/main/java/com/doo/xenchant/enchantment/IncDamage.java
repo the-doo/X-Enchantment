@@ -31,23 +31,8 @@ public class IncDamage extends BaseEnchantment {
     }
 
     @Override
-    public int getMinPower(int level) {
-        return 5 + (level - 1) * 25;
-    }
-
-    @Override
-    public int getMaxPower(int level) {
-        return level * 150;
-    }
-
-    @Override
     public int getMaxLevel() {
         return 5;
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return true;
     }
 
     @Override
@@ -60,23 +45,23 @@ public class IncDamage extends BaseEnchantment {
         super.register();
 
         // DamageApi
-        EntityDamageApi.ADD.register(((attacker, target, map) -> {
+        EntityDamageApi.ADD.register((((source, attacker, target, map) -> {
             ItemStack stack;
             if (!map.containsKey(this) || (stack = attacker.getMainHandStack()).isEmpty() || level(stack) < 1) {
                 return 0;
             }
 
             return stack.getOrCreateNbt().getFloat(nbtKey(KEY));
-        }));
+        })));
 
         // inc value when killed other
-        ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register(((world, entity, killedEntity) -> {
-            if (!(entity instanceof LivingEntity)) {
+        ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register(((world, killer, killedEntity) -> {
+            if (!(killer instanceof LivingEntity)) {
                 return;
             }
 
             // check level
-            ItemStack stack = ((LivingEntity) entity).getMainHandStack();
+            ItemStack stack = ((LivingEntity) killer).getMainHandStack();
             int level;
             if (stack.isEmpty() || (level = level(stack)) < 1) {
                 return;
@@ -99,7 +84,8 @@ public class IncDamage extends BaseEnchantment {
             }
 
             // inc = random scale * inc()
-            float inc = ((LivingEntity) entity).getRandom().nextFloat() * inc(item.getMaterial().getDurability());
+            float inc = ((LivingEntity) killer).getRandom().nextFloat() * inc(item.getMaterial().getDurability());
+            inc += killedEntity.getMaxHealth() / ((LivingEntity) killer).getMaxHealth() / 10;
             if (inc > 0) {
                 compound.putFloat(nbtKey(KEY), Math.min(max, now + inc));
             }

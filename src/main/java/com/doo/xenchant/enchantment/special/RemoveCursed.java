@@ -27,15 +27,10 @@ public class RemoveCursed extends Special {
     }
 
     @Override
-    public boolean isAvailableForRandomSelection() {
-        return false;
-    }
-
-    @Override
     public void register() {
         super.register();
 
-        AnvilApi.ON_ENCHANT.register(((map, first, second, result) -> {
+        AnvilApi.ON_ENCHANT.register(((player, map, first, second, result) -> {
             int level = level(second);
             if (level < 1) {
                 return;

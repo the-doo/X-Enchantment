@@ -33,7 +33,6 @@ public class HeightAdvantageHalo extends LivingHalo {
 
     @Override
     public void onTarget(LivingEntity entity, Integer level, List<LivingEntity> targets) {
-        targets.stream().filter(e -> entity.getHeight() > e.getHeight())
-                .forEach(e -> e.damage(DamageSource.thorns(entity), level));
+        targets.stream().filter(e -> entity.getHeight() > e.getHeight()).forEach(e -> e.damage(DamageSource.thorns(entity), level));
     }
 }

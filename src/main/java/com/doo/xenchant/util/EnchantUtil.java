@@ -13,42 +13,34 @@ import com.doo.xenchant.enchantment.halo.ThunderHalo;
 import com.doo.xenchant.enchantment.special.HealthConverter;
 import com.doo.xenchant.enchantment.special.RemoveCursed;
 import com.doo.xenchant.enchantment.trinkets.Trinkets;
-import com.doo.xenchant.events.EntityArmorApi;
-import com.doo.xenchant.events.EntityDamageApi;
-import com.doo.xenchant.events.LootApi;
+import com.doo.xenchant.events.*;
 import com.google.common.collect.Maps;
 import dev.emi.trinkets.api.TrinketsApi;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.effect.StatusEffectCategory;
-import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
-import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.Pair;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
 
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -76,7 +68,7 @@ public class EnchantUtil {
     public static void registerAll() {
         // normal enchantments
         Stream<Class<? extends BaseEnchantment>> stream = Stream.of(AutoFish.class, SuckBlood.class, Weakness.class, Rebirth.class,
-                MoreLoot.class, HitRateUp.class, QuickShoot.class, MagicImmune.class,
+                MoreLoot.class, HitRateUp.class, QuickShot.class, MagicImmune.class,
                 Librarian.class, IncDamage.class, Climber.class, Smart.class,
                 KingKongLegs.class, Diffusion.class, Elasticity.class,
                 NightBreak.class, BrokenDawn.class, Timor.class);
@@ -122,7 +114,14 @@ public class EnchantUtil {
 
     private static void processStream(Stream<Class<? extends BaseEnchantment>> stream) {
         stream.filter(c -> !Enchant.option.disabled.contains(c.getName()))
-                .map(BaseEnchantment::get)
+                .map(c -> {
+                    try {
+                        return c.newInstance();
+                    } catch (Exception e) {
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
                 .sorted(Comparator.comparing(e -> ((BaseEnchantment) e).getRarity().getWeight()).reversed())
                 .forEach(BaseEnchantment::register);
     }
@@ -131,9 +130,9 @@ public class EnchantUtil {
         // Status effect halo must regis after all mod loaded
         // need filter(s -> Identifier.isValid(s.getTranslationKey()))
         // if not exists
-        Registry.ATTRIBUTE.getEntries().stream()
-                .filter(e -> Enchant.option.attributes.contains(e.getValue().getTranslationKey()))
-                .map(e -> new AttrHalo(e.getValue()))
+        Registry.ATTRIBUTE.stream()
+                .filter(e -> Enchant.option.attributes.contains(e.getTranslationKey()))
+                .map(AttrHalo::new)
                 .sorted(Comparator.comparing(e -> ((BaseEnchantment) e).getRarity().getWeight()).reversed())
                 .forEach(BaseEnchantment::register);
     }
@@ -177,52 +176,6 @@ public class EnchantUtil {
         return ItemStack.EMPTY;
     }
 
-    /**
-     * 命中
-     *
-     * @param player    玩家
-     * @param itemStack 工具
-     * @param world     世界
-     * @param pos       位置
-     * @param box       碰撞体积
-     * @return Entity 命中实体 or null
-     */
-    public static Entity hitRateUp(Entity player, ItemStack itemStack, World world, Vec3d pos, Box box) {
-        int level = BaseEnchantment.get(HitRateUp.class).level(itemStack);
-        if (level < 1) {
-            return null;
-        }
-        return world.getOtherEntities(player, box.expand(level), e -> e instanceof LivingEntity).stream().filter(e -> !e.isTeammate(player) && e.squaredDistanceTo(pos) <= level).findFirst().orElse(null);
-    }
-
-    /**
-     * 快速射击
-     *
-     * @param itemStack 物品栈
-     * @return level tick
-     */
-    public static int quickShooting(ItemStack itemStack) {
-        return BaseEnchantment.get(QuickShoot.class).level(itemStack);
-    }
-
-    /**
-     * return: is effect on
-     */
-    public static boolean magicImmune(LivingEntity living, StatusEffectInstance effect) {
-        if (living == null || StatusEffectCategory.HARMFUL != effect.getEffectType().getCategory()) {
-            return false;
-        }
-
-        return BaseEnchantment.get(MagicImmune.class).level(living.getEquippedStack(EquipmentSlot.CHEST)) > 0;
-    }
-
-    /**
-     * elasticity
-     */
-    public static int elasticity(ItemStack itemStack) {
-        return BaseEnchantment.get(Elasticity.class).level(itemStack);
-    }
-
     public static Consumer<ItemStack> lootConsumer(Consumer<ItemStack> lootConsumer, LootContext context) {
         // default is tool loot
         ItemStack stack = context.get(LootContextParameters.TOOL);
@@ -253,16 +206,15 @@ public class EnchantUtil {
 
     public static float damage(float amount, DamageSource source, LivingEntity target) {
         Entity entity = source.getAttacker();
-        if (entity instanceof LivingEntity) {
+        if (entity instanceof LivingEntity && entity != target) {
             LivingEntity attacker = (LivingEntity) entity;
-            Map<BaseEnchantment, Integer> map = EnchantUtil.mergeOf(attacker);
-            // is addition damage
-            amount += Math.max(0, EntityDamageApi.ADD.invoker().get(attacker, target, map));
+            Map<BaseEnchantment, Pair<Integer, Integer>> map = EnchantUtil.mergeOf(attacker);
+            amount += EntityDamageApi.ADD.invoker().get(source, attacker, target, map);
             if (amount <= 0) {
                 return 0;
             }
 
-            amount *= (1 + EntityDamageApi.MULTIPLIER.invoker().get(attacker, target, map));
+            amount *= (1 + EntityDamageApi.MULTIPLIER.invoker().get(source, attacker, target, map) / 100F);
             if (amount <= 0) {
                 return 0;
             }
@@ -272,16 +224,15 @@ public class EnchantUtil {
 
     public static float realDamage(float amount, DamageSource source, LivingEntity target) {
         Entity entity = source.getAttacker();
-        if (entity instanceof LivingEntity) {
+        if (entity instanceof LivingEntity && entity != target) {
             LivingEntity attacker = (LivingEntity) entity;
-            Map<BaseEnchantment, Integer> map = EnchantUtil.mergeOf(attacker);
-            // is addition damage
-            amount += Math.max(0, EntityDamageApi.REAL_ADD.invoker().get(attacker, target, map));
+            Map<BaseEnchantment, Pair<Integer, Integer>> map = EnchantUtil.mergeOf(attacker);
+            amount += EntityDamageApi.REAL_ADD.invoker().get(source, attacker, target, map);
             if (amount <= 0) {
                 return 0;
             }
 
-            amount *= (1 + EntityDamageApi.REAL_MULTIPLIER.invoker().get(attacker, target, map));
+            amount *= (1 + EntityDamageApi.REAL_MULTIPLIER.invoker().get(source, attacker, target, map) / 100F);
             if (amount <= 0) {
                 return 0;
             }
@@ -290,24 +241,42 @@ public class EnchantUtil {
     }
 
     public static double armor(double base, LivingEntity living) {
-        Map<BaseEnchantment, Integer> map = EnchantUtil.mergeOf(living);
-        // is addition damage
-        base += Math.max(0, EntityArmorApi.ADD.invoker().get(living, base, map));
+        Map<BaseEnchantment, Pair<Integer, Integer>> map = EnchantUtil.mergeOf(living);
+        base += EntityArmorApi.ADD.invoker().get(living, base, map);
         if (base <= 0) {
             return 0;
         }
 
-        base *= (1 + EntityArmorApi.MULTIPLIER.invoker().get(living, base, map));
+        base *= (1 + EntityArmorApi.MULTIPLIER.invoker().get(living, base, map) / 100F);
         if (base <= 0) {
             return 0;
         }
         return base;
     }
 
+    public static float projSpeed(float speed, Entity owner, ItemStack shooter) {
+        if (owner instanceof LivingEntity && shooter != null) {
+            speed += PersistentApi.ADD.invoker().get(owner, shooter);
+            if (speed <= 0) {
+                return 0;
+            }
+
+            speed *= (1 + PersistentApi.MULTIPLIER.invoker().get(owner, shooter) / 100F);
+            if (speed <= 0) {
+                return 0;
+            }
+        }
+        return speed;
+    }
+
+    public static int useTime(int time, LivingEntity entity, ItemStack stack) {
+        return time - LivingApi.REDUCE_USE_TIME.invoker().get(entity, stack);
+    }
+
     /**
      * Get enchantments on merge
      */
-    public static Map<BaseEnchantment, Integer> mergeOf(LivingEntity living) {
+    public static Map<BaseEnchantment, Pair<Integer, Integer>> mergeOf(LivingEntity living) {
         List<ItemStack> temps = new ArrayList<>();
         living.getItemsEquipped().forEach(temps::add);
         if (hasTrinkets) {
@@ -315,14 +284,34 @@ public class EnchantUtil {
         }
 
 
-        Map<BaseEnchantment, Integer> map = Maps.newHashMap();
+        Map<BaseEnchantment, Pair<Integer, Integer>> map = Maps.newHashMap();
         temps.stream().filter(ItemStack::hasEnchantments)
                 .flatMap(i -> EnchantmentHelper.get(i).entrySet().stream())
                 .forEach(e -> {
                     if (e.getKey() instanceof BaseEnchantment && e.getValue() != null && e.getValue() > 0) {
-                        map.compute((BaseEnchantment) e.getKey(), (k, v) -> Optional.ofNullable(v).orElse(0) + e.getValue());
+                        map.compute((BaseEnchantment) e.getKey(), (k, v) -> {
+                            int level = e.getValue();
+                            v = v == null ? new Pair<>(0, 0) : v;
+
+                            // total level
+                            v.setLeft(v.getLeft() + level);
+
+                            // max level
+                            if (v.getRight() < level) {
+                                v.setLeft(v.getLeft() + level);
+                            }
+                            return v;
+                        });
                     }
                 });
         return map;
+    }
+
+    public static Optional<Enchantment> rand(Enchantment.Rarity rarity, Random random) {
+        List<Enchantment> list = Registry.ENCHANTMENT.stream()
+                .filter(e -> (rarity == null || e.getRarity() == rarity) && e.isAvailableForRandomSelection())
+                .collect(Collectors.toList());
+
+        return list.isEmpty() ? Optional.empty() : Optional.of(list.get(random.nextInt(list.size())));
     }
 }

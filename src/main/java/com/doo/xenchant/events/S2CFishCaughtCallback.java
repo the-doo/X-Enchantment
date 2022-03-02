@@ -3,24 +3,18 @@ package com.doo.xenchant.events;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+
+import java.util.Arrays;
 
 /**
- * 捕鱼回调
- * <p>
- * 当且仅当鱼被抓住时调用，caughtFish = true
+ * Caught Fish
  *
  * @see net.minecraft.entity.projectile.FishingBobberEntity#caughtFish
  */
 public interface S2CFishCaughtCallback {
 
     Event<S2CFishCaughtCallback> EVENT = EventFactory.createArrayBacked(S2CFishCaughtCallback.class,
-            (listeners) -> (player, item) -> {
-                for (S2CFishCaughtCallback callback : listeners) {
-                    callback.onCaught(player, item);
-                }
-            }
-    );
+            listeners -> player -> Arrays.stream(listeners).forEach(l -> l.onCaught(player)));
 
-    void onCaught(PlayerEntity player, ItemStack item);
+    void onCaught(PlayerEntity player);
 }

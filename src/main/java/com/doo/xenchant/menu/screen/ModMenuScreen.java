@@ -122,16 +122,16 @@ public class ModMenuScreen extends Screen {
                 }
             });
 
-    private static final Option QUICK_SHOOT = CyclingOption.create("x_enchant.menu.option.quick_shoot", CLOSE,
-            o -> Enchant.option.quickShoot, (g, o, d) -> {
-                Enchant.option.quickShoot = d;
+    private static final Option QUICK_SHOOT = CyclingOption.create("x_enchant.menu.option.quick_shot", CLOSE,
+            o -> Enchant.option.quickShot, (g, o, d) -> {
+                Enchant.option.quickShot = d;
 
                 if (d) {
-                    Enchant.option.disabled.remove(QuickShoot.class.getName());
+                    Enchant.option.disabled.remove(QuickShot.class.getName());
 
-                    new QuickShoot();
+                    new QuickShot();
                 } else {
-                    Enchant.option.disabled.add(QuickShoot.class.getName());
+                    Enchant.option.disabled.add(QuickShot.class.getName());
                 }
             });
 
@@ -165,6 +165,16 @@ public class ModMenuScreen extends Screen {
             o -> Enchant.option.diffusionDamage,
             (o, d) -> Enchant.option.diffusionDamage = d,
             (g, o) -> new TranslatableText("x_enchant.menu.option.diffusion.damage", Enchant.option.diffusionDamage));
+
+    private static final Option NIGHT_BREAK_PER_LEVEL = new DoubleOption("", 0, 100, 1F,
+            o -> Enchant.option.nightBreakPerLevel,
+            (o, d) -> Enchant.option.nightBreakPerLevel = d,
+            (g, o) -> new TranslatableText("x_enchant.menu.option.night_break.per_level", Enchant.option.nightBreakPerLevel));
+
+    private static final Option NIGHT_BREAK_MAX_LEVEL = new DoubleOption("", 1, 5, 1F,
+            o -> (double) Enchant.option.nightBreakMaxLevel,
+            (o, d) -> Enchant.option.nightBreakMaxLevel = d.intValue(),
+            (g, o) -> new TranslatableText("x_enchant.menu.option.night_break.max_level", Enchant.option.nightBreakMaxLevel));
 
     private static final Option BROKEN_DAWN = CyclingOption.create("x_enchant.menu.option.broken_dawn", CLOSE,
             o -> Enchant.option.brokenDawn, (g, o, d) -> {
@@ -271,6 +281,7 @@ public class ModMenuScreen extends Screen {
             INFINITY_ACCEPT_MENDING, HIT_RATE_UP,
             QUICK_SHOOT, MAGIC_IMMUNE,
             DIFFUSION, DIFFUSION_DAMAGE,
+            NIGHT_BREAK_PER_LEVEL, NIGHT_BREAK_MAX_LEVEL,
             BROKEN_DAWN, BROKEN_DAWN_PROCESS,
             BROKEN_DAWN_SUCCESS
     };
@@ -305,7 +316,7 @@ public class ModMenuScreen extends Screen {
                 ScreenTexts.BACK, b -> INSTANCE.close()));
     }
 
-    private void close() {
+    public void close() {
         if (client != null) {
             // 返回上个页面
             client.currentScreen = this.pre;

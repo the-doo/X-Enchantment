@@ -1,7 +1,6 @@
 package com.doo.xenchant.enchantment;
 
 import com.doo.xenchant.Enchant;
-import com.doo.xenchant.config.Config;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentTarget;
@@ -13,8 +12,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 附魔基类
@@ -32,7 +29,6 @@ public abstract class BaseEnchantment extends Enchantment {
 
     private final Identifier id;
 
-
     protected BaseEnchantment(String name, Rarity weight, EnchantmentTarget type, EquipmentSlot[] slotTypes) {
         super(weight, type, slotTypes);
         this.id = new Identifier(Enchant.ID, name);
@@ -44,8 +40,37 @@ public abstract class BaseEnchantment extends Enchantment {
         return isCursed() ? name : name.shallowCopy().formatted(RATE_COLOR[getRarity().ordinal()]);
     }
 
-    public static <T extends BaseEnchantment> T get(Class<T> clazz) {
-        return BaseEnchantmentFactory.getInstance(clazz);
+    @Override
+    public int getMinPower(int level) {
+        switch (getRarity()) {
+            case UNCOMMON:
+                return 25;
+            case RARE:
+                return level * 25;
+            case VERY_RARE:
+                return level * 50;
+            default:
+                return super.getMinPower(level);
+        }
+    }
+
+    @Override
+    public int getMaxPower(int level) {
+        switch (getRarity()) {
+            case UNCOMMON:
+                return level * 25;
+            case RARE:
+                return level * 50;
+            case VERY_RARE:
+                return level * 100;
+            default:
+                return super.getMaxPower(level);
+        }
+    }
+
+    @Override
+    public boolean isTreasure() {
+        return getRarity() == Rarity.VERY_RARE || getRarity() == Rarity.RARE;
     }
 
     public Identifier getId() {
@@ -57,7 +82,7 @@ public abstract class BaseEnchantment extends Enchantment {
     }
 
     public int level(ItemStack item) {
-        return EnchantmentHelper.getLevel(this, item);
+        return item == null || item.isEmpty() || !item.hasEnchantments() ? 0 : EnchantmentHelper.get(item).getOrDefault(this, 0);
     }
 
     /**
@@ -69,31 +94,6 @@ public abstract class BaseEnchantment extends Enchantment {
             return;
         }
 
-        BaseEnchantmentFactory.register(Registry.register(Registry.ENCHANTMENT, id, this));
-    }
-
-    @SuppressWarnings("all")
-    private static class BaseEnchantmentFactory {
-
-        private static final Map<Class<? extends BaseEnchantment>, BaseEnchantment> CACHE = new HashMap<>();
-
-        public static <T extends BaseEnchantment> T getInstance(Class<T> clazz) {
-            if (CACHE.containsKey(clazz)) {
-                return (T) CACHE.get(clazz);
-            }
-
-            BaseEnchantment e = null;
-            try {
-                e = clazz.newInstance();
-            } catch (Exception ignore) {
-                Config.LOGGER.warn("error to load enchantment {}", clazz.getName());
-            }
-
-            return (T) e;
-        }
-
-        public static <T extends BaseEnchantment> void register(T t) {
-            CACHE.put(t.getClass(), t);
-        }
+        Registry.register(Registry.ENCHANTMENT, id, this);
     }
 }

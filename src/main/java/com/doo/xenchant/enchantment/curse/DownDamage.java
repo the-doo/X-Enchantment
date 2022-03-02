@@ -25,6 +25,6 @@ public class DownDamage extends Cursed {
         super.register();
 
         // Multiplier Total
-        EntityDamageApi.MULTIPLIER.register(((attacker, target, map) -> map.containsKey(this) ? -Math.max(0, map.get(this)) / 10F : 0));
+        EntityDamageApi.MULTIPLIER.register(((source, attacker, target, map) -> map.containsKey(this) ? -Math.max(0, map.get(this).getRight()) * 10F : 0));
     }
 }
