@@ -14,7 +14,6 @@ import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -78,7 +77,6 @@ public class MoreLoot extends BaseEnchantment {
                 // Add level xp
                 if (killer instanceof ServerPlayerEntity) {
                     ((ServerPlayerEntity) killer).addExperience(rand);
-                    ((ServerPlayerEntity) killer).sendMessage(Text.of("hhhh"), true);
                 }
 
                 if (!i.isStackable()) {
