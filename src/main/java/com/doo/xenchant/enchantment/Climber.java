@@ -1,6 +1,6 @@
 package com.doo.xenchant.enchantment;
 
-import com.doo.xenchant.events.ServerLivingApi;
+import com.doo.xenchant.events.LivingApi;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -19,20 +19,10 @@ public class Climber extends BaseEnchantment {
     }
 
     @Override
-    public int getMinPower(int level) {
-        return 20;
-    }
-
-    @Override
-    public int getMaxPower(int level) {
-        return 50;
-    }
-
-    @Override
     public void register() {
         super.register();
 
-        ServerLivingApi.TAIL_TICK.register(living -> {
+        LivingApi.SEVER_TAIL_TICK.register(living -> {
             if (living.getY() < 80 || living.age % SECOND != 0) {
                 return;
             }

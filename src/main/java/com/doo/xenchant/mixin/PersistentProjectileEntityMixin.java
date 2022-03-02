@@ -1,6 +1,6 @@
 package com.doo.xenchant.mixin;
 
-import com.doo.xenchant.Enchant;
+import com.doo.xenchant.events.PersistentApi;
 import com.doo.xenchant.util.EnchantUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -45,22 +45,16 @@ public abstract class PersistentProjectileEntityMixin {
 
     @Inject(method = "getEntityCollision", at = @At("HEAD"), cancellable = true)
     private void getEntityCollisionT(Vec3d currentPosition, Vec3d nextPosition, CallbackInfoReturnable<EntityHitResult> cir) {
-        PersistentProjectileEntity p = (PersistentProjectileEntity) (Object) this;
-        if (!Enchant.option.hitRateUp && p.getOwner() != null && itemStack != null && !itemStack.isEmpty()) {
-            Entity entity = EnchantUtil.hitRateUp(p.getOwner(), itemStack, p.world, currentPosition, p.getBoundingBox());
-            if (entity != null) {
-                cir.setReturnValue(new EntityHitResult(entity));
-                cir.cancel();
-            }
+        PersistentProjectileEntity p = EnchantUtil.get(this);
+        Entity entity = PersistentApi.ON_COLL.invoker().getEntity(p.getOwner(), itemStack, p.world, currentPosition, p.getBoundingBox());
+        if (entity != null) {
+            cir.setReturnValue(new EntityHitResult(entity));
+            cir.cancel();
         }
     }
 
     @ModifyVariable(method = "setVelocity", at = @At(value = "HEAD"), argsOnly = true, ordinal = 0)
     private float setSpeedH(float speed, double x, double y, double z, float divergence) {
-        PersistentProjectileEntity p = (PersistentProjectileEntity) (Object) this;
-        if (p.getOwner() != null && itemStack != null && !itemStack.isEmpty()) {
-            return speed * (1 + EnchantUtil.elasticity(itemStack));
-        }
-        return speed;
+        return EnchantUtil.projSpeed(speed, ((PersistentProjectileEntity) EnchantUtil.get(this)).getOwner(), itemStack);
     }
 }

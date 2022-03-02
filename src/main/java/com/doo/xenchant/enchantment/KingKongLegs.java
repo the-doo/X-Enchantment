@@ -17,11 +17,6 @@ public class KingKongLegs extends BaseEnchantment {
     }
 
     @Override
-    public int getMinPower(int level) {
-        return 50;
-    }
-
-    @Override
     public int getProtectionAmount(int level, DamageSource source) {
         return !source.isOutOfWorld() && source.isFromFalling() ? Integer.MAX_VALUE : 0;
     }

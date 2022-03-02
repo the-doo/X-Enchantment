@@ -1,6 +1,7 @@
 package com.doo.xenchant.enchantment;
 
-import com.doo.xenchant.events.ServerLivingApi;
+import com.doo.xenchant.Enchant;
+import com.doo.xenchant.events.LivingApi;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.effect.StatusEffect;
@@ -24,21 +25,11 @@ public class MagicImmune extends BaseEnchantment {
     }
 
     @Override
-    public int getMinPower(int level) {
-        return 50;
-    }
-
-    @Override
-    public int getMaxPower(int level) {
-        return 150;
-    }
-
-    @Override
     public void register() {
         super.register();
 
-        ServerLivingApi.TAIL_TICK.register(living -> {
-            if (living.age % SECOND != 0) {
+        LivingApi.SEVER_TAIL_TICK.register(living -> {
+            if (!Enchant.option.magicImmune || living.age % SECOND != 0) {
                 return;
             }
 
@@ -57,5 +48,8 @@ public class MagicImmune extends BaseEnchantment {
                 effects.forEach(living::removeStatusEffect);
             });
         });
+
+        LivingApi.IGNORED_APPLY_STATUS.register(((living, effect, source) ->
+                Enchant.option.magicImmune && level(living.getEquippedStack(EquipmentSlot.CHEST)) > 0 && effect.getCategory() == StatusEffectCategory.HARMFUL));
     }
 }

@@ -13,9 +13,7 @@ import com.doo.xenchant.enchantment.halo.ThunderHalo;
 import com.doo.xenchant.enchantment.special.HealthConverter;
 import com.doo.xenchant.enchantment.special.RemoveCursed;
 import com.doo.xenchant.enchantment.trinkets.Trinkets;
-import com.doo.xenchant.events.EntityArmorApi;
-import com.doo.xenchant.events.EntityDamageApi;
-import com.doo.xenchant.events.LootApi;
+import com.doo.xenchant.events.*;
 import com.google.common.collect.Maps;
 import dev.emi.trinkets.api.TrinketsApi;
 import net.fabricmc.api.EnvType;
@@ -28,8 +26,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.effect.StatusEffectCategory;
-import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -38,10 +34,7 @@ import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -121,7 +114,14 @@ public class EnchantUtil {
 
     private static void processStream(Stream<Class<? extends BaseEnchantment>> stream) {
         stream.filter(c -> !Enchant.option.disabled.contains(c.getName()))
-                .map(BaseEnchantment::get)
+                .map(c -> {
+                    try {
+                        return c.newInstance();
+                    } catch (Exception e) {
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
                 .sorted(Comparator.comparing(e -> ((BaseEnchantment) e).getRarity().getWeight()).reversed())
                 .forEach(BaseEnchantment::register);
     }
@@ -176,52 +176,6 @@ public class EnchantUtil {
         return ItemStack.EMPTY;
     }
 
-    /**
-     * 命中
-     *
-     * @param player    玩家
-     * @param itemStack 工具
-     * @param world     世界
-     * @param pos       位置
-     * @param box       碰撞体积
-     * @return Entity 命中实体 or null
-     */
-    public static Entity hitRateUp(Entity player, ItemStack itemStack, World world, Vec3d pos, Box box) {
-        int level = BaseEnchantment.get(HitRateUp.class).level(itemStack);
-        if (level < 1) {
-            return null;
-        }
-        return world.getOtherEntities(player, box.expand(level), e -> e instanceof LivingEntity).stream().filter(e -> !e.isTeammate(player) && e.squaredDistanceTo(pos) <= level).findFirst().orElse(null);
-    }
-
-    /**
-     * 快速射击
-     *
-     * @param itemStack 物品栈
-     * @return level tick
-     */
-    public static int quickShot(ItemStack itemStack) {
-        return BaseEnchantment.get(QuickShot.class).level(itemStack);
-    }
-
-    /**
-     * return: is effect on
-     */
-    public static boolean magicImmune(LivingEntity living, StatusEffectInstance effect) {
-        if (living == null || StatusEffectCategory.HARMFUL != effect.getEffectType().getCategory()) {
-            return false;
-        }
-
-        return BaseEnchantment.get(MagicImmune.class).level(living.getEquippedStack(EquipmentSlot.CHEST)) > 0;
-    }
-
-    /**
-     * elasticity
-     */
-    public static int elasticity(ItemStack itemStack) {
-        return BaseEnchantment.get(Elasticity.class).level(itemStack);
-    }
-
     public static Consumer<ItemStack> lootConsumer(Consumer<ItemStack> lootConsumer, LootContext context) {
         // default is tool loot
         ItemStack stack = context.get(LootContextParameters.TOOL);
@@ -255,8 +209,7 @@ public class EnchantUtil {
         if (entity instanceof LivingEntity && entity != target) {
             LivingEntity attacker = (LivingEntity) entity;
             Map<BaseEnchantment, Pair<Integer, Integer>> map = EnchantUtil.mergeOf(attacker);
-            // is addition damage
-            amount += Math.max(0, EntityDamageApi.ADD.invoker().get(source, attacker, target, map));
+            amount += EntityDamageApi.ADD.invoker().get(source, attacker, target, map);
             if (amount <= 0) {
                 return 0;
             }
@@ -274,8 +227,7 @@ public class EnchantUtil {
         if (entity instanceof LivingEntity && entity != target) {
             LivingEntity attacker = (LivingEntity) entity;
             Map<BaseEnchantment, Pair<Integer, Integer>> map = EnchantUtil.mergeOf(attacker);
-            // is addition damage
-            amount += Math.max(0, EntityDamageApi.REAL_ADD.invoker().get(source, attacker, target, map));
+            amount += EntityDamageApi.REAL_ADD.invoker().get(source, attacker, target, map);
             if (amount <= 0) {
                 return 0;
             }
@@ -290,8 +242,7 @@ public class EnchantUtil {
 
     public static double armor(double base, LivingEntity living) {
         Map<BaseEnchantment, Pair<Integer, Integer>> map = EnchantUtil.mergeOf(living);
-        // is addition damage
-        base += Math.max(0, EntityArmorApi.ADD.invoker().get(living, base, map));
+        base += EntityArmorApi.ADD.invoker().get(living, base, map);
         if (base <= 0) {
             return 0;
         }
@@ -301,6 +252,25 @@ public class EnchantUtil {
             return 0;
         }
         return base;
+    }
+
+    public static float projSpeed(float speed, Entity owner, ItemStack shooter) {
+        if (owner instanceof LivingEntity && shooter != null) {
+            speed += PersistentApi.ADD.invoker().get(owner, shooter);
+            if (speed <= 0) {
+                return 0;
+            }
+
+            speed *= (1 + PersistentApi.MULTIPLIER.invoker().get(owner, shooter) / 100F);
+            if (speed <= 0) {
+                return 0;
+            }
+        }
+        return speed;
+    }
+
+    public static int useTime(int time, LivingEntity entity, ItemStack stack) {
+        return time - LivingApi.REDUCE_USE_TIME.invoker().get(entity, stack);
     }
 
     /**

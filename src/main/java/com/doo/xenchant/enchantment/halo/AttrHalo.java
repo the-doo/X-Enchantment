@@ -1,7 +1,7 @@
 package com.doo.xenchant.enchantment.halo;
 
 import com.doo.xenchant.attribute.LimitTimeModifier;
-import com.doo.xenchant.events.ServerLivingApi;
+import com.doo.xenchant.events.LivingApi;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.AttributeContainer;
 import net.minecraft.entity.attribute.EntityAttribute;
@@ -72,7 +72,7 @@ public class AttrHalo extends LivingHalo {
         }
         regis = true;
 
-        ServerLivingApi.TAIL_TICK.register(living -> {
+        LivingApi.SEVER_TAIL_TICK.register(living -> {
             AttributeContainer attributes = living.getAttributes();
             ATTRIBUTES.forEach(a -> {
                 EntityAttributeInstance instance = attributes.getCustomInstance(a);

@@ -1,6 +1,6 @@
 package com.doo.xenchant.enchantment;
 
-import com.doo.xenchant.events.ServerLivingApi;
+import com.doo.xenchant.events.LivingApi;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
@@ -24,16 +24,6 @@ public class Smart extends BaseEnchantment {
     }
 
     @Override
-    public int getMinPower(int level) {
-        return 30;
-    }
-
-    @Override
-    public int getMaxPower(int level) {
-        return level * getMinPower(level);
-    }
-
-    @Override
     public boolean isTreasure() {
         return true;
     }
@@ -42,7 +32,7 @@ public class Smart extends BaseEnchantment {
     public void register() {
         super.register();
 
-        ServerLivingApi.TAIL_TICK.register(living -> {
+        LivingApi.SEVER_TAIL_TICK.register(living -> {
             if (!(living instanceof ServerPlayerEntity) || living.age % (SECOND * 5) != 0) {
                 return;
             }

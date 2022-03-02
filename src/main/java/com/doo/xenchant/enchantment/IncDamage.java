@@ -31,23 +31,8 @@ public class IncDamage extends BaseEnchantment {
     }
 
     @Override
-    public int getMinPower(int level) {
-        return 50;
-    }
-
-    @Override
-    public int getMaxPower(int level) {
-        return level * 150;
-    }
-
-    @Override
     public int getMaxLevel() {
         return 5;
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return true;
     }
 
     @Override

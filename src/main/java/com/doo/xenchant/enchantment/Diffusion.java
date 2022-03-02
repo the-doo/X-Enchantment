@@ -26,16 +26,6 @@ public class Diffusion extends BaseEnchantment {
     }
 
     @Override
-    public int getMinPower(int level) {
-        return 100;
-    }
-
-    @Override
-    public int getMaxPower(int level) {
-        return level * getMaxLevel();
-    }
-
-    @Override
     public int getMaxLevel() {
         return 3;
     }

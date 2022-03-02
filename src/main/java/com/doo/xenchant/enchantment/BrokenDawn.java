@@ -47,21 +47,6 @@ public class BrokenDawn extends BaseEnchantment {
     }
 
     @Override
-    public int getMinPower(int level) {
-        return 1 + (level - 1) * 20;
-    }
-
-    @Override
-    public int getMaxPower(int level) {
-        return level * 50;
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return true;
-    }
-
-    @Override
     public boolean isAcceptableItem(ItemStack stack) {
         // if it's done
         return !stack.getOrCreateNbt().contains(nbtKey(DONE));

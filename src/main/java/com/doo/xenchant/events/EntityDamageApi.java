@@ -24,7 +24,7 @@ public interface EntityDamageApi {
      * <p>
      * -2 -> amount - 2
      */
-    Event<EntityDamageApi.Add> ADD = EventFactory.createArrayBacked(EntityDamageApi.Add.class,
+    Event<OpDamage> ADD = EventFactory.createArrayBacked(OpDamage.class,
             callback -> ((source, attacker, target, map) -> {
                 if (map.isEmpty()) {
                     return 0;
@@ -42,14 +42,13 @@ public interface EntityDamageApi {
      * <p>
      * -20 -> total * (1 - 0.2)
      */
-    Event<EntityDamageApi.Multiplier> MULTIPLIER = EventFactory.createArrayBacked(EntityDamageApi.Multiplier.class,
-            callback -> ((source, attacker, target, map) -> {
-                if (map.isEmpty()) {
-                    return 0;
-                }
+    Event<OpDamage> MULTIPLIER = EventFactory.createArrayBacked(OpDamage.class, callback -> ((source, attacker, target, map) -> {
+        if (map.isEmpty()) {
+            return 0;
+        }
 
-                return (float) Arrays.stream(callback).mapToDouble(c -> c.get(source, attacker, target, map)).sum();
-            }));
+        return (float) Arrays.stream(callback).mapToDouble(c -> c.get(source, attacker, target, map)).sum();
+    }));
 
     /**
      * Add real damage amount - It will add after check armor and resistance
@@ -60,14 +59,13 @@ public interface EntityDamageApi {
      * <p>
      * -2 -> amount - 2
      */
-    Event<EntityDamageApi.RealAdd> REAL_ADD = EventFactory.createArrayBacked(EntityDamageApi.RealAdd.class,
-            callback -> ((source, attacker, target, map) -> {
-                if (map.isEmpty()) {
-                    return 0;
-                }
+    Event<OpDamage> REAL_ADD = EventFactory.createArrayBacked(OpDamage.class, callback -> ((source, attacker, target, map) -> {
+        if (map.isEmpty()) {
+            return 0;
+        }
 
-                return (float) Arrays.stream(callback).mapToDouble(c -> c.get(source, attacker, target, map)).sum();
-            }));
+        return (float) Arrays.stream(callback).mapToDouble(c -> c.get(source, attacker, target, map)).sum();
+    }));
 
     /**
      * Multiplier of total real damage amount - It will add after check armor and resistance
@@ -78,14 +76,13 @@ public interface EntityDamageApi {
      * <p>
      * -20 -> total * (1 - 0.2)
      */
-    Event<EntityDamageApi.Multiplier> REAL_MULTIPLIER = EventFactory.createArrayBacked(EntityDamageApi.Multiplier.class,
-            callback -> ((source, attacker, target, map) -> {
-                if (map.isEmpty()) {
-                    return 0;
-                }
+    Event<OpDamage> REAL_MULTIPLIER = EventFactory.createArrayBacked(OpDamage.class, callback -> ((source, attacker, target, map) -> {
+        if (map.isEmpty()) {
+            return 0;
+        }
 
-                return (float) Arrays.stream(callback).mapToDouble(c -> c.get(source, attacker, target, map)).sum();
-            }));
+        return (float) Arrays.stream(callback).mapToDouble(c -> c.get(source, attacker, target, map)).sum();
+    }));
 
     /**
      * Target health is changed
@@ -101,17 +98,7 @@ public interface EntityDamageApi {
     }));
 
     @FunctionalInterface
-    interface Add {
-        float get(DamageSource source, LivingEntity attacker, LivingEntity target, Map<BaseEnchantment, Pair<Integer, Integer>> map);
-    }
-
-    @FunctionalInterface
-    interface RealAdd {
-        float get(DamageSource source, LivingEntity attacker, LivingEntity target, Map<BaseEnchantment, Pair<Integer, Integer>> map);
-    }
-
-    @FunctionalInterface
-    interface Multiplier {
+    interface OpDamage {
         float get(DamageSource source, LivingEntity attacker, LivingEntity target, Map<BaseEnchantment, Pair<Integer, Integer>> map);
     }
 

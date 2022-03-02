@@ -21,23 +21,8 @@ public class Weakness extends BaseEnchantment {
     }
 
     @Override
-    public int getMinPower(int level) {
-        return 30;
-    }
-
-    @Override
-    public int getMaxPower(int level) {
-        return level * 50;
-    }
-
-    @Override
     public int getMaxLevel() {
         return 3;
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return true;
     }
 
     @Override

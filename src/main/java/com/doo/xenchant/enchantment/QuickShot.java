@@ -1,5 +1,7 @@
 package com.doo.xenchant.enchantment;
 
+import com.doo.xenchant.Enchant;
+import com.doo.xenchant.events.LivingApi;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
 
@@ -15,17 +17,14 @@ public class QuickShot extends BaseEnchantment {
     }
 
     @Override
-    public int getMinPower(int level) {
-        return 5 + (level - 1) * 9;
-    }
-
-    @Override
-    public int getMaxPower(int level) {
-        return this.getMinPower(level) + 15;
-    }
-
-    @Override
     public int getMaxLevel() {
         return 3;
+    }
+
+    @Override
+    public void register() {
+        super.register();
+
+        LivingApi.REDUCE_USE_TIME.register(((living, stack) -> !Enchant.option.quickShot ? 0 : Math.max(level(stack), 0)));
     }
 }

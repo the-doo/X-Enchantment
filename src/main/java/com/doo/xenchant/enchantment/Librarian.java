@@ -32,16 +32,6 @@ public class Librarian extends BaseEnchantment {
     }
 
     @Override
-    public int getMinPower(int level) {
-        return 50;
-    }
-
-    @Override
-    public int getMaxPower(int level) {
-        return level * 50;
-    }
-
-    @Override
     public void register() {
         super.register();
 

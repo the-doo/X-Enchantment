@@ -3,7 +3,7 @@ package com.doo.xenchant.enchantment.halo;
 import com.doo.xenchant.Enchant;
 import com.doo.xenchant.config.Option;
 import com.doo.xenchant.enchantment.BaseEnchantment;
-import com.doo.xenchant.events.ServerLivingApi;
+import com.doo.xenchant.events.LivingApi;
 import com.doo.xenchant.util.EnchantUtil;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -54,7 +54,7 @@ public abstract class HaloEnchantment<T extends Entity> extends BaseEnchantment 
         if (!regis) {
             regis = true;
 
-            ServerLivingApi.TAIL_TICK.register(living -> {
+            LivingApi.SEVER_TAIL_TICK.register(living -> {
                 if (!Enchant.option.halo) {
                     return;
                 }
