@@ -90,6 +90,16 @@ public class Option {
     public double diffusionDamage = 5;
 
     /**
+     * Night Break Max Level
+     */
+    public int nightBreakMaxLevel = 5;
+
+    /**
+     * Night Break Per Level
+     */
+    public double nightBreakPerLevel = 10;
+
+    /**
      * BrokenDawn
      */
     public boolean brokenDawn = true;

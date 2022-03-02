@@ -93,6 +93,8 @@
   "x_enchant.menu.option.magic_immune": "魔免",
   "x_enchant.menu.option.diffusion": "扩散",
   "x_enchant.menu.option.diffusion.damage": "扩散基础伤害: %d",
+  "x_enchant.menu.option.night_break.per_level": "夜影克星每级百分比: %d",
+  "x_enchant.menu.option.night_break.max_level": "夜影克星最大级数: %d",
   "x_enchant.menu.option.broken_dawn": "破晓",
   "x_enchant.menu.option.broken_dawn.process": "破晓总进度倍数: %d",
   "x_enchant.menu.option.broken_dawn.success": "破晓进阶成功率: %d",
