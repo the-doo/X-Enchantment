@@ -6,7 +6,9 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -14,6 +16,8 @@ import java.util.stream.Stream;
  * 设置选项
  */
 public class Option {
+
+    public Map<String, Map<String, Object>> settings = new HashMap<>();
 
     /**
      * Disabled Enchantment, contain class name
