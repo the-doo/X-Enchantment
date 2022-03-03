@@ -17,16 +17,6 @@ public class RemoveCursed extends Special {
     }
 
     @Override
-    public int getMinPower(int level) {
-        return 20;
-    }
-
-    @Override
-    public int getMaxPower(int level) {
-        return 50;
-    }
-
-    @Override
     public void register() {
         super.register();
 

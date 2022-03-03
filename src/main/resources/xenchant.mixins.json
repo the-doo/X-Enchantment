@@ -7,7 +7,6 @@
     "AnvilScreenHandlerMixin",
     "FishingBobberMixin",
     "GrindstoneScreenHandlerMixin",
-    "InfinityMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
     "LootCapturingConsumerMixin",

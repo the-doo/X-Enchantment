@@ -106,9 +106,6 @@ public class ModMenuScreen extends Screen {
             (o, d) -> Enchant.option.moreMoreLootMultiplier = d,
             (g, o) -> new TranslatableText("x_enchant.menu.option.more_more_loot_multiplier", Enchant.option.moreMoreLootMultiplier));
 
-    private static final Option INFINITY_ACCEPT_MENDING = CyclingOption.create("x_enchant.menu.option.infinity_accept_mending",
-            o -> Enchant.option.infinityAcceptMending, (g, o, d) -> Enchant.option.infinityAcceptMending = d);
-
     private static final Option HIT_RATE_UP = CyclingOption.create("x_enchant.menu.option.hit_rate_up", CLOSE,
             o -> Enchant.option.hitRateUp, (g, o, d) -> {
                 Enchant.option.hitRateUp = d;
@@ -278,8 +275,8 @@ public class ModMenuScreen extends Screen {
             WEAKNESS, REBIRTH,
             MORE_LOOT, MORE_LOOT_RATE,
             MORE_MORE_LOOT_RATE, MORE_MORE_LOOT_MULTIPLIER,
-            INFINITY_ACCEPT_MENDING, HIT_RATE_UP,
-            QUICK_SHOOT, MAGIC_IMMUNE,
+            HIT_RATE_UP, QUICK_SHOOT,
+            MAGIC_IMMUNE,
             DIFFUSION, DIFFUSION_DAMAGE,
             NIGHT_BREAK_PER_LEVEL, NIGHT_BREAK_MAX_LEVEL,
             BROKEN_DAWN, BROKEN_DAWN_PROCESS,

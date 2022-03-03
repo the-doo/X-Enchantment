@@ -11,6 +11,7 @@ import com.doo.xenchant.enchantment.halo.EffectHalo;
 import com.doo.xenchant.enchantment.halo.HeightAdvantageHalo;
 import com.doo.xenchant.enchantment.halo.ThunderHalo;
 import com.doo.xenchant.enchantment.special.HealthConverter;
+import com.doo.xenchant.enchantment.special.InfinityEnhance;
 import com.doo.xenchant.enchantment.special.RemoveCursed;
 import com.doo.xenchant.enchantment.trinkets.Trinkets;
 import com.doo.xenchant.events.*;
@@ -80,7 +81,7 @@ public class EnchantUtil {
 
         // Special enchantments
         if (Enchant.option.special) {
-            stream = Stream.of(RemoveCursed.class, HealthConverter.class);
+            stream = Stream.of(RemoveCursed.class, HealthConverter.class, InfinityEnhance.class);
             processStream(stream);
         }
 
