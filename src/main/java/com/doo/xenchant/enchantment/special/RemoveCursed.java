@@ -4,6 +4,8 @@ import com.doo.xenchant.events.AnvilApi;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.item.EnchantedBookItem;
+import net.minecraft.item.Items;
 
 /**
  * Remove Cursed
@@ -21,6 +23,10 @@ public class RemoveCursed extends Special {
         super.register();
 
         AnvilApi.ON_ENCHANT.register(((player, map, first, second, result) -> {
+            if (!second.isOf(Items.ENCHANTED_BOOK)) {
+                return;
+            }
+
             int level = level(second);
             if (level < 1) {
                 return;

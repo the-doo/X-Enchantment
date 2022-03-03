@@ -6,6 +6,7 @@ import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 
 /**
  * Infinity Enhance
@@ -28,17 +29,11 @@ public class InfinityEnhance extends Special {
         super.register();
 
         AnvilApi.ON_ENCHANT.register(((player, map, first, second, result) -> {
-            if (!map.containsKey(this)) {
-                return;
+            if (second.isOf(Items.ENCHANTED_BOOK) && map.containsKey(this) && map.containsKey(Enchantments.INFINITY)) {
+                // replace mending
+                map.remove(this);
+                map.put(Enchantments.MENDING, 1);
             }
-
-            if (!map.containsKey(Enchantments.INFINITY)) {
-                return;
-            }
-
-            // replace mending
-            map.remove(this);
-            map.put(Enchantments.MENDING, 1);
         }));
     }
 }
