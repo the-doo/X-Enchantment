@@ -16,7 +16,7 @@ public class Enchant implements ModInitializer {
     public void onInitialize() {
         // has trinkets
         EnchantUtil.hasTrinkets = FabricLoader.getInstance().isModLoaded("trinkets");
-        // has trinkets
+        // has ftbteams
         EnchantUtil.hasFTBTeam = FabricLoader.getInstance().isModLoaded("ftbteams");
 
         // 读取配置
