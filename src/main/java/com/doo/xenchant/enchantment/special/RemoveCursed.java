@@ -4,6 +4,7 @@ import com.doo.xenchant.events.AnvilApi;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.item.Items;
 
 /**
  * Remove Cursed
@@ -17,20 +18,14 @@ public class RemoveCursed extends Special {
     }
 
     @Override
-    public int getMinPower(int level) {
-        return 20;
-    }
-
-    @Override
-    public int getMaxPower(int level) {
-        return 50;
-    }
-
-    @Override
     public void register() {
         super.register();
 
         AnvilApi.ON_ENCHANT.register(((player, map, first, second, result) -> {
+            if (!second.isOf(Items.ENCHANTED_BOOK)) {
+                return;
+            }
+
             int level = level(second);
             if (level < 1) {
                 return;

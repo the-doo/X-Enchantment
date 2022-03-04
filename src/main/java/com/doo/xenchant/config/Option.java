@@ -115,11 +115,6 @@ public class Option {
     public double brokenDawnSuccess = 20;
 
     /**
-     * 无限与修补
-     */
-    public boolean infinityAcceptMending = true;
-
-    /**
      * 光环
      */
     public boolean halo = true;

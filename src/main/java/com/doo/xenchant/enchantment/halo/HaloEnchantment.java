@@ -51,39 +51,40 @@ public abstract class HaloEnchantment<T extends Entity> extends BaseEnchantment 
         super.register();
 
         // only regis once
-        if (!regis) {
-            regis = true;
-
-            LivingApi.SEVER_TAIL_TICK.register(living -> {
-                if (!Enchant.option.halo) {
-                    return;
-                }
-
-                if (Enchant.option.haloAllowOther == Option.AllowTarget.PLAYER && !(living instanceof ServerPlayerEntity)) {
-                    return;
-                }
-
-                int age = living.age;
-                Map<HaloEnchantment<?>, Integer> map = new HashMap<>();
-                for (ItemStack stack : living.getArmorItems()) {
-                    EnchantmentHelper.get(stack).forEach((k, v) -> {
-                        if (k instanceof HaloEnchantment && v != null && v > 0) {
-                            HaloEnchantment<?> halo = (HaloEnchantment<?>) k;
-                            if (!halo.ban(living) && age % (halo.triggerTime() * SECOND) == 0) {
-                                map.compute(halo, (k1, v1) -> v1 == null ? v : v1 + v);
-                            }
-                        }
-                    });
-                }
-                if (map.isEmpty()) {
-                    return;
-                }
-
-                // trigger match halo
-                Box box = living.getBoundingBox().expand(Enchant.option.haloRange);
-                map.forEach((k, v) -> k.halo(living, v, box));
-            });
+        if (regis) {
+            return;
         }
+        regis = true;
+
+        LivingApi.SEVER_TAIL_TICK.register(living -> {
+            if (!Enchant.option.halo) {
+                return;
+            }
+
+            if (Enchant.option.haloAllowOther == Option.AllowTarget.PLAYER && !(living instanceof ServerPlayerEntity)) {
+                return;
+            }
+
+            int age = living.age;
+            Map<HaloEnchantment<?>, Integer> map = new HashMap<>();
+            for (ItemStack stack : living.getArmorItems()) {
+                EnchantmentHelper.get(stack).forEach((k, v) -> {
+                    if (k instanceof HaloEnchantment && v != null && v > 0) {
+                        HaloEnchantment<?> halo = (HaloEnchantment<?>) k;
+                        if (!halo.ban(living) && age % (halo.triggerTime() * SECOND) == 0) {
+                            map.compute(halo, (k1, v1) -> v1 == null ? v : v1 + v);
+                        }
+                    }
+                });
+            }
+            if (map.isEmpty()) {
+                return;
+            }
+
+            // trigger match halo
+            Box box = living.getBoundingBox().expand(Enchant.option.haloRange);
+            map.forEach((k, v) -> k.halo(living, v, box));
+        });
     }
 
     /**
