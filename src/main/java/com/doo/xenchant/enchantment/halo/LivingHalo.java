@@ -1,9 +1,13 @@
 package com.doo.xenchant.enchantment.halo;
 
 import com.doo.xenchant.Enchant;
+import com.doo.xenchant.util.EnchantUtil;
+import dev.ftb.mods.ftbteams.FTBTeamsAPI;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Tameable;
 import net.minecraft.entity.mob.Monster;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Box;
 
 import java.util.Collections;
@@ -44,10 +48,10 @@ public abstract class LivingHalo extends HaloEnchantment<LivingEntity> {
      */
     public enum Type {
         FRIENDLY((self, target) ->
-                !target.isSpectator() && (target == self || target.isTeammate(self))),
+                !target.isSpectator() && (target == self || hasSameTeam(self, target))),
 
         HARMFUL((self, target) ->
-                !target.isSpectator() && target != self && !target.isTeammate(self) &&
+                !target.isSpectator() && target != self && !hasSameTeam(self, target) &&
                         // if open
                         (!Enchant.option.harmfulTargetOnlyMonster || target instanceof Monster)),
 
@@ -58,5 +62,25 @@ public abstract class LivingHalo extends HaloEnchantment<LivingEntity> {
         Type(BiPredicate<LivingEntity, LivingEntity> predicate) {
             this.predicate = predicate;
         }
+    }
+
+    private static boolean hasSameTeam(LivingEntity owner, LivingEntity target) {
+        if (target.isTeammate(owner)) {
+            return true;
+        }
+
+        // support ftb team
+        if (!EnchantUtil.hasFTBTeam || !(owner instanceof ServerPlayerEntity)) {
+            return false;
+        }
+        // same team
+        if (target instanceof ServerPlayerEntity) {
+            return FTBTeamsAPI.arePlayersInSameTeam((ServerPlayerEntity) owner, (ServerPlayerEntity) target);
+        }
+        // pet same team
+        if (target instanceof Tameable && ((Tameable) target).getOwner() instanceof ServerPlayerEntity) {
+            return FTBTeamsAPI.arePlayersInSameTeam((ServerPlayerEntity) owner, (ServerPlayerEntity) ((Tameable) target).getOwner());
+        }
+        return false;
     }
 }

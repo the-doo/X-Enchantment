@@ -51,6 +51,8 @@ public class EnchantUtil {
 
     public static boolean hasTrinkets = false;
 
+    public static boolean hasFTBTeam = false;
+
     /**
      * 所有盔甲
      */
