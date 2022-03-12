@@ -2,6 +2,7 @@ package com.doo.xenchant.enchantment.halo;
 
 import com.doo.xenchant.Enchant;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -78,7 +79,7 @@ public class EffectHalo extends LivingHalo {
 
         StatusEffectInstance instance = new StatusEffectInstance(effect, duration, level - 1);
         targets.forEach(e -> {
-            if (effect != StatusEffects.HEALTH_BOOST) {
+            if (!effect.getAttributeModifiers().containsKey(EntityAttributes.GENERIC_MAX_HEALTH)) {
                 e.addStatusEffect(instance);
                 return;
             }
