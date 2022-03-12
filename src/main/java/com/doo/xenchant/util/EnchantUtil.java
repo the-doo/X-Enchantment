@@ -14,7 +14,7 @@ import com.doo.xenchant.enchantment.special.HealthConverter;
 import com.doo.xenchant.enchantment.special.InfinityEnhance;
 import com.doo.xenchant.enchantment.special.RemoveCursed;
 import com.doo.xenchant.enchantment.trinkets.Trinkets;
-import com.doo.xenchant.events.*;
+import com.doo.xenchant.events.LivingApi;
 import com.google.common.collect.Maps;
 import dev.emi.trinkets.api.TrinketsApi;
 import net.fabricmc.api.EnvType;
@@ -23,23 +23,16 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.loot.context.LootContext;
-import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.util.registry.Registry;
 
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -177,99 +170,6 @@ public class EnchantUtil {
             return type.isInstance(item.getItem()) && (test == null || test.test(item)) ? item : ItemStack.EMPTY;
         }
         return ItemStack.EMPTY;
-    }
-
-    public static Consumer<ItemStack> lootConsumer(Consumer<ItemStack> lootConsumer, LootContext context) {
-        // default is tool loot
-        ItemStack stack = context.get(LootContextParameters.TOOL);
-        Entity entity = Optional.ofNullable(context.get(LootContextParameters.KILLER_ENTITY))
-                .orElse(context.get(LootContextParameters.THIS_ENTITY));
-
-        // if is attack loot, try to get on entity
-        if (stack == null && entity instanceof LivingEntity) {
-            stack = ((LivingEntity) entity).getMainHandStack();
-        }
-
-        // if is rod loot, try to get owner
-        if (entity instanceof FishingBobberEntity) {
-            entity = ((FishingBobberEntity) entity).getOwner();
-        }
-
-        if (stack == null || stack.isEmpty() || !(entity instanceof LivingEntity)) {
-            return lootConsumer;
-        }
-
-        Function<ItemStack, ItemStack> handle = LootApi.HANDLER.invoker().handle((LivingEntity) entity, stack, lootConsumer, context);
-        if (handle == null) {
-            return lootConsumer;
-        }
-
-        return lootConsumer.andThen(handle::apply);
-    }
-
-    public static float damage(float amount, DamageSource source, LivingEntity target) {
-        Entity entity = source.getAttacker();
-        if (entity instanceof LivingEntity && entity != target) {
-            LivingEntity attacker = (LivingEntity) entity;
-            Map<BaseEnchantment, Pair<Integer, Integer>> map = EnchantUtil.mergeOf(attacker);
-            amount += EntityDamageApi.ADD.invoker().get(source, attacker, target, map);
-            if (amount <= 0) {
-                return 0;
-            }
-
-            amount *= (1 + EntityDamageApi.MULTIPLIER.invoker().get(source, attacker, target, map) / 100F);
-            if (amount <= 0) {
-                return 0;
-            }
-        }
-        return amount;
-    }
-
-    public static float realDamage(float amount, DamageSource source, LivingEntity target) {
-        Entity entity = source.getAttacker();
-        if (entity instanceof LivingEntity && entity != target) {
-            LivingEntity attacker = (LivingEntity) entity;
-            Map<BaseEnchantment, Pair<Integer, Integer>> map = EnchantUtil.mergeOf(attacker);
-            amount += EntityDamageApi.REAL_ADD.invoker().get(source, attacker, target, map);
-            if (amount <= 0) {
-                return 0;
-            }
-
-            amount *= (1 + EntityDamageApi.REAL_MULTIPLIER.invoker().get(source, attacker, target, map) / 100F);
-            if (amount <= 0) {
-                return 0;
-            }
-        }
-        return amount;
-    }
-
-    public static double armor(double base, LivingEntity living) {
-        Map<BaseEnchantment, Pair<Integer, Integer>> map = EnchantUtil.mergeOf(living);
-        base += EntityArmorApi.ADD.invoker().get(living, base, map);
-        if (base <= 0) {
-            return 0;
-        }
-
-        base *= (1 + EntityArmorApi.MULTIPLIER.invoker().get(living, base, map) / 100F);
-        if (base <= 0) {
-            return 0;
-        }
-        return base;
-    }
-
-    public static float projSpeed(float speed, Entity owner, ItemStack shooter) {
-        if (owner instanceof LivingEntity && shooter != null) {
-            speed += PersistentApi.ADD.invoker().get(owner, shooter);
-            if (speed <= 0) {
-                return 0;
-            }
-
-            speed *= (1 + PersistentApi.MULTIPLIER.invoker().get(owner, shooter) / 100F);
-            if (speed <= 0) {
-                return 0;
-            }
-        }
-        return speed;
     }
 
     public static int useTime(int time, LivingEntity entity, ItemStack stack) {

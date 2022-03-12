@@ -1,8 +1,10 @@
 package com.doo.xenchant.events;
 
 import com.doo.xenchant.enchantment.BaseEnchantment;
+import com.doo.xenchant.util.EnchantUtil;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.util.Pair;
@@ -105,5 +107,42 @@ public interface EntityDamageApi {
     @FunctionalInterface
     interface OnDamaged {
         void call(DamageSource source, LivingEntity attacker, LivingEntity target, float amount, Map<BaseEnchantment, Pair<Integer, Integer>> map);
+    }
+
+
+    static float damage(float amount, DamageSource source, LivingEntity target) {
+        Entity entity = source.getAttacker();
+        if (entity instanceof LivingEntity && entity != target) {
+            LivingEntity attacker = (LivingEntity) entity;
+            Map<BaseEnchantment, Pair<Integer, Integer>> map = EnchantUtil.mergeOf(attacker);
+            amount += EntityDamageApi.ADD.invoker().get(source, attacker, target, map);
+            if (amount <= 0) {
+                return 0;
+            }
+
+            amount *= (1 + EntityDamageApi.MULTIPLIER.invoker().get(source, attacker, target, map) / 100F);
+            if (amount <= 0) {
+                return 0;
+            }
+        }
+        return amount;
+    }
+
+    static float realDamage(float amount, DamageSource source, LivingEntity target) {
+        Entity entity = source.getAttacker();
+        if (entity instanceof LivingEntity && entity != target) {
+            LivingEntity attacker = (LivingEntity) entity;
+            Map<BaseEnchantment, Pair<Integer, Integer>> map = EnchantUtil.mergeOf(attacker);
+            amount += EntityDamageApi.REAL_ADD.invoker().get(source, attacker, target, map);
+            if (amount <= 0) {
+                return 0;
+            }
+
+            amount *= (1 + EntityDamageApi.REAL_MULTIPLIER.invoker().get(source, attacker, target, map) / 100F);
+            if (amount <= 0) {
+                return 0;
+            }
+        }
+        return amount;
     }
 }

@@ -17,12 +17,12 @@ public abstract class PlayerEntityMixin {
 
     @ModifyVariable(method = "applyDamage", at = @At(value = "STORE", ordinal = 0), argsOnly = true)
     private float damageAmount(float amount, DamageSource source) {
-        return EnchantUtil.damage(amount, source, EnchantUtil.get(this));
+        return EntityDamageApi.damage(amount, source, EnchantUtil.get(this));
     }
 
     @ModifyVariable(method = "applyDamage", at = @At(value = "STORE", ordinal = 1), argsOnly = true)
     private float realDamageAmount(float amount, DamageSource source) {
-        return EnchantUtil.realDamage(amount, source, EnchantUtil.get(this));
+        return EntityDamageApi.realDamage(amount, source, EnchantUtil.get(this));
     }
 
     @Inject(method = "applyDamage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/damage/DamageTracker;onDamage(Lnet/minecraft/entity/damage/DamageSource;FF)V"))

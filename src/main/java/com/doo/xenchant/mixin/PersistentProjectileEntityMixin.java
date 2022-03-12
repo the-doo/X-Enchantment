@@ -55,6 +55,6 @@ public abstract class PersistentProjectileEntityMixin {
 
     @ModifyVariable(method = "setVelocity", at = @At(value = "HEAD"), argsOnly = true, ordinal = 0)
     private float setSpeedH(float speed, double x, double y, double z, float divergence) {
-        return EnchantUtil.projSpeed(speed, ((PersistentProjectileEntity) EnchantUtil.get(this)).getOwner(), itemStack);
+        return PersistentApi.projSpeed(speed, ((PersistentProjectileEntity) EnchantUtil.get(this)).getOwner(), itemStack);
     }
 }

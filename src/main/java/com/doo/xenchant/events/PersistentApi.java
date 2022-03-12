@@ -3,6 +3,7 @@ package com.doo.xenchant.events;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
@@ -41,5 +42,20 @@ public interface PersistentApi {
     @FunctionalInterface
     interface OpSpeed {
         float get(Entity owner, @Nullable ItemStack stack);
+    }
+
+    static float projSpeed(float speed, Entity owner, ItemStack shooter) {
+        if (owner instanceof LivingEntity && shooter != null) {
+            speed += PersistentApi.ADD.invoker().get(owner, shooter);
+            if (speed <= 0) {
+                return 0;
+            }
+
+            speed *= (1 + PersistentApi.MULTIPLIER.invoker().get(owner, shooter) / 100F);
+            if (speed <= 0) {
+                return 0;
+            }
+        }
+        return speed;
     }
 }

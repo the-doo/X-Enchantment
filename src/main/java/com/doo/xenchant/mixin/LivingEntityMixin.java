@@ -1,5 +1,6 @@
 package com.doo.xenchant.mixin;
 
+import com.doo.xenchant.events.EntityArmorApi;
 import com.doo.xenchant.events.EntityDamageApi;
 import com.doo.xenchant.events.LivingApi;
 import com.doo.xenchant.util.EnchantUtil;
@@ -41,17 +42,17 @@ public abstract class LivingEntityMixin {
 
     @ModifyArg(method = "getArmor", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/MathHelper;floor(D)I"))
     private double armor(double value) {
-        return EnchantUtil.armor(value, EnchantUtil.get(this));
+        return EntityArmorApi.armor(value, EnchantUtil.get(this));
     }
 
     @ModifyVariable(method = "applyDamage", at = @At(value = "STORE", ordinal = 0), argsOnly = true)
     private float damageAmount(float amount, DamageSource source) {
-        return EnchantUtil.damage(amount, source, EnchantUtil.get(this));
+        return EntityDamageApi.damage(amount, source, EnchantUtil.get(this));
     }
 
     @ModifyVariable(method = "applyDamage", at = @At(value = "STORE", ordinal = 1), argsOnly = true)
     private float realDamageAmount(float amount, DamageSource source) {
-        return EnchantUtil.realDamage(amount, source, EnchantUtil.get(this));
+        return EntityDamageApi.realDamage(amount, source, EnchantUtil.get(this));
     }
 
     @Inject(method = "applyDamage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/damage/DamageTracker;onDamage(Lnet/minecraft/entity/damage/DamageSource;FF)V"))
