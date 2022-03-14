@@ -185,7 +185,7 @@ public class Option {
     /**
      * Effect Halo Level of friendly
      */
-    public int effectTreasureMaxLevel = 5;
+    public int effectTreasureMaxLevel = 3;
 
     /**
      * Effect Halo Level of Harmful
