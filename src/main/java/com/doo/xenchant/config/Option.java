@@ -195,7 +195,7 @@ public class Option {
     /**
      * Disabled All Effect Set
      */
-    public boolean enabledAllEffect = false;
+    public boolean enabledAllEffect = true;
 
     /**
      * Disabled Effect Set
