@@ -106,7 +106,7 @@ public class MoreLoot extends BaseEnchantment {
     }
 
     private int rand(int level, Random random) {
-        // 19% only 0, 2-19
+        // more loot chance
         int ran = random.nextInt(100);
         if (ran >= Enchant.option.moreLootRate - 1) {
             return 0;

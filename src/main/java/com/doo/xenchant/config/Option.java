@@ -52,7 +52,7 @@ public class Option {
     /**
      * 更多战利品几率
      */
-    public double moreLootRate = 20;
+    public double moreLootRate = 60;
 
     /**
      * 更多战利品暴击几率
