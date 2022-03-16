@@ -109,7 +109,6 @@ public interface EntityDamageApi {
         void call(DamageSource source, LivingEntity attacker, LivingEntity target, float amount, Map<BaseEnchantment, Pair<Integer, Integer>> map);
     }
 
-
     static float damage(float amount, DamageSource source, LivingEntity target) {
         Entity entity = source.getAttacker();
         if (entity instanceof LivingEntity && entity != target) {

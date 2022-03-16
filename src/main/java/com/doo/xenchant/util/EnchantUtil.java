@@ -139,6 +139,7 @@ public class EnchantUtil {
         // if not exists
         Registry.STATUS_EFFECT.stream()
                 .filter(e -> e != null && Identifier.isValid(e.getTranslationKey()) && !Enchant.option.disabledEffect.contains(e.getTranslationKey()))
+                .filter(e -> !Enchant.option.onlyPotionEffect || Registry.POTION.stream().anyMatch(p -> p.getEffects().contains(e)))
                 .map(EffectHalo::new)
                 .sorted(Comparator.comparing(e -> ((BaseEnchantment) e).getRarity().getWeight()).reversed())
                 .forEach(BaseEnchantment::register);
@@ -155,10 +156,6 @@ public class EnchantUtil {
     @SuppressWarnings("unchecked")
     public static <T> T get(Object o) {
         return (T) o;
-    }
-
-    public static ItemStack getHandStack(LivingEntity entity, Class<? extends Item> type) {
-        return getHandStack(entity, type, null);
     }
 
     public static ItemStack getHandStack(LivingEntity entity, Class<? extends Item> type, Predicate<ItemStack> test) {

@@ -66,6 +66,10 @@ public class DisabledEffectScreen extends Screen {
                     }
                 }));
 
+        // only potion button
+        list.addSingleOptionEntry(CyclingOption.create("x_enchant.menu.option.status_effect_halo.only_potion", ModMenuScreen.CLOSE, o -> Enchant.option.enabledAllEffect,
+                (g, o, enabled) -> Enchant.option.onlyPotionEffect = enabled));
+
         // set options
         List<CyclingOption<Boolean>> total = Registry.STATUS_EFFECT.stream()
                 .filter(e -> Identifier.isValid(e.getTranslationKey()))

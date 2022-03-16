@@ -64,7 +64,7 @@
   "enchantment.x_enchant.down_armor.desc": "百分比降低护甲值, 降低: 10% x level",
 
   "enchantment.x_enchant.halo_effect": "光环 - %s",
-  "enchantment.x_enchant.halo_effect.desc": "药水效果的附魔版",
+  "enchantment.x_enchant.halo_effect.desc": "状态效果的附魔版",
   "enchantment.x_enchant.halo_attribute": "光环 - ↑%s",
   "enchantment.x_enchant.halo_attribute.desc": "基础属性的附魔版",
   "enchantment.x_enchant.halo_thunder": "光环 - 雷霆",
@@ -113,6 +113,7 @@
   "x_enchant.menu.option.halo_effect_level_treasure": "宝藏效果最大等级: %d",
   "x_enchant.menu.option.halo_effect_level_other": "其他效果最大等级: %d",
 
-  "x_enchant.menu.option.status_effect_halo": "药水光环设置",
-  "x_enchant.menu.option.status_effect_halo.enabled_all": "启用所有"
+  "x_enchant.menu.option.status_effect_halo": "效果光环设置",
+  "x_enchant.menu.option.status_effect_halo.enabled_all": "启用所有",
+  "x_enchant.menu.option.status_effect_halo.only_potion": "仅药水"
 }

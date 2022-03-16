@@ -198,6 +198,11 @@ public class Option {
     public boolean enabledAllEffect = true;
 
     /**
+     * Only Potion Effect
+     */
+    public boolean onlyPotionEffect = true;
+
+    /**
      * Disabled Effect Set
      */
     public Collection<String> disabledEffect = new HashSet<>();

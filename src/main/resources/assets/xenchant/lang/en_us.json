@@ -115,5 +115,6 @@
   "x_enchant.menu.option.halo_effect_level_other": "Other Effect Max Level: %d",
 
   "x_enchant.menu.option.status_effect_halo": "Status Effect Halo Settings",
-  "x_enchant.menu.option.status_effect_halo.enabled_all": "Enabled All"
+  "x_enchant.menu.option.status_effect_halo.enabled_all": "Enabled All",
+  "x_enchant.menu.option.status_effect_halo.only_potion": "Only Potion"
 }
