@@ -32,16 +32,6 @@ public abstract class HaloEnchantment<T extends Entity> extends BaseEnchantment 
     }
 
     @Override
-    public final int getMinPower(int level) {
-        return 20;
-    }
-
-    @Override
-    public final int getMaxPower(int level) {
-        return 50;
-    }
-
-    @Override
     protected final boolean canAccept(Enchantment other) {
         return !(other instanceof HaloEnchantment);
     }

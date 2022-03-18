@@ -12,7 +12,7 @@ public class DownArmor extends Cursed {
     public static final String NAME = "down_armor";
 
     public DownArmor() {
-        super(NAME, Rarity.COMMON, EnchantmentTarget.ARMOR, EquipmentSlot.values());
+        super(NAME, Rarity.UNCOMMON, EnchantmentTarget.ARMOR, EquipmentSlot.values());
     }
 
     @Override

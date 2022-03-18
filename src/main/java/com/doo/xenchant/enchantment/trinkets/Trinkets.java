@@ -48,7 +48,7 @@ public class Trinkets extends BaseEnchantment {
     private final EntityAttribute attr;
 
     public Trinkets(Attrs attrs) {
-        super(NAME + "_-_" + attrs.attribute.getTranslationKey(), Rarity.COMMON, EnchantmentTarget.BREAKABLE, EquipmentSlot.values());
+        super(NAME + "_-_" + attrs.attribute.getTranslationKey(), Rarity.UNCOMMON, EnchantmentTarget.BREAKABLE, EquipmentSlot.values());
 
         attr = attrs.attribute;
     }

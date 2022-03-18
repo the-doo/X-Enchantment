@@ -7,9 +7,7 @@ import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.RangedWeaponItem;
-import net.minecraft.item.ToolItem;
+import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
 
 /**
@@ -48,14 +46,14 @@ public class SuckBlood extends BaseEnchantment {
             if (!Enchant.option.suckBlood) {
                 return;
             }
-            // need check enchantment
-            if (!map.containsKey(this)) {
-                return;
-            }
             // need check stack
             ItemStack stack = attacker.getMainHandStack();
             int level = level(stack);
-            if (level < 1 || level(stack = attacker.getOffHandStack()) < 1 || !(stack.getItem() instanceof RangedWeaponItem)) {
+            if (level < 1 || level(stack = attacker.getOffHandStack()) < 1) {
+                return;
+            }
+
+            if (!(stack.getItem() instanceof RangedWeaponItem || stack.getItem() instanceof SwordItem || stack.getItem() instanceof MiningToolItem)) {
                 return;
             }
 
@@ -69,28 +67,15 @@ public class SuckBlood extends BaseEnchantment {
 
             long id = compound.getInt("id");
             long age = compound.getLong("age");
-            int count = compound.getInt("count");
-            if (id == attacker.getId() && age >= attacker.age && count > 5) {
-                return;
-            }
-
             compound.putInt("id", attacker.getId());
             compound.putLong("age", attacker.age);
 
-            // if change user or next attack
-            if (id != attacker.getId() || age < attacker.age) {
-                count = 0;
-            }
-
-            // suck scale
-            if (count >= 1) {
+            // suck scale - if SWEEPING attack
+            if (id == attacker.getId() && age == attacker.age) {
                 level *= EnchantmentHelper.getLevel(Enchantments.SWEEPING, stack) > 0 ? 0.2F : 0.1F;
             }
 
             attacker.heal(level * amount / 10);
-
-            count++;
-            compound.putInt("count", count);
         }));
     }
 }

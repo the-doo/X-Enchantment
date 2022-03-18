@@ -43,7 +43,7 @@ public class Weakness extends BaseEnchantment {
 
             int level;
             ItemStack stack = attacker.getMainHandStack();
-            if (stack.isEmpty() || (level = level(stack)) < 1) {
+            if ((level = level(stack)) < 1) {
                 return 0;
             }
 

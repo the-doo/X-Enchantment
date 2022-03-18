@@ -12,7 +12,7 @@
   "enchantment.x_enchant.rebirth": "Rebirth",
   "enchantment.x_enchant.rebirth.desc": "Totem enchantment version",
   "enchantment.x_enchant.more_loot": "More Loot",
-  "enchantment.x_enchant.more_loot.desc": "20% chance to get multi loot when you kill or mine, it is related to the level, 1% chance will be rich",
+  "enchantment.x_enchant.more_loot.desc": "Can be getting multi loot when you kill or mine, it is related to the level",
   "enchantment.x_enchant.hit_rate_up": "Hit Rate Up",
   "enchantment.x_enchant.hit_rate_up.desc": "A larger arrow bounding box, maybe it can hit on target easy",
   "enchantment.x_enchant.quick_shot": "Quick Shot",

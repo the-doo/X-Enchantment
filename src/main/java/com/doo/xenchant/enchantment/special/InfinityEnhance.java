@@ -16,7 +16,7 @@ public class InfinityEnhance extends Special {
     public static final String NAME = "infinity_enhance";
 
     public InfinityEnhance() {
-        super(NAME, Rarity.RARE, EnchantmentTarget.BOW, EquipmentSlot.values());
+        super(NAME, Rarity.UNCOMMON, EnchantmentTarget.BOW, EquipmentSlot.values());
     }
 
     @Override

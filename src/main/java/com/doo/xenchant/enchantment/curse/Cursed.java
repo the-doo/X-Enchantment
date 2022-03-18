@@ -19,11 +19,6 @@ public abstract class Cursed extends BaseEnchantment {
     }
 
     @Override
-    public int getMinPower(int level) {
-        return 25;
-    }
-
-    @Override
     public int getMaxPower(int level) {
         return 50;
     }

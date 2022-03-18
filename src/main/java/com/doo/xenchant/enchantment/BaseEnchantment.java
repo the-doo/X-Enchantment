@@ -46,7 +46,7 @@ public abstract class BaseEnchantment extends Enchantment {
             case UNCOMMON:
                 return 25;
             case RARE:
-                return level * 25;
+                return level * 35;
             case VERY_RARE:
                 return level * 50;
             default:
@@ -58,13 +58,13 @@ public abstract class BaseEnchantment extends Enchantment {
     public int getMaxPower(int level) {
         switch (getRarity()) {
             case UNCOMMON:
-                return level * 25;
+                return getMinPower(level) + 35;
             case RARE:
-                return level * 50;
+                return getMinPower(level) + 50;
             case VERY_RARE:
-                return level * 100;
+                return getMinPower(level) + 100;
             default:
-                return super.getMaxPower(level);
+                return getMaxPower(level);
         }
     }
 

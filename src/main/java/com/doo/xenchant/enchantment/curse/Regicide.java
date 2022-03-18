@@ -13,7 +13,7 @@ public class Regicide extends Cursed {
     public static final String NAME = "regicide";
 
     public Regicide() {
-        super(NAME, Rarity.COMMON, EnchantmentTarget.BREAKABLE, EquipmentSlot.values());
+        super(NAME, Rarity.RARE, EnchantmentTarget.BREAKABLE, EquipmentSlot.values());
     }
 
     @Override

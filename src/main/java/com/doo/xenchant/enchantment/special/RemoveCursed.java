@@ -14,7 +14,7 @@ public class RemoveCursed extends Special {
     public static final String NAME = "remove_cursed";
 
     public RemoveCursed() {
-        super(NAME, Rarity.RARE, EnchantmentTarget.BREAKABLE, EquipmentSlot.values());
+        super(NAME, Rarity.UNCOMMON, EnchantmentTarget.BREAKABLE, EquipmentSlot.values());
     }
 
     @Override
