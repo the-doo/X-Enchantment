@@ -64,7 +64,7 @@ public abstract class BaseEnchantment extends Enchantment {
             case VERY_RARE:
                 return getMinPower(level) + 100;
             default:
-                return getMaxPower(level);
+                return super.getMaxPower(level);
         }
     }
 
