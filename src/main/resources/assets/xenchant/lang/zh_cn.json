@@ -84,6 +84,7 @@
   "x_enchant.menu.option.auto_fish": "自动钓鱼",
   "x_enchant.menu.option.suck_blood": "吸血",
   "x_enchant.menu.option.weakness": "弱点攻击",
+  "x_enchant.menu.option.weakness_chance": "弱点攻击每级几率: %d",
   "x_enchant.menu.option.rebirth": "重生",
   "x_enchant.menu.option.more_loot": "更多战利品",
   "x_enchant.menu.option.more_loot_rate": "更多战利品几率: %d",

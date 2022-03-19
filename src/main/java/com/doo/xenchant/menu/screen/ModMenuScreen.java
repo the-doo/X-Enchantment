@@ -65,6 +65,11 @@ public class ModMenuScreen extends Screen {
                 }
             });
 
+    private static final Option WEAKNESS_CHANCE = new DoubleOption("", 1, 50, 1,
+            o -> Enchant.option.weaknessChance,
+            (o, d) -> Enchant.option.weaknessChance = d,
+            (g, o) -> new TranslatableText("x_enchant.menu.option.weakness_chance", Enchant.option.weaknessChance));
+
     private static final Option REBIRTH = CyclingOption.create("x_enchant.menu.option.rebirth", CLOSE,
             o -> Enchant.option.rebirth, (g, o, d) -> {
                 Enchant.option.rebirth = d;
@@ -272,7 +277,7 @@ public class ModMenuScreen extends Screen {
     };
     private static final Option[] ENCHANT_OPTION = {
             AUTO_FISHING, SUCK_BLOOD,
-            WEAKNESS, REBIRTH,
+            WEAKNESS, WEAKNESS_CHANCE, REBIRTH,
             MORE_LOOT, MORE_LOOT_RATE,
             MORE_MORE_LOOT_RATE, MORE_MORE_LOOT_MULTIPLIER,
             HIT_RATE_UP, QUICK_SHOOT,

@@ -32,7 +32,7 @@ public class Climber extends BaseEnchantment {
                 return;
             }
 
-            living.addStatusEffect(new StatusEffectInstance(StatusEffects.JUMP_BOOST, (int) (SECOND * 1.5), 2));
+            living.addStatusEffect(new StatusEffectInstance(StatusEffects.JUMP_BOOST, (int) (SECOND * 2.5), 2));
         });
     }
 }

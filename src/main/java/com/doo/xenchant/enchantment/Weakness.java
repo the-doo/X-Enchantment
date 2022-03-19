@@ -47,7 +47,7 @@ public class Weakness extends BaseEnchantment {
                 return 0;
             }
 
-            return attacker.getRandom().nextInt(100) < 5 * level ? 200 : 0;
+            return attacker.getRandom().nextInt(100) < Enchant.option.weaknessChance * level ? 200 : 0;
         }));
     }
 }

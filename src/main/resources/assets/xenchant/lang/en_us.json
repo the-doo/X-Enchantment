@@ -84,6 +84,7 @@
   "x_enchant.menu.option.auto_fish": "Auto Fishing",
   "x_enchant.menu.option.suck_blood": "Such Blood",
   "x_enchant.menu.option.weakness": "Weakness Attack",
+  "x_enchant.menu.option.weakness_chance": "Weakness Attack Chance Per Level",
   "x_enchant.menu.option.rebirth": "Rebirth",
   "x_enchant.menu.option.more_loot": "More Loot",
   "x_enchant.menu.option.more_loot_rate": "More Loot Rate: %d",

@@ -40,6 +40,11 @@ public class Option {
     public boolean weakness = true;
 
     /**
+     * weakness attack chance
+     */
+    public double weaknessChance = 15;
+
+    /**
      * 重生
      */
     public boolean rebirth = true;

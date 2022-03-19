@@ -1,6 +1,7 @@
 package com.doo.xenchant.enchantment;
 
 import com.doo.xenchant.Enchant;
+import com.doo.xenchant.config.Config;
 import com.doo.xenchant.events.EntityDamageApi;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentTarget;
@@ -49,7 +50,7 @@ public class SuckBlood extends BaseEnchantment {
             // need check stack
             ItemStack stack = attacker.getMainHandStack();
             int level = level(stack);
-            if (level < 1 || level(stack = attacker.getOffHandStack()) < 1) {
+            if (level < 1 && level(stack = attacker.getOffHandStack()) < 1) {
                 return;
             }
 
