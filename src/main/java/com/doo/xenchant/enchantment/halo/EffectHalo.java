@@ -35,7 +35,7 @@ public class EffectHalo extends LivingHalo {
 
     @Override
     public Component getFullname(int level) {
-        TranslatableComponent mutableText = new TranslatableComponent(getDescriptionId(), effect.getDescriptionId());
+        TranslatableComponent mutableText = new TranslatableComponent(getDescriptionId(), effect.getDisplayName());
         if (this.isTradeable()) {
             mutableText.withStyle(ChatFormatting.BLUE);
         } else {
