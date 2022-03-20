@@ -1,12 +1,12 @@
 package com.doo.xenchant.attribute;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 
 /**
  * 可移除的属性修改
  */
-public class LimitTimeModifier extends EntityAttributeModifier {
+public class LimitTimeModifier extends AttributeModifier {
 
     private final Entity own;
 
@@ -28,8 +28,8 @@ public class LimitTimeModifier extends EntityAttributeModifier {
      * @return value
      */
     @Override
-    public double getValue() {
-        return isExpire() ? 0 : super.getValue();
+    public double getAmount() {
+        return isExpire() ? 0 : super.getAmount();
     }
 
     /**
@@ -48,7 +48,7 @@ public class LimitTimeModifier extends EntityAttributeModifier {
      * @param second 秒数
      */
     public void reset(float second) {
-        expire = (int) (own.age + second * 20);
+        expire = (int) (own.tickCount + second * 20);
     }
 
     /**
@@ -57,6 +57,6 @@ public class LimitTimeModifier extends EntityAttributeModifier {
      * @return 过期了
      */
     public boolean isExpire() {
-        return own.age > expire;
+        return own.tickCount > expire;
     }
 }

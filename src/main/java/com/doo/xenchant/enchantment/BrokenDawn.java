@@ -5,21 +5,21 @@ import com.doo.xenchant.events.ItemApi;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.item.EnchantedBookItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.EnchantedBookItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 import java.util.Comparator;
 import java.util.Map;
@@ -37,19 +37,19 @@ public class BrokenDawn extends BaseEnchantment {
     private static final String KEY = "Count";
     private static final String DONE = "Done";
 
-    private static final EntityAttributeModifier DAMAGE = new EntityAttributeModifier("", 1, EntityAttributeModifier.Operation.MULTIPLY_TOTAL);
+    private static final AttributeModifier DAMAGE = new AttributeModifier("", 1, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
-    private static final TranslatableText DONE_TIPS = new TranslatableText("enchantment.x_enchant.broken_dawn.done");
-    private static final TranslatableText TIPS = new TranslatableText("enchantment.x_enchant.broken_dawn.tips");
+    private static final TranslatableComponent DONE_TIPS = new TranslatableComponent("enchantment.x_enchant.broken_dawn.done");
+    private static final TranslatableComponent TIPS = new TranslatableComponent("enchantment.x_enchant.broken_dawn.tips");
 
     public BrokenDawn() {
-        super(NAME, Rarity.VERY_RARE, EnchantmentTarget.BREAKABLE, EquipmentSlot.values());
+        super(NAME, Rarity.VERY_RARE, EnchantmentCategory.BREAKABLE, EquipmentSlot.values());
     }
 
     @Override
-    public boolean isAcceptableItem(ItemStack stack) {
+    public boolean canEnchant(ItemStack stack) {
         // if it's done
-        return !stack.getOrCreateNbt().contains(nbtKey(DONE));
+        return !stack.getOrCreateTag().contains(nbtKey(DONE));
     }
 
     @Override
@@ -57,7 +57,7 @@ public class BrokenDawn extends BaseEnchantment {
         super.register();
 
         ItemApi.WILL_DAMAGE.register(((owner, stack, amount) -> {
-            if (!Enchant.option.brokenDawn || amount < 1 || owner == null || owner.world.isClient()) {
+            if (!Enchant.option.brokenDawn || amount < 1 || owner == null || owner.level.isClientSide()) {
                 return;
             }
 
@@ -66,43 +66,42 @@ public class BrokenDawn extends BaseEnchantment {
                 return;
             }
 
-            NbtCompound nbt = stack.getOrCreateNbt();
+            CompoundTag nbt = stack.getOrCreateTag();
             long count = nbt.getLong(nbtKey(KEY));
             nbt.putLong(nbtKey(KEY), count += amount);
 
             // if done
-            ifDone(stack, owner.getRandom(), count, owner::dropStack);
+            ifDone(stack, owner.getRandom(), count, owner::spawnAtLocation);
         }));
 
         // if done
         ItemApi.GET_MODIFIER.register(((map, stack, slot) -> {
-            if (stack.getOrCreateNbt().getBoolean(nbtKey(DONE)) && slot == EquipmentSlot.MAINHAND) {
-                map.put(EntityAttributes.GENERIC_ATTACK_DAMAGE, DAMAGE);
+            if (stack.getOrCreateTag().getBoolean(nbtKey(DONE)) && slot == EquipmentSlot.MAINHAND) {
+                map.put(Attributes.ATTACK_DAMAGE, DAMAGE);
             }
         }));
 
         // tooltips
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT && Enchant.option.brokenDawn) {
             ItemTooltipCallback.EVENT.register(((stack, context, lines) -> {
-                if (stack.getItem() instanceof EnchantedBookItem && level(stack) > 0) {
-                    lines.add(TIPS.formatted(Formatting.GRAY));
+                if (stack.getItem() instanceof EnchantedBookItem) {
                     return;
                 }
 
-                NbtCompound nbt = stack.getOrCreateNbt();
+                CompoundTag nbt = stack.getOrCreateTag();
                 // if done
                 if (nbt.getBoolean(nbtKey(DONE))) {
-                    lines.add(DONE_TIPS.formatted(Formatting.GOLD));
-                    lines.add(new TranslatableText(getTranslationKey()).append(" - ").append(TIPS).formatted(Formatting.GRAY));
+                    lines.add(DONE_TIPS.withStyle(ChatFormatting.GOLD));
+                    lines.add(new TranslatableComponent(getDescriptionId()).append(" - ").append(TIPS).withStyle(ChatFormatting.GRAY));
                     return;
                 }
 
                 // not done
                 if (level(stack) > 0) {
-                    lines.add(new TranslatableText(getTranslationKey()).append(": ")
-                            .append(FORMAT.format(100D * nbt.getLong(nbtKey(KEY)) / max(stack)) + "%").formatted(Formatting.GRAY));
-                    lines.add(new TranslatableText(getTranslationKey()).append(" - ")
-                            .append(TIPS).formatted(Formatting.GRAY));
+                    lines.add(new TranslatableComponent(getDescriptionId()).append(": ").append(FORMAT.format(100D * nbt.getLong(nbtKey(KEY)) / max(stack)) + "%")
+                            .withStyle(ChatFormatting.GRAY));
+                    lines.add(new TranslatableComponent(getDescriptionId()).append(" - ").append(TIPS)
+                            .withStyle(ChatFormatting.GRAY));
                 }
             }));
         }
@@ -114,8 +113,8 @@ public class BrokenDawn extends BaseEnchantment {
             return;
         }
         // log done
-        stack.getOrCreateNbt().putBoolean(nbtKey(DONE), true);
-        stack.getOrCreateNbt().remove(nbtKey(KEY));
+        stack.getOrCreateTag().putBoolean(nbtKey(DONE), true);
+        stack.getOrCreateTag().remove(nbtKey(KEY));
 
         // default increment
         int inc = 1;
@@ -128,15 +127,15 @@ public class BrokenDawn extends BaseEnchantment {
             if (next == Items.AIR) {
                 inc *= 3;
             } else {
-                drop = next.getDefaultStack();
-                drop.setNbt(stack.getNbt());
-                drop.setDamage(0);
+                drop = next.getDefaultInstance();
+                drop.setTag(stack.getTag());
+                drop.setDamageValue(0);
             }
         }
 
         // increment all enchantment level
-        NbtList enchantments = new NbtList();
-        Map<Enchantment, Integer> olds = EnchantmentHelper.get(stack);
+        ListTag enchantments = new ListTag();
+        Map<Enchantment, Integer> olds = EnchantmentHelper.getEnchantments(stack);
         int amount = inc;
         olds.forEach((e, l) -> {
             if (e == this || e.getMaxLevel() < 2) {
@@ -144,19 +143,19 @@ public class BrokenDawn extends BaseEnchantment {
             }
 
             // increment
-            enchantments.add(EnchantmentHelper.createNbt(EnchantmentHelper.getEnchantmentId(e), l + amount));
+            enchantments.add(EnchantmentHelper.storeEnchantment(EnchantmentHelper.getEnchantmentId(e), l + amount));
         });
 
         if (drop.isEmpty()) {
             // log done
-            stack.setSubNbt(ItemStack.ENCHANTMENTS_KEY, enchantments);
+            stack.addTagElement(ItemStack.TAG_ENCH, enchantments);
             return;
         }
 
         // remove old
-        stack.setDamage(stack.getMaxDamage());
+        stack.setDamageValue(stack.getMaxDamage());
 
-        drop.setSubNbt(ItemStack.ENCHANTMENTS_KEY, enchantments);
+        drop.addTagElement(ItemStack.TAG_ENCH, enchantments);
         dropper.accept(drop);
     }
 

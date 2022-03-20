@@ -1,15 +1,15 @@
 package com.doo.xenchant.enchantment.halo;
 
 import com.doo.xenchant.Enchant;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectCategory;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 
 import java.util.List;
 
@@ -20,51 +20,51 @@ public class EffectHalo extends LivingHalo {
 
     public static final String NAME = "effect";
 
-    private final StatusEffect effect;
+    private final MobEffect effect;
 
-    public EffectHalo(StatusEffect effect) {
-        super(NAME + "_-_" + effect.getTranslationKey());
+    public EffectHalo(MobEffect effect) {
+        super(NAME + "_-_" + effect.getDescriptionId());
 
         this.effect = effect;
     }
 
     @Override
-    public String getTranslationKey() {
+    public String getDescriptionId() {
         return "enchantment.x_enchant.halo_effect";
     }
 
     @Override
-    public Text getName(int level) {
-        TranslatableText mutableText = new TranslatableText(getTranslationKey(), effect.getName().getString());
-        if (this.isTreasure()) {
-            mutableText.formatted(Formatting.BLUE);
+    public Component getFullname(int level) {
+        TranslatableComponent mutableText = new TranslatableComponent(getDescriptionId(), effect.getDescriptionId());
+        if (this.isTradeable()) {
+            mutableText.withStyle(ChatFormatting.BLUE);
         } else {
-            mutableText.formatted(Formatting.GRAY);
+            mutableText.withStyle(ChatFormatting.GRAY);
         }
         if (level != 1 || this.getMaxLevel() != 1) {
-            mutableText.append(" ").append(new TranslatableText("enchantment.level." + level));
+            mutableText.append(" ").append(new TranslatableComponent("enchantment.level." + level));
         }
         return mutableText;
     }
 
     @Override
     public int getMaxLevel() {
-        return isTreasure() ? Enchant.option.effectTreasureMaxLevel : Enchant.option.effectOtherMaxLevel;
+        return isTradeable() ? Enchant.option.effectTreasureMaxLevel : Enchant.option.effectOtherMaxLevel;
     }
 
     @Override
-    public boolean isTreasure() {
-        return effect == null || effect.isInstant() || effect.isBeneficial();
+    public boolean isTradeable() {
+        return effect == null || effect.isInstantenous() || effect.isBeneficial();
     }
 
     @Override
     protected boolean ban(LivingEntity living) {
-        return Enchant.option.disabledEffect.contains(effect.getTranslationKey());
+        return Enchant.option.disabledEffect.contains(effect.getDescriptionId());
     }
 
     @Override
     public Type getType() {
-        return effect.getCategory() == StatusEffectCategory.HARMFUL ? Type.HARMFUL : Type.FRIENDLY;
+        return effect.getCategory() == MobEffectCategory.HARMFUL ? Type.HARMFUL : Type.FRIENDLY;
     }
 
     @Override
@@ -73,24 +73,24 @@ public class EffectHalo extends LivingHalo {
         int duration = (int) (SECOND * 1.5F);
         // NIGHT_VISION has special effects in duration < 200
         // see net.minecraft.client.render.GameRenderer.getNightVisionStrength
-        if (effect == StatusEffects.NIGHT_VISION) {
+        if (effect == MobEffects.NIGHT_VISION) {
             duration *= 10;
         }
 
-        StatusEffectInstance instance = new StatusEffectInstance(effect, duration, level - 1);
+        MobEffectInstance instance = new MobEffectInstance(effect, duration, level - 1);
         targets.forEach(e -> {
-            if (!effect.getAttributeModifiers().containsKey(EntityAttributes.GENERIC_MAX_HEALTH)) {
-                e.addStatusEffect(instance);
+            if (!effect.getAttributeModifiers().containsKey(Attributes.MAX_HEALTH)) {
+                e.addEffect(instance);
                 return;
             }
 
             // if it is HEALTH_BOOST
-            StatusEffectInstance has = e.getStatusEffect(effect);
+            MobEffectInstance has = e.getEffect(effect);
 
             if (has == null) {
-                e.addStatusEffect(instance);
+                e.addEffect(instance);
             } else {
-                has.upgrade(instance);
+                has.update(instance);
             }
         });
     }

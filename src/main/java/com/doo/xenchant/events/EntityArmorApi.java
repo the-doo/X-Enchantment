@@ -4,8 +4,8 @@ import com.doo.xenchant.enchantment.BaseEnchantment;
 import com.doo.xenchant.util.EnchantUtil;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.Pair;
+import net.minecraft.util.Tuple;
+import net.minecraft.world.entity.LivingEntity;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -23,11 +23,11 @@ public interface EntityArmorApi {
 
     @FunctionalInterface
     interface OpArmor {
-        float get(LivingEntity living, double base, Map<BaseEnchantment, Pair<Integer, Integer>> map);
+        float get(LivingEntity living, double base, Map<BaseEnchantment, Tuple<Integer, Integer>> map);
     }
 
     static double armor(double base, LivingEntity living) {
-        Map<BaseEnchantment, Pair<Integer, Integer>> map = EnchantUtil.mergeOf(living);
+        Map<BaseEnchantment, Tuple<Integer, Integer>> map = EnchantUtil.mergeOf(living);
         base += EntityArmorApi.ADD.invoker().get(living, base, map);
         if (base <= 0) {
             return 0;

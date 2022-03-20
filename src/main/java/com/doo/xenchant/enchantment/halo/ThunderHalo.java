@@ -2,11 +2,11 @@ package com.doo.xenchant.enchantment.halo;
 
 import com.doo.xenchant.Enchant;
 import com.doo.xenchant.config.Option;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LightningEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LightningBolt;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
@@ -22,13 +22,13 @@ public class ThunderHalo extends LivingHalo {
     }
 
     @Override
-    public boolean isTreasure() {
+    public boolean isTradeable() {
         return Enchant.option.thunderHaloIsTreasure;
     }
 
     @Override
     protected boolean ban(LivingEntity living) {
-        return !Enchant.option.thunderHalo || Enchant.option.thunderHaloAllowOther == Option.AllowTarget.PLAYER && !(living instanceof ServerPlayerEntity);
+        return !Enchant.option.thunderHalo || Enchant.option.thunderHaloAllowOther == Option.AllowTarget.PLAYER && !(living instanceof ServerPlayer);
     }
 
     @Override
@@ -54,15 +54,15 @@ public class ThunderHalo extends LivingHalo {
             return;
         }
 
-        LightningEntity lightning = EntityType.LIGHTNING_BOLT.create(entity.getWorld());
+        LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(entity.level);
         if (lightning == null) {
             return;
         }
 
-        lightning.setChanneler(entity instanceof ServerPlayerEntity ? (ServerPlayerEntity) entity : null);
+        lightning.setCause(entity instanceof ServerPlayer ? (ServerPlayer) entity : null);
         targets.stream().findFirst().ifPresent(e -> {
-            lightning.refreshPositionAfterTeleport(Vec3d.ofBottomCenter(e.getBlockPos()));
-            e.world.spawnEntity(lightning);
+            lightning.moveTo(Vec3.atBottomCenterOf(e.getOnPos()));
+            e.level.addFreshEntity(lightning);
         });
     }
 }

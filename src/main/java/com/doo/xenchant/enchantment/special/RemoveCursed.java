@@ -1,10 +1,10 @@
 package com.doo.xenchant.enchantment.special;
 
 import com.doo.xenchant.events.AnvilApi;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.Items;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 /**
  * Remove Cursed
@@ -14,7 +14,7 @@ public class RemoveCursed extends Special {
     public static final String NAME = "remove_cursed";
 
     public RemoveCursed() {
-        super(NAME, Rarity.UNCOMMON, EnchantmentTarget.BREAKABLE, EquipmentSlot.values());
+        super(NAME, Rarity.UNCOMMON, EnchantmentCategory.BREAKABLE, EquipmentSlot.values());
     }
 
     @Override
@@ -22,7 +22,7 @@ public class RemoveCursed extends Special {
         super.register();
 
         AnvilApi.ON_ENCHANT.register(((player, map, first, second, result) -> {
-            if (!second.isOf(Items.ENCHANTED_BOOK)) {
+            if (!second.is(Items.ENCHANTED_BOOK) || !map.containsKey(this)) {
                 return;
             }
 
@@ -32,7 +32,7 @@ public class RemoveCursed extends Special {
             }
 
             // remove first cursed if map has cursed
-            map.keySet().stream().filter(Enchantment::isCursed).findFirst().ifPresent(map::remove);
+            map.keySet().stream().filter(Enchantment::isCurse).findFirst().ifPresent(map::remove);
             // remove this
             map.remove(this);
         }));

@@ -2,10 +2,10 @@ package com.doo.xenchant.events;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.Arrays;
 
@@ -34,6 +34,6 @@ public interface LivingApi {
 
     @FunctionalInterface
     interface IgnoredApplyStatus {
-        boolean ignored(LivingEntity living, StatusEffect effect, Entity source);
+        boolean ignored(LivingEntity living, MobEffect effect, Entity source);
     }
 }

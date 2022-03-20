@@ -2,12 +2,12 @@ package com.doo.xenchant.enchantment;
 
 import com.doo.xenchant.Enchant;
 import com.doo.xenchant.events.EntityDamageApi;
-import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.RangedWeaponItem;
-import net.minecraft.item.ToolItem;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ProjectileWeaponItem;
+import net.minecraft.world.item.TieredItem;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 /**
  * 弱点攻击
@@ -17,7 +17,7 @@ public class Weakness extends BaseEnchantment {
     public static final String NAME = "weakness";
 
     public Weakness() {
-        super(NAME, Rarity.VERY_RARE, EnchantmentTarget.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
+        super(NAME, Rarity.VERY_RARE, EnchantmentCategory.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
     }
 
     @Override
@@ -26,10 +26,10 @@ public class Weakness extends BaseEnchantment {
     }
 
     @Override
-    public boolean isAcceptableItem(ItemStack stack) {
-        return stack.getItem() instanceof ToolItem ||
-                stack.getItem() instanceof RangedWeaponItem ||
-                stack.getAttributeModifiers(EquipmentSlot.MAINHAND).containsKey(EntityAttributes.GENERIC_ATTACK_DAMAGE);
+    public boolean canEnchant(ItemStack stack) {
+        return stack.getItem() instanceof TieredItem ||
+                stack.getItem() instanceof ProjectileWeaponItem ||
+                stack.getAttributeModifiers(EquipmentSlot.MAINHAND).containsKey(Attributes.ATTACK_DAMAGE);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class Weakness extends BaseEnchantment {
             }
 
             int level;
-            ItemStack stack = attacker.getMainHandStack();
+            ItemStack stack = attacker.getMainHandItem();
             if ((level = level(stack)) < 1) {
                 return 0;
             }

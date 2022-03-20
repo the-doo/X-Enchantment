@@ -1,7 +1,7 @@
 package com.doo.xenchant.enchantment.halo;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.LivingEntity;
 
 import java.util.List;
 
@@ -33,6 +33,6 @@ public class HeightAdvantageHalo extends LivingHalo {
 
     @Override
     public void onTarget(LivingEntity entity, Integer level, List<LivingEntity> targets) {
-        targets.stream().filter(e -> entity.getHeight() > e.getHeight()).forEach(e -> e.damage(DamageSource.thorns(entity), level));
+        targets.stream().filter(e -> entity.getEyeHeight() > e.getEyeHeight()).forEach(e -> e.hurt(DamageSource.thorns(entity), level));
     }
 }

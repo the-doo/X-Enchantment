@@ -4,10 +4,10 @@ import com.doo.xenchant.enchantment.BaseEnchantment;
 import com.doo.xenchant.util.EnchantUtil;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.util.Pair;
+import net.minecraft.util.Tuple;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -101,19 +101,19 @@ public interface EntityDamageApi {
 
     @FunctionalInterface
     interface OpDamage {
-        float get(DamageSource source, LivingEntity attacker, LivingEntity target, Map<BaseEnchantment, Pair<Integer, Integer>> map);
+        float get(DamageSource source, LivingEntity attacker, LivingEntity target, Map<BaseEnchantment, Tuple<Integer, Integer>> map);
     }
 
     @FunctionalInterface
     interface OnDamaged {
-        void call(DamageSource source, LivingEntity attacker, LivingEntity target, float amount, Map<BaseEnchantment, Pair<Integer, Integer>> map);
+        void call(DamageSource source, LivingEntity attacker, LivingEntity target, float amount, Map<BaseEnchantment, Tuple<Integer, Integer>> map);
     }
 
     static float damage(float amount, DamageSource source, LivingEntity target) {
-        Entity entity = source.getAttacker();
+        Entity entity = source.getEntity();
         if (entity instanceof LivingEntity && entity != target) {
             LivingEntity attacker = (LivingEntity) entity;
-            Map<BaseEnchantment, Pair<Integer, Integer>> map = EnchantUtil.mergeOf(attacker);
+            Map<BaseEnchantment, Tuple<Integer, Integer>> map = EnchantUtil.mergeOf(attacker);
             amount += EntityDamageApi.ADD.invoker().get(source, attacker, target, map);
             if (amount <= 0) {
                 return 0;
@@ -128,10 +128,10 @@ public interface EntityDamageApi {
     }
 
     static float realDamage(float amount, DamageSource source, LivingEntity target) {
-        Entity entity = source.getAttacker();
+        Entity entity = source.getEntity();
         if (entity instanceof LivingEntity && entity != target) {
             LivingEntity attacker = (LivingEntity) entity;
-            Map<BaseEnchantment, Pair<Integer, Integer>> map = EnchantUtil.mergeOf(attacker);
+            Map<BaseEnchantment, Tuple<Integer, Integer>> map = EnchantUtil.mergeOf(attacker);
             amount += EntityDamageApi.REAL_ADD.invoker().get(source, attacker, target, map);
             if (amount <= 0) {
                 return 0;

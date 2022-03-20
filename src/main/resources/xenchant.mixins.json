@@ -4,14 +4,14 @@
   "package": "com.doo.xenchant.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "AnvilScreenHandlerMixin",
-    "FishingBobberMixin",
-    "GrindstoneScreenHandlerMixin",
+    "AnvilMenuMixin",
+    "FishingHookMixin",
+    "GrindstoneMenuMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
     "LootCapturingConsumerMixin",
     "LootTableMixin",
-    "PersistentProjectileEntityMixin",
+    "AbstractArrowMixin",
     "PlayerEntityMixin"
   ],
   "injectors": {

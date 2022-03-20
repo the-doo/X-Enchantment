@@ -2,17 +2,18 @@ package com.doo.xenchant.menu.screen;
 
 import com.doo.xenchant.Enchant;
 import com.doo.xenchant.enchantment.halo.EffectHalo;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ScreenTexts;
-import net.minecraft.client.gui.widget.ButtonListWidget;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.option.CyclingOption;
-import net.minecraft.client.option.Option;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.text.LiteralText;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.CycleOption;
+import net.minecraft.client.Option;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.OptionsList;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.Registry;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffect;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.List;
@@ -27,10 +28,10 @@ public class DisabledEffectScreen extends Screen {
 
     private Screen pre;
 
-    private ButtonListWidget list;
+    private OptionsList list;
 
     private DisabledEffectScreen() {
-        super(new LiteralText(Enchant.ID));
+        super(new TextComponent(Enchant.ID));
     }
 
     public static DisabledEffectScreen get(Screen pre) {
@@ -42,10 +43,10 @@ public class DisabledEffectScreen extends Screen {
 
     @Override
     protected void init() {
-        list = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
+        list = new OptionsList(minecraft, this.width, this.height, 32, this.height - 32, 25);
 
         // All Button
-        list.addSingleOptionEntry(CyclingOption.create("x_enchant.menu.option.status_effect_halo.enabled_all", ModMenuScreen.CLOSE, o -> Enchant.option.enabledAllEffect,
+        list.addBig(CycleOption.createOnOff("x_enchant.menu.option.status_effect_halo.enabled_all", ModMenuScreen.CLOSE, o -> Enchant.option.enabledAllEffect,
                 (g, o, enabled) -> {
                     Enchant.option.enabledAllEffect = enabled;
 
@@ -55,36 +56,36 @@ public class DisabledEffectScreen extends Screen {
                         Enchant.option.disabledEffect.clear();
 
                         // register all
-                        Registry.STATUS_EFFECT.stream()
-                                .filter(e -> e != null && Identifier.isValid(e.getTranslationKey()))
+                        Registry.MOB_EFFECT.stream()
+                                .filter(e -> e != null && ResourceLocation.isValidResourceLocation(e.getDescriptionId()))
                                 .forEach(EffectHalo::new);
                     } else {
                         // add all
-                        Enchant.option.disabledEffect.addAll(Registry.STATUS_EFFECT.stream()
-                                .map(StatusEffect::getTranslationKey)
-                                .filter(Identifier::isValid).collect(Collectors.toSet()));
+                        Enchant.option.disabledEffect.addAll(Registry.MOB_EFFECT.stream()
+                                .map(MobEffect::getDescriptionId)
+                                .filter(ResourceLocation::isValidResourceLocation).collect(Collectors.toSet()));
                     }
                 }));
 
         // only potion button
-        list.addSingleOptionEntry(CyclingOption.create("x_enchant.menu.option.status_effect_halo.only_potion", ModMenuScreen.CLOSE, o -> Enchant.option.enabledAllEffect,
+        list.addBig(CycleOption.createOnOff("x_enchant.menu.option.status_effect_halo.only_potion", ModMenuScreen.CLOSE, o -> Enchant.option.enabledAllEffect,
                 (g, o, enabled) -> Enchant.option.onlyPotionEffect = enabled));
 
         // set options
-        List<CyclingOption<Boolean>> total = Registry.STATUS_EFFECT.stream()
-                .filter(e -> Identifier.isValid(e.getTranslationKey()))
+        List<Option> total = Registry.MOB_EFFECT.stream()
+                .filter(e -> ResourceLocation.isValidResourceLocation(e.getDescriptionId()))
                 .map(e -> getButton(e, Enchant.option.disabledEffect)).collect(Collectors.toList());
-        list.addAll(total.toArray(new Option[]{}));
+        list.addSmall(total.toArray(new Option[]{}));
 
 
-        this.addSelectableChild(list);
+        this.addRenderableWidget(list);
         // 返回按钮
-        this.addDrawableChild(new ButtonWidget(this.width / 2 - 150 / 2, this.height - 28, 150, 20, ScreenTexts.BACK, b -> INSTANCE.close()));
+        this.addRenderableWidget(new Button(this.width / 2 - 150 / 2, this.height - 28, 150, 20, CommonComponents.GUI_BACK, b -> INSTANCE.close()));
     }
 
-    private CyclingOption<Boolean> getButton(StatusEffect effect, Collection<String> disabled) {
-        String key = effect.getTranslationKey();
-        return CyclingOption.create(key, ModMenuScreen.CLOSE, o -> !disabled.contains(key), (g, o, enabled) -> {
+    private Option getButton(MobEffect effect, Collection<String> disabled) {
+        String key = effect.getDescriptionId();
+        return CycleOption.createOnOff(key, ModMenuScreen.CLOSE, o -> !disabled.contains(key), (g, o, enabled) -> {
             // if enabled
             if (enabled) {
                 disabled.remove(key);
@@ -97,14 +98,13 @@ public class DisabledEffectScreen extends Screen {
     }
 
     public void close() {
-        if (client != null) {
-            // 返回上个页面
-            client.currentScreen = this.pre;
+        if (minecraft != null) {
+            minecraft.setScreen(this.pre);
         }
     }
 
     @Override
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+    public void render(@NotNull PoseStack matrices, int mouseX, int mouseY, float delta) {
         // 画背景
         super.renderBackground(matrices);
         // 画按钮

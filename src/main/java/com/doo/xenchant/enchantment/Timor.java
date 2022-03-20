@@ -1,13 +1,13 @@
 package com.doo.xenchant.enchantment;
 
 import com.doo.xenchant.events.LivingApi;
-import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.entity.EntityPose;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 /**
  * Timor
@@ -23,7 +23,7 @@ public class Timor extends BaseEnchantment {
     private static final String POS = "Pos";
 
     public Timor() {
-        super(NAME, Rarity.COMMON, EnchantmentTarget.ARMOR_FEET, new EquipmentSlot[]{EquipmentSlot.FEET});
+        super(NAME, Rarity.COMMON, EnchantmentCategory.ARMOR_FEET, new EquipmentSlot[]{EquipmentSlot.FEET});
     }
 
     @Override
@@ -31,16 +31,16 @@ public class Timor extends BaseEnchantment {
         super.register();
 
         LivingApi.SEVER_TAIL_TICK.register(living -> {
-            if (living.age % SECOND != 0) {
+            if (living.tickCount % SECOND != 0) {
                 return;
             }
 
-            ItemStack stack = living.getEquippedStack(EquipmentSlot.FEET);
+            ItemStack stack = living.getItemBySlot(EquipmentSlot.FEET);
             if (stack.isEmpty() || level(stack) < 1) {
                 return;
             }
 
-            NbtCompound nbt = stack.getOrCreateNbt();
+            CompoundTag nbt = stack.getOrCreateTag();
             long id = nbt.getLong(nbtKey(ID));
             if (living.getId() != id) {
                 nbt.putLong(nbtKey(ID), living.getId());
@@ -50,9 +50,9 @@ public class Timor extends BaseEnchantment {
             long count = nbt.getLong(nbtKey(COUNT));
 
             // if it's not standing
-            if (living.getPose() != EntityPose.CROUCHING) {
+            if (living.getPose() != Pose.CROUCHING) {
                 if (count >= 3) {
-                    living.addStatusEffect(new StatusEffectInstance(StatusEffects.HASTE, 300, 3));
+                    living.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 300, 3));
                 }
 
                 nbt.remove(nbtKey(COUNT));
@@ -62,7 +62,7 @@ public class Timor extends BaseEnchantment {
 
             // hide on 1.5s
             if (count >= 3) {
-                living.addStatusEffect(new StatusEffectInstance(StatusEffects.INVISIBILITY, 30));
+                living.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 30));
             }
 
             // log count

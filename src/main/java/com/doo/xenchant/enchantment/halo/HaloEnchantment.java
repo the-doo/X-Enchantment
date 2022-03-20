@@ -5,14 +5,15 @@ import com.doo.xenchant.config.Option;
 import com.doo.xenchant.enchantment.BaseEnchantment;
 import com.doo.xenchant.events.LivingApi;
 import com.doo.xenchant.util.EnchantUtil;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.math.Box;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.phys.AABB;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,12 +29,12 @@ public abstract class HaloEnchantment<T extends Entity> extends BaseEnchantment 
     public static boolean regis = false;
 
     public HaloEnchantment(String name) {
-        super(NAME + "_" + name, Rarity.RARE, EnchantmentTarget.ARMOR, EnchantUtil.ALL_ARMOR);
+        super(NAME + "_" + name, Rarity.RARE, EnchantmentCategory.ARMOR, EnchantUtil.ALL_ARMOR);
     }
 
     @Override
-    protected final boolean canAccept(Enchantment other) {
-        return !(other instanceof HaloEnchantment);
+    protected boolean checkCompatibility(@NotNull Enchantment enchantment) {
+        return !(enchantment instanceof HaloEnchantment);
     }
 
     @Override
@@ -51,14 +52,14 @@ public abstract class HaloEnchantment<T extends Entity> extends BaseEnchantment 
                 return;
             }
 
-            if (Enchant.option.haloAllowOther == Option.AllowTarget.PLAYER && !(living instanceof ServerPlayerEntity)) {
+            if (Enchant.option.haloAllowOther == Option.AllowTarget.PLAYER && !(living instanceof ServerPlayer)) {
                 return;
             }
 
-            int age = living.age;
+            int age = living.tickCount;
             Map<HaloEnchantment<?>, Integer> map = new HashMap<>();
-            for (ItemStack stack : living.getArmorItems()) {
-                EnchantmentHelper.get(stack).forEach((k, v) -> {
+            for (ItemStack stack : living.getArmorSlots()) {
+                EnchantmentHelper.getEnchantments(stack).forEach((k, v) -> {
                     if (k instanceof HaloEnchantment && v != null && v > 0) {
                         HaloEnchantment<?> halo = (HaloEnchantment<?>) k;
                         if (!halo.ban(living) && age % (halo.triggerTime() * SECOND) == 0) {
@@ -72,7 +73,7 @@ public abstract class HaloEnchantment<T extends Entity> extends BaseEnchantment 
             }
 
             // trigger match halo
-            Box box = living.getBoundingBox().expand(Enchant.option.haloRange);
+            AABB box = living.getBoundingBox().inflate(Enchant.option.haloRange);
             map.forEach((k, v) -> k.halo(living, v, box));
         });
     }
@@ -80,7 +81,7 @@ public abstract class HaloEnchantment<T extends Entity> extends BaseEnchantment 
     /**
      * trigger halo
      */
-    private void halo(LivingEntity living, Integer level, Box box) {
+    private void halo(LivingEntity living, Integer level, AABB box) {
         List<T> targets = targets(living, box);
 
         if (targets != null && !targets.isEmpty()) {
@@ -96,7 +97,7 @@ public abstract class HaloEnchantment<T extends Entity> extends BaseEnchantment 
         return 1;
     }
 
-    protected abstract List<T> targets(LivingEntity living, Box box);
+    protected abstract List<T> targets(LivingEntity living, AABB box);
 
     protected abstract void onTarget(LivingEntity entity, Integer level, List<T> targets);
 }

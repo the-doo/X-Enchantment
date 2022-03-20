@@ -5,14 +5,14 @@ import com.doo.xenchant.events.EntityDamageApi;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.EnchantedBookItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.EnchantedBookItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 /**
  * Night Break
@@ -24,10 +24,10 @@ public class NightBreak extends BaseEnchantment {
     public static final String NAME = "night_break";
     private static final String KEY = "Count";
 
-    private static final Text TIPS = new TranslatableText("enchantment.x_enchant.night_break.tips");
+    private static final Component TIPS = new TranslatableComponent("enchantment.x_enchant.night_break.tips");
 
     public NightBreak() {
-        super(NAME, Rarity.VERY_RARE, EnchantmentTarget.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
+        super(NAME, Rarity.VERY_RARE, EnchantmentCategory.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
     }
 
     @Override
@@ -44,7 +44,7 @@ public class NightBreak extends BaseEnchantment {
                 return 0;
             }
 
-            ItemStack stack = attacker.getMainHandStack();
+            ItemStack stack = attacker.getMainHandItem();
             if (stack.isEmpty()) {
                 return 0;
             }
@@ -54,7 +54,7 @@ public class NightBreak extends BaseEnchantment {
                 return 0;
             }
 
-            NbtCompound nbt = stack.getOrCreateNbt();
+            CompoundTag nbt = stack.getOrCreateTag();
 
             long count = nbt.getLong(nbtKey(KEY));
             nbt.putLong(nbtKey(KEY), count += 1);
@@ -76,8 +76,8 @@ public class NightBreak extends BaseEnchantment {
                 }
 
                 if (level(stack) > 0) {
-                    lines.add(new TranslatableText(getTranslationKey()).append(": ").append(stack.getOrCreateNbt().getLong(nbtKey(KEY)) + "").formatted(Formatting.GRAY));
-                    lines.add(new TranslatableText(getTranslationKey()).append(" - ").append(TIPS).formatted(Formatting.GRAY));
+                    lines.add(new TranslatableComponent(getDescriptionId()).append(": ").append(stack.getOrCreateTag().getLong(nbtKey(KEY)) + "").withStyle(ChatFormatting.GRAY));
+                    lines.add(new TranslatableComponent(getDescriptionId()).append(" - ").append(TIPS).withStyle(ChatFormatting.GRAY));
                 }
             }));
         }

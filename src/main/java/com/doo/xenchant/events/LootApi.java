@@ -2,12 +2,12 @@ package com.doo.xenchant.events;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.FishingBobberEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.context.LootContext;
-import net.minecraft.loot.context.LootContextParameters;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.FishingHook;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -32,18 +32,18 @@ public interface LootApi {
 
     static Consumer<ItemStack> lootConsumer(Consumer<ItemStack> lootConsumer, LootContext context) {
         // default is tool loot
-        ItemStack stack = context.get(LootContextParameters.TOOL);
-        Entity entity = Optional.ofNullable(context.get(LootContextParameters.KILLER_ENTITY))
-                .orElse(context.get(LootContextParameters.THIS_ENTITY));
+        ItemStack stack = context.getParamOrNull(LootContextParams.TOOL);
+        Entity entity = Optional.ofNullable(context.getParamOrNull(LootContextParams.KILLER_ENTITY))
+                .orElse(context.getParamOrNull(LootContextParams.THIS_ENTITY));
 
         // if is attack loot, try to get on entity
         if (stack == null && entity instanceof LivingEntity) {
-            stack = ((LivingEntity) entity).getMainHandStack();
+            stack = ((LivingEntity) entity).getMainHandItem();
         }
 
         // if is rod loot, try to get owner
-        if (entity instanceof FishingBobberEntity) {
-            entity = ((FishingBobberEntity) entity).getOwner();
+        if (entity instanceof FishingHook) {
+            entity = ((FishingHook) entity).getOwner();
         }
 
         if (stack == null || stack.isEmpty() || !(entity instanceof LivingEntity)) {

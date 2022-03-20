@@ -1,15 +1,15 @@
 package com.doo.xenchant.enchantment;
 
 import com.doo.xenchant.Enchant;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.Registry;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 import java.text.DecimalFormat;
 
@@ -25,23 +25,23 @@ public abstract class BaseEnchantment extends Enchantment {
      */
     protected static final int SECOND = 20;
 
-    private static final Formatting[] RATE_COLOR = {Formatting.GRAY, Formatting.BLUE, Formatting.YELLOW, Formatting.GOLD};
+    private static final ChatFormatting[] RATE_COLOR = {ChatFormatting.GRAY, ChatFormatting.BLUE, ChatFormatting.YELLOW, ChatFormatting.GOLD};
 
-    private final Identifier id;
+    private final ResourceLocation id;
 
-    protected BaseEnchantment(String name, Rarity weight, EnchantmentTarget type, EquipmentSlot[] slotTypes) {
+    protected BaseEnchantment(String name, Rarity weight, EnchantmentCategory type, EquipmentSlot[] slotTypes) {
         super(weight, type, slotTypes);
-        this.id = new Identifier(Enchant.ID, name);
+        this.id = new ResourceLocation(Enchant.ID, name);
     }
 
     @Override
-    public Text getName(int level) {
-        Text name = super.getName(level);
-        return isCursed() ? name : name.shallowCopy().formatted(RATE_COLOR[getRarity().ordinal()]);
+    public Component getFullname(int level) {
+        Component name = super.getFullname(level);
+        return isCurse() ? name : name.copy().withStyle(RATE_COLOR[getRarity().ordinal()]);
     }
 
     @Override
-    public int getMinPower(int level) {
+    public int getMinCost(int level) {
         switch (getRarity()) {
             case UNCOMMON:
                 return 25;
@@ -50,30 +50,30 @@ public abstract class BaseEnchantment extends Enchantment {
             case VERY_RARE:
                 return level * 50;
             default:
-                return super.getMinPower(level);
+                return super.getMinCost(level);
         }
     }
 
     @Override
-    public int getMaxPower(int level) {
+    public int getMaxCost(int level) {
         switch (getRarity()) {
             case UNCOMMON:
-                return getMinPower(level) + 35;
+                return getMinCost(level) + 35;
             case RARE:
-                return getMinPower(level) + 50;
+                return getMinCost(level) + 50;
             case VERY_RARE:
-                return getMinPower(level) + 100;
+                return getMinCost(level) + 100;
             default:
-                return super.getMaxPower(level);
+                return super.getMaxCost(level);
         }
     }
 
     @Override
-    public boolean isTreasure() {
+    public boolean isTradeable() {
         return getRarity() == Rarity.VERY_RARE || getRarity() == Rarity.RARE;
     }
 
-    public Identifier getId() {
+    public ResourceLocation getId() {
         return id;
     }
 
@@ -82,7 +82,11 @@ public abstract class BaseEnchantment extends Enchantment {
     }
 
     public int level(ItemStack item) {
-        return item == null || item.isEmpty() || !item.hasEnchantments() ? 0 : EnchantmentHelper.get(item).getOrDefault(this, 0);
+        return item == null || item.isEmpty() ? 0 : EnchantmentHelper.getEnchantments(item).getOrDefault(this, 0);
+    }
+
+    public final int second(float second) {
+        return (int) (SECOND * second);
     }
 
     /**
@@ -90,7 +94,7 @@ public abstract class BaseEnchantment extends Enchantment {
      */
     public void register() {
         // Don't replace if exist
-        if (Registry.ENCHANTMENT.containsId(id)) {
+        if (Registry.ENCHANTMENT.containsKey(id)) {
             return;
         }
 

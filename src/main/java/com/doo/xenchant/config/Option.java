@@ -1,9 +1,9 @@
 package com.doo.xenchant.config;
 
-import net.minecraft.entity.attribute.EntityAttribute;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -140,14 +140,14 @@ public class Option {
     public AllowTarget haloAllowOther = AllowTarget.ALL;
 
     public enum AllowTarget {
-        ALL(new TranslatableText("x_enchant.menu.option.halo_allow_target.all")),
-        PLAYER(new TranslatableText("x_enchant.menu.option.halo_allow_target.player")),
+        ALL(new TranslatableComponent("x_enchant.menu.option.halo_allow_target.all")),
+        PLAYER(new TranslatableComponent("x_enchant.menu.option.halo_allow_target.player")),
 
         ;
 
-        public final Text key;
+        public final Component key;
 
-        AllowTarget(Text key) {
+        AllowTarget(Component key) {
             this.key = key;
         }
     }
@@ -176,16 +176,16 @@ public class Option {
      * attributes
      */
     public Collection<String> attributes = Stream.of(
-                    EntityAttributes.GENERIC_ATTACK_DAMAGE,
-                    EntityAttributes.GENERIC_ATTACK_SPEED,
-                    EntityAttributes.GENERIC_ARMOR,
-                    EntityAttributes.GENERIC_ARMOR_TOUGHNESS,
-                    EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE,
-                    EntityAttributes.GENERIC_FLYING_SPEED,
-                    EntityAttributes.GENERIC_MOVEMENT_SPEED,
-                    EntityAttributes.GENERIC_MAX_HEALTH,
-                    EntityAttributes.GENERIC_ATTACK_KNOCKBACK)
-            .map(EntityAttribute::getTranslationKey).collect(Collectors.toSet());
+                    Attributes.ATTACK_DAMAGE,
+                    Attributes.ATTACK_SPEED,
+                    Attributes.ARMOR,
+                    Attributes.ARMOR_TOUGHNESS,
+                    Attributes.KNOCKBACK_RESISTANCE,
+                    Attributes.FLYING_SPEED,
+                    Attributes.MOVEMENT_SPEED,
+                    Attributes.MAX_HEALTH,
+                    Attributes.ATTACK_KNOCKBACK)
+            .map(Attribute::getDescriptionId).collect(Collectors.toSet());
 
     /**
      * Effect Halo Level of friendly
