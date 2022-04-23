@@ -164,7 +164,15 @@ public class BrokenDawn extends BaseEnchantment {
 
     private Predicate<Item> switchFilter(Item item) {
         if (item instanceof ArmorItem) {
-            return i -> ((ArmorItem) item).getSlot() == ((ArmorItem) i).getSlot() && i.getMaxDamage() > item.getMaxDamage();
+            return i -> i instanceof ArmorItem && ((ArmorItem) item).getSlot() == ((ArmorItem) i).getSlot() && i.getMaxDamage() > item.getMaxDamage();
+        }
+        if (item instanceof SwordItem) {
+            return i -> i instanceof SwordItem && ((SwordItem) item).getDamage() > ((SwordItem) i).getDamage();
+        }
+        if (item instanceof DiggerItem) {
+            return i -> i instanceof DiggerItem &&
+                    (((DiggerItem) item).getTier().getLevel() > ((DiggerItem) i).getTier().getLevel() ||
+                            ((DiggerItem) item).getTier().getSpeed() > ((DiggerItem) i).getTier().getSpeed());
         }
         return i -> item.getClass().isInstance(i) && i.getMaxDamage() > item.getMaxDamage();
     }

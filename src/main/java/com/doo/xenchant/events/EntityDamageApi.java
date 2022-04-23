@@ -10,6 +10,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -27,13 +28,7 @@ public interface EntityDamageApi {
      * -2 -> amount - 2
      */
     Event<OpDamage> ADD = EventFactory.createArrayBacked(OpDamage.class,
-            callback -> ((source, attacker, target, map) -> {
-                if (map.isEmpty()) {
-                    return 0;
-                }
-
-                return (float) Arrays.stream(callback).mapToDouble(c -> c.get(source, attacker, target, map)).sum();
-            }));
+            callback -> ((source, attacker, target, map, targetMap) -> (float) Arrays.stream(callback).mapToDouble(c -> c.get(source, attacker, target, map, targetMap)).sum()));
 
     /**
      * Multiplier of total damage amount - return value in percentage
@@ -44,13 +39,8 @@ public interface EntityDamageApi {
      * <p>
      * -20 -> total * (1 - 0.2)
      */
-    Event<OpDamage> MULTIPLIER = EventFactory.createArrayBacked(OpDamage.class, callback -> ((source, attacker, target, map) -> {
-        if (map.isEmpty()) {
-            return 0;
-        }
-
-        return (float) Arrays.stream(callback).mapToDouble(c -> c.get(source, attacker, target, map)).sum();
-    }));
+    Event<OpDamage> MULTIPLIER = EventFactory.createArrayBacked(OpDamage.class, callback ->
+            ((source, attacker, target, map, targetMap) -> (float) Arrays.stream(callback).mapToDouble(c -> c.get(source, attacker, target, map, targetMap)).sum()));
 
     /**
      * Add real damage amount - It will add after check armor and resistance
@@ -61,13 +51,8 @@ public interface EntityDamageApi {
      * <p>
      * -2 -> amount - 2
      */
-    Event<OpDamage> REAL_ADD = EventFactory.createArrayBacked(OpDamage.class, callback -> ((source, attacker, target, map) -> {
-        if (map.isEmpty()) {
-            return 0;
-        }
-
-        return (float) Arrays.stream(callback).mapToDouble(c -> c.get(source, attacker, target, map)).sum();
-    }));
+    Event<OpDamage> REAL_ADD = EventFactory.createArrayBacked(OpDamage.class, callback ->
+            ((source, attacker, target, map, targetMap) -> (float) Arrays.stream(callback).mapToDouble(c -> c.get(source, attacker, target, map, targetMap)).sum()));
 
     /**
      * Multiplier of total real damage amount - It will add after check armor and resistance
@@ -78,70 +63,46 @@ public interface EntityDamageApi {
      * <p>
      * -20 -> total * (1 - 0.2)
      */
-    Event<OpDamage> REAL_MULTIPLIER = EventFactory.createArrayBacked(OpDamage.class, callback -> ((source, attacker, target, map) -> {
-        if (map.isEmpty()) {
-            return 0;
-        }
-
-        return (float) Arrays.stream(callback).mapToDouble(c -> c.get(source, attacker, target, map)).sum();
-    }));
+    Event<OpDamage> REAL_MULTIPLIER = EventFactory.createArrayBacked(OpDamage.class, callback ->
+            ((source, attacker, target, map, targetMap) -> (float) Arrays.stream(callback).mapToDouble(c -> c.get(source, attacker, target, map, targetMap)).sum()));
 
     /**
      * Target health is changed
      * <p>
      * amount - value of target health is changed
      */
-    Event<OnDamaged> ON_DAMAGED = EventFactory.createArrayBacked(OnDamaged.class, callback -> ((source, attacker, target, amount, map) -> {
-        if (map.isEmpty()) {
-            return;
-        }
-
-        Arrays.stream(callback).forEach(c -> c.call(source, attacker, target, amount, map));
-    }));
+    Event<OnDamaged> ON_DAMAGED = EventFactory.createArrayBacked(OnDamaged.class, callback ->
+            ((source, attacker, target, amount, map) -> Arrays.stream(callback).forEach(c -> c.call(source, attacker, target, amount, map))));
 
     @FunctionalInterface
     interface OpDamage {
-        float get(DamageSource source, LivingEntity attacker, LivingEntity target, Map<BaseEnchantment, Tuple<Integer, Integer>> map);
+        float get(DamageSource source, Entity attacker, LivingEntity target, Map<BaseEnchantment, Tuple<Integer, Integer>> map, Map<BaseEnchantment, Tuple<Integer, Integer>> targetMap);
     }
 
     @FunctionalInterface
     interface OnDamaged {
-        void call(DamageSource source, LivingEntity attacker, LivingEntity target, float amount, Map<BaseEnchantment, Tuple<Integer, Integer>> map);
+        void call(DamageSource source, Entity attacker, LivingEntity target, float amount, Map<BaseEnchantment, Tuple<Integer, Integer>> map);
     }
 
-    static float damage(float amount, DamageSource source, LivingEntity target) {
+    static float damage(float amount, DamageSource source, LivingEntity target, boolean isReal) {
         Entity entity = source.getEntity();
-        if (entity instanceof LivingEntity && entity != target) {
-            LivingEntity attacker = (LivingEntity) entity;
-            Map<BaseEnchantment, Tuple<Integer, Integer>> map = EnchantUtil.mergeOf(attacker);
-            amount += EntityDamageApi.ADD.invoker().get(source, attacker, target, map);
-            if (amount <= 0) {
-                return 0;
-            }
-
-            amount *= (1 + EntityDamageApi.MULTIPLIER.invoker().get(source, attacker, target, map) / 100F);
-            if (amount <= 0) {
-                return 0;
-            }
+        if (target == entity) {
+            return amount;
         }
-        return amount;
-    }
 
-    static float realDamage(float amount, DamageSource source, LivingEntity target) {
-        Entity entity = source.getEntity();
-        if (entity instanceof LivingEntity && entity != target) {
-            LivingEntity attacker = (LivingEntity) entity;
-            Map<BaseEnchantment, Tuple<Integer, Integer>> map = EnchantUtil.mergeOf(attacker);
-            amount += EntityDamageApi.REAL_ADD.invoker().get(source, attacker, target, map);
-            if (amount <= 0) {
-                return 0;
-            }
-
-            amount *= (1 + EntityDamageApi.REAL_MULTIPLIER.invoker().get(source, attacker, target, map) / 100F);
-            if (amount <= 0) {
-                return 0;
-            }
+        Map<BaseEnchantment, Tuple<Integer, Integer>> targetMap = EnchantUtil.mergeOf(target);
+        Map<BaseEnchantment, Tuple<Integer, Integer>> map = Collections.emptyMap();
+        if (entity instanceof LivingEntity) {
+            map = EnchantUtil.mergeOf((LivingEntity) entity);
         }
-        return amount;
+
+        if (isReal) {
+            amount += EntityDamageApi.REAL_ADD.invoker().get(source, entity, target, map, map);
+            amount *= (1 + EntityDamageApi.REAL_MULTIPLIER.invoker().get(source, entity, target, map, targetMap) / 100F);
+        } else {
+            amount += EntityDamageApi.ADD.invoker().get(source, entity, target, map, map);
+            amount *= (1 + EntityDamageApi.MULTIPLIER.invoker().get(source, entity, target, map, targetMap) / 100F);
+        }
+        return Math.max(0, amount);
     }
 }

@@ -3,6 +3,7 @@ package com.doo.xenchant.enchantment.curse;
 import com.doo.xenchant.events.EntityDamageApi;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 /**
@@ -26,13 +27,13 @@ public class Regicide extends Cursed {
         super.register();
 
         EntityDamageApi.ON_DAMAGED.register(((source, attacker, target, amount, map) -> {
-            if (attacker == target || !map.containsKey(this)) {
+            if (!(attacker instanceof LivingEntity) || !map.containsKey(this)) {
                 return;
             }
 
             float limit = map.get(this).getB() * 2;
             if (amount < limit) {
-                attacker.hurt(DamageSource.mobAttack(attacker), amount);
+                attacker.hurt(DamageSource.mobAttack((LivingEntity) attacker), amount);
             }
         }));
     }

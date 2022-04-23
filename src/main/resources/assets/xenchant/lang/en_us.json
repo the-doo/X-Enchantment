@@ -95,6 +95,7 @@
   "x_enchant.menu.option.magic_immune": "Magic Immune",
   "x_enchant.menu.option.diffusion": "Diffusion",
   "x_enchant.menu.option.diffusion.damage": "Diffusion base value: %d",
+  "x_enchant.menu.option.night_break.is_real": "Night Break Is Real Hurt",
   "x_enchant.menu.option.night_break.per_level": "Night Break Per Level Percentage: %d",
   "x_enchant.menu.option.night_break.max_level": "Night Break Max Level: %d",
   "x_enchant.menu.option.broken_dawn": "Broken Dawn",

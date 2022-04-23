@@ -3,6 +3,7 @@ package com.doo.xenchant.enchantment;
 import com.doo.xenchant.Enchant;
 import com.doo.xenchant.events.EntityDamageApi;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ProjectileWeaponItem;
@@ -36,18 +37,18 @@ public class Weakness extends BaseEnchantment {
     public void register() {
         super.register();
 
-        EntityDamageApi.MULTIPLIER.register(((source, attacker, target, map) -> {
-            if (map.isEmpty() || !Enchant.option.weakness) {
+        EntityDamageApi.MULTIPLIER.register(((source, attacker, target, map, targetMap) -> {
+            if (!Enchant.option.weakness || !(attacker instanceof LivingEntity) || !map.containsKey(this)) {
                 return 0;
             }
 
             int level;
-            ItemStack stack = attacker.getMainHandItem();
+            ItemStack stack = ((LivingEntity) attacker).getMainHandItem();
             if ((level = level(stack)) < 1) {
                 return 0;
             }
 
-            return attacker.getRandom().nextInt(100) < Enchant.option.weaknessChance * level ? 200 : 0;
+            return ((LivingEntity) attacker).getRandom().nextInt(100) < Enchant.option.weaknessChance * level ? 200 : 0;
         }));
     }
 }

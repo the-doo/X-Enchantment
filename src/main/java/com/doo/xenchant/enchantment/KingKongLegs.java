@@ -25,10 +25,9 @@ public class KingKongLegs extends BaseEnchantment {
     public void register() {
         super.register();
 
-        // regis
-        EntityDamageApi.MULTIPLIER.register(((source, attacker, target, map) -> {
-            if (!source.isBypassInvul() && source.isFall() && map.containsKey(this)) {
-                return -95;
+        EntityDamageApi.MULTIPLIER.register(((source, attacker, target, map, targetMap) -> {
+            if (!source.isBypassInvul() && source.isFall() && targetMap.containsKey(this)) {
+                return -80;
             }
 
             return 0;

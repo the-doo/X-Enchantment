@@ -169,6 +169,9 @@ public class ModMenuScreen extends Screen {
             (o, d) -> Enchant.option.diffusionDamage = d,
             (g, o) -> new TranslatableComponent("x_enchant.menu.option.diffusion.damage", Enchant.option.diffusionDamage));
 
+    private static final Option NIGHT_BREAK_IS_REAL = CycleOption.createOnOff("x_enchant.menu.option.night_break.is_real", CLOSE,
+            o -> Enchant.option.nightBreakIsReal, (g, o, d) -> Enchant.option.nightBreakIsReal = d);
+
     private static final Option NIGHT_BREAK_PER_LEVEL = new ProgressOption("", 0, 100, 1F,
             o -> Enchant.option.nightBreakPerLevel,
             (o, d) -> Enchant.option.nightBreakPerLevel = d,
@@ -285,7 +288,7 @@ public class ModMenuScreen extends Screen {
             HIT_RATE_UP, QUICK_SHOOT,
             MAGIC_IMMUNE,
             DIFFUSION, DIFFUSION_DAMAGE,
-            NIGHT_BREAK_PER_LEVEL, NIGHT_BREAK_MAX_LEVEL,
+            NIGHT_BREAK_IS_REAL, NIGHT_BREAK_PER_LEVEL, NIGHT_BREAK_MAX_LEVEL,
             BROKEN_DAWN, BROKEN_DAWN_PROCESS,
             BROKEN_DAWN_SUCCESS
     };

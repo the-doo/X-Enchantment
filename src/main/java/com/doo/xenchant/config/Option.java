@@ -95,6 +95,11 @@ public class Option {
     public double diffusionDamage = 5;
 
     /**
+     * Night Break is real hurt
+     */
+    public boolean nightBreakIsReal = true;
+
+    /**
      * Night Break Max Level
      */
     public int nightBreakMaxLevel = 5;

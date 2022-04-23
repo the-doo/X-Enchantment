@@ -4,6 +4,7 @@ import com.doo.xenchant.Enchant;
 import com.doo.xenchant.events.EntityDamageApi;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
@@ -43,13 +44,13 @@ public class SuckBlood extends BaseEnchantment {
         super.register();
 
         EntityDamageApi.ON_DAMAGED.register(((source, attacker, target, amount, map) -> {
-            if (!Enchant.option.suckBlood) {
+            if (!Enchant.option.suckBlood || !(attacker instanceof LivingEntity)) {
                 return;
             }
             // need check stack
-            ItemStack stack = attacker.getMainHandItem();
+            ItemStack stack = ((LivingEntity) attacker).getMainHandItem();
             int level = level(stack);
-            if (level < 1 && level(stack = attacker.getOffhandItem()) < 1) {
+            if (level < 1 && level(stack = ((LivingEntity) attacker).getOffhandItem()) < 1) {
                 return;
             }
 
@@ -75,7 +76,7 @@ public class SuckBlood extends BaseEnchantment {
                 level *= EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SWEEPING_EDGE, stack) > 0 ? 0.2F : 0.1F;
             }
 
-            attacker.heal(level * amount / 10);
+            ((LivingEntity) attacker).heal(level * amount / 10);
         }));
     }
 }

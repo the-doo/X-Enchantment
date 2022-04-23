@@ -41,9 +41,9 @@ public class IncDamage extends BaseEnchantment {
         super.register();
 
         // DamageApi
-        EntityDamageApi.ADD.register((((source, attacker, target, map) -> {
+        EntityDamageApi.ADD.register((((source, attacker, target, map, targetMap) -> {
             ItemStack stack;
-            if (!map.containsKey(this) || (stack = attacker.getMainHandItem()).isEmpty() || level(stack) < 1) {
+            if (!(attacker instanceof LivingEntity) || !map.containsKey(this) || (stack = ((LivingEntity) attacker).getMainHandItem()).isEmpty() || level(stack) < 1) {
                 return 0;
             }
 

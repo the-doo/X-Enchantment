@@ -17,19 +17,19 @@ public abstract class PlayerEntityMixin {
 
     @ModifyVariable(method = "actuallyHurt", at = @At(value = "STORE", ordinal = 0), argsOnly = true)
     private float damageAmount(float amount, DamageSource source) {
-        return EntityDamageApi.damage(amount, source, EnchantUtil.get(this));
+        return EntityDamageApi.damage(amount, source, EnchantUtil.get(this), false);
     }
 
     @ModifyVariable(method = "actuallyHurt", at = @At(value = "STORE", ordinal = 1), argsOnly = true)
     private float realDamageAmount(float amount, DamageSource source) {
-        return EntityDamageApi.realDamage(amount, source, EnchantUtil.get(this));
+        return EntityDamageApi.damage(amount, source, EnchantUtil.get(this), true);
     }
 
     @Inject(method = "actuallyHurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/damagesource/CombatTracker;recordDamage(Lnet/minecraft/world/damagesource/DamageSource;FF)V"))
     private void damageCallback(DamageSource source, float amount, CallbackInfo ci) {
         Entity entity = source.getEntity();
         if (entity instanceof LivingEntity) {
-            EntityDamageApi.ON_DAMAGED.invoker().call(source, (LivingEntity) entity, (LivingEntity) (Object) this, amount, EnchantUtil.mergeOf((LivingEntity) entity));
+            EntityDamageApi.ON_DAMAGED.invoker().call(source, entity, (LivingEntity) (Object) this, amount, EnchantUtil.mergeOf((LivingEntity) entity));
         }
     }
 }
