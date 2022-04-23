@@ -1,8 +1,8 @@
 package com.doo.xenchant.enchantment.curse;
 
 import com.doo.xenchant.events.EntityArmorApi;
-import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 /**
  * DownArmor
@@ -12,7 +12,7 @@ public class DownArmor extends Cursed {
     public static final String NAME = "down_armor";
 
     public DownArmor() {
-        super(NAME, Rarity.COMMON, EnchantmentTarget.ARMOR, EquipmentSlot.values());
+        super(NAME, Rarity.UNCOMMON, EnchantmentCategory.ARMOR, EquipmentSlot.values());
     }
 
     @Override
@@ -24,6 +24,6 @@ public class DownArmor extends Cursed {
     public void register() {
         super.register();
 
-        EntityArmorApi.MULTIPLIER.register(((living, base, map) -> map.containsKey(this) ? -Math.max(0, map.get(this).getRight()) * 10F : 0));
+        EntityArmorApi.MULTIPLIER.register(((living, base, map) -> map.containsKey(this) ? -Math.max(0, map.get(this).getB()) * 10F : 0));
     }
 }

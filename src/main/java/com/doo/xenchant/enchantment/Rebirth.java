@@ -2,15 +2,15 @@ package com.doo.xenchant.enchantment;
 
 import com.doo.xenchant.Enchant;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 /**
  * 重生
@@ -20,12 +20,17 @@ public class Rebirth extends BaseEnchantment {
     public static final String NAME = "rebirth";
 
     public Rebirth() {
-        super(NAME, Rarity.UNCOMMON, EnchantmentTarget.ARMOR_CHEST, new EquipmentSlot[]{EquipmentSlot.CHEST});
+        super(NAME, Rarity.RARE, EnchantmentCategory.ARMOR_CHEST, new EquipmentSlot[]{EquipmentSlot.CHEST});
     }
 
     @Override
     public int getMaxLevel() {
         return 5;
+    }
+
+    @Override
+    public boolean isTradeable() {
+        return true;
     }
 
     @Override
@@ -38,7 +43,7 @@ public class Rebirth extends BaseEnchantment {
                 return true;
             }
 
-            ItemStack stack = player.getEquippedStack(EquipmentSlot.CHEST);
+            ItemStack stack = player.getItemBySlot(EquipmentSlot.CHEST);
 
             int level = level(stack);
             if (level < 1) {
@@ -48,23 +53,23 @@ public class Rebirth extends BaseEnchantment {
             // use totem effect
             // see net.minecraft.entity.LivingEntity#tryUseTotem(net.minecraft.entity.damage.DamageSource)
             player.setHealth(player.getMaxHealth());
-            player.clearStatusEffects();
-            player.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 500, 4));
-            player.addStatusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, 500, 4));
-            player.addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 500, 4));
-            player.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 500, 2));
-            player.addStatusEffect(new StatusEffectInstance(StatusEffects.JUMP_BOOST, 500, 2));
-            player.world.sendEntityStatus(player, (byte) 35);
+            player.removeAllEffects();
+            player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 500, 4));
+            player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 500, 4));
+            player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 500, 4));
+            player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 500, 2));
+            player.addEffect(new MobEffectInstance(MobEffects.JUMP, 500, 2));
+            player.level.broadcastEntityEvent(player, (byte) 35);
 
             // decrement 1 level, see ItemStack.addEnchantment
-            NbtList list = stack.getOrCreateNbt().getList(ItemStack.ENCHANTMENTS_KEY, NbtElement.COMPOUND_TYPE);
-            list.stream().filter(e -> getId().equals(EnchantmentHelper.getIdFromNbt((NbtCompound) e)))
+            ListTag list = stack.getOrCreateTag().getList(ItemStack.TAG_ENCH, Tag.TAG_COMPOUND);
+            list.stream().filter(e -> getId().equals(EnchantmentHelper.getEnchantmentId((CompoundTag) e)))
                     .findFirst().ifPresent(e -> {
                         if (level - 1 < 1) {
                             list.remove(e);
                             return;
                         }
-                        EnchantmentHelper.writeLevelToNbt((NbtCompound) e, level - 1);
+                        EnchantmentHelper.setEnchantmentLevel((CompoundTag) e, level - 1);
                     });
             return false;
         }));

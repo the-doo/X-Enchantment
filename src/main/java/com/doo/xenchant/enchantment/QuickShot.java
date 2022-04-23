@@ -2,8 +2,8 @@ package com.doo.xenchant.enchantment;
 
 import com.doo.xenchant.Enchant;
 import com.doo.xenchant.events.LivingApi;
-import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 /**
  * 快速射击
@@ -13,7 +13,7 @@ public class QuickShot extends BaseEnchantment {
     public static final String NAME = "quick_shot";
 
     public QuickShot() {
-        super(NAME, Rarity.UNCOMMON, EnchantmentTarget.BOW, new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND});
+        super(NAME, Rarity.UNCOMMON, EnchantmentCategory.BOW, new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND});
     }
 
     @Override

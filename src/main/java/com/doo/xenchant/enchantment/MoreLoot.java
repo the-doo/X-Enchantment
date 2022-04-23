@@ -2,20 +2,20 @@ package com.doo.xenchant.enchantment;
 
 import com.doo.xenchant.Enchant;
 import com.doo.xenchant.events.LootApi;
-import net.minecraft.block.BlockState;
-import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Wearable;
-import net.minecraft.loot.context.LootContext;
-import net.minecraft.loot.context.LootContextParameters;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Wearable;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Random;
 import java.util.function.Consumer;
@@ -29,7 +29,7 @@ public class MoreLoot extends BaseEnchantment {
     public static final String NAME = "more_loot";
 
     public MoreLoot() {
-        super(NAME, Rarity.RARE, EnchantmentTarget.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND});
+        super(NAME, Rarity.RARE, EnchantmentCategory.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND});
     }
 
     @Override
@@ -38,7 +38,7 @@ public class MoreLoot extends BaseEnchantment {
     }
 
     @Override
-    public boolean isAcceptableItem(ItemStack stack) {
+    public boolean canEnchant(ItemStack stack) {
         return !(stack.getItem() instanceof Wearable);
     }
 
@@ -47,7 +47,7 @@ public class MoreLoot extends BaseEnchantment {
         super.register();
 
         LootApi.HANDLER.register(((killer, stack, baseConsumer, context) -> {
-            if (!Enchant.option.moreLoot || killer.isDead() || killer.world.isClient()) {
+            if (!Enchant.option.moreLoot || killer.isDeadOrDying() || killer.level.isClientSide()) {
                 return null;
             }
 
@@ -57,8 +57,8 @@ public class MoreLoot extends BaseEnchantment {
             }
 
             // no effect on
-            BlockState block = context.get(LootContextParameters.BLOCK_STATE);
-            if (block != null && stack.getItem().isSuitableFor(block)) {
+            BlockState block = context.getParamOrNull(LootContextParams.BLOCK_STATE);
+            if (block != null && stack.getItem().isCorrectToolForDrops(block)) {
                 return null;
             }
 
@@ -75,8 +75,8 @@ public class MoreLoot extends BaseEnchantment {
                 }
 
                 // Add level xp
-                if (killer instanceof ServerPlayerEntity) {
-                    ((ServerPlayerEntity) killer).addExperience(rand);
+                if (killer instanceof ServerPlayer) {
+                    ((ServerPlayer) killer).giveExperiencePoints(rand);
                 }
 
                 if (!i.isStackable()) {
@@ -85,7 +85,7 @@ public class MoreLoot extends BaseEnchantment {
                     return i;
                 }
 
-                int max = i.getMaxCount();
+                int max = i.getMaxStackSize();
                 int count = i.getCount() * (1 + rand);
                 if (count <= max) {
                     i.setCount(count);
@@ -106,7 +106,7 @@ public class MoreLoot extends BaseEnchantment {
     }
 
     private int rand(int level, Random random) {
-        // 19% only 0, 2-19
+        // more loot chance
         int ran = random.nextInt(100);
         if (ran >= Enchant.option.moreLootRate - 1) {
             return 0;
@@ -117,18 +117,18 @@ public class MoreLoot extends BaseEnchantment {
             level *= Enchant.option.moreMoreLootMultiplier;
         }
 
-        // rand min: 1 ~ level * 1.5
-        return Math.max(1, (int) (random.nextInt(level) + level / 2F));
+        // rand min: level / 2 ~ level * 1.5
+        return Math.max(level / 2, (int) (random.nextInt(level) + level / 2F));
     }
 
     private Consumer<ItemStack> getDropper(LivingEntity living, LootContext context) {
-        BlockState state = context.get(LootContextParameters.BLOCK_STATE);
+        BlockState state = context.getParamOrNull(LootContextParams.BLOCK_STATE);
         if (state != null) {
-            Vec3d vec3d = context.get(LootContextParameters.ORIGIN);
-            return vec3d == null ? living::dropStack : i -> state.onStacksDropped((ServerWorld) living.getWorld(), new BlockPos(vec3d), i);
+            Vec3 vec3d = context.getParamOrNull(LootContextParams.ORIGIN);
+            return vec3d == null ? living::spawnAtLocation : i -> state.spawnAfterBreak((ServerLevel) living.level, new BlockPos(vec3d), i);
         }
 
-        Entity e = context.get(LootContextParameters.THIS_ENTITY);
-        return e != living && e != null ? e::dropStack : living::dropStack;
+        Entity e = context.getParamOrNull(LootContextParams.THIS_ENTITY);
+        return e != living && e != null ? e::spawnAtLocation : living::spawnAtLocation;
     }
 }

@@ -2,9 +2,9 @@ package com.doo.xenchant.events;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -19,6 +19,6 @@ public interface AnvilApi {
 
     @FunctionalInterface
     interface OnEnchanted {
-        void handle(PlayerEntity player, Map<Enchantment, Integer> map, ItemStack first, ItemStack second, ItemStack result);
+        void handle(Player player, Map<Enchantment, Integer> map, ItemStack first, ItemStack second, ItemStack result);
     }
 }

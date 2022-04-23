@@ -1,8 +1,8 @@
 package com.doo.xenchant.enchantment.curse;
 
 import com.doo.xenchant.events.ItemApi;
-import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 /**
  * Thin
@@ -12,7 +12,7 @@ public class Thin extends Cursed {
     public static final String NAME = "thin";
 
     public Thin() {
-        super(NAME, Rarity.COMMON, EnchantmentTarget.BREAKABLE, EquipmentSlot.values());
+        super(NAME, Rarity.COMMON, EnchantmentCategory.BREAKABLE, EquipmentSlot.values());
     }
 
     @Override
@@ -35,7 +35,7 @@ public class Thin extends Cursed {
             }
 
             if (owner.getRandom().nextInt(100) < 25) {
-                stack.setDamage(stack.getDamage() + level * 2);
+                stack.setDamageValue(stack.getDamageValue() + level * 2);
             }
         }));
     }

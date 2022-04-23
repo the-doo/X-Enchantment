@@ -1,6 +1,6 @@
 package com.doo.xenchant.interfaces;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 import java.util.function.Function;

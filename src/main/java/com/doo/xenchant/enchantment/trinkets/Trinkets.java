@@ -6,22 +6,24 @@ import com.doo.xenchant.events.AnvilApi;
 import com.doo.xenchant.events.GrindApi;
 import com.google.common.collect.Maps;
 import dev.emi.trinkets.api.TrinketItem;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.attribute.EntityAttribute;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * It's trinkets enchantment, maybe you don't like it
@@ -36,19 +38,19 @@ public class Trinkets extends BaseEnchantment {
 
     private static final Map<String, Trinkets> KEY_MAP = Maps.newHashMap();
 
-    private static final Text SMALL = new TranslatableText(TS_KEY + ".small");
+    private static final Component SMALL = new TranslatableComponent(TS_KEY + ".small");
 
-    private static final Text MID = new TranslatableText(TS_KEY + ".mid");
+    private static final Component MID = new TranslatableComponent(TS_KEY + ".mid");
 
-    private static final Text LARGE = new TranslatableText(TS_KEY + ".large");
+    private static final Component LARGE = new TranslatableComponent(TS_KEY + ".large");
 
     private static boolean regis = false;
 
 
-    private final EntityAttribute attr;
+    private final Attribute attr;
 
     public Trinkets(Attrs attrs) {
-        super(NAME + "_-_" + attrs.attribute.getTranslationKey(), Rarity.COMMON, EnchantmentTarget.BREAKABLE, EquipmentSlot.values());
+        super(NAME + "_-_" + attrs.attribute.getDescriptionId(), Rarity.UNCOMMON, EnchantmentCategory.BREAKABLE, EquipmentSlot.values());
 
         attr = attrs.attribute;
     }
@@ -59,29 +61,34 @@ public class Trinkets extends BaseEnchantment {
     }
 
     @Override
-    public final Text getName(int level) {
-        return new TranslatableText(getTranslationKey(), new TranslatableText(attr.getTranslationKey()).getString())
+    public final Component getFullname(int level) {
+        return new TranslatableComponent(getDescriptionId(), new TranslatableComponent(attr.getDescriptionId()).getString())
                 .append(level == 1 ? SMALL : level == 2 ? MID : LARGE)
-                .formatted(Formatting.GREEN);
+                .withStyle(ChatFormatting.GREEN);
     }
 
     @Override
-    public String getTranslationKey() {
+    public String getDescriptionId() {
         return "enchantment.x_enchant.trinkets.attr";
     }
 
     @Override
-    public final boolean isTreasure() {
+    public final boolean isTradeable() {
         return true;
     }
 
     @Override
-    public final boolean isAcceptableItem(ItemStack stack) {
-        return stack.getItem() instanceof TrinketItem && !stack.hasEnchantments() || StringUtils.equals(stack.getOrCreateNbt().getString(nbtKey(FLAG)), getTranslationKey());
+    public boolean isDiscoverable() {
+        return super.isDiscoverable();
     }
 
     @Override
-    protected final boolean canAccept(Enchantment other) {
+    public final boolean canEnchant(ItemStack stack) {
+        return stack.getItem() instanceof TrinketItem && !stack.isEnchanted() || StringUtils.equals(stack.getOrCreateTag().getString(nbtKey(FLAG)), getDescriptionId());
+    }
+
+    @Override
+    protected final boolean checkCompatibility(@NotNull Enchantment other) {
         return false;
     }
 
@@ -94,7 +101,7 @@ public class Trinkets extends BaseEnchantment {
     public void register() {
         super.register();
 
-        KEY_MAP.put(attr.getTranslationKey(), this);
+        KEY_MAP.put(attr.getDescriptionId(), this);
 
         if (regis) {
             return;
@@ -110,18 +117,18 @@ public class Trinkets extends BaseEnchantment {
             map.entrySet().stream().filter(e -> e.getKey() instanceof Trinkets).findFirst().ifPresent(e -> {
                 Enchantment enchantment = e.getKey();
                 Integer level = e.getValue();
-                NbtCompound nbt = result.getOrCreateNbt();
+                CompoundTag nbt = result.getOrCreateTag();
                 if (!nbt.contains("TrinketAttributeModifiers", 9)) {
-                    nbt.put("TrinketAttributeModifiers", new NbtList());
+                    nbt.put("TrinketAttributeModifiers", new ListTag());
                 }
-                NbtList nbtList = nbt.getList("TrinketAttributeModifiers", 10);
+                ListTag nbtList = nbt.getList("TrinketAttributeModifiers", 10);
 
                 double value = level == 1 ? 0.05 : level == 2 ? 0.1 : 0.25;
-                NbtCompound nbtCompound = new EntityAttributeModifier("trinkets", value, EntityAttributeModifier.Operation.MULTIPLY_TOTAL).toNbt();
+                CompoundTag nbtCompound = new AttributeModifier("trinkets", value, AttributeModifier.Operation.MULTIPLY_TOTAL).save();
                 nbtCompound.putDouble("Amount", value);
-                nbtCompound.putString("AttributeName", Registry.ATTRIBUTE.getId(((Trinkets) enchantment).attr).toString());
+                nbtCompound.putString("AttributeName", Registry.ATTRIBUTE.getKey(((Trinkets) enchantment).attr).toString());
                 nbtList.add(nbtCompound);
-                nbt.putString(nbtKey(FLAG), ((Trinkets) enchantment).attr.getTranslationKey());
+                nbt.putString(nbtKey(FLAG), ((Trinkets) enchantment).attr.getDescriptionId());
             });
         }));
 
@@ -131,32 +138,33 @@ public class Trinkets extends BaseEnchantment {
                 return;
             }
 
-            NbtCompound nbt = result.getOrCreateNbt();
+            CompoundTag nbt = result.getOrCreateTag();
             Trinkets e = KEY_MAP.get(nbt.getString(nbtKey(FLAG)));
             if (e == null) {
                 return;
             }
 
             if (!nbt.contains("TrinketAttributeModifiers", 9)) {
-                nbt.put("TrinketAttributeModifiers", new NbtList());
+                nbt.put("TrinketAttributeModifiers", new ListTag());
             }
-            NbtList nbtList = nbt.getList("TrinketAttributeModifiers", 10);
-            nbtList.removeIf(n -> ((NbtCompound) n).getString("AttributeName").equals(Registry.ATTRIBUTE.getId(e.attr).toString()));
+            ListTag nbtList = nbt.getList("TrinketAttributeModifiers", 10);
+            Optional.ofNullable(Registry.ATTRIBUTE.getKey(e.attr))
+                    .ifPresent(k -> nbtList.removeIf(n -> k.toString().equals(((CompoundTag) n).getString("AttributeName"))));
             nbt.remove(nbtKey(FLAG));
         }));
     }
 
     public enum Attrs {
-        HEALTH(EntityAttributes.GENERIC_MAX_HEALTH),
-        ARMOR(EntityAttributes.GENERIC_ARMOR),
-        TOUGHNESS(EntityAttributes.GENERIC_ARMOR_TOUGHNESS),
-        SPEED(EntityAttributes.GENERIC_MOVEMENT_SPEED),
-        ATTACK(EntityAttributes.GENERIC_ATTACK_DAMAGE),
+        HEALTH(Attributes.MAX_HEALTH),
+        ARMOR(Attributes.ARMOR),
+        TOUGHNESS(Attributes.ARMOR_TOUGHNESS),
+        SPEED(Attributes.MOVEMENT_SPEED),
+        ATTACK(Attributes.ATTACK_DAMAGE),
         ;
 
-        public final EntityAttribute attribute;
+        public final Attribute attribute;
 
-        Attrs(EntityAttribute attribute) {
+        Attrs(Attribute attribute) {
             this.attribute = attribute;
         }
     }

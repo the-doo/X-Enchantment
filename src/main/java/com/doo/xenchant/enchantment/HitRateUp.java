@@ -2,9 +2,9 @@ package com.doo.xenchant.enchantment;
 
 import com.doo.xenchant.Enchant;
 import com.doo.xenchant.events.PersistentApi;
-import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 /**
  * 命中率提升
@@ -14,7 +14,7 @@ public class HitRateUp extends BaseEnchantment {
     public static final String NAME = "hit_rate_up";
 
     public HitRateUp() {
-        super(NAME, Rarity.UNCOMMON, EnchantmentTarget.BOW, new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND});
+        super(NAME, Rarity.UNCOMMON, EnchantmentCategory.BOW, new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND});
     }
 
     @Override
@@ -36,8 +36,8 @@ public class HitRateUp extends BaseEnchantment {
                 return null;
             }
 
-            return world.getOtherEntities(owner, box.expand(level), e -> e instanceof LivingEntity)
-                    .stream().filter(e -> !e.isTeammate(owner) && e.squaredDistanceTo(pos) <= level).findFirst()
+            return world.getEntities(owner, box.inflate(level), e -> e instanceof LivingEntity)
+                    .stream().filter(e -> !e.isAlliedTo(owner) && e.distanceToSqr(pos) <= level).findFirst()
                     .orElse(null);
         }));
     }

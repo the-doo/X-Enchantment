@@ -2,11 +2,12 @@ package com.doo.xenchant.events;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.entity.Entity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -35,11 +36,26 @@ public interface PersistentApi {
 
     @FunctionalInterface
     interface OnColl {
-        Entity getEntity(Entity player, ItemStack stack, World world, Vec3d pos, Box box);
+        Entity getEntity(Entity player, ItemStack stack, Level world, Vec3 pos, AABB box);
     }
 
     @FunctionalInterface
     interface OpSpeed {
         float get(Entity owner, @Nullable ItemStack stack);
+    }
+
+    static float projSpeed(float speed, Entity owner, ItemStack shooter) {
+        if (owner instanceof LivingEntity && shooter != null) {
+            speed += PersistentApi.ADD.invoker().get(owner, shooter);
+            if (speed <= 0) {
+                return 0;
+            }
+
+            speed *= (1 + PersistentApi.MULTIPLIER.invoker().get(owner, shooter) / 100F);
+            if (speed <= 0) {
+                return 0;
+            }
+        }
+        return speed;
     }
 }

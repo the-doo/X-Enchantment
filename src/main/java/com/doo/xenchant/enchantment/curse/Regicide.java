@@ -1,9 +1,10 @@
 package com.doo.xenchant.enchantment.curse;
 
 import com.doo.xenchant.events.EntityDamageApi;
-import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 /**
  * Regicide
@@ -13,7 +14,7 @@ public class Regicide extends Cursed {
     public static final String NAME = "regicide";
 
     public Regicide() {
-        super(NAME, Rarity.COMMON, EnchantmentTarget.BREAKABLE, EquipmentSlot.values());
+        super(NAME, Rarity.RARE, EnchantmentCategory.BREAKABLE, EquipmentSlot.values());
     }
 
     @Override
@@ -26,13 +27,13 @@ public class Regicide extends Cursed {
         super.register();
 
         EntityDamageApi.ON_DAMAGED.register(((source, attacker, target, amount, map) -> {
-            if (attacker == target || !map.containsKey(this)) {
+            if (!(attacker instanceof LivingEntity) || !map.containsKey(this)) {
                 return;
             }
 
-            float limit = map.get(this).getRight() * 2;
+            float limit = map.get(this).getB() * 2;
             if (amount < limit) {
-                attacker.damage(DamageSource.mob(attacker), amount);
+                attacker.hurt(DamageSource.mobAttack((LivingEntity) attacker), amount);
             }
         }));
     }

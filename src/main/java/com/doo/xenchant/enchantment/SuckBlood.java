@@ -2,15 +2,14 @@ package com.doo.xenchant.enchantment;
 
 import com.doo.xenchant.Enchant;
 import com.doo.xenchant.events.EntityDamageApi;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.RangedWeaponItem;
-import net.minecraft.item.ToolItem;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 
 /**
  * 吸血
@@ -20,7 +19,7 @@ public class SuckBlood extends BaseEnchantment {
     public static final String NAME = "suck_blood";
 
     public SuckBlood() {
-        super(NAME, Rarity.RARE, EnchantmentTarget.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND});
+        super(NAME, Rarity.RARE, EnchantmentCategory.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND});
     }
 
     @Override
@@ -29,15 +28,15 @@ public class SuckBlood extends BaseEnchantment {
     }
 
     @Override
-    public boolean isTreasure() {
+    public boolean isTradeable() {
         return true;
     }
 
     @Override
-    public boolean isAcceptableItem(ItemStack stack) {
-        return stack.getItem() instanceof ToolItem ||
-                stack.getItem() instanceof RangedWeaponItem ||
-                stack.getAttributeModifiers(EquipmentSlot.MAINHAND).containsKey(EntityAttributes.GENERIC_ATTACK_DAMAGE);
+    public boolean canEnchant(ItemStack stack) {
+        return stack.getItem() instanceof TieredItem ||
+                stack.getItem() instanceof ProjectileWeaponItem ||
+                stack.getAttributeModifiers(EquipmentSlot.MAINHAND).containsKey(Attributes.ATTACK_DAMAGE);
     }
 
     @Override
@@ -45,52 +44,39 @@ public class SuckBlood extends BaseEnchantment {
         super.register();
 
         EntityDamageApi.ON_DAMAGED.register(((source, attacker, target, amount, map) -> {
-            if (!Enchant.option.suckBlood) {
-                return;
-            }
-            // need check enchantment
-            if (!map.containsKey(this)) {
+            if (!Enchant.option.suckBlood || !(attacker instanceof LivingEntity)) {
                 return;
             }
             // need check stack
-            ItemStack stack = attacker.getMainHandStack();
+            ItemStack stack = ((LivingEntity) attacker).getMainHandItem();
             int level = level(stack);
-            if (level < 1 || level(stack = attacker.getOffHandStack()) < 1 || !(stack.getItem() instanceof RangedWeaponItem)) {
+            if (level < 1 && level(stack = ((LivingEntity) attacker).getOffhandItem()) < 1) {
+                return;
+            }
+
+            if (!(stack.getItem() instanceof ProjectileWeaponItem || stack.getItem() instanceof SwordItem || stack.getItem() instanceof DiggerItem)) {
                 return;
             }
 
             // try log
             String key = getId().toString();
-            NbtCompound compound = stack.getOrCreateNbt();
+            CompoundTag compound = stack.getOrCreateTag();
             if (!compound.contains(key)) {
-                compound.put(key, new NbtCompound());
+                compound.put(key, new CompoundTag());
             }
             compound = compound.getCompound(key);
 
             long id = compound.getInt("id");
             long age = compound.getLong("age");
-            int count = compound.getInt("count");
-            if (id == attacker.getId() && age >= attacker.age && count > 5) {
-                return;
-            }
-
             compound.putInt("id", attacker.getId());
-            compound.putLong("age", attacker.age);
+            compound.putLong("age", attacker.tickCount);
 
-            // if change user or next attack
-            if (id != attacker.getId() || age < attacker.age) {
-                count = 0;
+            // suck scale - if SWEEPING attack
+            if (id == attacker.getId() && age == attacker.tickCount) {
+                level *= EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SWEEPING_EDGE, stack) > 0 ? 0.2F : 0.1F;
             }
 
-            // suck scale
-            if (count >= 1) {
-                level *= EnchantmentHelper.getLevel(Enchantments.SWEEPING, stack) > 0 ? 0.2F : 0.1F;
-            }
-
-            attacker.heal(level * amount / 10);
-
-            count++;
-            compound.putInt("count", count);
+            ((LivingEntity) attacker).heal(level * amount / 10);
         }));
     }
 }

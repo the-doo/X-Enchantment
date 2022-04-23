@@ -2,14 +2,14 @@ package com.doo.xenchant.enchantment.halo;
 
 import com.doo.xenchant.attribute.LimitTimeModifier;
 import com.doo.xenchant.events.LivingApi;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.AttributeContainer;
-import net.minecraft.entity.attribute.EntityAttribute;
-import net.minecraft.entity.attribute.EntityAttributeInstance;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeMap;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +24,12 @@ public class AttrHalo extends LivingHalo {
 
     public static boolean regis = false;
 
-    private static final List<EntityAttribute> ATTRIBUTES = new ArrayList<>();
+    private static final List<Attribute> ATTRIBUTES = new ArrayList<>();
 
-    private final EntityAttribute attribute;
+    private final Attribute attribute;
 
-    public AttrHalo(EntityAttribute attribute) {
-        super(NAME + "_-_" + attribute.getTranslationKey());
+    public AttrHalo(Attribute attribute) {
+        super(NAME + "_-_" + attribute.getDescriptionId());
 
         this.attribute = attribute;
 
@@ -37,17 +37,17 @@ public class AttrHalo extends LivingHalo {
     }
 
     @Override
-    public String getTranslationKey() {
+    public String getDescriptionId() {
         return "enchantment.x_enchant.halo_attribute";
     }
 
     @Override
-    public Text getName(int level) {
-        TranslatableText mutableText = new TranslatableText(getTranslationKey(), new TranslatableText(attribute.getTranslationKey()).getString());
-        mutableText.formatted(Formatting.GOLD);
+    public Component getFullname(int level) {
+        TranslatableComponent mutableText = new TranslatableComponent(getDescriptionId(), new TranslatableComponent(attribute.getDescriptionId()).getString());
+        mutableText.withStyle(ChatFormatting.GOLD);
 
         if (level != 1 || this.getMaxLevel() != 1) {
-            mutableText.append(" ").append(new TranslatableText("enchantment.level." + level));
+            mutableText.append(" ").append(new TranslatableComponent("enchantment.level." + level));
         }
 
         return mutableText;
@@ -59,7 +59,7 @@ public class AttrHalo extends LivingHalo {
     }
 
     @Override
-    public boolean isTreasure() {
+    public boolean isTradeable() {
         return true;
     }
 
@@ -73,9 +73,9 @@ public class AttrHalo extends LivingHalo {
         regis = true;
 
         LivingApi.SEVER_TAIL_TICK.register(living -> {
-            AttributeContainer attributes = living.getAttributes();
+            AttributeMap attributes = living.getAttributes();
             ATTRIBUTES.forEach(a -> {
-                EntityAttributeInstance instance = attributes.getCustomInstance(a);
+                AttributeInstance instance = attributes.getInstance(a);
                 if (instance != null) {
                     instance.getModifiers().forEach(m -> {
                         if ((m instanceof LimitTimeModifier && ((LimitTimeModifier) m).isExpire())) {
@@ -90,16 +90,16 @@ public class AttrHalo extends LivingHalo {
     @Override
     public void onTarget(LivingEntity entity, Integer level, List<LivingEntity> targets) {
         targets.forEach(e -> {
-            EntityAttributeInstance attr = e.getAttributes().getCustomInstance(attribute);
+            AttributeInstance attr = e.getAttributes().getInstance(attribute);
             if (attr == null) {
                 return;
             }
 
             double value = level + (attr.getBaseValue() == 0 ? 1 : attr.getBaseValue());
-            EntityAttributeModifier.Operation op = attr.getBaseValue() == 0 ?
-                    EntityAttributeModifier.Operation.MULTIPLY_TOTAL : EntityAttributeModifier.Operation.ADDITION;
+            AttributeModifier.Operation op = attr.getBaseValue() == 0 ?
+                    AttributeModifier.Operation.MULTIPLY_TOTAL : AttributeModifier.Operation.ADDITION;
 
-            addOrResetModifier(attr, LimitTimeModifier.get(getId().toString(), value, op, (int) (e.age + SECOND * 1.2), e));
+            addOrResetModifier(attr, LimitTimeModifier.get(getId().toString(), value, op, (int) (e.tickCount + SECOND * 1.2), e));
         });
     }
 
@@ -109,14 +109,14 @@ public class AttrHalo extends LivingHalo {
      * @param attr     修改的属性
      * @param modifier 修改值 默认值
      */
-    private void addOrResetModifier(EntityAttributeInstance attr, LimitTimeModifier modifier) {
-        Optional<EntityAttributeModifier> optional = attr.getModifiers().stream()
+    private void addOrResetModifier(AttributeInstance attr, LimitTimeModifier modifier) {
+        Optional<AttributeModifier> optional = attr.getModifiers().stream()
                 .filter(m -> m.getName().equals(getId().toString()) && m instanceof LimitTimeModifier).findAny();
 
         if (optional.isPresent()) {
             ((LimitTimeModifier) optional.get()).reset((float) (SECOND * 1.2));
         } else {
-            attr.addTemporaryModifier(modifier);
+            attr.addTransientModifier(modifier);
         }
     }
 }

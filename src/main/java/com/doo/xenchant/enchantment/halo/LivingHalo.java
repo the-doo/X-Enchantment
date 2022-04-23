@@ -3,12 +3,12 @@ package com.doo.xenchant.enchantment.halo;
 import com.doo.xenchant.Enchant;
 import com.doo.xenchant.util.EnchantUtil;
 import dev.ftb.mods.ftbteams.FTBTeamsAPI;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.Tameable;
-import net.minecraft.entity.mob.Monster;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.math.Box;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.AABB;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +29,7 @@ public abstract class LivingHalo extends HaloEnchantment<LivingEntity> {
     }
 
     @Override
-    protected final List<LivingEntity> targets(LivingEntity living, Box box) {
+    protected final List<LivingEntity> targets(LivingEntity living, AABB box) {
         if (living == null) {
             return Collections.emptyList();
         }
@@ -37,10 +37,10 @@ public abstract class LivingHalo extends HaloEnchantment<LivingEntity> {
         Predicate<LivingEntity> filter = e -> getType().predicate.test(living, e);
         // if harmful is monster used, target only player
         if (getType() == Type.HARMFUL && living instanceof Monster) {
-            filter = Entity::isPlayer;
+            filter = e -> e instanceof Player;
         }
 
-        return living.world.getEntitiesByClass(LivingEntity.class, box, filter);
+        return living.level.getEntitiesOfClass(LivingEntity.class, box, filter);
     }
 
     /**
@@ -65,21 +65,21 @@ public abstract class LivingHalo extends HaloEnchantment<LivingEntity> {
     }
 
     private static boolean hasSameTeam(LivingEntity owner, LivingEntity target) {
-        if (target.isTeammate(owner)) {
+        if (target.isAlliedTo(owner)) {
             return true;
         }
 
         // support ftb team
-        if (!EnchantUtil.hasFTBTeam || !(owner instanceof ServerPlayerEntity)) {
+        if (!EnchantUtil.hasFTBTeam || !(owner instanceof ServerPlayer)) {
             return false;
         }
         // same team
-        if (target instanceof ServerPlayerEntity) {
-            return FTBTeamsAPI.arePlayersInSameTeam((ServerPlayerEntity) owner, (ServerPlayerEntity) target);
+        if (target instanceof ServerPlayer) {
+            return FTBTeamsAPI.arePlayersInSameTeam((ServerPlayer) owner, (ServerPlayer) target);
         }
         // pet same team
-        if (target instanceof Tameable && ((Tameable) target).getOwner() instanceof ServerPlayerEntity) {
-            return FTBTeamsAPI.arePlayersInSameTeam((ServerPlayerEntity) owner, (ServerPlayerEntity) ((Tameable) target).getOwner());
+        if (target instanceof TamableAnimal && ((TamableAnimal) target).getOwner() instanceof ServerPlayer) {
+            return FTBTeamsAPI.arePlayersInSameTeam((ServerPlayer) owner, (ServerPlayer) ((TamableAnimal) target).getOwner());
         }
         return false;
     }

@@ -2,14 +2,14 @@ package com.doo.xenchant.enchantment;
 
 import com.doo.xenchant.events.LootApi;
 import com.doo.xenchant.util.EnchantUtil;
-import net.minecraft.enchantment.EnchantmentLevelEntry;
-import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.projectile.FishingBobberEntity;
-import net.minecraft.item.EnchantedBookItem;
-import net.minecraft.item.FishingRodItem;
-import net.minecraft.loot.context.LootContextParameters;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.projectile.FishingHook;
+import net.minecraft.world.item.EnchantedBookItem;
+import net.minecraft.world.item.FishingRodItem;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.EnchantmentInstance;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 
 import java.util.Random;
 
@@ -23,7 +23,7 @@ public class Librarian extends BaseEnchantment {
     public static final String NAME = "librarian";
 
     public Librarian() {
-        super(NAME, Rarity.RARE, EnchantmentTarget.FISHING_ROD, EnchantUtil.ALL_HAND);
+        super(NAME, Rarity.RARE, EnchantmentCategory.FISHING_ROD, EnchantUtil.ALL_HAND);
     }
 
     @Override
@@ -45,8 +45,8 @@ public class Librarian extends BaseEnchantment {
                 return null;
             }
 
-            Entity entity = context.get(LootContextParameters.THIS_ENTITY);
-            if (!(entity instanceof FishingBobberEntity)) {
+            Entity entity = context.getParamOrNull(LootContextParams.THIS_ENTITY);
+            if (!(entity instanceof FishingHook)) {
                 return null;
             }
 
@@ -61,10 +61,10 @@ public class Librarian extends BaseEnchantment {
             return i -> {
                 EnchantUtil.rand(rarity, random).ifPresent(e -> {
                     int l = random.nextInt(e.getMaxLevel());
-                    trigger.dropStack(EnchantedBookItem.forEnchantment(new EnchantmentLevelEntry(e, l)));
+                    trigger.spawnAtLocation(EnchantedBookItem.createForEnchantment(new EnchantmentInstance(e, l)));
 
-                    if (trigger instanceof ServerPlayerEntity) {
-                        ((ServerPlayerEntity) trigger).addExperience(l);
+                    if (trigger instanceof ServerPlayer) {
+                        ((ServerPlayer) trigger).giveExperiencePoints(l);
                     }
                 });
                 return i;

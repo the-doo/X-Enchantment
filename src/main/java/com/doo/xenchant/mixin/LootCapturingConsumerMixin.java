@@ -2,7 +2,7 @@ package com.doo.xenchant.mixin;
 
 import com.blamejared.crafttweaker.api.loot.LootCapturingConsumer;
 import com.doo.xenchant.interfaces.ILootCapturingConsumer;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

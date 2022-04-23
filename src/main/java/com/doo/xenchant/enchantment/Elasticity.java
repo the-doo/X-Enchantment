@@ -1,8 +1,8 @@
 package com.doo.xenchant.enchantment;
 
 import com.doo.xenchant.events.PersistentApi;
-import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 /**
  * Elasticity Up
@@ -12,7 +12,7 @@ public class Elasticity extends BaseEnchantment {
     public static final String NAME = "elasticity";
 
     public Elasticity() {
-        super(NAME, Rarity.VERY_RARE, EnchantmentTarget.BOW, new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND});
+        super(NAME, Rarity.VERY_RARE, EnchantmentCategory.BOW, new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND});
     }
 
     @Override

@@ -3,7 +3,7 @@
   "enchantment.x_enchant.auto_fish.desc": "Automatically fishes, and has a 25% chance to add 10 durability.",
   "enchantment.x_enchant.librarian": "Librarian",
   "enchantment.x_enchant.librarian.desc": "20% chance for discover the enchanted book in fishing.",
-  "enchantment.x_enchant.suck_blood": "Such Blood",
+  "enchantment.x_enchant.suck_blood": "Suck Blood",
   "enchantment.x_enchant.suck_blood.desc": "Heal when you attack: level x 0.1",
   "enchantment.x_enchant.weakness": "Weakness Attack",
   "enchantment.x_enchant.weakness.desc": "3 x damage when you attack: level x 1.5% chance",
@@ -12,7 +12,7 @@
   "enchantment.x_enchant.rebirth": "Rebirth",
   "enchantment.x_enchant.rebirth.desc": "Totem enchantment version",
   "enchantment.x_enchant.more_loot": "More Loot",
-  "enchantment.x_enchant.more_loot.desc": "20% chance to get multi loot when you kill or mine, it is related to the level, 1% chance will be rich",
+  "enchantment.x_enchant.more_loot.desc": "Can be getting multi loot when you kill or mine, it is related to the level",
   "enchantment.x_enchant.hit_rate_up": "Hit Rate Up",
   "enchantment.x_enchant.hit_rate_up.desc": "A larger arrow bounding box, maybe it can hit on target easy",
   "enchantment.x_enchant.quick_shot": "Quick Shot",
@@ -84,6 +84,7 @@
   "x_enchant.menu.option.auto_fish": "Auto Fishing",
   "x_enchant.menu.option.suck_blood": "Such Blood",
   "x_enchant.menu.option.weakness": "Weakness Attack",
+  "x_enchant.menu.option.weakness_chance": "Weakness Attack Chance Per Level",
   "x_enchant.menu.option.rebirth": "Rebirth",
   "x_enchant.menu.option.more_loot": "More Loot",
   "x_enchant.menu.option.more_loot_rate": "More Loot Rate: %d",
@@ -94,6 +95,7 @@
   "x_enchant.menu.option.magic_immune": "Magic Immune",
   "x_enchant.menu.option.diffusion": "Diffusion",
   "x_enchant.menu.option.diffusion.damage": "Diffusion base value: %d",
+  "x_enchant.menu.option.night_break.is_real": "Night Break Is Real Hurt",
   "x_enchant.menu.option.night_break.per_level": "Night Break Per Level Percentage: %d",
   "x_enchant.menu.option.night_break.max_level": "Night Break Max Level: %d",
   "x_enchant.menu.option.broken_dawn": "Broken Dawn",
@@ -115,5 +117,6 @@
   "x_enchant.menu.option.halo_effect_level_other": "Other Effect Max Level: %d",
 
   "x_enchant.menu.option.status_effect_halo": "Status Effect Halo Settings",
-  "x_enchant.menu.option.status_effect_halo.enabled_all": "Enabled All"
+  "x_enchant.menu.option.status_effect_halo.enabled_all": "Enabled All",
+  "x_enchant.menu.option.status_effect_halo.only_potion": "Only Potion"
 }

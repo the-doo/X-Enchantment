@@ -1,11 +1,11 @@
 package com.doo.xenchant.enchantment;
 
 import com.doo.xenchant.events.LivingApi;
-import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 /**
  * Smart
@@ -15,7 +15,7 @@ public class Smart extends BaseEnchantment {
     public static final String NAME = "smart";
 
     public Smart() {
-        super(NAME, Rarity.VERY_RARE, EnchantmentTarget.ARMOR_HEAD, new EquipmentSlot[]{EquipmentSlot.HEAD});
+        super(NAME, Rarity.VERY_RARE, EnchantmentCategory.ARMOR_HEAD, new EquipmentSlot[]{EquipmentSlot.HEAD});
     }
 
     @Override
@@ -24,7 +24,7 @@ public class Smart extends BaseEnchantment {
     }
 
     @Override
-    public boolean isTreasure() {
+    public boolean isTradeable() {
         return true;
     }
 
@@ -33,11 +33,11 @@ public class Smart extends BaseEnchantment {
         super.register();
 
         LivingApi.SEVER_TAIL_TICK.register(living -> {
-            if (!(living instanceof ServerPlayerEntity) || living.age % (SECOND * 5) != 0) {
+            if (!(living instanceof ServerPlayer) || living.tickCount % (SECOND * 5) != 0) {
                 return;
             }
 
-            ItemStack stack = living.getEquippedStack(EquipmentSlot.HEAD);
+            ItemStack stack = living.getItemBySlot(EquipmentSlot.HEAD);
             if (stack.isEmpty()) {
                 return;
             }
@@ -54,7 +54,7 @@ public class Smart extends BaseEnchantment {
                 amount *= 1000;
             }
 
-            ((PlayerEntity) living).addExperience(amount);
+            ((Player) living).giveExperienceLevels(amount);
         });
     }
 }
