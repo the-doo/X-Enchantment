@@ -13,10 +13,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.item.EnchantedBookItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -25,6 +22,7 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.Random;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * Broken Dawn
@@ -138,12 +136,8 @@ public class BrokenDawn extends BaseEnchantment {
         Map<Enchantment, Integer> olds = EnchantmentHelper.getEnchantments(stack);
         int amount = inc;
         olds.forEach((e, l) -> {
-            if (e == this || e.getMaxLevel() < 2) {
-                return;
-            }
-
             // increment
-            enchantments.add(EnchantmentHelper.storeEnchantment(EnchantmentHelper.getEnchantmentId(e), l + amount));
+            enchantments.add(EnchantmentHelper.storeEnchantment(EnchantmentHelper.getEnchantmentId(e), l + (e == this || e.getMaxLevel() < 2 ? 0 : amount)));
         });
 
         if (drop.isEmpty()) {
@@ -164,9 +158,14 @@ public class BrokenDawn extends BaseEnchantment {
     }
 
     private Item nextLevelItem(Item item) {
-        return Registry.ITEM.stream()
-                .filter(i -> item.getClass().isInstance(i) && i.getMaxDamage() > item.getMaxDamage())
-                .min(Comparator.comparing(Item::getMaxDamage))
-                .orElse(Items.AIR);
+        Predicate<Item> filter = switchFilter(item);
+        return Registry.ITEM.stream().filter(filter).min(Comparator.comparing(Item::getMaxDamage)).orElse(Items.AIR);
+    }
+
+    private Predicate<Item> switchFilter(Item item) {
+        if (item instanceof ArmorItem) {
+            return i -> ((ArmorItem) item).getSlot() == ((ArmorItem) i).getSlot() && i.getMaxDamage() > item.getMaxDamage();
+        }
+        return i -> item.getClass().isInstance(i) && i.getMaxDamage() > item.getMaxDamage();
     }
 }
