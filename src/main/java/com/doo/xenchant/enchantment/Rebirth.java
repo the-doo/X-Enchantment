@@ -20,12 +20,17 @@ public class Rebirth extends BaseEnchantment {
     public static final String NAME = "rebirth";
 
     public Rebirth() {
-        super(NAME, Rarity.UNCOMMON, EnchantmentCategory.ARMOR_CHEST, new EquipmentSlot[]{EquipmentSlot.CHEST});
+        super(NAME, Rarity.RARE, EnchantmentCategory.ARMOR_CHEST, new EquipmentSlot[]{EquipmentSlot.CHEST});
     }
 
     @Override
     public int getMaxLevel() {
         return 5;
+    }
+
+    @Override
+    public boolean isTradeable() {
+        return true;
     }
 
     @Override

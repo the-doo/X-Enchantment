@@ -117,8 +117,8 @@ public class MoreLoot extends BaseEnchantment {
             level *= Enchant.option.moreMoreLootMultiplier;
         }
 
-        // rand min: 1 ~ level * 1.5
-        return Math.max(1, (int) (random.nextInt(level) + level / 2F));
+        // rand min: level / 2 ~ level * 1.5
+        return Math.max(level / 2, (int) (random.nextInt(level) + level / 2F));
     }
 
     private Consumer<ItemStack> getDropper(LivingEntity living, LootContext context) {

@@ -11,8 +11,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
@@ -34,8 +32,6 @@ public class BrokenDawn extends BaseEnchantment {
     public static final String NAME = "broken_dawn";
     private static final String KEY = "Count";
     private static final String DONE = "Done";
-
-    private static final AttributeModifier DAMAGE = new AttributeModifier("", 1, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
     private static final TranslatableComponent DONE_TIPS = new TranslatableComponent("enchantment.x_enchant.broken_dawn.done");
     private static final TranslatableComponent TIPS = new TranslatableComponent("enchantment.x_enchant.broken_dawn.tips");
@@ -70,13 +66,6 @@ public class BrokenDawn extends BaseEnchantment {
 
             // if done
             ifDone(stack, owner.getRandom(), count, owner::spawnAtLocation);
-        }));
-
-        // if done
-        ItemApi.GET_MODIFIER.register(((map, stack, slot) -> {
-            if (stack.getOrCreateTag().getBoolean(nbtKey(DONE)) && slot == EquipmentSlot.MAINHAND) {
-                map.put(Attributes.ATTACK_DAMAGE, DAMAGE);
-            }
         }));
 
         // tooltips
@@ -134,6 +123,8 @@ public class BrokenDawn extends BaseEnchantment {
         // increment all enchantment level
         ListTag enchantments = new ListTag();
         Map<Enchantment, Integer> olds = EnchantmentHelper.getEnchantments(stack);
+        olds.remove(this);
+
         int amount = inc;
         olds.forEach((e, l) -> {
             // increment
@@ -167,12 +158,12 @@ public class BrokenDawn extends BaseEnchantment {
             return i -> i instanceof ArmorItem && ((ArmorItem) item).getSlot() == ((ArmorItem) i).getSlot() && i.getMaxDamage() > item.getMaxDamage();
         }
         if (item instanceof SwordItem) {
-            return i -> i instanceof SwordItem && ((SwordItem) item).getDamage() > ((SwordItem) i).getDamage();
+            return i -> i instanceof SwordItem && ((SwordItem) i).getDamage() > ((SwordItem) item).getDamage();
         }
         if (item instanceof DiggerItem) {
             return i -> i instanceof DiggerItem &&
-                    (((DiggerItem) item).getTier().getLevel() > ((DiggerItem) i).getTier().getLevel() ||
-                            ((DiggerItem) item).getTier().getSpeed() > ((DiggerItem) i).getTier().getSpeed());
+                    (((DiggerItem) i).getTier().getLevel() > ((DiggerItem) item).getTier().getLevel() ||
+                            ((DiggerItem) i).getTier().getSpeed() > ((DiggerItem) item).getTier().getSpeed());
         }
         return i -> item.getClass().isInstance(i) && i.getMaxDamage() > item.getMaxDamage();
     }
