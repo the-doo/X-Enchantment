@@ -2,7 +2,6 @@ package com.doo.xenchant.enchantment;
 
 import com.doo.xenchant.events.LootApi;
 import com.doo.xenchant.util.EnchantUtil;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.item.EnchantedBookItem;
@@ -59,14 +58,8 @@ public class Librarian extends BaseEnchantment {
             // check rarity
             Rarity rarity = randRarityByLevel(random, level);
             return i -> {
-                EnchantUtil.rand(rarity, random).ifPresent(e -> {
-                    int l = random.nextInt(e.getMaxLevel());
-                    trigger.spawnAtLocation(EnchantedBookItem.createForEnchantment(new EnchantmentInstance(e, l)));
-
-                    if (trigger instanceof ServerPlayer) {
-                        ((ServerPlayer) trigger).giveExperiencePoints(l);
-                    }
-                });
+                EnchantUtil.rand(rarity, random).ifPresent(e ->
+                        trigger.spawnAtLocation(EnchantedBookItem.createForEnchantment(new EnchantmentInstance(e, random.nextInt(e.getMaxLevel())))));
                 return i;
             };
         }));

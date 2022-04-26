@@ -36,6 +36,11 @@ public interface LootApi {
         Entity entity = Optional.ofNullable(context.getParamOrNull(LootContextParams.KILLER_ENTITY))
                 .orElse(context.getParamOrNull(LootContextParams.THIS_ENTITY));
 
+        // if not tool or killed
+        if (stack == null && context.getParamOrNull(LootContextParams.DAMAGE_SOURCE) == null) {
+            return lootConsumer;
+        }
+
         // if is attack loot, try to get on entity
         if (stack == null && entity instanceof LivingEntity) {
             stack = ((LivingEntity) entity).getMainHandItem();

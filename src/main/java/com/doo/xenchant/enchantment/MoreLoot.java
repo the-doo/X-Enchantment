@@ -4,7 +4,6 @@ import com.doo.xenchant.Enchant;
 import com.doo.xenchant.events.LootApi;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -19,7 +18,6 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.Random;
 import java.util.function.Consumer;
-import java.util.stream.IntStream;
 
 /**
  * 更多战利品
@@ -58,7 +56,7 @@ public class MoreLoot extends BaseEnchantment {
 
             // no effect on
             BlockState block = context.getParamOrNull(LootContextParams.BLOCK_STATE);
-            if (block != null && stack.getItem().isCorrectToolForDrops(block)) {
+            if (block != null && !stack.getItem().isCorrectToolForDrops(block)) {
                 return null;
             }
 
@@ -70,18 +68,7 @@ public class MoreLoot extends BaseEnchantment {
             Consumer<ItemStack> dropper = getDropper(killer, context);
             return i -> {
                 // if is block item, need return
-                if (i.getItem() instanceof BlockItem) {
-                    return i;
-                }
-
-                // Add level xp
-                if (killer instanceof ServerPlayer) {
-                    ((ServerPlayer) killer).giveExperiencePoints(rand);
-                }
-
-                if (!i.isStackable()) {
-                    // isn't stackable only half
-                    IntStream.range(0, Math.max(level, rand / 5)).forEach(v -> dropper.accept(i.copy()));
+                if (i.getItem() instanceof BlockItem || !i.isStackable()) {
                     return i;
                 }
 
