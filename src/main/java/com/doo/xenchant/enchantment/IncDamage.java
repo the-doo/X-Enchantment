@@ -90,9 +90,9 @@ public class IncDamage extends BaseEnchantment {
         // tooltips
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             ItemTooltipCallback.EVENT.register((stack, context, lines) -> {
-                if (level(stack) > 0) {
+                if (level(stack) > 0 && !(stack.getItem() instanceof EnchantedBookItem)) {
                     lines.add(new TranslatableComponent(getDescriptionId())
-                            .append(": ↑")
+                            .append(": +")
                             .append(FORMAT.format(stack.getOrCreateTag().getFloat(nbtKey(KEY))))
                             .withStyle(ChatFormatting.GRAY));
                 }
