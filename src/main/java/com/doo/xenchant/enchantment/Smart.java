@@ -54,7 +54,7 @@ public class Smart extends BaseEnchantment {
                 amount *= 1000;
             }
 
-            ((Player) living).giveExperienceLevels(amount);
+            ((Player) living).giveExperiencePoints(amount);
         });
     }
 }
