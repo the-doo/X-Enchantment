@@ -27,7 +27,7 @@ public class HitRateUp extends BaseEnchantment {
         super.register();
 
         PersistentApi.ON_COLL.register(((owner, stack, world, pos, box) -> {
-            if (!Enchant.option.hitRateUp) {
+            if (!Enchant.option.hitRateUp || owner == null) {
                 return null;
             }
 

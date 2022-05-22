@@ -74,8 +74,11 @@ public class BrokenDawn extends BaseEnchantment {
                 if (stack.getItem() instanceof EnchantedBookItem) {
                     return;
                 }
+                if (stack.getTag() == null) {
+                    return;
+                }
 
-                CompoundTag nbt = stack.getOrCreateTag();
+                CompoundTag nbt = stack.getTag();
                 // if done
                 if (nbt.getBoolean(nbtKey(DONE))) {
                     lines.add(DONE_TIPS.withStyle(ChatFormatting.GOLD));

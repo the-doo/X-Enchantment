@@ -90,7 +90,7 @@ public class NightBreak extends BaseEnchantment {
         // if attack 3 times, damage is level * 10% * maxHealth
         if (count % 3 == 0) {
             nbt.putLong(nbtKey(KEY), 0);
-            return (float) (target.getMaxHealth() * level / (Enchant.option.nightBreakPerLevel / 100));
+            return (float) (target.getMaxHealth() * level * (Enchant.option.nightBreakPerLevel / 100));
         }
 
         return 0;

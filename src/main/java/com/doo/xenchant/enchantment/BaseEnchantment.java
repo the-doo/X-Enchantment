@@ -44,11 +44,11 @@ public abstract class BaseEnchantment extends Enchantment {
     public int getMinCost(int level) {
         switch (getRarity()) {
             case UNCOMMON:
-                return 25;
+                return 20;
             case RARE:
-                return level * 35;
+                return level * 25;
             case VERY_RARE:
-                return level * 50;
+                return level * 30;
             default:
                 return super.getMinCost(level);
         }
