@@ -1,0 +1,30 @@
+{
+  "criteria": {
+    "regicide_die": {
+      "conditions": {
+      },
+      "trigger": "x_enchantment:trigger.regicide.die"
+    }
+  },
+  "display": {
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.x_enchantment.regicide.die.desc"
+    },
+    "hidden": false,
+    "icon": {
+      "item": "minecraft:iron_sword"
+    },
+    "title": {
+      "translate": "advancements.x_enchantment.regicide.die.title"
+    }
+  },
+  "requirements": [
+    ["regicide_die"]
+  ],
+  "rewards": {
+  },
+  "sends_telemetry_event": false
+}

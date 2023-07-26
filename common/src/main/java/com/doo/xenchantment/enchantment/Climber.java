@@ -1,0 +1,49 @@
+package com.doo.xenchantment.enchantment;
+
+import com.google.gson.JsonObject;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+
+/**
+ * Climber
+ */
+public class Climber extends BaseXEnchantment {
+
+    private static final String Y_KEY = "y";
+
+    public Climber() {
+        super("climber", Rarity.UNCOMMON, EnchantmentCategory.ARMOR_LEGS, new EquipmentSlot[]{EquipmentSlot.LEGS});
+
+        options.addProperty(Y_KEY, 80);
+    }
+
+    @Override
+    public void loadOptions(JsonObject json) {
+        super.loadOptions(json);
+
+        loadIf(json, Y_KEY);
+    }
+
+    @Override
+    protected boolean onlyOneLevel() {
+        return true;
+    }
+
+    @Override
+    public void onEndTick(LivingEntity living) {
+        if (living.tickCount % SECOND_TICK != 0 || living.getY() < getDouble(Y_KEY)) {
+            return;
+        }
+
+        ItemStack feet = living.getItemBySlot(EquipmentSlot.LEGS);
+        if (feet.isEmpty() || level(feet) < 1) {
+            return;
+        }
+
+        living.addEffect(new MobEffectInstance(MobEffects.JUMP, (int) (SECOND_TICK * 2.5), 2));
+    }
+}
