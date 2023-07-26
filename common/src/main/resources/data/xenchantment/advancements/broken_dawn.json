@@ -1,0 +1,30 @@
+{
+  "criteria": {
+    "dawn_coming": {
+      "conditions": {
+      },
+      "trigger": "x_enchantment:trigger.broken_dawn.dawn_coming"
+    }
+  },
+  "display": {
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.x_enchantment.broken_dawn.dawn_coming.desc"
+    },
+    "hidden": false,
+    "icon": {
+      "item": "minecraft:iron_pickaxe"
+    },
+    "title": {
+      "translate": "advancements.x_enchantment.broken_dawn.dawn_coming.title"
+    }
+  },
+  "requirements": [
+    ["dawn_coming"]
+  ],
+  "rewards": {
+  },
+  "sends_telemetry_event": false
+}

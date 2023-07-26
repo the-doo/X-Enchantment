@@ -1,0 +1,30 @@
+{
+  "criteria": {
+    "super_loot": {
+      "conditions": {
+      },
+      "trigger": "x_enchantment:trigger.more_loot.super_loot"
+    }
+  },
+  "display": {
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.x_enchantment.more_loot.super_loot.desc"
+    },
+    "hidden": false,
+    "icon": {
+      "item": "minecraft:enchanted_book"
+    },
+    "title": {
+      "translate": "advancements.x_enchantment.more_loot.super_loot.title"
+    }
+  },
+  "requirements": [
+    ["super_loot"]
+  ],
+  "rewards": {
+  },
+  "sends_telemetry_event": false
+}
