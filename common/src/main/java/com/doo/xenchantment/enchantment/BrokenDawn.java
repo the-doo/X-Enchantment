@@ -215,9 +215,9 @@ public class BrokenDawn extends BaseXEnchantment {
     @Override
     public InfoGroupItems collectPlayerInfo(ServerPlayer player) {
         ItemStack stack = player.getMainHandItem();
-        boolean notLevel = level(stack) < 1;
+        boolean notLevel = stack.getTag() == null || stack.getTag().isEmpty() || level(stack) < 1;
         InfoGroupItems group = InfoGroupItems.groupKey(getDescriptionId());
-        if (stack.getOrCreateTag().getBoolean(nbtKey(DONE))) {
+        if (!notLevel && stack.getOrCreateTag().getBoolean(nbtKey(DONE))) {
             group.add(getInfoKey(DONE_KEY), DONE_TIPS.getString(), false);
             return group;
         }
