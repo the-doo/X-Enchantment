@@ -66,6 +66,10 @@ public class MenuScreen extends Screen {
         if (minecraft != null) {
             // 返回上个页面
             minecraft.setScreen(this.pre);
+            // only server save
+            if (!minecraft.isLocalServer()) {
+                return;
+            }
             // 保存设置的配置
             ConfigUtil.write(EnchantUtil.getAllOptions());
         }

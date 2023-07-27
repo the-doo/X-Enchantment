@@ -33,7 +33,7 @@ public class MoreLoot extends BaseXEnchantment {
 
         options.addProperty(MAX_LEVEL_KEY, 5);
         options.addProperty(LOOT_RATE, 40);
-        options.addProperty(SUPER_LOOT_RATE, 0.1);
+        options.addProperty(SUPER_LOOT_RATE, 0.5);
         options.addProperty(SUPER_LOOT_VALUE, 10);
     }
 
@@ -117,7 +117,7 @@ public class MoreLoot extends BaseXEnchantment {
 
         // 0.5% only 0
         if (rand < getDouble(SUPER_LOOT_RATE) / 100) {
-            level *= getDouble(SUPER_LOOT_VALUE) * 10;
+            level = (int) (level * getDouble(SUPER_LOOT_VALUE));
             isSuper.accept(true);
         }
 
