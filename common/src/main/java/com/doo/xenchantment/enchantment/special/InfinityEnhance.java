@@ -1,6 +1,7 @@
 package com.doo.xenchantment.enchantment.special;
 
 import com.doo.xenchantment.events.AnvilApi;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -9,9 +10,6 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Infinity Enhance
- */
 public class InfinityEnhance extends Special {
 
     public InfinityEnhance() {
@@ -29,7 +27,7 @@ public class InfinityEnhance extends Special {
     }
 
     @Override
-    public void onServer() {
+    public void onServer(MinecraftServer server) {
         AnvilApi.register(((player, map, first, second, result) -> {
             if (disabled()) {
                 return;

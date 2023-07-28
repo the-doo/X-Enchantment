@@ -9,9 +9,6 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
-/**
- * Timor
- */
 public class Timor extends BaseXEnchantment {
 
     private static final String ID = "Id";

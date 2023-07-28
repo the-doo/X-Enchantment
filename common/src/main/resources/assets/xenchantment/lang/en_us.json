@@ -47,6 +47,10 @@
   "enchantment.x_enchantment.broken_dawn.tips": "Thanks to @BrokenDawn627 for the contribution",
   "enchantment.x_enchantment.timor": "Timor",
   "enchantment.x_enchantment.timor.desc": "After lurking for a certain period of time, it will become invisible, and the attack speed will increase when the invisibility is released.",
+  "enchantment.x_enchantment.walk_on": "Walking on the ground",
+  "enchantment.x_enchantment.walk_on.desc": "Allow to stand on fluid.",
+  "enchantment.x_enchantment.jump": "Jump again",
+  "enchantment.x_enchantment.jump.desc": "Jump and jump and jump...",
   "enchantment.x_enchantment.height_advantage": "Height Advantage",
   "enchantment.x_enchantment.height_advantage.desc": "Deals damage to creatures that are taller than you every once in a while. ",
   "enchantment.x_enchantment.ignored_armor": "Dark Force",
@@ -56,7 +60,7 @@
   "enchantment.x_enchantment.remove_cursed": "Curse Killer",
   "enchantment.x_enchantment.remove_cursed.desc": "Remove cursed enchantment at the anvil",
   "enchantment.x_enchantment.health_converter": "Health Converter",
-  "enchantment.x_enchantment.health_converter.desc": "When the main hand holds the enchanted book, it will damage itself to repair the off-hand item after a period of time.",
+  "enchantment.x_enchantment.health_converter.desc": "When holding the enchanted book in the secondary hand, it will damage itself and repair the items in the main hand, with a certain trigger interval.",
   "enchantment.x_enchantment.infinity_enhance": "Infinity Enhance",
   "enchantment.x_enchantment.infinity_enhance.desc": "Can add mending to infinite bows at the anvil",
 
@@ -76,12 +80,23 @@
   "enchantment.x_enchantment.down_armor": "Decayed Armor",
   "enchantment.x_enchantment.down_armor.desc": "Percentage armor reduction",
 
+  "enchantment.x_enchantment.halo.farm_speed.head": "Spring Blossoms · Head",
+  "enchantment.x_enchantment.halo.farm_speed.head.desc": "Speed up crop growth, head part. A type of halo that needs to be assembled to activate all parts.",
+  "enchantment.x_enchantment.halo.farm_speed.chest": "Spring Blossoms · Chest",
+  "enchantment.x_enchantment.halo.farm_speed.chest.desc": "Speed up crop growth, chest part. A type of halo that needs to be assembled to activate all parts.",
+  "enchantment.x_enchantment.halo.farm_speed.legs": "Spring Blossoms · Legs",
+  "enchantment.x_enchantment.halo.farm_speed.legs.desc": "Speed up crop growth, legs part. A type of halo that needs to be assembled to activate all parts.",
+  "enchantment.x_enchantment.halo.farm_speed.feet": "Spring Blossoms · Feet",
+  "enchantment.x_enchantment.halo.farm_speed.feet.desc": "Speed up crop growth, feet part. A type of halo that needs to be assembled to activate all parts.",
+
   "x_enchantment.max_level": "Max Level",
   "x_enchantment.max_level.tip": "Max level of enchantment",
   "x_enchantment.disabled": "Disabled",
   "x_enchantment.disabled.tip": "Off is enabled, on is disabled. Disabled is means exists but does not take effect.",
   "x_enchantment.only_one_level": "Level Ignored",
   "x_enchantment.only_one_level.tip": "Any effect of this enchantment has nothing to do with the level, that is, adjusting the level is invalid. This button is for illustration only and has no additional effect.",
+  "x_enchantment.need_reconnect": "Need To Reconnect",
+  "x_enchantment.need_reconnect.tip": "Indicates that the enchantment requires the client to reconnect to the server to take effect. This button is for illustration only and has no additional effect.",
 
   "x_enchantment.menu.option.night_break.damage": "Addition Base",
   "x_enchantment.menu.option.night_break.damage.tip": "Addition base per level. If the current value is 1.5 and the enchantment level is 3, the effect is 4.5% (= 3 * 1.5%).",
@@ -167,6 +182,8 @@
 
   "x_enchantment.menu.option.health_converter.hurt": "Hurt Value",
   "x_enchantment.menu.option.health_converter.hurt.tip": "Harm to the user after use",
+  "x_enchantment.menu.option.health_converter.ban": "Ban Items",
+  "x_enchantment.menu.option.health_converter.ban.tip": "Certain items banned in effect.",
 
 
   "x_enchantment.info.height_advantage.monster": "Only Monster",
@@ -197,6 +214,14 @@
 
   "x_enchantment.menu.option.climber.y": "Height",
   "x_enchantment.menu.option.climber.y.tip": "Less than this height does not take effect.",
+
+  "x_enchantment.menu.option.magic_immune.ban": "Ban Effect",
+  "x_enchantment.menu.option.magic_immune.ban.tip": "Certain effects are prohibited from taking effect.",
+
+  "x_enchantment.menu.option.walk_on.ban": "Ban Fluids",
+  "x_enchantment.menu.option.walk_on.ban.tip": "Does not work on some fluids.",
+  "x_enchantment.menu.option.walk_on.powder_snow": "Powder Snow",
+  "x_enchantment.menu.option.walk_on.powder_snow.tip": "Walk on powder snow",
 
   "x_enchantment.menu.option.thin.rate": "Trigger Chance",
   "x_enchantment.menu.option.thin.rate.tip": "Chance of extra damage to trigger.",

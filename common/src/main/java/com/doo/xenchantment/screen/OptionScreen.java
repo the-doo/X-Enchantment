@@ -2,6 +2,8 @@ package com.doo.xenchantment.screen;
 
 import com.doo.xenchantment.XEnchantment;
 import com.doo.xenchantment.enchantment.BaseXEnchantment;
+import com.google.common.collect.Maps;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.mojang.serialization.Codec;
@@ -14,11 +16,21 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
+import java.util.Map;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+
 public class OptionScreen extends Screen {
+
+    private static final Map<String, Supplier<Stream<String>>> MAP = Maps.newHashMap();
+
+    public static void register(String title, String key, Supplier<Stream<String>> value) {
+        MAP.put(getNameKey(title, key), value);
+    }
 
     private Screen pre;
     private JsonObject options;
-    private String key;
+    private String title;
 
     private OptionsList list;
 
@@ -27,7 +39,7 @@ public class OptionScreen extends Screen {
 
         this.pre = pre;
         this.options = options;
-        this.key = String.format("%s.menu.option.%s", XEnchantment.MOD_ID, title);
+        this.title = title;
     }
 
     @Override
@@ -37,11 +49,21 @@ public class OptionScreen extends Screen {
         list = new OptionsList(minecraft, w, this.height, 32, this.height - 32, 25);
 
         OptionInstance<?>[] instances = options.entrySet().stream().map(e -> {
-            String nameKey = getNameKey(e.getKey());
+            String nameKey = getNameKey(title, e.getKey());
             MutableComponent tooltip = Component.translatable(nameKey + ".tip");
             OptionInstance<?> opt;
+            JsonElement json = e.getValue();
+            if (json.isJsonArray()) {
+                opt = OptionInstance.createBoolean(
+                        nameKey,
+                        OptionInstance.cachedConstantTooltip(tooltip),
+                        MAP.containsKey(nameKey) && !json.getAsJsonArray().isEmpty(),
+                        b -> minecraft.setScreen(ListScreen.get(json.getAsJsonArray(), MAP.get(nameKey), this)));
+                return opt;
+            }
+
             try {
-                double value = e.getValue().getAsDouble();
+                double value = json.getAsDouble();
                 opt = new OptionInstance<>(
                         nameKey,
                         OptionInstance.cachedConstantTooltip(tooltip),
@@ -51,7 +73,7 @@ public class OptionScreen extends Screen {
                         value,
                         d -> e.setValue(new JsonPrimitive(d)));
             } catch (NumberFormatException ex) {
-                opt = OptionInstance.createBoolean(nameKey, OptionInstance.cachedConstantTooltip(tooltip), e.getValue().getAsBoolean(), b -> e.setValue(new JsonPrimitive(b)));
+                opt = OptionInstance.createBoolean(nameKey, OptionInstance.cachedConstantTooltip(tooltip), json.getAsBoolean(), b -> e.setValue(new JsonPrimitive(b)));
             }
 
             return opt;
@@ -63,7 +85,7 @@ public class OptionScreen extends Screen {
         addRenderableWidget(new Button.Builder(CommonComponents.GUI_BACK, b -> close()).bounds(this.width / 2 - 150 / 2, this.height - 28, 150, 20).build());
     }
 
-    private String getNameKey(String key) {
+    private static String getNameKey(String title, String key) {
         if (key.equals(BaseXEnchantment.MAX_LEVEL_KEY)) {
             return XEnchantment.MOD_ID + "." + BaseXEnchantment.MAX_LEVEL_KEY;
         }
@@ -73,8 +95,11 @@ public class OptionScreen extends Screen {
         if (key.equals(BaseXEnchantment.ONLY_ONE_LEVEL_KEY)) {
             return XEnchantment.MOD_ID + "." + BaseXEnchantment.ONLY_ONE_LEVEL_KEY;
         }
+        if (key.equals(BaseXEnchantment.NEED_RECONNECT_KEY)) {
+            return XEnchantment.MOD_ID + "." + BaseXEnchantment.NEED_RECONNECT_KEY;
+        }
 
-        return this.key + "." + key;
+        return String.format("%s.menu.option.%s.%s", XEnchantment.MOD_ID, title, key);
     }
 
     public void close() {

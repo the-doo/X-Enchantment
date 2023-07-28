@@ -5,6 +5,7 @@ import com.doo.xenchantment.util.EnchantUtil;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.FishingRodItem;
@@ -47,7 +48,7 @@ public class Librarian extends BaseXEnchantment {
     }
 
     @Override
-    public void onServer() {
+    public void onServer(MinecraftServer server) {
         LootApi.register(((living, stack, stacks) -> {
             if (disabled()) {
                 return Collections.emptyList();

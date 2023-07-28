@@ -2,7 +2,6 @@ package com.doo.xenchantment.mixin;
 
 import com.doo.xenchantment.events.FishApi;
 import com.doo.xenchantment.util.EnchantUtil;
-import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;

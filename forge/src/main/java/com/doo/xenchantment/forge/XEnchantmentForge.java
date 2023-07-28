@@ -115,7 +115,7 @@ public class XEnchantmentForge {
             INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), "1");
         });
 
-        EnchantUtil.onServer();
+        EnchantUtil.onServer(event.getServer());
     }
 
 

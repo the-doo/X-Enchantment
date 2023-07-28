@@ -2,10 +2,11 @@ package com.doo.xenchantment.enchantment.curse;
 
 import com.doo.playerinfo.core.InfoGroupItems;
 import com.doo.xenchantment.XEnchantment;
-import com.doo.xenchantment.enchantment.advancements.TrueTrigger;
+import com.doo.xenchantment.advancements.TrueTrigger;
 import com.doo.xenchantment.events.PlayerAttackApi;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
@@ -35,7 +36,7 @@ public class Regicide extends Cursed {
     }
 
     @Override
-    public void onServer() {
+    public void onServer(MinecraftServer server) {
         PlayerAttackApi.register((player, amount) -> {
             int level = level(player.getMainHandItem());
             if (level < 1) {

@@ -47,6 +47,10 @@
   "enchantment.x_enchantment.broken_dawn.tips": "感谢@BrokenDawn627的贡献",
   "enchantment.x_enchantment.timor": "提莫",
   "enchantment.x_enchantment.timor.desc": "潜伏一定时间后会隐身, 解除隐身时会提高攻击速度",
+  "enchantment.x_enchantment.walk_on": "如履平地",
+  "enchantment.x_enchantment.walk_on.desc": "允许站在液体上",
+  "enchantment.x_enchantment.jump": "凌空借力",
+  "enchantment.x_enchantment.jump.desc": "多段跳",
   "enchantment.x_enchantment.height_advantage": "身高优势",
   "enchantment.x_enchantment.height_advantage.desc": "每过一段时间会对身高不如自己的生物造成伤害",
   "enchantment.x_enchantment.ignored_armor": "斩铁",
@@ -56,7 +60,7 @@
   "enchantment.x_enchantment.remove_cursed": "诅咒杀手",
   "enchantment.x_enchantment.remove_cursed.desc": "可在铁砧处移除诅咒",
   "enchantment.x_enchantment.health_converter": "血肉转化",
-  "enchantment.x_enchantment.health_converter.desc": "主手持该附魔书时，将隔段时间伤害自身修复副手物品",
+  "enchantment.x_enchantment.health_converter.desc": "副手持该附魔书时，将伤害自身修复主手物品，有一定触发间隔。",
   "enchantment.x_enchantment.infinity_enhance": "无限增强",
   "enchantment.x_enchantment.infinity_enhance.desc": "可在铁砧处为无限弓添加经验修补",
 
@@ -76,12 +80,23 @@
   "enchantment.x_enchantment.down_armor": "腐朽护甲",
   "enchantment.x_enchantment.down_armor.desc": "百分比降低护甲值",
 
+  "enchantment.x_enchantment.halo.farm_speed.head": "万物复苏 · 盔",
+  "enchantment.x_enchantment.halo.farm_speed.head.desc": "加速作物成长，头盔部分。光环的一种，需要集齐所有部位，才能激活。",
+  "enchantment.x_enchantment.halo.farm_speed.chest": "万物复苏 · 甲",
+  "enchantment.x_enchantment.halo.farm_speed.chest.desc": "加速作物成长，胸甲部分。光环的一种，需要集齐所有部位，才能激活。",
+  "enchantment.x_enchantment.halo.farm_speed.legs": "万物复苏 · 腿",
+  "enchantment.x_enchantment.halo.farm_speed.legs.desc": "加速作物成长，护腿部分。光环的一种，需要集齐所有部位，才能激活。",
+  "enchantment.x_enchantment.halo.farm_speed.feet": "万物复苏 · 靴",
+  "enchantment.x_enchantment.halo.farm_speed.feet.desc": "加速作物成长，靴子部分。光环的一种，需要集齐所有部位，才能激活。",
+
   "x_enchantment.max_level": "最大等级",
   "x_enchantment.max_level.tip": "附魔的最大等级",
   "x_enchantment.disabled": "是否禁用",
   "x_enchantment.disabled.tip": "关表示启用附魔，开表示禁用附魔。禁用是指存在但不生效。",
   "x_enchantment.only_one_level": "与等级无关",
   "x_enchantment.only_one_level.tip": "该附魔任意效果都与等级无关，即调整等级无效。该按钮仅为说明，无另外效果。",
+  "x_enchantment.need_reconnect": "需要重新连接",
+  "x_enchantment.need_reconnect.tip": "表示该附魔需要客户端重新连接服务器才能生效。该按钮仅为说明，无另外效果。",
 
   "x_enchantment.menu.option.night_break.damage": "加成基数",
   "x_enchantment.menu.option.night_break.damage.tip": "每级加成基数。如果当前值为1.5，附魔等级为3，则效果为4.5%（= 3 * 1.5%）。",
@@ -164,6 +179,8 @@
 
   "x_enchantment.menu.option.health_converter.hurt": "伤害",
   "x_enchantment.menu.option.health_converter.hurt.tip": "使用后对使用者造成的伤害",
+  "x_enchantment.menu.option.health_converter.ban": "物品禁用列表",
+  "x_enchantment.menu.option.health_converter.ban.tip": "某些物品禁止生效",
 
   "x_enchantment.info.height_advantage.monster": "仅怪物",
   "x_enchantment.info.height_advantage.monster.tip": "仅对怪物生效",
@@ -193,6 +210,14 @@
 
   "x_enchantment.menu.option.climber.y": "高度",
   "x_enchantment.menu.option.climber.y.tip": "小于该高度不生效",
+
+  "x_enchantment.menu.option.magic_immune.ban": "效果禁用列表",
+  "x_enchantment.menu.option.magic_immune.ban.tip": "某些效果禁止生效",
+
+  "x_enchantment.menu.option.walk_on.ban": "流体禁用列表",
+  "x_enchantment.menu.option.walk_on.ban.tip": "某些流体禁止生效",
+  "x_enchantment.menu.option.walk_on.powder_snow": "细雪",
+  "x_enchantment.menu.option.walk_on.powder_snow.tip": "允许站在细雪上",
 
   "x_enchantment.menu.option.thin.rate": "受损几率",
   "x_enchantment.menu.option.thin.rate.tip": "受损触发的几率",

@@ -3,15 +3,16 @@ package com.doo.xenchantment.mixin;
 import com.doo.playerinfo.XPlayerInfo;
 import com.doo.xenchantment.util.EnchantUtil;
 import com.google.common.collect.Lists;
-import com.mojang.logging.LogUtils;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -32,9 +33,6 @@ public abstract class LivingEntityMixin extends Entity {
     @Nullable
     protected Player lastHurtByPlayer;
 
-    @Shadow
-    public abstract float getHealth();
-
     @Unique
     private final List<ItemStack> additionLoot = Lists.newArrayList();
 
@@ -47,10 +45,18 @@ public abstract class LivingEntityMixin extends Entity {
         EnchantUtil.lootMob(damageSource, additionLoot, list -> list.forEach(this::spawnAtLocation));
     }
 
+    @Inject(method = "canStandOnFluid", at = @At("HEAD"), cancellable = true)
+    private void injectCanStandOnFluidHead(FluidState fluidState, CallbackInfoReturnable<Boolean> cir) {
+        if (getPose() == Pose.STANDING && EnchantUtil.canStandOnFluid(XPlayerInfo.get(this), blockPosition(), fluidState)) {
+            cir.setReturnValue(true);
+            cir.cancel();
+        }
+    }
+
     @Inject(method = "tick", at = @At("TAIL"))
-    private void endServerTick(CallbackInfo ci) {
+    private void endLivingTick(CallbackInfo ci) {
         if (!level().isClientSide()) {
-            EnchantUtil.endServerTick(XPlayerInfo.get(this));
+            EnchantUtil.endLivingTick(XPlayerInfo.get(this));
         }
     }
 
@@ -72,21 +78,5 @@ public abstract class LivingEntityMixin extends Entity {
             additionLoot.add(is);
             consumer.accept(is);
         };
-    }
-
-
-    private double xxxxxxxx;
-
-    @Inject(method = "hurt", at = @At(value = "HEAD"))
-    private void insertLootTablexxxxXXXXXXXX(DamageSource damageSource, float f, CallbackInfoReturnable<Boolean> cir) {
-        xxxxxxxx = getHealth();
-    }
-
-
-    @Inject(method = "hurt", at = @At(value = "TAIL"))
-    private void insertLootTablexxxx(DamageSource damageSource, float f, CallbackInfoReturnable<Boolean> cir) {
-        if (level().isClientSide() || !damageSource.isCreativePlayer()) {
-            return;
-        }
     }
 }

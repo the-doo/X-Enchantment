@@ -1,4 +1,4 @@
-package com.doo.xenchantment.enchantment.advancements;
+package com.doo.xenchantment.advancements;
 
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;

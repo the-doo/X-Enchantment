@@ -2,7 +2,7 @@ package com.doo.xenchantment.enchantment;
 
 import com.doo.playerinfo.core.InfoGroupItems;
 import com.doo.xenchantment.XEnchantment;
-import com.doo.xenchantment.enchantment.advancements.TrueTrigger;
+import com.doo.xenchantment.advancements.TrueTrigger;
 import com.doo.xenchantment.events.ItemApi;
 import com.google.gson.JsonObject;
 import net.minecraft.ChatFormatting;
@@ -11,6 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -76,22 +77,24 @@ public class BrokenDawn extends BaseXEnchantment {
 
     @Override
     public boolean canEnchant(ItemStack stack) {
-        // if it's done
         return !stack.getOrCreateTag().contains(nbtKey(DONE));
     }
 
     @Override
     public @NotNull Component getFullname(int level) {
-        if (!getBoolean(TIP_KEY)) {
+        if (thanksTip == null || !getBoolean(TIP_KEY)) {
             return super.getFullname(level);
         }
         return super.getFullname(level).copy().append(thanksTip);
     }
 
     @Override
-    public void onServer() {
+    public void onClient() {
         thanksTip = Component.literal(" - ").append(TIPS).withStyle(ChatFormatting.DARK_GRAY);
+    }
 
+    @Override
+    public void onServer(MinecraftServer server) {
         ItemApi.register((owner, stack, amount) -> {
             if (disabled() || level(stack) < 1) {
                 return;

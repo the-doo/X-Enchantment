@@ -31,7 +31,7 @@ public class XEnchantmentFabric implements ModInitializer {
 
         ServersideChannelUtil.setSender(ServerPlayNetworking::send);
 
-        ServerLifecycleEvents.SERVER_STARTING.register(server -> EnchantUtil.onServer());
+        ServerLifecycleEvents.SERVER_STARTING.register(EnchantUtil::onServer);
 
         ServerLifecycleEvents.SERVER_STARTED.register(server -> EnchantUtil.onServerStarted());
 

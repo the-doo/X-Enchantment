@@ -1,6 +1,7 @@
 package com.doo.xenchantment.enchantment.special;
 
 import com.doo.xenchantment.events.AnvilApi;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -21,7 +22,7 @@ public class RemoveCursed extends Special {
     }
 
     @Override
-    public void onServer() {
+    public void onServer(MinecraftServer server) {
         AnvilApi.register(((player, map, first, second, result) -> {
             if (disabled() || !second.is(Items.ENCHANTED_BOOK) || !map.containsKey(this)) {
                 return;

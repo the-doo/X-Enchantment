@@ -2,14 +2,16 @@ package com.doo.xenchantment.enchantment;
 
 import com.doo.playerinfo.core.InfoGroupItems;
 import com.doo.xenchantment.XEnchantment;
-import com.doo.xenchantment.enchantment.advancements.TrueTrigger;
+import com.doo.xenchantment.advancements.TrueTrigger;
 import com.doo.xenchantment.interfaces.WithOptions;
 import com.doo.xenchantment.interfaces.XEnchantmentRegistry;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -21,6 +23,7 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
@@ -28,6 +31,9 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 /**
  * 附魔基类
@@ -36,7 +42,7 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
 
     static final DecimalFormat FORMAT = new DecimalFormat("#.##");
 
-    static final Logger LOGGER = LogUtils.getLogger();
+    protected static final Logger LOGGER = LogUtils.getLogger();
 
     /**
      * 1s is 20 ticks
@@ -59,7 +65,9 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
 
     public static final String ONLY_ONE_LEVEL_KEY = "only_one_level";
 
-    protected BaseXEnchantment(String name, Rarity weight, EnchantmentCategory type, EquipmentSlot[] slotTypes) {
+    public static final String NEED_RECONNECT_KEY = "need_reconnect";
+
+    protected BaseXEnchantment(String name, Rarity weight, EnchantmentCategory type, EquipmentSlot... slotTypes) {
         super(weight, type, slotTypes);
         this.name = name;
         this.id = new ResourceLocation(XEnchantment.MOD_ID, name);
@@ -71,9 +79,17 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
         if (onlyOneLevel()) {
             options.addProperty(ONLY_ONE_LEVEL_KEY, false);
         }
+
+        if (needReconnect()) {
+            options.addProperty(NEED_RECONNECT_KEY, false);
+        }
     }
 
     protected boolean onlyOneLevel() {
+        return false;
+    }
+
+    protected boolean needReconnect() {
         return false;
     }
 
@@ -195,7 +211,7 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
     /**
      * Can regis to any event or other things
      */
-    public void onServer() {
+    public void onServer(MinecraftServer server) {
     }
 
     /**
@@ -222,6 +238,10 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
 
     public InfoGroupItems collectPlayerInfo(ServerPlayer player) {
         return null;
+    }
+
+    public boolean canStandOnFluid(LivingEntity living, FluidState fluidState) {
+        return false;
     }
 
 
@@ -259,9 +279,14 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
         loadIf(json, DISABLED_KEY);
     }
 
-    protected void loadIf(JsonObject json, String key) {
+    protected final void loadIf(JsonObject json, String key) {
         Optional.ofNullable(json.get(key))
                 .ifPresent(e -> {
+                    if (e.isJsonArray()) {
+                        options.add(key, e.getAsJsonArray());
+                        return;
+                    }
+
                     try {
                         options.addProperty(key, e.getAsDouble());
                     } catch (Exception ex) {
@@ -280,5 +305,20 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
 
     protected final boolean getBoolean(String optionKey) {
         return options.get(optionKey).getAsBoolean();
+    }
+
+    protected final void foreach(String optionKey, Consumer<JsonElement> callback) {
+        if (!options.get(optionKey).isJsonArray()) {
+            return;
+        }
+
+        options.getAsJsonArray(optionKey).forEach(callback);
+    }
+
+    public void onOptionsRegister(BiConsumer<String, Supplier<Stream<String>>> register) {
+    }
+
+    public boolean canEntityWalkOnPowderSnow(LivingEntity e) {
+        return false;
     }
 }

@@ -22,7 +22,7 @@ public class Smart extends BaseXEnchantment {
         super("smart", Rarity.UNCOMMON, EnchantmentCategory.ARMOR_HEAD, new EquipmentSlot[]{EquipmentSlot.HEAD});
 
         options.addProperty(MAX_LEVEL_KEY, 5);
-        options.addProperty(VALUE_KEY, 10);
+        options.addProperty(VALUE_KEY, 20);
     }
 
     @Override

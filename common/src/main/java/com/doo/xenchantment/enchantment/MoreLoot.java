@@ -2,11 +2,12 @@ package com.doo.xenchantment.enchantment;
 
 import com.doo.playerinfo.core.InfoGroupItems;
 import com.doo.xenchantment.XEnchantment;
-import com.doo.xenchantment.enchantment.advancements.TrueTrigger;
+import com.doo.xenchantment.advancements.TrueTrigger;
 import com.doo.xenchantment.events.LootApi;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Equipable;
@@ -52,7 +53,7 @@ public class MoreLoot extends BaseXEnchantment {
     }
 
     @Override
-    public void onServer() {
+    public void onServer(MinecraftServer server) {
         LootApi.register((living, stack, stacks) -> {
             if (disabled()) {
                 return Collections.emptyList();

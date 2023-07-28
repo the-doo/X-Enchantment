@@ -3,6 +3,7 @@ package com.doo.xenchantment.enchantment;
 import com.doo.xenchantment.events.ArrowApi;
 import com.doo.xenchantment.interfaces.ArrowAccessor;
 import com.google.gson.JsonObject;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Monster;
@@ -54,7 +55,7 @@ public class Diffusion extends BaseXEnchantment {
     }
 
     @Override
-    public void onServer() {
+    public void onServer(MinecraftServer server) {
         ArrowApi.register((arrow, attacker, itemStack, entity, damage) -> {
             if (disabled() || !ArrowAccessor.get(arrow).canDiffusion()) {
                 return;

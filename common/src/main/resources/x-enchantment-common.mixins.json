@@ -6,11 +6,14 @@
   "mixins": [
     "AbstractArrowMixin",
     "AnvilMenuMixin",
+    "AttrInstanceMixin",
     "BlockMixin",
+    "CropBlockMixin",
     "FishingHookMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
-    "PlayerMixin"
+    "PlayerMixin",
+    "PowderSnowMixin"
   ],
   "client": [
   ],

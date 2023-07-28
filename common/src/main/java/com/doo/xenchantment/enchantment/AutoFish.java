@@ -6,6 +6,7 @@ import com.doo.xenchantment.util.ServersideChannelUtil;
 import com.google.gson.JsonObject;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.FishingRodItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
@@ -42,7 +43,7 @@ public class AutoFish extends BaseXEnchantment {
     }
 
     @Override
-    public void onServer() {
+    public void onServer(MinecraftServer server) {
         FishApi.register(player -> {
             if (disabled()) {
                 return;

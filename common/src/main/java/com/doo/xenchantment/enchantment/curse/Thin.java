@@ -2,6 +2,7 @@ package com.doo.xenchantment.enchantment.curse;
 
 import com.doo.xenchantment.events.ItemApi;
 import com.google.gson.JsonObject;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
@@ -29,7 +30,7 @@ public class Thin extends Cursed {
     }
 
     @Override
-    public void onServer() {
+    public void onServer(MinecraftServer server) {
         ItemApi.register((owner, stack, amount) -> {
             if (owner == null) {
                 return;
