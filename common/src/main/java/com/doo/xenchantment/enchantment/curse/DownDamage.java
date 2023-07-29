@@ -36,6 +36,6 @@ public class DownDamage extends Cursed {
 
     @Override
     protected void modifiedAttrMap(ItemStack stack, int level, BiConsumer<Attribute, AttributeModifier> modifier) {
-        modifier.accept(Attributes.ATTACK_DAMAGE, new AttributeModifier(UUID, name, -getDouble(VALUE_KEY) / 100 * level, AttributeModifier.Operation.MULTIPLY_TOTAL));
+        modifier.accept(Attributes.ATTACK_DAMAGE, new AttributeModifier(UUID, name(), -getDouble(VALUE_KEY) / 100 * level, AttributeModifier.Operation.MULTIPLY_TOTAL));
     }
 }

@@ -50,6 +50,6 @@ public class SuckBlood extends BaseXEnchantment {
 
     @Override
     protected void modifiedAttrMap(ItemStack stack, int level, BiConsumer<Attribute, AttributeModifier> modifier) {
-        modifier.accept(ExtractAttributes.DAMAGE_PERCENTAGE_HEALING, new AttributeModifier(UUID, name, getDouble(BASE_VALUE) / 100 * level, AttributeModifier.Operation.ADDITION));
+        modifier.accept(ExtractAttributes.DAMAGE_PERCENTAGE_HEALING, new AttributeModifier(UUID, name(), getDouble(BASE_VALUE) / 100 * level, AttributeModifier.Operation.ADDITION));
     }
 }

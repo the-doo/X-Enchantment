@@ -55,7 +55,7 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
 
     private final ResourceLocation id;
 
-    public final String name;
+    private final String name;
 
     protected final EquipmentSlot[] slots;
 
@@ -73,16 +73,7 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
         this.id = new ResourceLocation(XEnchantment.MOD_ID, name);
         this.slots = slotTypes;
 
-        options.addProperty(MAX_LEVEL_KEY, 1);
-        options.addProperty(DISABLED_KEY, false);
-
-        if (onlyOneLevel()) {
-            options.addProperty(ONLY_ONE_LEVEL_KEY, false);
-        }
-
-        if (needReconnect()) {
-            options.addProperty(NEED_RECONNECT_KEY, false);
-        }
+        initOptions();
     }
 
     protected boolean onlyOneLevel() {
@@ -110,6 +101,10 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
     @Override
     public final boolean isTradeable() {
         return !disabled() && super.isTradeable();
+    }
+
+    public String name() {
+        return name;
     }
 
     @Override
@@ -265,6 +260,19 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
         } catch (Exception e) {
             LOGGER.warn("Load x-enchantment {} error", clazz, e);
             return null;
+        }
+    }
+
+    public void initOptions() {
+        options.addProperty(MAX_LEVEL_KEY, 1);
+        options.addProperty(DISABLED_KEY, false);
+
+        if (onlyOneLevel()) {
+            options.addProperty(ONLY_ONE_LEVEL_KEY, false);
+        }
+
+        if (needReconnect()) {
+            options.addProperty(NEED_RECONNECT_KEY, false);
         }
     }
 

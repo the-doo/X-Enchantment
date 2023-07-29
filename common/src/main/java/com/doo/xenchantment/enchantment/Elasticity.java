@@ -40,6 +40,6 @@ public class Elasticity extends BaseXEnchantment {
 
     @Override
     protected void modifiedAttrMap(ItemStack stack, int level, BiConsumer<Attribute, AttributeModifier> modifier) {
-        modifier.accept(ExtractAttributes.BOW_USING_SPEED, new AttributeModifier(UUID, name, getDouble(VALUE_KEY) / 100 * level, AttributeModifier.Operation.ADDITION));
+        modifier.accept(ExtractAttributes.BOW_USING_SPEED, new AttributeModifier(UUID, name(), getDouble(VALUE_KEY) / 100 * level, AttributeModifier.Operation.ADDITION));
     }
 }

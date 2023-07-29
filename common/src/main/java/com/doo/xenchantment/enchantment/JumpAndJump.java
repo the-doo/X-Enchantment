@@ -31,6 +31,6 @@ public class JumpAndJump extends BaseXEnchantment {
 
     @Override
     protected void modifiedAttrMap(ItemStack stack, int level, BiConsumer<Attribute, AttributeModifier> modifier) {
-        modifier.accept(ExtractAttributes.JUMP_COUNT, new AttributeModifier(UUID, name, level, AttributeModifier.Operation.ADDITION));
+        modifier.accept(ExtractAttributes.JUMP_COUNT, new AttributeModifier(UUID, name(), level, AttributeModifier.Operation.ADDITION));
     }
 }

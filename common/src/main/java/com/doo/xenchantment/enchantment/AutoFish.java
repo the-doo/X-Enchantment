@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.FishingRodItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
@@ -21,7 +22,7 @@ public class AutoFish extends BaseXEnchantment {
     private static final String HEALING_VALUE_KEY = "healing_value";
 
     public AutoFish() {
-        super("auto_fish", Rarity.RARE, EnchantmentCategory.FISHING_ROD, EnchantUtil.ALL_HAND);
+        super("auto_fish", Rarity.RARE, EnchantmentCategory.FISHING_ROD, EquipmentSlot.MAINHAND);
 
         options.addProperty(HEALING_KEY, true);
         options.addProperty(HEALING_CHANCE_KEY, 25);

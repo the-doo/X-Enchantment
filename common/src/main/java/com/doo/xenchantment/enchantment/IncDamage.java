@@ -43,7 +43,7 @@ public class IncDamage extends BaseXEnchantment {
     @Override
     protected void modifiedAttrMap(ItemStack stack, int level, BiConsumer<Attribute, AttributeModifier> modifier) {
         float damage = stack.getOrCreateTag().getFloat(nbtKey(KEY));
-        modifier.accept(Attributes.ATTACK_DAMAGE, new AttributeModifier(UUID, name, damage, AttributeModifier.Operation.ADDITION));
+        modifier.accept(Attributes.ATTACK_DAMAGE, new AttributeModifier(UUID, name(), damage, AttributeModifier.Operation.ADDITION));
     }
 
     @Override

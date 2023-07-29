@@ -1,11 +1,11 @@
 package com.doo.xenchantment.enchantment;
 
 import com.doo.xenchantment.events.LootApi;
-import com.doo.xenchantment.util.EnchantUtil;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.FishingRodItem;
@@ -28,7 +28,7 @@ public class Librarian extends BaseXEnchantment {
 
 
     public Librarian() {
-        super("librarian", Rarity.RARE, EnchantmentCategory.FISHING_ROD, EnchantUtil.ALL_HAND);
+        super("librarian", Rarity.RARE, EnchantmentCategory.FISHING_ROD, EquipmentSlot.MAINHAND);
 
         options.addProperty(MAX_LEVEL_KEY, 3);
         options.addProperty(TRIGGER_KEY, 20);

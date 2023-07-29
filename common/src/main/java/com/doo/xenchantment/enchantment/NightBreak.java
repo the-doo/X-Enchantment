@@ -57,6 +57,6 @@ public class NightBreak extends BaseXEnchantment {
 
     @Override
     protected void modifiedAttrMap(ItemStack stack, int level, BiConsumer<Attribute, AttributeModifier> modifier) {
-        modifier.accept(ExtractAttributes.DAMAGE_PERCENTAGE_BONUS, new AttributeModifier(UUID, name, getDouble(DAMAGE_KEY) / 100 * level, AttributeModifier.Operation.ADDITION));
+        modifier.accept(ExtractAttributes.DAMAGE_PERCENTAGE_BONUS, new AttributeModifier(UUID, name(), getDouble(DAMAGE_KEY) / 100 * level, AttributeModifier.Operation.ADDITION));
     }
 }

@@ -52,7 +52,7 @@ public class Weakness extends BaseXEnchantment {
 
     @Override
     protected void modifiedAttrMap(ItemStack stack, int level, BiConsumer<Attribute, AttributeModifier> modifier) {
-        modifier.accept(ExtractAttributes.CRIT_RATE, new AttributeModifier(UUID_RATE, name, getDouble(CRIT_RATE_KEY) / 100 * level, AttributeModifier.Operation.ADDITION));
-        modifier.accept(ExtractAttributes.CRIT_DAMAGE, new AttributeModifier(UUID, name, getDouble(CRIT_DAMAGE_KEY) / 10 * level, AttributeModifier.Operation.ADDITION));
+        modifier.accept(ExtractAttributes.CRIT_RATE, new AttributeModifier(UUID_RATE, name(), getDouble(CRIT_RATE_KEY) / 100 * level, AttributeModifier.Operation.ADDITION));
+        modifier.accept(ExtractAttributes.CRIT_DAMAGE, new AttributeModifier(UUID, name(), getDouble(CRIT_DAMAGE_KEY) / 10 * level, AttributeModifier.Operation.ADDITION));
     }
 }

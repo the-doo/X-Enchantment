@@ -97,6 +97,12 @@
   "x_enchantment.only_one_level.tip": "该附魔任意效果都与等级无关，即调整等级无效。该按钮仅为说明，无另外效果。",
   "x_enchantment.need_reconnect": "需要重新连接",
   "x_enchantment.need_reconnect.tip": "表示该附魔需要客户端重新连接服务器才能生效。该按钮仅为说明，无另外效果。",
+  "x_enchantment.halo.interval": "间隔",
+  "x_enchantment.halo.interval.tip": "光环的触发间隔时间，单位秒",
+  "x_enchantment.halo.range": "范围",
+  "x_enchantment.halo.range.tip": "光环的生效范围，基于当前生物坐标",
+  "x_enchantment.halo.player_only": "仅玩家可用",
+  "x_enchantment.halo.player_only.tip": "附魔套装仅在玩家身上存在时才触发光环效果",
 
   "x_enchantment.menu.option.night_break.damage": "加成基数",
   "x_enchantment.menu.option.night_break.damage.tip": "每级加成基数。如果当前值为1.5，附魔等级为3，则效果为4.5%（= 3 * 1.5%）。",
@@ -222,5 +228,9 @@
   "x_enchantment.menu.option.thin.rate": "受损几率",
   "x_enchantment.menu.option.thin.rate.tip": "受损触发的几率",
   "x_enchantment.menu.option.thin.value": "受损基数",
-  "x_enchantment.menu.option.thin.value.tip": "每级对工具造成更多损坏的加成"
+  "x_enchantment.menu.option.thin.value.tip": "每级对工具造成更多损坏的加成",
+
+
+  "x_enchantment.halo.farm_speed": "万物复苏",
+  "x_enchantment.halo.farm_speed.tip": "万物复苏 - 光环"
 }

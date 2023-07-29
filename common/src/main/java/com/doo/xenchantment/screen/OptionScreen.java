@@ -2,6 +2,7 @@ package com.doo.xenchantment.screen;
 
 import com.doo.xenchantment.XEnchantment;
 import com.doo.xenchantment.enchantment.BaseXEnchantment;
+import com.doo.xenchantment.enchantment.halo.Halo;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -86,20 +87,21 @@ public class OptionScreen extends Screen {
     }
 
     private static String getNameKey(String title, String key) {
-        if (key.equals(BaseXEnchantment.MAX_LEVEL_KEY)) {
-            return XEnchantment.MOD_ID + "." + BaseXEnchantment.MAX_LEVEL_KEY;
-        }
-        if (key.equals(BaseXEnchantment.DISABLED_KEY)) {
-            return XEnchantment.MOD_ID + "." + BaseXEnchantment.DISABLED_KEY;
-        }
-        if (key.equals(BaseXEnchantment.ONLY_ONE_LEVEL_KEY)) {
-            return XEnchantment.MOD_ID + "." + BaseXEnchantment.ONLY_ONE_LEVEL_KEY;
-        }
-        if (key.equals(BaseXEnchantment.NEED_RECONNECT_KEY)) {
-            return XEnchantment.MOD_ID + "." + BaseXEnchantment.NEED_RECONNECT_KEY;
-        }
-
-        return String.format("%s.menu.option.%s.%s", XEnchantment.MOD_ID, title, key);
+        String format = "%s.%s";
+        String formatHalo = "%s.halo.%s";
+        return switch (key) {
+            case BaseXEnchantment.MAX_LEVEL_KEY ->
+                    format.formatted(XEnchantment.MOD_ID, BaseXEnchantment.MAX_LEVEL_KEY);
+            case BaseXEnchantment.DISABLED_KEY -> format.formatted(XEnchantment.MOD_ID, BaseXEnchantment.DISABLED_KEY);
+            case BaseXEnchantment.ONLY_ONE_LEVEL_KEY ->
+                    format.formatted(XEnchantment.MOD_ID, BaseXEnchantment.ONLY_ONE_LEVEL_KEY);
+            case BaseXEnchantment.NEED_RECONNECT_KEY ->
+                    format.formatted(XEnchantment.MOD_ID, BaseXEnchantment.NEED_RECONNECT_KEY);
+            case Halo.RANGE_KEY -> formatHalo.formatted(XEnchantment.MOD_ID, Halo.RANGE_KEY);
+            case Halo.INTERVAL_KEY -> formatHalo.formatted(XEnchantment.MOD_ID, Halo.INTERVAL_KEY);
+            case Halo.PLAYER_ONLY_KEY -> formatHalo.formatted(XEnchantment.MOD_ID, Halo.PLAYER_ONLY_KEY);
+            default -> "%s.menu.option.%s.%s".formatted(XEnchantment.MOD_ID, title, key);
+        };
     }
 
     public void close() {

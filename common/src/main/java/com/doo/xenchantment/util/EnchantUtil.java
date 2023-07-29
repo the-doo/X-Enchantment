@@ -49,8 +49,7 @@ public class EnchantUtil {
 
     public static final Map<Class<? extends BaseXEnchantment>, BaseXEnchantment> ENCHANTMENTS_MAP = Maps.newHashMap();
 
-    public static final EquipmentSlot[] ALL_HAND = new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND};
-    public static final EquipmentSlot[] ALL_ARMOR = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
+    protected static final EquipmentSlot[] ALL_ARMOR = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
 
     private EnchantUtil() {
     }
@@ -63,7 +62,8 @@ public class EnchantUtil {
             return;
         }
 
-        ENCHANTMENTS.forEach(e -> Optional.ofNullable(config.getAsJsonObject(e.name)).ifPresent(e::loadOptions));
+        ENCHANTMENTS_MAP.forEach((k, e) ->
+                Optional.ofNullable(config.getAsJsonObject(e.name())).ifPresent(e::loadOptions));
     }
 
     /**
@@ -110,7 +110,7 @@ public class EnchantUtil {
         ).forEach(e -> {
             e.register(registry);
             ENCHANTMENTS.add(e);
-            ENCHANTMENTS_MAP.put(e.getClass(), e);
+            ENCHANTMENTS_MAP.putIfAbsent(e.getClass(), e);
         });
     }
 
@@ -145,7 +145,7 @@ public class EnchantUtil {
 
     public static void onClient() {
         ENCHANTMENTS.forEach(BaseXEnchantment::onClient);
-        ENCHANTMENTS.forEach(e -> e.onOptionsRegister((k, v) -> OptionScreen.register(e.name, k, v)));
+        ENCHANTMENTS.forEach(e -> e.onOptionsRegister((k, v) -> OptionScreen.register(e.name(), k, v)));
     }
 
     public static void onServer(MinecraftServer server) {
@@ -239,9 +239,9 @@ public class EnchantUtil {
 
     public static JsonObject allOptionsAfterReloading() {
         JsonObject object = new JsonObject();
-        ENCHANTMENTS.forEach(e -> {
+        ENCHANTMENTS_MAP.forEach((k, e) -> {
             e.loadOptions(e.getOptions());
-            object.add(e.name, e.getOptions());
+            object.add(e.name(), e.getOptions());
         });
         return object;
     }

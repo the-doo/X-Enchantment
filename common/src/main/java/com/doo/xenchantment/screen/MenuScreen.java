@@ -1,5 +1,7 @@
 package com.doo.xenchantment.screen;
 
+import com.doo.xenchantment.enchantment.BaseXEnchantment;
+import com.doo.xenchantment.enchantment.halo.Halo;
 import com.doo.xenchantment.util.ConfigUtil;
 import com.doo.xenchantment.util.EnchantUtil;
 import com.mojang.blaze3d.platform.Window;
@@ -48,18 +50,29 @@ public class MenuScreen extends Screen {
         OptionsList list = new OptionsList(minecraft, w, this.height, 32, this.height - 32, 25);
 
         OptionInstance<?>[] opts = EnchantUtil.ENCHANTMENTS.stream()
-                .map(e -> new OptionInstance<>(
-                        e.getDescriptionId(),
-                        OptionInstance.cachedConstantTooltip(Component.translatable(e.getDescriptionId())),
-                        (component, object) -> Component.literal(String.valueOf(e.getMaxLevel())),
-                        new OptionInstance.Enum<>(Collections.singletonList(e.getOptions()), null),
-                        null, null,
-                        c -> minecraft.setScreen(new OptionScreen(this, e.name, c))))
+                .filter(e -> !(e instanceof Halo))
+                .map(e -> opt(e.getDescriptionId(), e))
+                .toArray(OptionInstance[]::new);
+        list.addSmall(opts);
+
+        opts = EnchantUtil.HALO_CLASS.stream()
+                .map(EnchantUtil.ENCHANTMENTS_MAP::get)
+                .map(e -> opt(e.name(), e))
                 .toArray(OptionInstance[]::new);
         list.addSmall(opts);
 
         addRenderableWidget(list);
         addRenderableWidget(new Button.Builder(CommonComponents.GUI_BACK, b -> INSTANCE.close()).bounds(this.width / 2 - 150 / 2, this.height - 28, 150, 20).build());
+    }
+
+    private OptionInstance<?> opt(String key, BaseXEnchantment e) {
+        return new OptionInstance<>(
+                key,
+                OptionInstance.cachedConstantTooltip(Component.translatable(key)),
+                (component, object) -> Component.literal(String.valueOf(e.getMaxLevel())),
+                new OptionInstance.Enum<>(Collections.singletonList(e.getOptions()), null),
+                null, null,
+                c -> minecraft.setScreen(new OptionScreen(this, e.name(), c)));
     }
 
     public void close() {

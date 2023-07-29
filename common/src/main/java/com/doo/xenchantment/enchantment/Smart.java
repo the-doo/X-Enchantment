@@ -39,6 +39,6 @@ public class Smart extends BaseXEnchantment {
 
     @Override
     protected void modifiedAttrMap(ItemStack stack, int level, BiConsumer<Attribute, AttributeModifier> modifier) {
-        modifier.accept(ExtractAttributes.XP_BONUS, new AttributeModifier(UUID, name, getDouble(VALUE_KEY) / 100 * level, AttributeModifier.Operation.ADDITION));
+        modifier.accept(ExtractAttributes.XP_BONUS, new AttributeModifier(UUID, name(), getDouble(VALUE_KEY) / 100 * level, AttributeModifier.Operation.ADDITION));
     }
 }

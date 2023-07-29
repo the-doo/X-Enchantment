@@ -13,7 +13,7 @@ import net.minecraft.world.phys.AABB;
 public class FarmSpeed extends Halo {
 
     protected FarmSpeed(EquipmentSlot slot) {
-        super("farm_speed." + slot.getName(), slot);
+        super("farm_speed", slot);
 
         options.addProperty(INTERVAL_KEY, 3);
     }

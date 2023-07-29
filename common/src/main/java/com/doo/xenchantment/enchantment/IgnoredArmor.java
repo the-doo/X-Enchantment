@@ -47,6 +47,6 @@ public class IgnoredArmor extends BaseXEnchantment {
 
     @Override
     protected void modifiedAttrMap(ItemStack stack, int level, BiConsumer<Attribute, AttributeModifier> modifier) {
-        modifier.accept(ExtractAttributes.ARMOR_PENETRATION, new AttributeModifier(UUID, name, getDouble(BASE_VALUE) / 100 * level, AttributeModifier.Operation.ADDITION));
+        modifier.accept(ExtractAttributes.ARMOR_PENETRATION, new AttributeModifier(UUID, name(), getDouble(BASE_VALUE) / 100 * level, AttributeModifier.Operation.ADDITION));
     }
 }

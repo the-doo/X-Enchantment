@@ -97,6 +97,12 @@
   "x_enchantment.only_one_level.tip": "Any effect of this enchantment has nothing to do with the level, that is, adjusting the level is invalid. This button is for illustration only and has no additional effect.",
   "x_enchantment.need_reconnect": "Need To Reconnect",
   "x_enchantment.need_reconnect.tip": "Indicates that the enchantment requires the client to reconnect to the server to take effect. This button is for illustration only and has no additional effect.",
+  "x_enchantment.halo.interval": "Interval",
+  "x_enchantment.halo.interval.tip": "The trigger interval of the halo, in seconds.",
+  "x_enchantment.halo.range": "Range",
+  "x_enchantment.halo.range.tip": "The effective range of the halo, based on the current living entity coordinates",
+  "x_enchantment.halo.player_only": "Player Only",
+  "x_enchantment.halo.player_only.tip": "Enchanted sets only trigger the halo effect while they are present on the player",
 
   "x_enchantment.menu.option.night_break.damage": "Addition Base",
   "x_enchantment.menu.option.night_break.damage.tip": "Addition base per level. If the current value is 1.5 and the enchantment level is 3, the effect is 4.5% (= 3 * 1.5%).",
@@ -226,5 +232,8 @@
   "x_enchantment.menu.option.thin.rate": "Trigger Chance",
   "x_enchantment.menu.option.thin.rate.tip": "Chance of extra damage to trigger.",
   "x_enchantment.menu.option.thin.value": "Durability Reduction Bonus",
-  "x_enchantment.menu.option.thin.value.tip": "Bonus to more damage to tools per level."
+  "x_enchantment.menu.option.thin.value.tip": "Bonus to more damage to tools per level.",
+
+  "x_enchantment.halo.farm_speed": "Spring Blossoms",
+  "x_enchantment.halo.farm_speed.tip": "Spring Blossoms - Halo"
 }

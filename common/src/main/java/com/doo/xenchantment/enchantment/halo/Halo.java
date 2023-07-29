@@ -1,5 +1,6 @@
 package com.doo.xenchantment.enchantment.halo;
 
+import com.doo.xenchantment.XEnchantment;
 import com.doo.xenchantment.enchantment.BaseXEnchantment;
 import com.google.gson.JsonObject;
 import net.minecraft.nbt.ListTag;
@@ -16,16 +17,33 @@ import java.util.Map;
 
 public abstract class Halo extends BaseXEnchantment {
 
-    protected static final String INTERVAL_KEY = "interval";
-    protected static final String RANGE_KEY = "range";
-    protected static final String PLAYER_ONLY_KEY = "player_only";
+    public static final String INTERVAL_KEY = "interval";
+    public static final String RANGE_KEY = "range";
+    public static final String PLAYER_ONLY_KEY = "player_only";
+
+    private final JsonObject opts = new JsonObject();
+    protected final String haloName;
 
     protected Halo(String name, EquipmentSlot slot) {
-        super("halo." + name, Rarity.UNCOMMON, EnchantmentCategory.ARMOR, slot);
+        super("halo." + name + "." + slot.getName(), Rarity.UNCOMMON, EnchantmentCategory.ARMOR, slot);
+
+
+        haloName = "%s.halo.%s".formatted(XEnchantment.MOD_ID, name);
+        if (opts.has(haloName)) {
+            return;
+        }
+
+        opts.add(haloName, options);
+
+        super.initOptions();
 
         options.addProperty(INTERVAL_KEY, 1);
         options.addProperty(RANGE_KEY, 5);
         options.addProperty(PLAYER_ONLY_KEY, true);
+    }
+
+    @Override
+    public final void initOptions() {
     }
 
     @Override
@@ -43,6 +61,11 @@ public abstract class Halo extends BaseXEnchantment {
     }
 
     @Override
+    public boolean canEnchant(ItemStack itemStack) {
+        return itemStack.getItem() instanceof ArmorItem ai && ai.getEquipmentSlot() == slots[0];
+    }
+
+    @Override
     protected boolean checkCompatibility(Enchantment enchantment) {
         return super.checkCompatibility(enchantment) && !(enchantment instanceof Halo);
     }
@@ -53,10 +76,6 @@ public abstract class Halo extends BaseXEnchantment {
 
     private int range() {
         return (int) getDouble(RANGE_KEY);
-    }
-
-    @Override
-    public final void onEndTick(LivingEntity living) {
     }
 
     public static void onEndLiving(LivingEntity living, Halo halo) {
@@ -79,9 +98,9 @@ public abstract class Halo extends BaseXEnchantment {
         Map<Enchantment, Integer> map = EnchantmentHelper.deserializeEnchantments(tag);
         return map.keySet().stream()
                 // only 4
-                .filter(e -> e instanceof Halo && getClass().isInstance(e))
+                .filter(e -> e instanceof Halo && e.getClass().isInstance(this))
                 // only 1
-                .filter(e -> ((Halo) e).name.endsWith(slotName))
+                .filter(e -> e.getDescriptionId().endsWith(slotName))
                 // if it has
                 .map(map::get).findAny().orElse(0);
     }
@@ -99,5 +118,15 @@ public abstract class Halo extends BaseXEnchantment {
             LOGGER.warn("Load x-enchantment {} error", clazz, e);
             return null;
         }
+    }
+
+    @Override
+    public String name() {
+        return haloName;
+    }
+
+    @Override
+    public JsonObject getOptions() {
+        return opts.getAsJsonObject(haloName);
     }
 }
