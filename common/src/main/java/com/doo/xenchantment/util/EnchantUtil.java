@@ -226,7 +226,7 @@ public class EnchantUtil {
     }
 
     public static void lootBlock(Entity entity, ItemStack itemStack, List<ItemStack> list, Consumer<List<ItemStack>> consumer) {
-        if (!(entity instanceof LivingEntity player) || list.size() < 2 && list.get(0).getItem() instanceof BlockItem) {
+        if (!(entity instanceof LivingEntity player) || list.isEmpty() || list.size() < 2 && list.get(0).getItem() instanceof BlockItem) {
             return;
         }
 
