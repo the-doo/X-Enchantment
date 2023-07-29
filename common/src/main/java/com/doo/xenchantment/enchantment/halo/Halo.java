@@ -29,8 +29,8 @@ public abstract class Halo extends BaseXEnchantment {
     protected final String haloName;
     protected final String optName;
 
-    protected Halo(String name, EquipmentSlot slot) {
-        super("halo." + name + "." + slot.getName(), Rarity.UNCOMMON, EnchantmentCategory.ARMOR, slot);
+    protected Halo(String name, Rarity rarity, EquipmentSlot slot) {
+        super("halo." + name + "." + slot.getName(), rarity, EnchantmentCategory.ARMOR, slot);
 
         haloName = "enchantment.x_enchantment.halo." + name;
         optName = OPT_FORMAT.formatted(XEnchantment.MOD_ID, "halo.") + name;

@@ -32,6 +32,8 @@
   "enchantment.x_enchantment.climber.desc": "Gain a jump boost effect at a certain height.",
   "enchantment.x_enchantment.smart": "Smart",
   "enchantment.x_enchantment.smart.desc": "Extra experience bonus.",
+  "enchantment.x_enchantment.food_bonus": "Nutrient Uptake",
+  "enchantment.x_enchantment.food_bonus.desc": "Extra hunger bonus when eating.",
   "enchantment.x_enchantment.king_kong_legs": "King Kong Legs",
   "enchantment.x_enchantment.king_kong_legs.desc": "Max fall reduction.",
   "enchantment.x_enchantment.diffusion": "Diffusion",
@@ -150,6 +152,9 @@
 
   "x_enchantment.menu.option.smart.value": "XP Bonus",
   "x_enchantment.menu.option.smart.value.tip": "XP bonus per level",
+
+  "x_enchantment.menu.option.food_bonus.value": "Hunger Bonus Base",
+  "x_enchantment.menu.option.food_bonus.value.tip": "Hunger bonus base when eating.",
 
   "x_enchantment.menu.option.ignored_armor.value": "Penetration base",
   "x_enchantment.menu.option.ignored_armor.value.tip": "Penetration base per level",

@@ -70,7 +70,7 @@ public class EnchantUtil {
      */
     public static void registerAll(XEnchantmentRegistry registry) {
         Stream<? extends BaseXEnchantment> stream = Stream.of(
-                // any
+                // other
                 MoreLoot.class, BrokenDawn.class,
                 // attack
                 NightBreak.class, SuckBlood.class, Weakness.class, IncDamage.class, IgnoredArmor.class,
@@ -79,7 +79,7 @@ public class EnchantUtil {
                 // rod
                 AutoFish.class, Librarian.class,
                 // head
-                Smart.class,
+                Smart.class, FoodBonus.class,
                 // chest
                 Rebirth.class, MagicImmune.class,
                 // leg

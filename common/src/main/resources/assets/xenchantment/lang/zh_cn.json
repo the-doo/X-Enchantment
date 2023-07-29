@@ -32,6 +32,8 @@
   "enchantment.x_enchantment.climber.desc": "在一定高度时获得跳跃提升效果",
   "enchantment.x_enchantment.smart": "聪慧",
   "enchantment.x_enchantment.smart.desc": "额外的经验加成",
+  "enchantment.x_enchantment.food_bonus": "营养汲取",
+  "enchantment.x_enchantment.food_bonus.desc": "进食时额外的饥饿值加成",
   "enchantment.x_enchantment.king_kong_legs": "金刚腿",
   "enchantment.x_enchantment.king_kong_legs.desc": "满级的坠落减免",
   "enchantment.x_enchantment.diffusion": "扩散",
@@ -150,6 +152,9 @@
 
   "x_enchantment.menu.option.smart.value": "经验加成基数",
   "x_enchantment.menu.option.smart.value.tip": "经验加成基数",
+
+  "x_enchantment.menu.option.food_bonus.value": "加成基数",
+  "x_enchantment.menu.option.food_bonus.value.tip": "饥饿值加成基数",
 
   "x_enchantment.menu.option.ignored_armor.value": "穿透基数",
   "x_enchantment.menu.option.ignored_armor.value.tip": "穿透加成基数",
