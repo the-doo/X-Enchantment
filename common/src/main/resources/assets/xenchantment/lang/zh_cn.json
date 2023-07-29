@@ -80,6 +80,10 @@
   "enchantment.x_enchantment.down_armor": "腐朽护甲",
   "enchantment.x_enchantment.down_armor.desc": "百分比降低护甲值",
 
+
+
+  "enchantment.x_enchantment.halo.farm_speed": "万物复苏",
+  "enchantment.x_enchantment.halo.farm_speed.tip": "光环 - 万物复苏",
   "enchantment.x_enchantment.halo.farm_speed.head": "万物复苏 · 盔",
   "enchantment.x_enchantment.halo.farm_speed.head.desc": "加速作物成长，头盔部分。光环的一种，需要集齐所有部位，才能激活。",
   "enchantment.x_enchantment.halo.farm_speed.chest": "万物复苏 · 甲",
@@ -88,6 +92,18 @@
   "enchantment.x_enchantment.halo.farm_speed.legs.desc": "加速作物成长，护腿部分。光环的一种，需要集齐所有部位，才能激活。",
   "enchantment.x_enchantment.halo.farm_speed.feet": "万物复苏 · 靴",
   "enchantment.x_enchantment.halo.farm_speed.feet.desc": "加速作物成长，靴子部分。光环的一种，需要集齐所有部位，才能激活。",
+
+
+  "enchantment.x_enchantment.halo.allied_bonus": "万兽之王",
+  "enchantment.x_enchantment.halo.allied_bonus.tip": "光环 - 万兽之王",
+  "enchantment.x_enchantment.halo.allied_bonus.head": "万兽之王 · 盔",
+  "enchantment.x_enchantment.halo.allied_bonus.head.desc": "给予伙伴状态效果，头盔部分。光环的一种，需要集齐所有部位，才能激活。",
+  "enchantment.x_enchantment.halo.allied_bonus.chest": "万兽之王 · 甲",
+  "enchantment.x_enchantment.halo.allied_bonus.chest.desc": "给予伙伴状态效果，胸甲部分。光环的一种，需要集齐所有部位，才能激活。",
+  "enchantment.x_enchantment.halo.allied_bonus.legs": "万兽之王 · 腿",
+  "enchantment.x_enchantment.halo.allied_bonus.legs.desc": "给予伙伴状态效果，护腿部分。光环的一种，需要集齐所有部位，才能激活。",
+  "enchantment.x_enchantment.halo.allied_bonus.feet": "万兽之王 · 靴",
+  "enchantment.x_enchantment.halo.allied_bonus.feet.desc": "给予伙伴状态效果，靴子部分。光环的一种，需要集齐所有部位，才能激活。",
 
   "x_enchantment.max_level": "最大等级",
   "x_enchantment.max_level.tip": "附魔的最大等级",
@@ -103,6 +119,8 @@
   "x_enchantment.halo.range.tip": "光环的生效范围，基于当前生物坐标",
   "x_enchantment.halo.player_only": "仅玩家可用",
   "x_enchantment.halo.player_only.tip": "附魔套装仅在玩家身上存在时才触发光环效果",
+  "x_enchantment.halo.halo": "光环",
+  "x_enchantment.halo.halo.tip": "该附魔为光环的一种。该按钮仅为说明，无另外效果。",
 
   "x_enchantment.menu.option.night_break.damage": "加成基数",
   "x_enchantment.menu.option.night_break.damage.tip": "每级加成基数。如果当前值为1.5，附魔等级为3，则效果为4.5%（= 3 * 1.5%）。",
@@ -230,7 +248,10 @@
   "x_enchantment.menu.option.thin.value": "受损基数",
   "x_enchantment.menu.option.thin.value.tip": "每级对工具造成更多损坏的加成",
 
-
-  "x_enchantment.halo.farm_speed": "万物复苏",
-  "x_enchantment.halo.farm_speed.tip": "万物复苏 - 光环"
+  "x_enchantment.menu.option.halo.allied_bonus.effect_time": "持续时间基数",
+  "x_enchantment.menu.option.halo.allied_bonus.effect_time.tip": "基于间隔时间的百分比关系，当该值为1时，效果持续时间 = 间隔时间",
+  "x_enchantment.menu.option.halo.allied_bonus.effect_level": "等级",
+  "x_enchantment.menu.option.halo.allied_bonus.effect_level.tip": "效果等级",
+  "x_enchantment.menu.option.halo.allied_bonus.ban": "禁止列表",
+  "x_enchantment.menu.option.halo.allied_bonus.ban.tip": "某些效果禁止生效"
 }

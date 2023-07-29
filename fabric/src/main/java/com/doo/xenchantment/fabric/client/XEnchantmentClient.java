@@ -14,7 +14,7 @@ public class XEnchantmentClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        EnchantUtil.ENCHANTMENTS.stream().filter(AutoFish.class::isInstance).findFirst()
+        EnchantUtil.ENCHANTMENTS_MAP.values().stream().filter(AutoFish.class::isInstance).findFirst()
                 .ifPresent(e -> ClientPlayNetworking.registerGlobalReceiver(e.getId(), ((client, handler, buf, responseSender) -> ClientsideChannelUtil.autoFish(client))));
 
         EnchantUtil.registerToolTips(e -> ItemTooltipCallback.EVENT.register(e::tooltip));

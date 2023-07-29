@@ -69,7 +69,7 @@ public class Librarian extends BaseXEnchantment {
             }
 
             // check rarity
-            Rarity rarity = randRarityByLevel(living.getRandom().nextInt(100), living.getAttributeValue(Attributes.LUCK) + 1);
+            Rarity rarity = randRarityByLevel(living.getRandom().nextDouble(), living.getAttributeValue(Attributes.LUCK) + 1);
             List<Enchantment> list = ENCHANTMENT_MAP.get(rarity);
 
             if (list == null || list.isEmpty()) {
@@ -84,7 +84,7 @@ public class Librarian extends BaseXEnchantment {
     /*
      * base: 5-very_rare 10-rare 30-uncommon 55-common
      */
-    private Rarity randRarityByLevel(int rand, double luck) {
+    private Rarity randRarityByLevel(double rand, double luck) {
         if (rand < luck * getDouble(VARY_RARE_VALUE_KEY) / 100) {
             return Rarity.VERY_RARE;
         }
@@ -100,8 +100,7 @@ public class Librarian extends BaseXEnchantment {
     @Override
     public void onServerStarted() {
         ENCHANTMENT_MAP.putAll(BuiltInRegistries.ENCHANTMENT.stream()
-                .filter(Enchantment::isDiscoverable)
-                .filter(e -> !e.isCurse())
+                .filter(e -> !e.isCurse() && e.isDiscoverable())
                 .collect(Collectors.groupingBy(Enchantment::getRarity)));
     }
 }

@@ -100,7 +100,8 @@ public class OptionScreen extends Screen {
             case Halo.RANGE_KEY -> formatHalo.formatted(XEnchantment.MOD_ID, Halo.RANGE_KEY);
             case Halo.INTERVAL_KEY -> formatHalo.formatted(XEnchantment.MOD_ID, Halo.INTERVAL_KEY);
             case Halo.PLAYER_ONLY_KEY -> formatHalo.formatted(XEnchantment.MOD_ID, Halo.PLAYER_ONLY_KEY);
-            default -> "%s.menu.option.%s.%s".formatted(XEnchantment.MOD_ID, title, key);
+            case Halo.HALO_KEY -> formatHalo.formatted(XEnchantment.MOD_ID, Halo.HALO_KEY);
+            default -> format.formatted(title, key);
         };
     }
 

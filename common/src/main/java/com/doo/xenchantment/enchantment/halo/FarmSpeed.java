@@ -14,13 +14,15 @@ public class FarmSpeed extends Halo {
 
     protected FarmSpeed(EquipmentSlot slot) {
         super("farm_speed", slot);
+    }
 
+    @Override
+    protected void initHaloFirstOptions() {
         options.addProperty(INTERVAL_KEY, 3);
     }
 
     @Override
-    protected void trigger(LivingEntity living, int range) {
-        AABB box = living.getBoundingBox().inflate(range);
+    protected void trigger(LivingEntity living, AABB box) {
         ServerLevel level = (ServerLevel) living.level();
         BlockPos.betweenClosedStream(box).forEach(p -> {
             BlockState state = level.getBlockState(p);

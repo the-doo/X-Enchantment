@@ -49,7 +49,7 @@ public class MenuScreen extends Screen {
         int w = this.width;
         OptionsList list = new OptionsList(minecraft, w, this.height, 32, this.height - 32, 25);
 
-        OptionInstance<?>[] opts = EnchantUtil.ENCHANTMENTS.stream()
+        OptionInstance<?>[] opts = EnchantUtil.ENCHANTMENTS_MAP.values().stream()
                 .filter(e -> !(e instanceof Halo))
                 .map(e -> opt(e.getDescriptionId(), e))
                 .toArray(OptionInstance[]::new);
@@ -72,7 +72,7 @@ public class MenuScreen extends Screen {
                 (component, object) -> Component.literal(String.valueOf(e.getMaxLevel())),
                 new OptionInstance.Enum<>(Collections.singletonList(e.getOptions()), null),
                 null, null,
-                c -> minecraft.setScreen(new OptionScreen(this, e.name(), c)));
+                c -> minecraft.setScreen(new OptionScreen(this, e.optGroup(), c)));
     }
 
     public void close() {

@@ -8,6 +8,7 @@ import com.doo.xenchantment.enchantment.curse.DownArmor;
 import com.doo.xenchantment.enchantment.curse.DownDamage;
 import com.doo.xenchantment.enchantment.curse.Regicide;
 import com.doo.xenchantment.enchantment.curse.Thin;
+import com.doo.xenchantment.enchantment.halo.AlliedBonus;
 import com.doo.xenchantment.enchantment.halo.FarmSpeed;
 import com.doo.xenchantment.enchantment.halo.Halo;
 import com.doo.xenchantment.enchantment.special.HealthConverter;
@@ -43,8 +44,6 @@ import java.util.stream.Stream;
  * 附魔工具
  */
 public class EnchantUtil {
-
-    public static final List<BaseXEnchantment> ENCHANTMENTS = Lists.newArrayList();
     public static final List<Class<? extends Halo>> HALO_CLASS = Lists.newArrayList();
 
     public static final Map<Class<? extends BaseXEnchantment>, BaseXEnchantment> ENCHANTMENTS_MAP = Maps.newHashMap();
@@ -97,7 +96,7 @@ public class EnchantUtil {
 
         // Halo
         List<Class<? extends Halo>> halos = Lists.newArrayList(
-                FarmSpeed.class
+                FarmSpeed.class, AlliedBonus.class
         );
         HALO_CLASS.addAll(halos);
         Stream<? extends BaseXEnchantment> stream2 =
@@ -106,10 +105,10 @@ public class EnchantUtil {
         // merge
         Stream.concat(stream, stream2).sorted(Comparator.comparingInt((BaseXEnchantment e) -> e.isCurse() ? 1 : 0)
                 .thenComparingInt((BaseXEnchantment e) -> e instanceof Special ? 1 : 0)
+                .thenComparingInt((BaseXEnchantment e) -> e instanceof Halo ? 1 : 0)
                 .thenComparingInt((BaseXEnchantment e) -> e.getRarity().getWeight())
         ).forEach(e -> {
             e.register(registry);
-            ENCHANTMENTS.add(e);
             ENCHANTMENTS_MAP.putIfAbsent(e.getClass(), e);
         });
     }
@@ -120,7 +119,7 @@ public class EnchantUtil {
     public static void registerPlayerInfo() {
         InfoItemCollector.register(XEnchantment.MOD_NAME, player -> {
             List<InfoGroupItems> sorted = Lists.newArrayList();
-            ENCHANTMENTS.stream().filter(e -> !e.disabled())
+            ENCHANTMENTS_MAP.values().stream().filter(e -> !e.disabled())
                     .map(e -> e.collectPlayerInfo(player))
                     .filter(it -> it != null && !it.isEmpty())
                     .forEach(sorted::add);
@@ -132,42 +131,42 @@ public class EnchantUtil {
      * 注册所有附魔及事件
      */
     public static void registerAttr(XEnchantmentRegistry registry) {
-        ENCHANTMENTS.stream().filter(BaseXEnchantment::hasAttr).forEach(registry::register);
+        ENCHANTMENTS_MAP.values().stream().filter(BaseXEnchantment::hasAttr).forEach(registry::register);
     }
 
     public static void registerAdv(XEnchantmentRegistry registry) {
-        ENCHANTMENTS.stream().filter(BaseXEnchantment::hasAdv).forEach(registry::register);
+        ENCHANTMENTS_MAP.values().stream().filter(BaseXEnchantment::hasAdv).forEach(registry::register);
     }
 
     public static void registerToolTips(XEnchantmentRegistry registry) {
-        ENCHANTMENTS.stream().filter(BaseXEnchantment::needTooltips).forEach(registry::register);
+        ENCHANTMENTS_MAP.values().stream().filter(BaseXEnchantment::needTooltips).forEach(registry::register);
     }
 
     public static void onClient() {
-        ENCHANTMENTS.forEach(BaseXEnchantment::onClient);
-        ENCHANTMENTS.forEach(e -> e.onOptionsRegister((k, v) -> OptionScreen.register(e.name(), k, v)));
+        ENCHANTMENTS_MAP.values().forEach(BaseXEnchantment::onClient);
+        ENCHANTMENTS_MAP.values().forEach(e -> e.onOptionsRegister((k, v) -> OptionScreen.register(e.optGroup(), k, v)));
     }
 
     public static void onServer(MinecraftServer server) {
-        ENCHANTMENTS.forEach(e -> e.onServer(server));
+        ENCHANTMENTS_MAP.values().forEach(e -> e.onServer(server));
 
         registerPlayerInfo();
     }
 
     public static void onServerStarted() {
-        ENCHANTMENTS.forEach(BaseXEnchantment::onServerStarted);
+        ENCHANTMENTS_MAP.values().forEach(BaseXEnchantment::onServerStarted);
     }
 
     public static void onKilled(Consumer<BaseXEnchantment> consumer) {
-        ENCHANTMENTS.stream().filter(e -> !e.disabled()).forEach(consumer);
+        ENCHANTMENTS_MAP.values().stream().filter(e -> !e.disabled()).forEach(consumer);
     }
 
     public static void canDeath(Consumer<BaseXEnchantment> consumer) {
-        ENCHANTMENTS.stream().filter(e -> !e.disabled()).forEach(consumer);
+        ENCHANTMENTS_MAP.values().stream().filter(e -> !e.disabled()).forEach(consumer);
     }
 
     public static void endLivingTick(LivingEntity entity) {
-        ENCHANTMENTS.stream()
+        ENCHANTMENTS_MAP.values().stream()
                 .filter(e -> !e.disabled() && !(e instanceof Halo))
                 .forEach(e -> e.onEndTick(entity));
         // halo - trigger once
@@ -176,7 +175,7 @@ public class EnchantUtil {
 
     public static boolean allowEffectAddition(MobEffectInstance effect, LivingEntity living) {
         MutableBoolean tag = new MutableBoolean(true);
-        ENCHANTMENTS.stream().filter(e -> !e.disabled()).forEach(e -> {
+        ENCHANTMENTS_MAP.values().stream().filter(e -> !e.disabled()).forEach(e -> {
             boolean b = e.allowEffectAddition(effect, living);
             if (tag.isTrue()) {
                 tag.setValue(b);
@@ -251,7 +250,7 @@ public class EnchantUtil {
             return false;
         }
 
-        return living instanceof Player && ENCHANTMENTS.stream().anyMatch(e -> !e.disabled() && e.canStandOnFluid(living, fluidState));
+        return living instanceof Player && ENCHANTMENTS_MAP.values().stream().anyMatch(e -> !e.disabled() && e.canStandOnFluid(living, fluidState));
     }
 
     public static boolean canEntityWalkOnPowderSnow(Entity entity) {

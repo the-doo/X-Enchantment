@@ -42,6 +42,8 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
 
     static final DecimalFormat FORMAT = new DecimalFormat("#.##");
 
+    public static final String OPT_FORMAT = "%s.menu.option.%s";
+
     protected static final Logger LOGGER = LogUtils.getLogger();
 
     /**
@@ -56,6 +58,8 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
     private final ResourceLocation id;
 
     private final String name;
+
+    private final String optGroup;
 
     protected final EquipmentSlot[] slots;
 
@@ -72,7 +76,7 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
         this.name = name;
         this.id = new ResourceLocation(XEnchantment.MOD_ID, name);
         this.slots = slotTypes;
-
+        this.optGroup = OPT_FORMAT.formatted(XEnchantment.MOD_ID, name);
         initOptions();
     }
 
@@ -90,7 +94,11 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
     }
 
     public final boolean disabled() {
-        return options.get(DISABLED_KEY).getAsBoolean();
+        return options.has(DISABLED_KEY) ? options.get(DISABLED_KEY).getAsBoolean() : isDisabled();
+    }
+
+    public boolean isDisabled() {
+        return false;
     }
 
     @Override
@@ -105,6 +113,10 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
 
     public String name() {
         return name;
+    }
+
+    public String optGroup() {
+        return optGroup;
     }
 
     @Override
@@ -231,6 +243,10 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
     public void onServerStarted() {
     }
 
+    public boolean canEntityWalkOnPowderSnow(LivingEntity e) {
+        return false;
+    }
+
     public InfoGroupItems collectPlayerInfo(ServerPlayer player) {
         return null;
     }
@@ -324,9 +340,5 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
     }
 
     public void onOptionsRegister(BiConsumer<String, Supplier<Stream<String>>> register) {
-    }
-
-    public boolean canEntityWalkOnPowderSnow(LivingEntity e) {
-        return false;
     }
 }

@@ -80,6 +80,9 @@
   "enchantment.x_enchantment.down_armor": "Decayed Armor",
   "enchantment.x_enchantment.down_armor.desc": "Percentage armor reduction",
 
+
+  "enchantment.x_enchantment.halo.farm_speed": "Spring Blossoms",
+  "enchantment.x_enchantment.halo.farm_speed.tip": "Halo - Spring Blossoms",
   "enchantment.x_enchantment.halo.farm_speed.head": "Spring Blossoms · Head",
   "enchantment.x_enchantment.halo.farm_speed.head.desc": "Speed up crop growth, head part. A type of halo that needs to be assembled to activate all parts.",
   "enchantment.x_enchantment.halo.farm_speed.chest": "Spring Blossoms · Chest",
@@ -88,6 +91,17 @@
   "enchantment.x_enchantment.halo.farm_speed.legs.desc": "Speed up crop growth, legs part. A type of halo that needs to be assembled to activate all parts.",
   "enchantment.x_enchantment.halo.farm_speed.feet": "Spring Blossoms · Feet",
   "enchantment.x_enchantment.halo.farm_speed.feet.desc": "Speed up crop growth, feet part. A type of halo that needs to be assembled to activate all parts.",
+
+  "enchantment.x_enchantment.halo.allied_bonus": "King Of Beasts",
+  "enchantment.x_enchantment.halo.allied_bonus.tip": "Halo - King Of Beasts",
+  "enchantment.x_enchantment.halo.allied_bonus.head": "King Of Beasts · Head",
+  "enchantment.x_enchantment.halo.allied_bonus.head.desc": "Gives partner status effects, head part. A type of halo that needs to be assembled to activate all parts.",
+  "enchantment.x_enchantment.halo.allied_bonus.chest": "King Of Beasts · Chest",
+  "enchantment.x_enchantment.halo.allied_bonus.chest.desc": "Gives partner status effects, chest part. A type of halo that needs to be assembled to activate all parts.",
+  "enchantment.x_enchantment.halo.allied_bonus.legs": "King Of Beasts · Legs",
+  "enchantment.x_enchantment.halo.allied_bonus.legs.desc": "Gives partner status effects, legs part. A type of halo that needs to be assembled to activate all parts.",
+  "enchantment.x_enchantment.halo.allied_bonus.feet": "King Of Beasts · Feet",
+  "enchantment.x_enchantment.halo.allied_bonus.feet.desc": "Gives partner status effects, feet part. A type of halo that needs to be assembled to activate all parts.",
 
   "x_enchantment.max_level": "Max Level",
   "x_enchantment.max_level.tip": "Max level of enchantment",
@@ -103,6 +117,8 @@
   "x_enchantment.halo.range.tip": "The effective range of the halo, based on the current living entity coordinates",
   "x_enchantment.halo.player_only": "Player Only",
   "x_enchantment.halo.player_only.tip": "Enchanted sets only trigger the halo effect while they are present on the player",
+  "x_enchantment.halo.halo": "Halo",
+  "x_enchantment.halo.halo.tip": "This enchantment is a type of halo. This button is for illustration only and has no additional effect.",
 
   "x_enchantment.menu.option.night_break.damage": "Addition Base",
   "x_enchantment.menu.option.night_break.damage.tip": "Addition base per level. If the current value is 1.5 and the enchantment level is 3, the effect is 4.5% (= 3 * 1.5%).",
@@ -234,6 +250,10 @@
   "x_enchantment.menu.option.thin.value": "Durability Reduction Bonus",
   "x_enchantment.menu.option.thin.value.tip": "Bonus to more damage to tools per level.",
 
-  "x_enchantment.halo.farm_speed": "Spring Blossoms",
-  "x_enchantment.halo.farm_speed.tip": "Spring Blossoms - Halo"
+  "x_enchantment.menu.option.halo.allied_bonus.effect_time": "Duration",
+  "x_enchantment.menu.option.halo.allied_bonus.effect_time.tip": "Based on the percentage relationship of the interval time, when the value is 1, the effect duration = interval time.",
+  "x_enchantment.menu.option.halo.allied_bonus.effect_level": "Level",
+  "x_enchantment.menu.option.halo.allied_bonus.effect_level.tip": "Effect level",
+  "x_enchantment.menu.option.halo.allied_bonus.ban": "Ban Effects",
+  "x_enchantment.menu.option.halo.allied_bonus.ban.tip": "Certain effects are prohibited from taking effect."
 }

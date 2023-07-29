@@ -2,45 +2,57 @@ package com.doo.xenchantment.enchantment.halo;
 
 import com.doo.xenchantment.XEnchantment;
 import com.doo.xenchantment.enchantment.BaseXEnchantment;
+import com.doo.xenchantment.util.EnchantUtil;
 import com.google.gson.JsonObject;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.phys.AABB;
 
 import java.util.Map;
 
 public abstract class Halo extends BaseXEnchantment {
 
+    public static final String HALO_KEY = "halo";
     public static final String INTERVAL_KEY = "interval";
     public static final String RANGE_KEY = "range";
     public static final String PLAYER_ONLY_KEY = "player_only";
 
-    private final JsonObject opts = new JsonObject();
+    private static final JsonObject OPTS = new JsonObject();
     protected final String haloName;
+    protected final String optName;
 
     protected Halo(String name, EquipmentSlot slot) {
         super("halo." + name + "." + slot.getName(), Rarity.UNCOMMON, EnchantmentCategory.ARMOR, slot);
 
-
-        haloName = "%s.halo.%s".formatted(XEnchantment.MOD_ID, name);
-        if (opts.has(haloName)) {
+        haloName = "enchantment.x_enchantment.halo." + name;
+        optName = OPT_FORMAT.formatted(XEnchantment.MOD_ID, "halo.") + name;
+        if (OPTS.has(haloName)) {
             return;
         }
 
-        opts.add(haloName, options);
+        OPTS.add(haloName, options);
 
         super.initOptions();
 
+        options.addProperty(HALO_KEY, true);
+        options.addProperty(PLAYER_ONLY_KEY, true);
         options.addProperty(INTERVAL_KEY, 1);
         options.addProperty(RANGE_KEY, 5);
-        options.addProperty(PLAYER_ONLY_KEY, true);
+
+        initHaloFirstOptions();
     }
+
+    protected void initHaloFirstOptions() {
+    }
+
 
     @Override
     public final void initOptions() {
@@ -50,9 +62,14 @@ public abstract class Halo extends BaseXEnchantment {
     public void loadOptions(JsonObject json) {
         super.loadOptions(json);
 
+        loadIf(json, PLAYER_ONLY_KEY);
         loadIf(json, INTERVAL_KEY);
         loadIf(json, RANGE_KEY);
-        loadIf(json, PLAYER_ONLY_KEY);
+    }
+
+    @Override
+    public boolean isDisabled() {
+        return EnchantUtil.ENCHANTMENTS_MAP.get(this.getClass()).disabled();
     }
 
     @Override
@@ -70,28 +87,32 @@ public abstract class Halo extends BaseXEnchantment {
         return super.checkCompatibility(enchantment) && !(enchantment instanceof Halo);
     }
 
-    private int interval() {
+    protected int interval() {
         return (int) (getDouble(INTERVAL_KEY) * SECOND_TICK);
     }
 
-    private int range() {
-        return (int) getDouble(RANGE_KEY);
+    protected double range() {
+        return getDouble(RANGE_KEY);
     }
 
     public static void onEndLiving(LivingEntity living, Halo halo) {
-        if (living.tickCount % halo.interval() != 0 || halo.disabled() || halo.getBoolean(PLAYER_ONLY_KEY) && !(living instanceof Player)) {
+        int interval = halo.interval();
+        if (interval < 1 || living.tickCount % interval != 0 || halo.disabled() || halo.getBoolean(PLAYER_ONLY_KEY) && !(living instanceof Player)) {
             return;
         }
 
-        ArmorItem ai;
         for (ItemStack slot : living.getArmorSlots()) {
-            ai = (ArmorItem) slot.getItem();
-            if (halo.level(slot.getEnchantmentTags(), ai.getEquipmentSlot().getName()) < 1) {
+            if (!(slot.getItem() instanceof Equipable ei) || halo.level(slot.getEnchantmentTags(), ei.getEquipmentSlot().getName()) < 1) {
                 return;
             }
         }
 
-        halo.trigger(living, halo.range());
+        double range = halo.range();
+        if (range <= 0) {
+            return;
+        }
+
+        halo.trigger(living, living.getBoundingBox().inflate(range));
     }
 
     private int level(ListTag tag, String slotName) {
@@ -105,7 +126,7 @@ public abstract class Halo extends BaseXEnchantment {
                 .map(map::get).findAny().orElse(0);
     }
 
-    protected abstract void trigger(LivingEntity living, int range);
+    protected abstract void trigger(LivingEntity living, AABB box);
 
 
     /**
@@ -126,7 +147,12 @@ public abstract class Halo extends BaseXEnchantment {
     }
 
     @Override
+    public String optGroup() {
+        return optName;
+    }
+
+    @Override
     public JsonObject getOptions() {
-        return opts.getAsJsonObject(haloName);
+        return OPTS.getAsJsonObject(haloName);
     }
 }
