@@ -20,7 +20,7 @@ public class Elasticity extends BaseXEnchantment {
     private static final String VALUE_KEY = "value";
 
     public Elasticity() {
-        super("elasticity", Rarity.RARE, EnchantmentCategory.BOW, new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND});
+        super("elasticity", Rarity.RARE, EnchantmentCategory.BOW, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
 
         options.addProperty(MAX_LEVEL_KEY, 3);
         options.addProperty(VALUE_KEY, 10);

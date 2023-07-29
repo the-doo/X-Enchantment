@@ -25,7 +25,7 @@ public class IncDamage extends BaseXEnchantment {
     private static final String KEY = "Damages";
 
     public IncDamage() {
-        super("increment_attack_damage", Rarity.VERY_RARE, EnchantmentCategory.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
+        super("increment_attack_damage", Rarity.VERY_RARE, EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND);
 
         options.addProperty(MAX_LEVEL_KEY, 5);
     }

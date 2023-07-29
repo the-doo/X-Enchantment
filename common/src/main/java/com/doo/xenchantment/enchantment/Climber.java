@@ -16,7 +16,7 @@ public class Climber extends BaseXEnchantment {
     private static final String Y_KEY = "y";
 
     public Climber() {
-        super("climber", Rarity.UNCOMMON, EnchantmentCategory.ARMOR_LEGS, new EquipmentSlot[]{EquipmentSlot.LEGS});
+        super("climber", Rarity.UNCOMMON, EnchantmentCategory.ARMOR_LEGS, EquipmentSlot.LEGS);
 
         options.addProperty(Y_KEY, 80);
     }

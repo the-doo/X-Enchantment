@@ -11,7 +11,7 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
 public class KingKongLegs extends BaseXEnchantment {
 
     public KingKongLegs() {
-        super("king_kong_legs", Rarity.UNCOMMON, EnchantmentCategory.ARMOR_LEGS, new EquipmentSlot[]{EquipmentSlot.LEGS});
+        super("king_kong_legs", Rarity.UNCOMMON, EnchantmentCategory.ARMOR_LEGS, EquipmentSlot.LEGS);
     }
 
     @Override

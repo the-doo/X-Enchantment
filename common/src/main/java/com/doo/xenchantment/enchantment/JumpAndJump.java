@@ -14,7 +14,7 @@ public class JumpAndJump extends BaseXEnchantment {
     public static final java.util.UUID UUID = java.util.UUID.fromString("1DDBA34C-4BD1-094F-9129-B64847F0251C");
 
     public JumpAndJump() {
-        super("jump", Rarity.VERY_RARE, EnchantmentCategory.ARMOR_FEET, new EquipmentSlot[]{EquipmentSlot.FEET});
+        super("jump", Rarity.VERY_RARE, EnchantmentCategory.ARMOR_FEET, EquipmentSlot.FEET);
 
         options.addProperty(MAX_LEVEL_KEY, 3);
     }

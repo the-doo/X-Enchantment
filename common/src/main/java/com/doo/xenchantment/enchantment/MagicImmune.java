@@ -26,7 +26,7 @@ public class MagicImmune extends BaseXEnchantment {
     private static final String BAN_KEY = "ban";
 
     public MagicImmune() {
-        super("magic_immune", Rarity.VERY_RARE, EnchantmentCategory.ARMOR_CHEST, new EquipmentSlot[]{EquipmentSlot.CHEST});
+        super("magic_immune", Rarity.VERY_RARE, EnchantmentCategory.ARMOR_CHEST, EquipmentSlot.CHEST);
 
         options.add(BAN_KEY, new JsonArray());
     }

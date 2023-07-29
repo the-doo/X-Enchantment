@@ -26,7 +26,7 @@ public class WalkOn extends BaseXEnchantment {
     private static final List<Fluid> BAN = Lists.newArrayList();
 
     public WalkOn() {
-        super("walk_on", Rarity.RARE, EnchantmentCategory.ARMOR_FEET, new EquipmentSlot[]{EquipmentSlot.FEET});
+        super("walk_on", Rarity.RARE, EnchantmentCategory.ARMOR_FEET, EquipmentSlot.FEET);
 
         options.add(BAN_KEY, new JsonArray());
     }

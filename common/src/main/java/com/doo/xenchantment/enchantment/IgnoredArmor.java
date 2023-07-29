@@ -20,7 +20,7 @@ public class IgnoredArmor extends BaseXEnchantment {
     public static final String BASE_VALUE = "base_value";
 
     public IgnoredArmor() {
-        super("ignored_armor", Rarity.VERY_RARE, EnchantmentCategory.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND});
+        super("ignored_armor", Rarity.VERY_RARE, EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
 
         options.addProperty(MAX_LEVEL_KEY, 3);
         options.addProperty(BASE_VALUE, 15);

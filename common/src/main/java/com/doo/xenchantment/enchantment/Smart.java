@@ -19,7 +19,7 @@ public class Smart extends BaseXEnchantment {
     public static final String VALUE_KEY = "value";
 
     public Smart() {
-        super("smart", Rarity.UNCOMMON, EnchantmentCategory.ARMOR_HEAD, new EquipmentSlot[]{EquipmentSlot.HEAD});
+        super("smart", Rarity.UNCOMMON, EnchantmentCategory.ARMOR_HEAD, EquipmentSlot.HEAD);
 
         options.addProperty(MAX_LEVEL_KEY, 5);
         options.addProperty(VALUE_KEY, 20);

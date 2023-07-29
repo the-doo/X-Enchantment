@@ -30,7 +30,7 @@ public class MoreLoot extends BaseXEnchantment {
     public static final String SUPER_LOOT_VALUE = "super_loot_value";
 
     public MoreLoot() {
-        super("more_loot", Rarity.RARE, EnchantmentCategory.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND});
+        super("more_loot", Rarity.RARE, EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
 
         options.addProperty(MAX_LEVEL_KEY, 5);
         options.addProperty(LOOT_RATE, 40);

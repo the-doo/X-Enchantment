@@ -30,7 +30,7 @@ public class Diffusion extends BaseXEnchantment {
     private static final ArrowItem ARROW_ITEM = (ArrowItem) Items.ARROW.asItem();
 
     public Diffusion() {
-        super("diffusion", Rarity.RARE, EnchantmentCategory.BOW, new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND});
+        super("diffusion", Rarity.RARE, EnchantmentCategory.BOW, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
 
         options.addProperty(MAX_LEVEL_KEY, 3);
         options.addProperty(MONSTER_KEY, true);

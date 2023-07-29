@@ -18,7 +18,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 public class Rebirth extends BaseXEnchantment {
 
     public Rebirth() {
-        super("rebirth", Rarity.RARE, EnchantmentCategory.ARMOR_CHEST, new EquipmentSlot[]{EquipmentSlot.CHEST});
+        super("rebirth", Rarity.RARE, EnchantmentCategory.ARMOR_CHEST, EquipmentSlot.CHEST);
 
         options.addProperty(MAX_LEVEL_KEY, 5);
     }

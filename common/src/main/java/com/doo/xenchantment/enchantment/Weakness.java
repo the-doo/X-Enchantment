@@ -23,7 +23,7 @@ public class Weakness extends BaseXEnchantment {
     public static final String CRIT_DAMAGE_KEY = "crit_damage";
 
     public Weakness() {
-        super("weakness", Rarity.VERY_RARE, EnchantmentCategory.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
+        super("weakness", Rarity.VERY_RARE, EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND);
 
         options.addProperty(MAX_LEVEL_KEY, 3);
         options.addProperty(CRIT_RATE_KEY, 10);

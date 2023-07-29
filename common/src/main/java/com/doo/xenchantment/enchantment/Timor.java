@@ -18,7 +18,7 @@ public class Timor extends BaseXEnchantment {
     private static final String POS = "Pos";
 
     public Timor() {
-        super("timor", Rarity.COMMON, EnchantmentCategory.ARMOR_FEET, new EquipmentSlot[]{EquipmentSlot.FEET});
+        super("timor", Rarity.COMMON, EnchantmentCategory.ARMOR_FEET, EquipmentSlot.FEET);
     }
 
     @Override

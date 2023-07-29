@@ -23,7 +23,7 @@ public class SuckBlood extends BaseXEnchantment {
     public static final String BASE_VALUE = "base_value";
 
     public SuckBlood() {
-        super("suck_blood", Rarity.RARE, EnchantmentCategory.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND});
+        super("suck_blood", Rarity.RARE, EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
 
         options.addProperty(MAX_LEVEL_KEY, 3);
         options.addProperty(BASE_VALUE, 10);

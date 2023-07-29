@@ -23,7 +23,7 @@ public class HeightAttacked extends BaseXEnchantment {
     private static final String DAMAGE_KEY = "damage";
 
     public HeightAttacked() {
-        super("height_advantage", Rarity.RARE, EnchantmentCategory.ARMOR_LEGS, new EquipmentSlot[]{EquipmentSlot.LEGS});
+        super("height_advantage", Rarity.RARE, EnchantmentCategory.ARMOR_LEGS, EquipmentSlot.LEGS);
 
         options.addProperty(MAX_LEVEL_KEY, 4);
         options.addProperty(MONSTER_KEY, true);

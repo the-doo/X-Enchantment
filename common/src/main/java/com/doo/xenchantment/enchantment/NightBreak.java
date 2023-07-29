@@ -27,7 +27,7 @@ public class NightBreak extends BaseXEnchantment {
     private static final MutableComponent THANKS = Component.literal(" - ").append(Component.translatable("enchantment.x_enchantment.night_break.tips")).withStyle(ChatFormatting.DARK_GRAY);
 
     public NightBreak() {
-        super("night_break", Rarity.VERY_RARE, EnchantmentCategory.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
+        super("night_break", Rarity.VERY_RARE, EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND);
 
         options.addProperty(MAX_LEVEL_KEY, 5);
         options.addProperty(DAMAGE_KEY, 1.5);
