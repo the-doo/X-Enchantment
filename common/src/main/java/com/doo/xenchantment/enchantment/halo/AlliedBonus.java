@@ -29,7 +29,7 @@ public class AlliedBonus extends Halo {
     private static final String BAN_KEY = "ban";
 
     protected AlliedBonus(EquipmentSlot slot) {
-        super("allied_bonus", Rarity.VERY_RARE, slot);
+        super("allied_bonus", Rarity.RARE, slot);
     }
 
     @Override
