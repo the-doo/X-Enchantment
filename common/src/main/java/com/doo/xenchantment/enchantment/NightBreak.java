@@ -1,6 +1,7 @@
 package com.doo.xenchantment.enchantment;
 
 import com.doo.playerinfo.utils.ExtractAttributes;
+import com.doo.xenchantment.interfaces.WithAttribute;
 import com.google.gson.JsonObject;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -12,19 +13,23 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.function.BiConsumer;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Night Break
  * <p>
  * from @NightBreak
  */
-public class NightBreak extends BaseXEnchantment {
-    public static final java.util.UUID UUID = java.util.UUID.fromString("B2A5E445-51EA-8E7D-ACCE-2A6E0D2E5090");
+public class NightBreak extends BaseXEnchantment implements WithAttribute<NightBreak> {
+    private static final java.util.UUID[] UUID = {
+            java.util.UUID.fromString("B2A5E445-51EA-8E7D-ACCE-2A6E0D2E5090")
+    };
     public static final String DAMAGE_KEY = "damage";
     public static final String TIP_KEY = "tip";
 
     private static final MutableComponent THANKS = Component.literal(" - ").append(Component.translatable("enchantment.x_enchantment.night_break.tips")).withStyle(ChatFormatting.DARK_GRAY);
+    private static final List<Attribute> ATTRIBUTES = Collections.singletonList(ExtractAttributes.DAMAGE_PERCENTAGE_BONUS);
 
     public NightBreak() {
         super("night_break", Rarity.VERY_RARE, EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND);
@@ -51,12 +56,17 @@ public class NightBreak extends BaseXEnchantment {
     }
 
     @Override
-    public boolean hasAttr() {
-        return true;
+    public List<java.util.UUID[]> getUUIDs() {
+        return Collections.singletonList(UUID);
     }
 
     @Override
-    protected void modifiedAttrMap(ItemStack stack, int level, BiConsumer<Attribute, AttributeModifier> modifier) {
-        modifier.accept(ExtractAttributes.DAMAGE_PERCENTAGE_BONUS, new AttributeModifier(UUID, name(), getDouble(DAMAGE_KEY) / 100 * level, AttributeModifier.Operation.ADDITION));
+    public List<Attribute> getAttribute() {
+        return ATTRIBUTES;
+    }
+
+    @Override
+    public AttributeModifier getMatchModify(Attribute attribute, ItemStack stack, int level) {
+        return oneAttrModify(stackIdx(stack, slots), level, getDouble(DAMAGE_KEY), AttributeModifier.Operation.ADDITION);
     }
 }

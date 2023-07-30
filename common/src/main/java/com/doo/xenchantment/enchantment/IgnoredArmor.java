@@ -1,6 +1,7 @@
 package com.doo.xenchantment.enchantment;
 
 import com.doo.playerinfo.utils.ExtractAttributes;
+import com.doo.xenchantment.interfaces.WithAttribute;
 import com.google.gson.JsonObject;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -11,13 +12,18 @@ import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
-import java.util.function.BiConsumer;
+import java.util.Collections;
+import java.util.List;
 
-public class IgnoredArmor extends BaseXEnchantment {
+public class IgnoredArmor extends BaseXEnchantment implements WithAttribute<IgnoredArmor> {
 
-    public static final java.util.UUID UUID = java.util.UUID.fromString("AF1DF6D2-0AD8-70A3-3B68-180D887DF150");
+    private static final java.util.UUID[] UUID = {
+            java.util.UUID.fromString("AF1DF6D2-0AD8-70A3-3B68-180D887DF150"),
+            java.util.UUID.fromString("AF1DF6D2-0AD8-70A3-3B68-180D887DF14F")
+    };
 
     public static final String BASE_VALUE = "base_value";
+    private static final List<Attribute> ATTRIBUTES = Collections.singletonList(ExtractAttributes.ARMOR_PENETRATION);
 
     public IgnoredArmor() {
         super("ignored_armor", Rarity.VERY_RARE, EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
@@ -41,12 +47,17 @@ public class IgnoredArmor extends BaseXEnchantment {
     }
 
     @Override
-    public boolean hasAttr() {
-        return true;
+    public List<java.util.UUID[]> getUUIDs() {
+        return Collections.singletonList(UUID);
     }
 
     @Override
-    protected void modifiedAttrMap(ItemStack stack, int level, BiConsumer<Attribute, AttributeModifier> modifier) {
-        modifier.accept(ExtractAttributes.ARMOR_PENETRATION, new AttributeModifier(UUID, name(), getDouble(BASE_VALUE) / 100 * level, AttributeModifier.Operation.ADDITION));
+    public List<Attribute> getAttribute() {
+        return ATTRIBUTES;
+    }
+
+    @Override
+    public AttributeModifier getMatchModify(Attribute attribute, ItemStack stack, int level) {
+        return oneAttrModify(stackIdx(stack, slots), level, getDouble(BASE_VALUE), AttributeModifier.Operation.ADDITION);
     }
 }

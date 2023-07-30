@@ -3,6 +3,7 @@ package com.doo.xenchantment.enchantment;
 import com.doo.playerinfo.core.InfoGroupItems;
 import com.doo.xenchantment.XEnchantment;
 import com.doo.xenchantment.advancements.TrueTrigger;
+import com.doo.xenchantment.interfaces.WithAttribute;
 import com.doo.xenchantment.interfaces.WithOptions;
 import com.doo.xenchantment.interfaces.XEnchantmentRegistry;
 import com.google.gson.JsonElement;
@@ -19,7 +20,11 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.item.*;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.EnchantedBookItem;
+import net.minecraft.world.item.Equipable;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -28,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -69,8 +75,6 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
 
     public static final String ONLY_ONE_LEVEL_KEY = "only_one_level";
 
-    public static final String NEED_RECONNECT_KEY = "need_reconnect";
-
     protected BaseXEnchantment(String name, Rarity weight, EnchantmentCategory type, EquipmentSlot... slotTypes) {
         super(weight, type, slotTypes);
         this.name = name;
@@ -81,10 +85,6 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
     }
 
     protected boolean onlyOneLevel() {
-        return false;
-    }
-
-    protected boolean needReconnect() {
         return false;
     }
 
@@ -173,21 +173,12 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
         return null;
     }
 
-    public boolean hasAttr() {
-        return false;
-    }
-
     public final void insertAttr(ItemStack stack, EquipmentSlot slot, BiConsumer<Attribute, AttributeModifier> modifier) {
         if (disabled() || stack.getItem() instanceof EnchantedBookItem) {
             return;
         }
 
-        Item i = stack.getItem();
-        if (i instanceof Equipable e && e.getEquipmentSlot() != slot) {
-            return;
-        }
-
-        if (!(i instanceof Equipable) && slot != EquipmentSlot.MAINHAND) {
+        if (!(stack.getItem() instanceof Equipable e) || slot != e.getEquipmentSlot() || Arrays.stream(slots).noneMatch(s -> s == slot)) {
             return;
         }
 
@@ -199,10 +190,11 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
         modifiedAttrMap(stack, level, modifier);
     }
 
-    protected void modifiedAttrMap(ItemStack stack, int level, BiConsumer<Attribute, AttributeModifier> modifier) {
-
+    private void modifiedAttrMap(ItemStack stack, int level, BiConsumer<Attribute, AttributeModifier> modifier) {
+        if (this instanceof WithAttribute<?> attribute) {
+            attribute.getAttribute().forEach(a -> modifier.accept(a, attribute.getMatchModify(a, stack, level)));
+        }
     }
-
 
     public void onKilled(ServerLevel world, LivingEntity killer, LivingEntity killedEntity) {
     }
@@ -286,10 +278,6 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
         if (onlyOneLevel()) {
             options.addProperty(ONLY_ONE_LEVEL_KEY, false);
         }
-
-        if (needReconnect()) {
-            options.addProperty(NEED_RECONNECT_KEY, false);
-        }
     }
 
     @Override
@@ -304,19 +292,18 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
     }
 
     protected final void loadIf(JsonObject json, String key) {
-        Optional.ofNullable(json.get(key))
-                .ifPresent(e -> {
-                    if (e.isJsonArray()) {
-                        options.add(key, e.getAsJsonArray());
-                        return;
-                    }
+        Optional.ofNullable(json.get(key)).ifPresent(e -> {
+            if (e.isJsonArray()) {
+                options.add(key, e.getAsJsonArray());
+                return;
+            }
 
-                    try {
-                        options.addProperty(key, e.getAsDouble());
-                    } catch (Exception ex) {
-                        options.addProperty(key, e.getAsBoolean());
-                    }
-                });
+            try {
+                options.addProperty(key, e.getAsDouble());
+            } catch (Exception ex) {
+                options.addProperty(key, e.getAsBoolean());
+            }
+        });
     }
 
     protected final double getDouble(String optionKey) {
@@ -340,5 +327,8 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
     }
 
     public void onOptionsRegister(BiConsumer<String, Supplier<Stream<String>>> register) {
+    }
+
+    public void onClientsideOptionLoad(Player player) {
     }
 }

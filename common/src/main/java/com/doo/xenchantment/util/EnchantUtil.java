@@ -16,13 +16,13 @@ import com.doo.xenchantment.enchantment.special.InfinityEnhance;
 import com.doo.xenchantment.enchantment.special.RemoveCursed;
 import com.doo.xenchantment.enchantment.special.Special;
 import com.doo.xenchantment.events.LootApi;
+import com.doo.xenchantment.interfaces.WithAttribute;
 import com.doo.xenchantment.interfaces.XEnchantmentRegistry;
 import com.doo.xenchantment.screen.OptionScreen;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -48,6 +48,7 @@ import java.util.stream.Stream;
  */
 public class EnchantUtil {
     public static final List<Class<? extends Halo>> HALO_CLASS = Lists.newArrayList();
+    public static final List<WithAttribute<BaseXEnchantment>> ATTR_ENCHANT = Lists.newArrayList();
 
     public static final Map<Class<? extends BaseXEnchantment>, BaseXEnchantment> ENCHANTMENTS_MAP = Maps.newHashMap();
 
@@ -105,6 +106,10 @@ public class EnchantUtil {
         ).forEach(e -> {
             e.register(registry);
             ENCHANTMENTS_MAP.putIfAbsent(e.getClass(), e);
+
+            if (e instanceof WithAttribute attribute) {
+                ATTR_ENCHANT.add(attribute);
+            }
         });
     }
 
@@ -126,7 +131,7 @@ public class EnchantUtil {
      * 注册所有附魔及事件
      */
     public static void registerAttr(XEnchantmentRegistry registry) {
-        ENCHANTMENTS_MAP.values().stream().filter(BaseXEnchantment::hasAttr).forEach(registry::register);
+        ENCHANTMENTS_MAP.values().stream().filter(WithAttribute.class::isInstance).forEach(registry::register);
     }
 
     public static void registerAdv(XEnchantmentRegistry registry) {
@@ -146,7 +151,7 @@ public class EnchantUtil {
         EnchantUtil.server = server;
 
         // load config
-        configLoad(ConfigUtil.load());
+        configLoad(ConfigUtil.load(), false);
 
         ENCHANTMENTS_MAP.values().forEach(e -> e.onServer(server));
 
@@ -248,15 +253,18 @@ public class EnchantUtil {
         return entity instanceof LivingEntity e && ENCHANTMENTS_MAP.get(WalkOn.class).canEntityWalkOnPowderSnow(e);
     }
 
-    public static void configLoad(JsonObject config) {
+    public static void configLoad(JsonObject config, boolean clientside) {
         if (config == null || config.size() < 1) {
-            allOption = getInitConfig();
+            allOption = getCurrentConfig();
             return;
         }
 
         allOption = config;
         ENCHANTMENTS_MAP.forEach((k, e) ->
                 Optional.ofNullable(config.getAsJsonObject(e.name())).ifPresent(e::loadOptions));
+        if (clientside) {
+            ENCHANTMENTS_MAP.forEach((k, e) -> e.onClientsideOptionLoad(ClientsideUtil.player()));
+        }
     }
 
     public static JsonObject allOptions() {
@@ -264,19 +272,17 @@ public class EnchantUtil {
     }
 
     public static void allOptionsAfterReloading(Consumer<JsonObject> configConsumer) {
-        JsonObject object = getInitConfig();
+        JsonObject object = getCurrentConfig();
         configConsumer.accept(object);
 
         allOption = object;
         if (server != null) {
-            FriendlyByteBuf buf = ServersideChannelUtil.getJsonBuf(object);
-            server.getPlayerList().getPlayers().forEach(p ->
-                    ServersideChannelUtil.send(p, CONFIG_CHANNEL, buf, object));
+            server.getPlayerList().getPlayers().forEach(p -> ATTR_ENCHANT.forEach(e -> e.reloadAttr(p)));
         }
     }
 
     @NotNull
-    private static JsonObject getInitConfig() {
+    private static JsonObject getCurrentConfig() {
         JsonObject object = new JsonObject();
         ENCHANTMENTS_MAP.forEach((k, e) -> object.add(e.name(), e.getOptions()));
         return object;

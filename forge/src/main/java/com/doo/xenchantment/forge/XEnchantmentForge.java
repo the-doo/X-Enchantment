@@ -3,6 +3,7 @@ package com.doo.xenchantment.forge;
 import com.doo.xenchantment.XEnchantment;
 import com.doo.xenchantment.screen.MenuScreen;
 import com.doo.xenchantment.util.ClientsideChannelUtil;
+import com.doo.xenchantment.util.ClientsideUtil;
 import com.doo.xenchantment.util.EnchantUtil;
 import com.doo.xenchantment.util.ServersideChannelUtil;
 import com.google.gson.JsonObject;
@@ -62,13 +63,13 @@ public class XEnchantmentForge {
 
         INSTANCE.registerMessage(0, String.class, (a, m) -> {
         }, b -> "", ((packet, contextSupplier) -> {
-            contextSupplier.get().enqueueWork(() -> ClientsideChannelUtil.autoFish(Minecraft.getInstance()));
+            contextSupplier.get().enqueueWork(ClientsideChannelUtil::autoFish);
             contextSupplier.get().setPacketHandled(true);
         }));
 
         INSTANCE.registerMessage(1, JsonObject.class,
                 ServersideChannelUtil::getJsonBuf,
-                buf -> ClientsideChannelUtil.getConfig(buf, 1),
+                ServersideChannelUtil::getConfig,
                 ((packet, contextSupplier) -> {
                     contextSupplier.get().enqueueWork(() -> ClientsideChannelUtil.loadConfig(packet));
                     contextSupplier.get().setPacketHandled(true);
@@ -158,6 +159,9 @@ public class XEnchantmentForge {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
             EnchantUtil.onClient();
+
+            ClientsideUtil.setMinecraft(Minecraft::getInstance);
+            ClientsideUtil.setLocalPlayerGetter(() -> Minecraft.getInstance().player);
         }
 
         // Key mapping is lazily initialized so it doesn't exist until it is registered

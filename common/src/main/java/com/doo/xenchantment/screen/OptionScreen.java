@@ -72,9 +72,17 @@ public class OptionScreen extends Screen {
                         new OptionInstance.IntRange(0, 200).xmap(i -> i * 0.5, d -> (int) (d * 2)),
                         Codec.doubleRange(0.5, 5),
                         value,
-                        d -> e.setValue(new JsonPrimitive(d)));
+                        d -> {
+                            if (minecraft.isLocalServer()) {
+                                e.setValue(new JsonPrimitive(d));
+                            }
+                        });
             } catch (NumberFormatException ex) {
-                opt = OptionInstance.createBoolean(nameKey, OptionInstance.cachedConstantTooltip(tooltip), json.getAsBoolean(), b -> e.setValue(new JsonPrimitive(b)));
+                opt = OptionInstance.createBoolean(nameKey, OptionInstance.cachedConstantTooltip(tooltip), json.getAsBoolean(), b -> {
+                    if (minecraft.isLocalServer()) {
+                        e.setValue(new JsonPrimitive(b));
+                    }
+                });
             }
 
             return opt;
@@ -95,8 +103,6 @@ public class OptionScreen extends Screen {
             case BaseXEnchantment.DISABLED_KEY -> format.formatted(XEnchantment.MOD_ID, BaseXEnchantment.DISABLED_KEY);
             case BaseXEnchantment.ONLY_ONE_LEVEL_KEY ->
                     format.formatted(XEnchantment.MOD_ID, BaseXEnchantment.ONLY_ONE_LEVEL_KEY);
-            case BaseXEnchantment.NEED_RECONNECT_KEY ->
-                    format.formatted(XEnchantment.MOD_ID, BaseXEnchantment.NEED_RECONNECT_KEY);
             case Halo.RANGE_KEY -> formatHalo.formatted(XEnchantment.MOD_ID, Halo.RANGE_KEY);
             case Halo.INTERVAL_KEY -> formatHalo.formatted(XEnchantment.MOD_ID, Halo.INTERVAL_KEY);
             case Halo.PLAYER_ONLY_KEY -> formatHalo.formatted(XEnchantment.MOD_ID, Halo.PLAYER_ONLY_KEY);

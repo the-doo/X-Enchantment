@@ -3,8 +3,8 @@ package com.doo.xenchantment.util;
 import com.google.gson.JsonObject;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.FishingRodItem;
 
 public class ClientsideChannelUtil {
@@ -13,23 +13,16 @@ public class ClientsideChannelUtil {
     }
 
     public static void loadConfig(ByteBuf buf) {
-        loadConfig(getConfig(buf, 0));
+        loadConfig(ServersideChannelUtil.getConfig(buf));
     }
 
-    public static void loadConfig(JsonObject buf) {
-        EnchantUtil.configLoad(buf);
+    public static void loadConfig(JsonObject json) {
+        EnchantUtil.configLoad(json, true);
     }
 
-    public static JsonObject getConfig(ByteBuf buf, int start) {
-        return getConfig(buf.array(), start, buf.capacity() - 1);
-    }
-
-    public static JsonObject getConfig(byte[] array, int start, int len) {
-        return ConfigUtil.JSON.fromJson(new String(array, start, len), JsonObject.class);
-    }
-
-    public static void autoFish(Minecraft client) {
-        LocalPlayer player = client.player;
+    public static void autoFish() {
+        Minecraft client = Minecraft.getInstance();
+        Player player = client.player;
         if (player == null) {
             return;
         }

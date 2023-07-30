@@ -45,9 +45,11 @@ public class ListScreen extends Screen {
                             OptionInstance.noTooltip(),
                             opts.contains(new JsonPrimitive(e)),
                             b -> {
-                                opts.remove(new JsonPrimitive(e));
-                                if (Boolean.TRUE.equals(b)) {
-                                    opts.add(e);
+                                if (minecraft.isLocalServer()) {
+                                    opts.remove(new JsonPrimitive(e));
+                                    if (Boolean.TRUE.equals(b)) {
+                                        opts.add(e);
+                                    }
                                 }
                             }
                     )).toArray(OptionInstance[]::new);

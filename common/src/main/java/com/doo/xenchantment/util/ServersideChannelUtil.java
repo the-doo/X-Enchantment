@@ -1,6 +1,7 @@
 package com.doo.xenchantment.util;
 
 import com.google.gson.JsonObject;
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -17,9 +18,15 @@ public class ServersideChannelUtil {
 
     public static FriendlyByteBuf getJsonBuf(JsonObject json, FriendlyByteBuf buf) {
         byte[] bytes = json.toString().getBytes();
-        buf.capacity(bytes.length);
         buf.writeBytes(bytes);
         return buf;
+    }
+
+    public static JsonObject getConfig(ByteBuf buf) {
+        int len = buf.readableBytes();
+        byte[] bytes = new byte[len];
+        buf.readBytes(bytes);
+        return ConfigUtil.JSON.fromJson(new String(bytes), JsonObject.class);
     }
 
 

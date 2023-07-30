@@ -1,6 +1,8 @@
 package com.doo.xenchantment.enchantment;
 
 import com.doo.playerinfo.utils.ExtractAttributes;
+import com.doo.xenchantment.interfaces.WithAttribute;
+import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -11,16 +13,22 @@ import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
-import java.util.function.BiConsumer;
+import java.util.List;
 
 /**
  * 弱点攻击
  */
-public class Weakness extends BaseXEnchantment {
-    public static final java.util.UUID UUID_RATE = java.util.UUID.fromString("F9155234-E79F-5068-D7F6-B76078A9A7D8");
-    public static final java.util.UUID UUID = java.util.UUID.fromString("919A0DFE-BFB7-E292-A398-D0FFBDA9AC3A");
+public class Weakness extends BaseXEnchantment implements WithAttribute<Weakness> {
+    private static final java.util.UUID[] UUID_RATE = {
+            java.util.UUID.fromString("F9155234-E79F-5068-D7F6-B76078A9A7D8")
+    };
+    private static final java.util.UUID[] UUID = {
+            java.util.UUID.fromString("919A0DFE-BFB7-E292-A398-D0FFBDA9AC3A")
+    };
     public static final String CRIT_RATE_KEY = "crit_rate";
     public static final String CRIT_DAMAGE_KEY = "crit_damage";
+    private static final List<Attribute> ATTRIBUTES =
+            Lists.newArrayList(ExtractAttributes.CRIT_RATE, ExtractAttributes.CRIT_DAMAGE);
 
     public Weakness() {
         super("weakness", Rarity.VERY_RARE, EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND);
@@ -46,13 +54,20 @@ public class Weakness extends BaseXEnchantment {
     }
 
     @Override
-    public boolean hasAttr() {
-        return true;
+    public List<java.util.UUID[]> getUUIDs() {
+        return Lists.newArrayList(UUID_RATE, UUID);
     }
 
     @Override
-    protected void modifiedAttrMap(ItemStack stack, int level, BiConsumer<Attribute, AttributeModifier> modifier) {
-        modifier.accept(ExtractAttributes.CRIT_RATE, new AttributeModifier(UUID_RATE, name(), getDouble(CRIT_RATE_KEY) / 100 * level, AttributeModifier.Operation.ADDITION));
-        modifier.accept(ExtractAttributes.CRIT_DAMAGE, new AttributeModifier(UUID, name(), getDouble(CRIT_DAMAGE_KEY) / 10 * level, AttributeModifier.Operation.ADDITION));
+    public List<Attribute> getAttribute() {
+        return ATTRIBUTES;
+    }
+
+    @Override
+    public AttributeModifier getMatchModify(Attribute attribute, ItemStack stack, int level) {
+        if (attribute == ATTRIBUTES.get(0)) {
+            return new AttributeModifier(UUID_RATE[0], name(), getDouble(CRIT_RATE_KEY) / 100 * level, AttributeModifier.Operation.ADDITION);
+        }
+        return new AttributeModifier(UUID[0], name(), getDouble(CRIT_DAMAGE_KEY) / 10 * level, AttributeModifier.Operation.ADDITION);
     }
 }

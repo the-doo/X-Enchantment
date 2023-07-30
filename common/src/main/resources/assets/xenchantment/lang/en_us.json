@@ -122,6 +122,8 @@
   "x_enchantment.halo.halo": "Halo",
   "x_enchantment.halo.halo.tip": "This enchantment is a type of halo. This button is for illustration only and has no additional effect.",
 
+  "x_enchantment.menu.option.only_server.tip": "Tip：The modified configuration of the player connected to the server does not take effect !!!",
+
   "x_enchantment.menu.option.night_break.damage": "Addition Base",
   "x_enchantment.menu.option.night_break.damage.tip": "Addition base per level. If the current value is 1.5 and the enchantment level is 3, the effect is 4.5% (= 3 * 1.5%).",
   "x_enchantment.menu.option.night_break.tip": "Open Tip",

@@ -1,5 +1,6 @@
 package com.doo.xenchantment.enchantment;
 
+import com.doo.xenchantment.interfaces.WithAttribute;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -12,17 +13,20 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.function.BiConsumer;
 
 /**
  * Increment Attack Damage
  */
-public class IncDamage extends BaseXEnchantment {
+public class IncDamage extends BaseXEnchantment implements WithAttribute<IncDamage> {
 
-    public static final java.util.UUID UUID = java.util.UUID.fromString("4DD34D4C-9B52-4674-85F4-B9569BAABFFC");
+    private static final java.util.UUID[] UUID = {
+            java.util.UUID.fromString("4DD34D4C-9B52-4674-85F4-B9569BAABFFC")
+    };
 
     private static final String KEY = "Damages";
+    private static final List<Attribute> ATTRIBUTES = Collections.singletonList(Attributes.ATTACK_DAMAGE);
 
     public IncDamage() {
         super("increment_attack_damage", Rarity.VERY_RARE, EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND);
@@ -36,14 +40,19 @@ public class IncDamage extends BaseXEnchantment {
     }
 
     @Override
-    public boolean hasAttr() {
-        return true;
+    public List<java.util.UUID[]> getUUIDs() {
+        return Collections.singletonList(UUID);
     }
 
     @Override
-    protected void modifiedAttrMap(ItemStack stack, int level, BiConsumer<Attribute, AttributeModifier> modifier) {
+    public List<Attribute> getAttribute() {
+        return ATTRIBUTES;
+    }
+
+    @Override
+    public AttributeModifier getMatchModify(Attribute attribute, ItemStack stack, int level) {
         float damage = stack.getOrCreateTag().getFloat(nbtKey(KEY));
-        modifier.accept(Attributes.ATTACK_DAMAGE, new AttributeModifier(UUID, name(), damage, AttributeModifier.Operation.ADDITION));
+        return oneAttrModify(stackIdx(stack, slots), level, damage, AttributeModifier.Operation.ADDITION);
     }
 
     @Override
@@ -105,4 +114,5 @@ public class IncDamage extends BaseXEnchantment {
     private float inc(int durability) {
         return .5F * durability / Tiers.DIAMOND.getUses();
     }
+
 }

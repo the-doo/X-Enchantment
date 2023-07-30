@@ -1,5 +1,6 @@
 package com.doo.xenchantment.enchantment.curse;
 
+import com.doo.xenchantment.interfaces.WithAttribute;
 import com.google.gson.JsonObject;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -8,14 +9,24 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
-import java.util.function.BiConsumer;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * DownDamage
  */
-public class DownDamage extends Cursed {
-    private static final java.util.UUID UUID = java.util.UUID.fromString("E8960AAE-2680-67F5-06D8-F75FD4A061FC");
+public class DownDamage extends Cursed implements WithAttribute<DownDamage> {
+    private static final java.util.UUID[] UUIDS = {
+            java.util.UUID.fromString("E8960AAE-2680-67F5-06D8-F75FD4A061FA"),
+            java.util.UUID.fromString("E8960AAE-2680-67F5-06D8-F75FD4A061FB"),
+            java.util.UUID.fromString("E8960AAE-2680-67F5-06D8-F75FD4A061FC"),
+            java.util.UUID.fromString("E8960AAE-2680-67F5-06D8-F75FD4A061FD"),
+            java.util.UUID.fromString("E8960AAE-2680-67F5-06D8-F75FD4A061FE"),
+            java.util.UUID.fromString("E8960AAE-2680-67F5-06D8-F75FD4A061FF")
+    };
     private static final String VALUE_KEY = "value";
+    private static final List<Attribute> ATTRIBUTES = Collections.singletonList(Attributes.ATTACK_DAMAGE);
 
     public DownDamage() {
         super("down_damage", Rarity.UNCOMMON, EnchantmentCategory.WEAPON, EquipmentSlot.values());
@@ -30,12 +41,17 @@ public class DownDamage extends Cursed {
     }
 
     @Override
-    public boolean hasAttr() {
-        return true;
+    public List<UUID[]> getUUIDs() {
+        return Collections.singletonList(UUIDS);
     }
 
     @Override
-    protected void modifiedAttrMap(ItemStack stack, int level, BiConsumer<Attribute, AttributeModifier> modifier) {
-        modifier.accept(Attributes.ATTACK_DAMAGE, new AttributeModifier(UUID, name(), -getDouble(VALUE_KEY) / 100 * level, AttributeModifier.Operation.MULTIPLY_TOTAL));
+    public List<Attribute> getAttribute() {
+        return ATTRIBUTES;
+    }
+
+    @Override
+    public AttributeModifier getMatchModify(Attribute attribute, ItemStack stack, int level) {
+        return oneAttrModify(stackIdx(stack, slots), level, -getDouble(VALUE_KEY), AttributeModifier.Operation.MULTIPLY_TOTAL);
     }
 }

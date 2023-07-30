@@ -19,6 +19,7 @@ import java.util.Collections;
 public class MenuScreen extends Screen {
 
     private static final MenuScreen INSTANCE = new MenuScreen();
+    private static final Component MODIFY_TIP = Component.translatable("x_enchantment.menu.option.only_server.tip");
 
     private Screen pre;
 
@@ -46,6 +47,11 @@ public class MenuScreen extends Screen {
 
     @Override
     protected void init() {
+        if (!minecraft.isLocalServer()) {
+            addRenderableWidget(Button.builder(MODIFY_TIP, b -> {
+            }).bounds(this.width / 2 - 150 / 2, 10, 150, 20).build());
+        }
+
         int w = this.width;
         OptionsList list = new OptionsList(minecraft, w, this.height, 32, this.height - 32, 25);
 
