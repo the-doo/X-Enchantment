@@ -1,6 +1,6 @@
 package com.doo.xenchantment.enchantment;
 
-import com.doo.playerinfo.attributes.ExtractAttributes;
+import com.doo.playerinfo.utils.ExtractAttributes;
 import com.google.gson.JsonObject;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;

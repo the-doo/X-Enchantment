@@ -22,6 +22,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -34,6 +36,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.FluidState;
 import org.apache.commons.lang3.mutable.MutableBoolean;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -49,20 +52,12 @@ public class EnchantUtil {
     public static final Map<Class<? extends BaseXEnchantment>, BaseXEnchantment> ENCHANTMENTS_MAP = Maps.newHashMap();
 
     protected static final EquipmentSlot[] ALL_ARMOR = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
+    public static final ResourceLocation CONFIG_CHANNEL = new ResourceLocation(XEnchantment.MOD_ID, "config_loading");
+
+    private static MinecraftServer server;
+    private static JsonObject allOption;
 
     private EnchantUtil() {
-    }
-
-    /**
-     * 注册所有附魔及事件
-     */
-    public static void configLoad(JsonObject config) {
-        if (config == null || config.size() < 1) {
-            return;
-        }
-
-        ENCHANTMENTS_MAP.forEach((k, e) ->
-                Optional.ofNullable(config.getAsJsonObject(e.name())).ifPresent(e::loadOptions));
     }
 
     /**
@@ -148,6 +143,11 @@ public class EnchantUtil {
     }
 
     public static void onServer(MinecraftServer server) {
+        EnchantUtil.server = server;
+
+        // load config
+        configLoad(ConfigUtil.load());
+
         ENCHANTMENTS_MAP.values().forEach(e -> e.onServer(server));
 
         registerPlayerInfo();
@@ -236,15 +236,6 @@ public class EnchantUtil {
         }
     }
 
-    public static JsonObject allOptionsAfterReloading() {
-        JsonObject object = new JsonObject();
-        ENCHANTMENTS_MAP.forEach((k, e) -> {
-            e.loadOptions(e.getOptions());
-            object.add(e.name(), e.getOptions());
-        });
-        return object;
-    }
-
     public static boolean canStandOnFluid(LivingEntity living, BlockPos pos, FluidState fluidState) {
         if (!fluidState.isSource() || !living.level().getFluidState(pos.atY(pos.getY() + 1)).isEmpty()) {
             return false;
@@ -255,5 +246,39 @@ public class EnchantUtil {
 
     public static boolean canEntityWalkOnPowderSnow(Entity entity) {
         return entity instanceof LivingEntity e && ENCHANTMENTS_MAP.get(WalkOn.class).canEntityWalkOnPowderSnow(e);
+    }
+
+    public static void configLoad(JsonObject config) {
+        if (config == null || config.size() < 1) {
+            allOption = getInitConfig();
+            return;
+        }
+
+        allOption = config;
+        ENCHANTMENTS_MAP.forEach((k, e) ->
+                Optional.ofNullable(config.getAsJsonObject(e.name())).ifPresent(e::loadOptions));
+    }
+
+    public static JsonObject allOptions() {
+        return allOption;
+    }
+
+    public static void allOptionsAfterReloading(Consumer<JsonObject> configConsumer) {
+        JsonObject object = getInitConfig();
+        configConsumer.accept(object);
+
+        allOption = object;
+        if (server != null) {
+            FriendlyByteBuf buf = ServersideChannelUtil.getJsonBuf(object);
+            server.getPlayerList().getPlayers().forEach(p ->
+                    ServersideChannelUtil.send(p, CONFIG_CHANNEL, buf, object));
+        }
+    }
+
+    @NotNull
+    private static JsonObject getInitConfig() {
+        JsonObject object = new JsonObject();
+        ENCHANTMENTS_MAP.forEach((k, e) -> object.add(e.name(), e.getOptions()));
+        return object;
     }
 }

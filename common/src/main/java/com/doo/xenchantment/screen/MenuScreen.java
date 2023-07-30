@@ -84,7 +84,7 @@ public class MenuScreen extends Screen {
                 return;
             }
             // 保存设置的配置
-            ConfigUtil.write(EnchantUtil.allOptionsAfterReloading());
+            EnchantUtil.allOptionsAfterReloading(ConfigUtil::write);
         }
     }
 

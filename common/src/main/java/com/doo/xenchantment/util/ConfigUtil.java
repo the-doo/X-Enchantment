@@ -21,9 +21,9 @@ import java.nio.file.StandardOpenOption;
 public class ConfigUtil {
     public static final Logger LOGGER = LogManager.getLogger();
 
-    private static final Path path = FileSystems.getDefault().getPath("config", XEnchantment.MOD_NAME + ".json");
+    private static final Path path = FileSystems.getDefault().getPath("config", XEnchantment.MOD_NAME + ".JSON");
 
-    private static final Gson json = new GsonBuilder().setPrettyPrinting().create();
+    protected static final Gson JSON = new GsonBuilder().setPrettyPrinting().create();
 
     public static JsonObject load() {
         try {
@@ -42,13 +42,13 @@ public class ConfigUtil {
             return new JsonObject();
         }
         open.read(bb);
-        return json.fromJson(new String(bb.array(), StandardCharsets.UTF_8), JsonObject.class);
+        return JSON.fromJson(new String(bb.array(), StandardCharsets.UTF_8), JsonObject.class);
     }
 
     public static void write(JsonObject value) {
         try (FileChannel open = FileChannel.open(path, StandardOpenOption.CREATE, StandardOpenOption.READ, StandardOpenOption.WRITE)) {
             open.truncate(0);
-            open.write(ByteBuffer.wrap(json.toJson(value).getBytes(StandardCharsets.UTF_8)));
+            open.write(ByteBuffer.wrap(JSON.toJson(value).getBytes(StandardCharsets.UTF_8)));
         } catch (Exception e) {
             LOGGER.warn("Write File Error {}: {}", path, value, e);
         }

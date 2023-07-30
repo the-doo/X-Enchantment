@@ -1,6 +1,6 @@
 package com.doo.xenchantment.enchantment;
 
-import com.doo.playerinfo.attributes.ExtractAttributes;
+import com.doo.playerinfo.utils.ExtractAttributes;
 import com.google.gson.JsonObject;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;

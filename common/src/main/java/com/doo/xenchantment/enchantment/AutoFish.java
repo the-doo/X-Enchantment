@@ -55,7 +55,7 @@ public class AutoFish extends BaseXEnchantment {
                 return;
             }
 
-            ServersideChannelUtil.send(player, getId(), new FriendlyByteBuf(Unpooled.buffer()));
+            ServersideChannelUtil.send(player, getId(), new FriendlyByteBuf(Unpooled.buffer()), null);
 
             if (!getBoolean(HEALING_KEY)) {
                 return;

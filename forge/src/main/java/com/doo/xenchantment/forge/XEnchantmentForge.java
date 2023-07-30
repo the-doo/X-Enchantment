@@ -3,15 +3,16 @@ package com.doo.xenchantment.forge;
 import com.doo.xenchantment.XEnchantment;
 import com.doo.xenchantment.screen.MenuScreen;
 import com.doo.xenchantment.util.ClientsideChannelUtil;
-import com.doo.xenchantment.util.ConfigUtil;
 import com.doo.xenchantment.util.EnchantUtil;
 import com.doo.xenchantment.util.ServersideChannelUtil;
+import com.google.gson.JsonObject;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
@@ -22,6 +23,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LootingLevelEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -63,6 +65,15 @@ public class XEnchantmentForge {
             contextSupplier.get().enqueueWork(() -> ClientsideChannelUtil.autoFish(Minecraft.getInstance()));
             contextSupplier.get().setPacketHandled(true);
         }));
+
+        INSTANCE.registerMessage(1, JsonObject.class,
+                ServersideChannelUtil::getJsonBuf,
+                buf -> ClientsideChannelUtil.getConfig(buf, 1),
+                ((packet, contextSupplier) -> {
+                    contextSupplier.get().enqueueWork(() -> ClientsideChannelUtil.loadConfig(packet));
+                    contextSupplier.get().setPacketHandled(true);
+                }));
+
 
         MinecraftForge.EVENT_BUS.register(this);
     }
@@ -110,10 +121,16 @@ public class XEnchantmentForge {
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
+    public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
+        INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) event.getEntity()), EnchantUtil.allOptions());
+    }
+
+
+    // You can use SubscribeEvent and let the Event Bus discover methods to call
+    @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
-        ServersideChannelUtil.setSender((player, id, buf) -> {
-            INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), "1");
-        });
+        ServersideChannelUtil.setSender((player, id, buf, json) ->
+                INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), json));
 
         EnchantUtil.onServer(event.getServer());
     }
@@ -141,8 +158,6 @@ public class XEnchantmentForge {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
             EnchantUtil.onClient();
-
-            EnchantUtil.configLoad(ConfigUtil.load());
         }
 
         // Key mapping is lazily initialized so it doesn't exist until it is registered
