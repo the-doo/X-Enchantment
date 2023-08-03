@@ -44,7 +44,7 @@ public class BrokenDawn extends BaseXEnchantment {
     private static final String DONE = "Done";
 
     public static final TrueTrigger DAWN_COMING =
-            TrueTrigger.get(new ResourceLocation(XEnchantment.MOD_ID + ":trigger.broken_dawn.dawn_coming"));
+            TrueTrigger.get(new ResourceLocation(XEnchantment.MOD_ID, "trigger.broken_dawn.dawn_coming"));
 
     private static final Component DONE_TIPS = Component.translatable("enchantment.x_enchantment.broken_dawn.done")
             .withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GOLD);

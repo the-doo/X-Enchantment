@@ -17,7 +17,7 @@ public class ClientsideChannelUtil {
     }
 
     public static void loadConfig(JsonObject json) {
-        EnchantUtil.configLoad(json, true);
+        EnchantUtil.configLoad(json);
     }
 
     public static void autoFish() {

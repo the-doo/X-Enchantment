@@ -165,6 +165,14 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
         return item == null || item.isEmpty() ? 0 : EnchantmentHelper.getEnchantments(item).getOrDefault(this, 0);
     }
 
+    public int totalLevel(Player player) {
+        int level = 0;
+        for (EquipmentSlot slot : this.slots) {
+            level += level(player.getItemBySlot(slot));
+        }
+        return level;
+    }
+
     public boolean hasAdv() {
         return false;
     }
@@ -327,8 +335,5 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
     }
 
     public void onOptionsRegister(BiConsumer<String, Supplier<Stream<String>>> register) {
-    }
-
-    public void onClientsideOptionLoad(Player player) {
     }
 }

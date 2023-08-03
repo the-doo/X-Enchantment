@@ -124,7 +124,7 @@
   "x_enchantment.halo.halo": "光环",
   "x_enchantment.halo.halo.tip": "该附魔为光环的一种。该按钮仅为说明，无另外效果。",
 
-  "x_enchantment.menu.option.only_server.tip": "提示：客户端连接的玩家修改配置不生效!!!",
+  "x_enchantment.menu.option.only_server.tip": "提示：远程游戏修改配置不生效，本地游戏需要进入游戏后修改!!!",
 
   "x_enchantment.menu.option.night_break.damage": "加成基数",
   "x_enchantment.menu.option.night_break.damage.tip": "每级加成基数。如果当前值为1.5，附魔等级为3，则效果为4.5%（= 3 * 1.5%）。",

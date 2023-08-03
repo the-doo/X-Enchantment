@@ -9,17 +9,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
-/**
- * Regicide
- */
 public class Regicide extends Cursed {
     private static final String VALUE_KEY = "value";
 
     public static final TrueTrigger DIE =
-            TrueTrigger.get(new ResourceLocation(XEnchantment.MOD_ID + ":trigger.regicide.die"));
+            TrueTrigger.get(new ResourceLocation(XEnchantment.MOD_ID, "trigger.regicide.die"));
 
     public Regicide() {
         super("regicide", Rarity.RARE, EnchantmentCategory.BREAKABLE, EquipmentSlot.values());
@@ -38,7 +34,7 @@ public class Regicide extends Cursed {
     @Override
     public void onServer(MinecraftServer server) {
         PlayerAttackApi.register((player, amount) -> {
-            int level = level(player.getMainHandItem());
+            int level = totalLevel(player);
             if (level < 1) {
                 return;
             }
@@ -56,8 +52,7 @@ public class Regicide extends Cursed {
 
     @Override
     public InfoGroupItems collectPlayerInfo(ServerPlayer player) {
-        ItemStack stack = player.getMainHandItem();
-        int level = level(stack);
+        int level = totalLevel(player);
 
         InfoGroupItems group = InfoGroupItems.groupKey(getDescriptionId());
         group.add(getInfoKey(VALUE_KEY), level < 1 ? 0 : level * getDouble(VALUE_KEY), false);

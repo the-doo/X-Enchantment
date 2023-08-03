@@ -23,7 +23,7 @@ import java.util.function.Consumer;
 public class MoreLoot extends BaseXEnchantment {
 
     public static final TrueTrigger SUPER_LOOT_TRIGGER =
-            TrueTrigger.get(new ResourceLocation(XEnchantment.MOD_ID + ":trigger.more_loot.super_loot"));
+            TrueTrigger.get(new ResourceLocation(XEnchantment.MOD_ID, "trigger.more_loot.super_loot"));
 
     public static final String LOOT_RATE = "loot_rate";
     public static final String SUPER_LOOT_RATE = "super_loot_rate";

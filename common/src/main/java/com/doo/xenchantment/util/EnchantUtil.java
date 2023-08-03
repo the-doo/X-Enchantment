@@ -150,8 +150,8 @@ public class EnchantUtil {
     public static void onServer(MinecraftServer server) {
         EnchantUtil.server = server;
 
-        // load config
-        configLoad(ConfigUtil.load(), false);
+        // load init config
+        configLoad(ConfigUtil.load());
 
         ENCHANTMENTS_MAP.values().forEach(e -> e.onServer(server));
 
@@ -253,7 +253,7 @@ public class EnchantUtil {
         return entity instanceof LivingEntity e && ENCHANTMENTS_MAP.get(WalkOn.class).canEntityWalkOnPowderSnow(e);
     }
 
-    public static void configLoad(JsonObject config, boolean clientside) {
+    public static void configLoad(JsonObject config) {
         if (config == null || config.size() < 1) {
             allOption = getCurrentConfig();
             return;
@@ -262,9 +262,6 @@ public class EnchantUtil {
         allOption = config;
         ENCHANTMENTS_MAP.forEach((k, e) ->
                 Optional.ofNullable(config.getAsJsonObject(e.name())).ifPresent(e::loadOptions));
-        if (clientside) {
-            ENCHANTMENTS_MAP.forEach((k, e) -> e.onClientsideOptionLoad(ClientsideUtil.player()));
-        }
     }
 
     public static JsonObject allOptions() {
