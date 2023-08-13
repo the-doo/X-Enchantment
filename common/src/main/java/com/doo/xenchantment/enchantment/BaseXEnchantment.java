@@ -186,7 +186,7 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
             return;
         }
 
-        if (!(stack.getItem() instanceof Equipable e) || slot != e.getEquipmentSlot() || Arrays.stream(slots).noneMatch(s -> s == slot)) {
+        if ((stack.getItem() instanceof Equipable e) && slot != e.getEquipmentSlot() || Arrays.stream(slots).noneMatch(s -> s == slot)) {
             return;
         }
 

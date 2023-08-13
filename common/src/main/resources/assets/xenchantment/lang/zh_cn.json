@@ -21,7 +21,7 @@
   "enchantment.x_enchantment.weakness": "亢龙有悔",
   "enchantment.x_enchantment.weakness.desc": "一定概率造成额外暴击伤害",
   "enchantment.x_enchantment.increment_attack_damage": "潜龙在渊",
-  "enchantment.x_enchantment.increment_attack_damage.desc": "物品的攻击属性可成长",
+  "enchantment.x_enchantment.increment_attack_damage.desc": "初始攻击减少但攻击可成长",
   "enchantment.x_enchantment.rebirth": "重生",
   "enchantment.x_enchantment.rebirth.desc": "不死图腾附魔版",
   "enchantment.x_enchantment.more_loot": "锦上添花",
@@ -154,6 +154,11 @@
 
   "x_enchantment.menu.option.smart.value": "经验加成基数",
   "x_enchantment.menu.option.smart.value.tip": "经验加成基数",
+
+  "x_enchantment.menu.option.increment_attack_damage.damage_per_level": "攻击成长",
+  "x_enchantment.menu.option.increment_attack_damage.damage_per_level.tip": "每级的攻击成长倍数",
+  "x_enchantment.menu.option.increment_attack_damage.reduce": "起始削弱",
+  "x_enchantment.menu.option.increment_attack_damage.reduce.tip": "附魔附带的攻击削弱百分比",
 
   "x_enchantment.menu.option.food_bonus.value": "加成基数",
   "x_enchantment.menu.option.food_bonus.value.tip": "饥饿值加成基数",

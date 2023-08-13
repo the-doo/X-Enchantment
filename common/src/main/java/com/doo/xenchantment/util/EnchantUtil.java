@@ -48,7 +48,7 @@ import java.util.stream.Stream;
  */
 public class EnchantUtil {
     public static final List<Class<? extends Halo>> HALO_CLASS = Lists.newArrayList();
-    public static final List<WithAttribute<BaseXEnchantment>> ATTR_ENCHANT = Lists.newArrayList();
+    public static final List<WithAttribute<? extends BaseXEnchantment>> ATTR_ENCHANT = Lists.newArrayList();
 
     public static final Map<Class<? extends BaseXEnchantment>, BaseXEnchantment> ENCHANTMENTS_MAP = Maps.newHashMap();
 
@@ -107,10 +107,12 @@ public class EnchantUtil {
             e.register(registry);
             ENCHANTMENTS_MAP.putIfAbsent(e.getClass(), e);
 
-            if (e instanceof WithAttribute attribute) {
+            if (e instanceof WithAttribute<?> attribute) {
                 ATTR_ENCHANT.add(attribute);
             }
         });
+
+        registerPlayerInfo();
     }
 
     /**
@@ -154,8 +156,6 @@ public class EnchantUtil {
         configLoad(ConfigUtil.load());
 
         ENCHANTMENTS_MAP.values().forEach(e -> e.onServer(server));
-
-        registerPlayerInfo();
     }
 
     public static void onServerStarted() {

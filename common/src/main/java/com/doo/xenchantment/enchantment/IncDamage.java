@@ -1,6 +1,7 @@
 package com.doo.xenchantment.enchantment;
 
 import com.doo.xenchantment.interfaces.WithAttribute;
+import com.google.gson.JsonObject;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -26,12 +27,24 @@ public class IncDamage extends BaseXEnchantment implements WithAttribute<IncDama
     };
 
     private static final String KEY = "Damages";
+    private static final String REDUCE_KEY = "reduce";
+    private static final String PER_LEVEL_DAMAGE_KEY = "damage_per_level";
     private static final List<Attribute> ATTRIBUTES = Collections.singletonList(Attributes.ATTACK_DAMAGE);
 
     public IncDamage() {
         super("increment_attack_damage", Rarity.VERY_RARE, EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND);
 
-        options.addProperty(MAX_LEVEL_KEY, 5);
+        options.addProperty(MAX_LEVEL_KEY, 3);
+        options.addProperty(PER_LEVEL_DAMAGE_KEY, 1.5);
+        options.addProperty(REDUCE_KEY, 50);
+    }
+
+    @Override
+    public void loadOptions(JsonObject json) {
+        super.loadOptions(json);
+
+        loadIf(json, PER_LEVEL_DAMAGE_KEY);
+        loadIf(json, REDUCE_KEY);
     }
 
     @Override
@@ -52,7 +65,13 @@ public class IncDamage extends BaseXEnchantment implements WithAttribute<IncDama
     @Override
     public AttributeModifier getMatchModify(Attribute attribute, ItemStack stack, int level) {
         float damage = stack.getOrCreateTag().getFloat(nbtKey(KEY));
-        return oneAttrModify(stackIdx(stack, slots), level, damage, AttributeModifier.Operation.ADDITION);
+        float reduce = (float) (getDouble(REDUCE_KEY) / 100);
+        if (stack.getItem() instanceof SwordItem si) {
+            damage -= si.getDamage() * reduce;
+        } else if (stack.getItem() instanceof DiggerItem di) {
+            damage -= di.getAttackDamage() * reduce;
+        }
+        return oneAttrModify(stackIdx(stack, slots), 1, damage * 100, AttributeModifier.Operation.ADDITION);
     }
 
     @Override
@@ -76,7 +95,7 @@ public class IncDamage extends BaseXEnchantment implements WithAttribute<IncDama
         } else if (ti instanceof DiggerItem di) {
             max = di.getAttackDamage();
         }
-        max *= level;
+        max *= (float) (level * getDouble(PER_LEVEL_DAMAGE_KEY));
 
         if (now >= max) {
             return;

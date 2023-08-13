@@ -21,7 +21,7 @@
   "enchantment.x_enchantment.weakness": "Weakness Attack",
   "enchantment.x_enchantment.weakness.desc": "Chance to cause extra critical damage.",
   "enchantment.x_enchantment.increment_attack_damage": "Be Stronger",
-  "enchantment.x_enchantment.increment_attack_damage.desc": "The attack damage attribute of the item can grow.",
+  "enchantment.x_enchantment.increment_attack_damage.desc": "Initial attacks decrease, but attacks can grow.",
   "enchantment.x_enchantment.rebirth": "Rebirth",
   "enchantment.x_enchantment.rebirth.desc": "Enchantment of totem.",
   "enchantment.x_enchantment.more_loot": "More Loot",
@@ -154,6 +154,11 @@
 
   "x_enchantment.menu.option.smart.value": "XP Bonus",
   "x_enchantment.menu.option.smart.value.tip": "XP bonus per level",
+
+  "x_enchantment.menu.option.increment_attack_damage.damage_per_level": "Attack Max Growth",
+  "x_enchantment.menu.option.increment_attack_damage.damage_per_level.tip": "Attack multipliers per level",
+  "x_enchantment.menu.option.increment_attack_damage.reduce": "Attack Decrease",
+  "x_enchantment.menu.option.increment_attack_damage.reduce.tip": "Initial attacks are reduced percentage",
 
   "x_enchantment.menu.option.food_bonus.value": "Hunger Bonus Base",
   "x_enchantment.menu.option.food_bonus.value.tip": "Hunger bonus base when eating.",

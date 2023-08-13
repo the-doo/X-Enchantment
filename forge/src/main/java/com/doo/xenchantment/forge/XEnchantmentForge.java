@@ -22,7 +22,6 @@ import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.event.ItemAttributeModifierEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.living.LootingLevelEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
@@ -87,7 +86,9 @@ public class XEnchantmentForge {
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
     public void onAttrMaps(ItemAttributeModifierEvent event) {
-        EnchantUtil.registerAttr(e -> e.insertAttr(event.getItemStack(), event.getSlotType(), event::addModifier));
+        if (!event.getOriginalModifiers().isEmpty()) {
+            EnchantUtil.registerAttr(e -> e.insertAttr(event.getItemStack(), event.getSlotType(), event::addModifier));
+        }
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
@@ -105,20 +106,15 @@ public class XEnchantmentForge {
                 event.setCanceled(true);
             }
         });
-    }
 
-    // You can use SubscribeEvent and let the Event Bus discover methods to call
-    @SubscribeEvent
-    public void onKilled(LootingLevelEvent event) {
-        if (!event.getEntity().level().isClientSide()) {
+        if (event.getEntity().level().isClientSide() || event.isCanceled()) {
             return;
         }
 
-        if (event.getDamageSource().getEntity() instanceof LivingEntity living) {
+        if (event.getSource().getEntity() instanceof LivingEntity living) {
             EnchantUtil.onKilled(e -> e.onKilled((ServerLevel) event.getEntity().level(), living, event.getEntity()));
         }
     }
-
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
@@ -144,16 +140,16 @@ public class XEnchantmentForge {
     }
 
 
+    @SubscribeEvent
+    public void onTooltip(ItemTooltipEvent event) {
+        EnchantUtil.registerToolTips(e -> e.tooltip(event.getItemStack(), event.getFlags(), event.getToolTip()));
+    }
+
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
     @Mod.EventBusSubscriber(modid = XEnchantment.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents {
 
         private ClientModEvents() {
-        }
-
-        @SubscribeEvent
-        public void onTooltip(ItemTooltipEvent event) {
-            EnchantUtil.registerToolTips(e -> e.tooltip(event.getItemStack(), event.getFlags(), event.getToolTip()));
         }
 
         @SubscribeEvent
