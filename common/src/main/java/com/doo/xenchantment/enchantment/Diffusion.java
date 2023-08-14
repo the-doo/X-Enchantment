@@ -4,10 +4,13 @@ import com.doo.xenchantment.events.ArrowApi;
 import com.doo.xenchantment.interfaces.ArrowAccessor;
 import com.google.gson.JsonObject;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.item.ArrowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -27,6 +30,7 @@ public class Diffusion extends BaseXEnchantment {
     private static final String DAMAGE_KEY = "damage";
     private static final String RANGE_KEY = "range";
     private static final String COUNT_KEY = "count";
+    private static final String LIGHT_ENABLED_KEY = "light_enabled";
     private static final ArrowItem ARROW_ITEM = (ArrowItem) Items.ARROW.asItem();
 
     public Diffusion() {
@@ -37,6 +41,7 @@ public class Diffusion extends BaseXEnchantment {
         options.addProperty(DAMAGE_KEY, 15);
         options.addProperty(RANGE_KEY, 5);
         options.addProperty(COUNT_KEY, 1);
+        options.addProperty(LIGHT_ENABLED_KEY, true);
     }
 
     @Override
@@ -47,6 +52,7 @@ public class Diffusion extends BaseXEnchantment {
         loadIf(json, DAMAGE_KEY);
         loadIf(json, RANGE_KEY);
         loadIf(json, COUNT_KEY);
+        loadIf(json, LIGHT_ENABLED_KEY);
     }
 
     @Override
@@ -66,22 +72,26 @@ public class Diffusion extends BaseXEnchantment {
                 return;
             }
 
+            MobEffectInstance light = new MobEffectInstance(MobEffects.GLOWING, 60, level);
             Level world = attacker.level();
             float amount = (float) (damage * level * (getDouble(DAMAGE_KEY) / 100));
             long count = (long) (level * getDouble(COUNT_KEY));
             Predicate<LivingEntity> test = e -> e != entity && e != attacker && !e.isAlliedTo(attacker) && (!getBoolean(MONSTER_KEY) || e instanceof Monster);
             world.getEntitiesOfClass(LivingEntity.class, entity.getBoundingBox().inflate((int) getDouble(RANGE_KEY)), test)
                     .stream().limit(count)
-                    .forEach(e -> initArrow(world, amount, attacker, entity, e));
+                    .forEach(e -> initArrow(world, amount, attacker, e, light));
         });
     }
 
-    private void initArrow(Level world, float damage, LivingEntity user, LivingEntity source, LivingEntity e) {
+    private void initArrow(Level world, float damage, LivingEntity user, LivingEntity e, MobEffectInstance light) {
         AbstractArrow arrow = ARROW_ITEM.createArrow(world, ItemStack.EMPTY, user);
         arrow.pickup = AbstractArrow.Pickup.DISALLOWED;
         arrow.setBaseDamage(damage);
+        if (getBoolean(LIGHT_ENABLED_KEY) && arrow instanceof Arrow a) {
+            a.addEffect(light);
+        }
         Vec3 eP = e.getPosition(0);
-        arrow.setPos(eP.x, eP.y + e.getEyeHeight() + 1, eP.z);
+        arrow.setPos(eP.x, eP.y + e.getBbHeight() + 1, eP.z);
         arrow.setXRot(0);
         arrow.setYRot(1);
         ArrowAccessor.get(arrow).disableDiffusion();

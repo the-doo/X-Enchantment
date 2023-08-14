@@ -247,6 +247,8 @@
   "x_enchantment.menu.option.diffusion.range.tip": "Diffusion range.",
   "x_enchantment.menu.option.diffusion.count": "Count",
   "x_enchantment.menu.option.diffusion.count.tip": "Number of spread arrows per level.",
+  "x_enchantment.menu.option.diffusion.light_enabled": "Glowing",
+  "x_enchantment.menu.option.diffusion.light_enabled.tip": "Glows after hit",
 
   "x_enchantment.menu.option.climber.y": "Height",
   "x_enchantment.menu.option.climber.y.tip": "Less than this height does not take effect.",

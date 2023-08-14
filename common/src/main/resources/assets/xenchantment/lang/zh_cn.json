@@ -245,6 +245,8 @@
   "x_enchantment.menu.option.diffusion.range.tip": "扩散范围",
   "x_enchantment.menu.option.diffusion.count": "数量基数",
   "x_enchantment.menu.option.diffusion.count.tip": "每级的扩散箭数量",
+  "x_enchantment.menu.option.diffusion.light_enabled": "发光箭",
+  "x_enchantment.menu.option.diffusion.light_enabled.tip": "命中后发光",
 
   "x_enchantment.menu.option.climber.y": "高度",
   "x_enchantment.menu.option.climber.y.tip": "小于该高度不生效",
