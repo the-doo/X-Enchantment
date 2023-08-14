@@ -3,9 +3,11 @@ package com.doo.xenchantment.enchantment.special;
 import com.doo.xenchantment.events.AnvilApi;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 /**
  * Remove Cursed
@@ -19,6 +21,11 @@ public class RemoveCursed extends Special {
     @Override
     protected boolean onlyOneLevel() {
         return true;
+    }
+
+    @Override
+    public boolean canEnchant(ItemStack itemStack) {
+        return EnchantmentHelper.getEnchantments(itemStack).keySet().stream().anyMatch(Enchantment::isCurse);
     }
 
     @Override
