@@ -20,4 +20,9 @@ public abstract class Special extends BaseXEnchantment {
     public @NotNull Component getFullname(int level) {
         return super.getFullname(level).copy().withStyle(ChatFormatting.DARK_PURPLE);
     }
+
+    @Override
+    public boolean isTreasureOnly() {
+        return true;
+    }
 }

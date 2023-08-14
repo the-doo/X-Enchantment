@@ -102,12 +102,12 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
     }
 
     @Override
-    public final boolean isDiscoverable() {
+    public boolean isDiscoverable() {
         return !disabled() && super.isDiscoverable();
     }
 
     @Override
-    public final boolean isTradeable() {
+    public boolean isTradeable() {
         return !disabled() && super.isTradeable();
     }
 

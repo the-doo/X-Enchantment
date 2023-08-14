@@ -18,6 +18,8 @@
   "enchantment.x_enchantment.librarian.desc": "Chance to find enchanted books when fishing. The quality of enchanted books is directly proportional to luck.",
   "enchantment.x_enchantment.suck_blood": "Suck Blood",
   "enchantment.x_enchantment.suck_blood.desc": "Draw a certain percentage of attack damage blood volume.",
+  "enchantment.x_enchantment.attack_speed": "Shadow By Hand",
+  "enchantment.x_enchantment.attack_speed.desc": "Increase attack speed",
   "enchantment.x_enchantment.weakness": "Weakness Attack",
   "enchantment.x_enchantment.weakness.desc": "Chance to cause extra critical damage.",
   "enchantment.x_enchantment.increment_attack_damage": "Be Stronger",

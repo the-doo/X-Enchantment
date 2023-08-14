@@ -18,6 +18,8 @@
   "enchantment.x_enchantment.librarian.desc": "钓鱼时有几率发现附魔书，附魔书质量与幸运成正比",
   "enchantment.x_enchantment.suck_blood": "吸血",
   "enchantment.x_enchantment.suck_blood.desc": "汲取一定比例攻击伤害的血量",
+  "enchantment.x_enchantment.attack_speed": "无影手",
+  "enchantment.x_enchantment.attack_speed.desc": "增加攻速",
   "enchantment.x_enchantment.weakness": "亢龙有悔",
   "enchantment.x_enchantment.weakness.desc": "一定概率造成额外暴击伤害",
   "enchantment.x_enchantment.increment_attack_damage": "潜龙在渊",

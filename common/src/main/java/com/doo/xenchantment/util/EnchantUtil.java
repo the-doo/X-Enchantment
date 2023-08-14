@@ -69,7 +69,7 @@ public class EnchantUtil {
                 // other
                 MoreLoot.class, BrokenDawn.class,
                 // attack
-                NightBreak.class, SuckBlood.class, Weakness.class, IncDamage.class, IgnoredArmor.class,
+                NightBreak.class, SuckBlood.class, Weakness.class, IncDamage.class, IgnoredArmor.class, AttackSpeed.class,
                 // bow
                 Diffusion.class, Elasticity.class,
                 // rod
