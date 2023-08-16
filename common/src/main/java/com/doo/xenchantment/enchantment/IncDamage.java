@@ -17,9 +17,6 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Increment Attack Damage
- */
 public class IncDamage extends BaseXEnchantment implements WithAttribute<IncDamage> {
 
     private static final java.util.UUID[] UUID = {

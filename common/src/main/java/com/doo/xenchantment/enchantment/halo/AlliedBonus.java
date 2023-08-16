@@ -58,6 +58,8 @@ public class AlliedBonus extends Halo {
 
     @Override
     public void onOptionsRegister(BiConsumer<String, Supplier<Stream<String>>> register) {
+        super.onOptionsRegister(register);
+
         register.accept(BAN_KEY, () -> EFFECTS.stream().map(MobEffect::getDescriptionId));
     }
 

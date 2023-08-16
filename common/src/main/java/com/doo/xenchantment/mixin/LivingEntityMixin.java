@@ -1,6 +1,7 @@
 package com.doo.xenchantment.mixin;
 
 import com.doo.playerinfo.XPlayerInfo;
+import com.doo.xenchantment.enchantment.NightBreak;
 import com.doo.xenchantment.util.EnchantUtil;
 import com.google.common.collect.Lists;
 import net.minecraft.world.damagesource.DamageSource;
@@ -27,7 +28,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 @Mixin(LivingEntity.class)
-public abstract class LivingEntityMixin extends Entity {
+public abstract class LivingEntityMixin extends Entity implements NightBreak.LogHitTick {
 
     @Shadow
     @Nullable
@@ -35,6 +36,9 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Unique
     private final List<ItemStack> additionLoot = Lists.newArrayList();
+
+    @Unique
+    private int nightBreakHurtTick = -1;
 
     public LivingEntityMixin(EntityType<?> entityType, Level level) {
         super(entityType, level);
@@ -78,5 +82,15 @@ public abstract class LivingEntityMixin extends Entity {
             additionLoot.add(is);
             consumer.accept(is);
         };
+    }
+
+    @Override
+    public boolean canHit() {
+        if (nightBreakHurtTick >= tickCount) {
+            return false;
+        }
+
+        nightBreakHurtTick = tickCount;
+        return true;
     }
 }

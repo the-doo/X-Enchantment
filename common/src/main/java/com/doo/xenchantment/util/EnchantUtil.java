@@ -20,9 +20,9 @@ import com.doo.xenchantment.interfaces.WithAttribute;
 import com.doo.xenchantment.interfaces.XEnchantmentRegistry;
 import com.doo.xenchantment.screen.OptionScreen;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -50,7 +50,7 @@ public class EnchantUtil {
     public static final List<Class<? extends Halo>> HALO_CLASS = Lists.newArrayList();
     public static final List<WithAttribute<? extends BaseXEnchantment>> ATTR_ENCHANT = Lists.newArrayList();
 
-    public static final Map<Class<? extends BaseXEnchantment>, BaseXEnchantment> ENCHANTMENTS_MAP = Maps.newHashMap();
+    public static final Map<Class<? extends BaseXEnchantment>, BaseXEnchantment> ENCHANTMENTS_MAP = new LinkedHashMap<>();
 
     protected static final EquipmentSlot[] ALL_ARMOR = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
     public static final ResourceLocation CONFIG_CHANNEL = new ResourceLocation(XEnchantment.MOD_ID, "config_loading");
@@ -69,7 +69,8 @@ public class EnchantUtil {
                 // other
                 MoreLoot.class, BrokenDawn.class,
                 // attack
-                NightBreak.class, SuckBlood.class, Weakness.class, IncDamage.class, IgnoredArmor.class, AttackSpeed.class,
+                NightBreak.class, SuckBlood.class, Weakness.class, SoulHit.class,
+                IncDamage.class, IgnoredArmor.class, AttackSpeed.class,
                 // bow
                 Diffusion.class, Elasticity.class,
                 // rod
@@ -272,9 +273,16 @@ public class EnchantUtil {
         JsonObject object = getCurrentConfig();
         configConsumer.accept(object);
 
-        allOption = object;
+        // server load
+        configLoad(object);
+
         if (server != null) {
             server.getPlayerList().getPlayers().forEach(p -> ATTR_ENCHANT.forEach(e -> e.reloadAttr(p)));
+
+            // client load
+            FriendlyByteBuf buf = ServersideChannelUtil.getJsonBuf(object);
+            server.getPlayerList().getPlayers().forEach(p ->
+                    ServersideChannelUtil.send(p, CONFIG_CHANNEL, buf, object));
         }
     }
 

@@ -43,6 +43,8 @@ public class WalkOn extends BaseXEnchantment {
 
     @Override
     public void onOptionsRegister(BiConsumer<String, Supplier<Stream<String>>> register) {
+        super.onOptionsRegister(register);
+
         register.accept(BAN_KEY,
                 () -> BuiltInRegistries.FLUID.stream()
                         .filter(f -> f.defaultFluidState().isSource())

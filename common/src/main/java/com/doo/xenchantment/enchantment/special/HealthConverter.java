@@ -57,6 +57,8 @@ public class HealthConverter extends Special {
 
     @Override
     public void onOptionsRegister(BiConsumer<String, Supplier<Stream<String>>> register) {
+        super.onOptionsRegister(register);
+
         register.accept(BAN_KEY, () -> BuiltInRegistries.ITEM.stream()
                 .filter(i -> i.getDefaultInstance().isDamageableItem())
                 .map(Item::getDescriptionId));

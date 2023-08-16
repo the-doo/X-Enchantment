@@ -46,6 +46,8 @@ public class MagicImmune extends BaseXEnchantment {
 
     @Override
     public void onOptionsRegister(BiConsumer<String, Supplier<Stream<String>>> register) {
+        super.onOptionsRegister(register);
+
         register.accept(BAN_KEY, () -> BuiltInRegistries.MOB_EFFECT.stream()
                 .filter(e -> e.getCategory() == MobEffectCategory.HARMFUL)
                 .map(MobEffect::getDescriptionId)

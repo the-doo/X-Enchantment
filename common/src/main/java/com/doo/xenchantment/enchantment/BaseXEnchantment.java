@@ -6,10 +6,13 @@ import com.doo.xenchantment.advancements.TrueTrigger;
 import com.doo.xenchantment.interfaces.WithAttribute;
 import com.doo.xenchantment.interfaces.WithOptions;
 import com.doo.xenchantment.interfaces.XEnchantmentRegistry;
+import com.google.common.collect.Lists;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -69,9 +72,13 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
 
     protected final EquipmentSlot[] slots;
 
+    protected final List<Enchantment> compatibility = Lists.newArrayList();
+
     public static final String MAX_LEVEL_KEY = "max_level";
 
     public static final String DISABLED_KEY = "disabled";
+
+    public static final String COMPATIBILITY_KEY = "compatibility";
 
     public static final String ONLY_ONE_LEVEL_KEY = "only_one_level";
 
@@ -95,6 +102,11 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
 
     public final boolean disabled() {
         return options.has(DISABLED_KEY) ? options.get(DISABLED_KEY).getAsBoolean() : isDisabled();
+    }
+
+    @Override
+    protected boolean checkCompatibility(Enchantment enchantment) {
+        return !compatibility.contains(enchantment);
     }
 
     public boolean isDisabled() {
@@ -282,6 +294,7 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
     public void initOptions() {
         options.addProperty(MAX_LEVEL_KEY, 1);
         options.addProperty(DISABLED_KEY, false);
+        options.add(COMPATIBILITY_KEY, new JsonArray());
 
         if (onlyOneLevel()) {
             options.addProperty(ONLY_ONE_LEVEL_KEY, false);
@@ -297,6 +310,11 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
     public void loadOptions(JsonObject json) {
         loadIf(json, MAX_LEVEL_KEY);
         loadIf(json, DISABLED_KEY);
+
+        foreach(COMPATIBILITY_KEY, j ->
+                BuiltInRegistries.ENCHANTMENT.stream()
+                        .filter(e -> e.getDescriptionId().equals(j.getAsString()))
+                        .forEach(compatibility::add));
     }
 
     protected final void loadIf(JsonObject json, String key) {
@@ -335,5 +353,6 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
     }
 
     public void onOptionsRegister(BiConsumer<String, Supplier<Stream<String>>> register) {
+        register.accept(COMPATIBILITY_KEY, () -> BuiltInRegistries.ENCHANTMENT.stream().map(Enchantment::getDescriptionId));
     }
 }

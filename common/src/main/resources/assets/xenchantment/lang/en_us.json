@@ -43,8 +43,10 @@
   "enchantment.x_enchantment.elasticity": "String Strengthen",
   "enchantment.x_enchantment.elasticity.desc": "Extra draw strength.",
   "enchantment.x_enchantment.night_break": "Night Break",
-  "enchantment.x_enchantment.night_break.desc": "Extra percentage damage bonus.",
+  "enchantment.x_enchantment.night_break.desc": "For every certain number of attacks, the next attack deals a percentage of the target's maximum health true damage.",
   "enchantment.x_enchantment.night_break.tips": "Thanks to @NightBreak for the contribution",
+  "enchantment.x_enchantment.soul_hit": "Soul Hit",
+  "enchantment.x_enchantment.soul_hit.desc": "Extra percentage damage bonus.",
   "enchantment.x_enchantment.broken_dawn": "Broken Dawn",
   "enchantment.x_enchantment.broken_dawn.desc": "Normally, completing the evolution can upgrade the enchantment of the item, small chance to upgrade items, if there are no higher-level items, enchantment upgrade +3. It will eventually evolve when the dawn is coming, it hopes...",
   "enchantment.x_enchantment.broken_dawn.done": "First Light",
@@ -109,6 +111,8 @@
 
   "x_enchantment.max_level": "Max Level",
   "x_enchantment.max_level.tip": "Max level of enchantment",
+  "x_enchantment.compatibility": "Incompatible List",
+  "x_enchantment.compatibility.tip": "Incompatible enchantment list",
   "x_enchantment.disabled": "Disabled",
   "x_enchantment.disabled.tip": "Off is enabled, on is disabled. Disabled is means exists but does not take effect.",
   "x_enchantment.only_one_level": "Level Ignored",
@@ -126,10 +130,19 @@
 
   "x_enchantment.menu.option.only_server.tip": "Tip: Remote game modification configuration does not take effect, local games need to be modified after entering the game!!!",
 
-  "x_enchantment.menu.option.night_break.damage": "Addition Base",
-  "x_enchantment.menu.option.night_break.damage.tip": "Addition base per level. If the current value is 1.5 and the enchantment level is 3, the effect is 4.5% (= 3 * 1.5%).",
+  "x_enchantment.info.night_break.damage": "Percentage",
+  "x_enchantment.info.night_break.damage.tip": "Percentage of true damage to the target that deals maximum health.",
+  "x_enchantment.info.night_break.damage_count": "Attacks Interval",
+  "x_enchantment.info.night_break.damage_count.tip": "The interval between attacks for each true damage attack.",
+  "x_enchantment.menu.option.night_break.damage": "Percentage",
+  "x_enchantment.menu.option.night_break.damage.tip": "Percentage of true damage to the target that deals maximum health. If the current value is 1.5 and the enchantment level is 3, the effect is 4.5% (= 3 * 1.5%).",
+  "x_enchantment.menu.option.night_break.damage_count": "Attacks Interval",
+  "x_enchantment.menu.option.night_break.damage_count.tip": "The interval between attacks for each true damage attack.",
   "x_enchantment.menu.option.night_break.tip": "Open Tip",
   "x_enchantment.menu.option.night_break.tip.tip": "Open Tip",
+
+  "x_enchantment.menu.option.soul_hit.damage": "Percentage",
+  "x_enchantment.menu.option.soul_hit.damage.tip": "Addition base per level. If the current value is 1.5 and the enchantment level is 3, the effect is 4.5% (= 3 * 1.5%).",
 
   "x_enchantment.menu.option.auto_fish.healing": "Restore Durability",
   "x_enchantment.menu.option.auto_fish.healing.tip": "Whether to allow recovery durability",

@@ -11,27 +11,26 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
-public class Smart extends BaseXEnchantment implements WithAttribute<Smart> {
-    public static final UUID[] UUID = {
-            java.util.UUID.fromString("9B48134A-D49C-7517-5FAD-20C0A47C11AC")
+public class SoulHit extends BaseXEnchantment implements WithAttribute<SoulHit> {
+    private static final java.util.UUID[] UUID = {
+            java.util.UUID.fromString("54D161F7-2972-6124-887E-57B6B3AC8B51")
     };
-    public static final String VALUE_KEY = "value";
-    private static final List<Attribute> ATTRIBUTES = Collections.singletonList(ExtractAttributes.XP_BONUS);
+    public static final String DAMAGE_KEY = "damage";
+    private static final List<Attribute> ATTRIBUTES = Collections.singletonList(ExtractAttributes.DAMAGE_PERCENTAGE_BONUS);
 
-    public Smart() {
-        super("smart", Rarity.UNCOMMON, EnchantmentCategory.ARMOR_HEAD, EquipmentSlot.HEAD);
+    public SoulHit() {
+        super("soul_hit", Rarity.RARE, EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND);
 
-        options.addProperty(MAX_LEVEL_KEY, 5);
-        options.addProperty(VALUE_KEY, 20);
+        options.addProperty(MAX_LEVEL_KEY, 3);
+        options.addProperty(DAMAGE_KEY, 5);
     }
 
     @Override
     public void loadOptions(JsonObject json) {
         super.loadOptions(json);
 
-        loadIf(json, VALUE_KEY);
+        loadIf(json, DAMAGE_KEY);
     }
 
     @Override
@@ -46,6 +45,6 @@ public class Smart extends BaseXEnchantment implements WithAttribute<Smart> {
 
     @Override
     public AttributeModifier getMatchModify(Attribute attribute, ItemStack stack, int level) {
-        return oneAttrModify(stackIdx(stack, slots), level, getDouble(VALUE_KEY), AttributeModifier.Operation.ADDITION);
+        return oneAttrModify(stackIdx(stack, slots), level, getDouble(DAMAGE_KEY), AttributeModifier.Operation.ADDITION);
     }
 }

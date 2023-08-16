@@ -100,6 +100,8 @@ public class OptionScreen extends Screen {
         return switch (key) {
             case BaseXEnchantment.MAX_LEVEL_KEY ->
                     format.formatted(XEnchantment.MOD_ID, BaseXEnchantment.MAX_LEVEL_KEY);
+            case BaseXEnchantment.COMPATIBILITY_KEY ->
+                    format.formatted(XEnchantment.MOD_ID, BaseXEnchantment.COMPATIBILITY_KEY);
             case BaseXEnchantment.DISABLED_KEY -> format.formatted(XEnchantment.MOD_ID, BaseXEnchantment.DISABLED_KEY);
             case BaseXEnchantment.ONLY_ONE_LEVEL_KEY ->
                     format.formatted(XEnchantment.MOD_ID, BaseXEnchantment.ONLY_ONE_LEVEL_KEY);
