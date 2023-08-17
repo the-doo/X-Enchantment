@@ -20,18 +20,18 @@ public interface LootApi {
         LootApi.InnerE.EVENT.add(register);
     }
 
-    static List<ItemStack> trigger(LivingEntity entity, ItemStack trigger, List<ItemStack> stack) {
+    static List<ItemStack> trigger(LivingEntity entity, ItemStack trigger, List<ItemStack> stack, boolean effectBlock) {
         if (stack.isEmpty() || stack.size() < 2 && stack.get(0).isEmpty()) {
             return Collections.emptyList();
         }
 
         List<ItemStack> stacks = Lists.newArrayList();
-        LootApi.InnerE.EVENT.forEach(l -> stacks.addAll(l.addition(entity, trigger, stack)));
+        LootApi.InnerE.EVENT.forEach(l -> stacks.addAll(l.addition(entity, trigger, stack, effectBlock)));
         return stacks;
     }
 
     /**
      * return addition loot
      */
-    List<ItemStack> addition(LivingEntity entity, ItemStack stack, List<ItemStack> immStacks);
+    List<ItemStack> addition(LivingEntity entity, ItemStack stack, List<ItemStack> immStacks, boolean effectBlock);
 }

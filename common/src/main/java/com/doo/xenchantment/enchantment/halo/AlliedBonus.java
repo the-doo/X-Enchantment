@@ -83,8 +83,8 @@ public class AlliedBonus extends Halo {
 
     @Override
     protected void trigger(LivingEntity living, AABB box) {
-        int tick = (int) (interval() * getDouble(EFFECT_TIME_KEY));
-        int level = (int) getDouble(EFFECT_LEVEL_KEY);
+        int tick = (int) (interval() * doubleV(EFFECT_TIME_KEY));
+        int level = (int) doubleV(EFFECT_LEVEL_KEY);
         if (BAN.size() >= EFFECTS.size() || tick < 0 || level < 0) {
             return;
         }

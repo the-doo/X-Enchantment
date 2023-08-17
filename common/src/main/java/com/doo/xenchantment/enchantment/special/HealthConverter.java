@@ -20,9 +20,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-/**
- * Health Converter
- */
 public class HealthConverter extends Special {
 
     public static final String HURT_KEY = "hurt";
@@ -89,7 +86,7 @@ public class HealthConverter extends Special {
             return;
         }
 
-        float damage = (float) getDouble(HURT_KEY);
+        float damage = (float) doubleV(HURT_KEY);
         item.setDamageValue(0);
         living.hurt(player.damageSources().magic(), damage);
 

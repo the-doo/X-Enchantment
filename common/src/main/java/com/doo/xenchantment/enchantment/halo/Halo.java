@@ -88,16 +88,16 @@ public abstract class Halo extends BaseXEnchantment {
     }
 
     protected int interval() {
-        return (int) (getDouble(INTERVAL_KEY) * SECOND_TICK);
+        return (int) (doubleV(INTERVAL_KEY) * SECOND_TICK);
     }
 
     protected double range() {
-        return getDouble(RANGE_KEY);
+        return doubleV(RANGE_KEY);
     }
 
     public static void onEndLiving(LivingEntity living, Halo halo) {
         int interval = halo.interval();
-        if (interval < 1 || living.tickCount % interval != 0 || halo.disabled() || halo.getBoolean(PLAYER_ONLY_KEY) && !(living instanceof Player)) {
+        if (interval < 1 || living.tickCount % interval != 0 || halo.disabled() || halo.boolV(PLAYER_ONLY_KEY) && !(living instanceof Player)) {
             return;
         }
 

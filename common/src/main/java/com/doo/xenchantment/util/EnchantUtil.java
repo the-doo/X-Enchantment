@@ -31,7 +31,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.FluidState;
@@ -52,7 +51,7 @@ public class EnchantUtil {
 
     public static final Map<Class<? extends BaseXEnchantment>, BaseXEnchantment> ENCHANTMENTS_MAP = new LinkedHashMap<>();
 
-    protected static final EquipmentSlot[] ALL_ARMOR = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
+    public static final EquipmentSlot[] ALL_ARMOR = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
     public static final ResourceLocation CONFIG_CHANNEL = new ResourceLocation(XEnchantment.MOD_ID, "config_loading");
 
     private static MinecraftServer server;
@@ -72,9 +71,11 @@ public class EnchantUtil {
                 NightBreak.class, SuckBlood.class, Weakness.class, SoulHit.class,
                 IncDamage.class, IgnoredArmor.class, AttackSpeed.class,
                 // bow
-                Diffusion.class, Elasticity.class,
+                ShootSpeed.class, Diffusion.class, Elasticity.class,
                 // rod
                 AutoFish.class, Librarian.class,
+                // armor
+                WithEffect.class,
                 // head
                 Smart.class, FoodBonus.class,
                 // chest
@@ -213,7 +214,7 @@ public class EnchantUtil {
         }
 
         ItemStack stack = player.getMainHandItem();
-        List<ItemStack> trigger = LootApi.trigger(player, stack, additionLoot);
+        List<ItemStack> trigger = LootApi.trigger(player, stack, additionLoot, true);
         if (!trigger.isEmpty()) {
             callback.accept(trigger);
         }
@@ -225,18 +226,18 @@ public class EnchantUtil {
         }
 
         ItemStack stack = player.getMainHandItem();
-        List<ItemStack> trigger = LootApi.trigger(player, stack, list);
+        List<ItemStack> trigger = LootApi.trigger(player, stack, list, true);
         if (!trigger.isEmpty()) {
             callback.accept(trigger);
         }
     }
 
     public static void lootBlock(Entity entity, ItemStack itemStack, List<ItemStack> list, Consumer<List<ItemStack>> consumer) {
-        if (!(entity instanceof LivingEntity player) || list.isEmpty() || list.size() < 2 && list.get(0).getItem() instanceof BlockItem) {
+        if (!(entity instanceof LivingEntity player) || list.isEmpty()) {
             return;
         }
 
-        List<ItemStack> trigger = LootApi.trigger(player, itemStack, list);
+        List<ItemStack> trigger = LootApi.trigger(player, itemStack, list, false);
         if (!trigger.isEmpty()) {
             consumer.accept(trigger);
         }

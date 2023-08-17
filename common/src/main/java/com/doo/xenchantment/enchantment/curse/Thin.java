@@ -41,8 +41,8 @@ public class Thin extends Cursed {
                 return;
             }
 
-            if (owner.getRandom().nextDouble() < getDouble(RATE_KEY) / 100) {
-                stack.setDamageValue((int) (stack.getDamageValue() + level * getDouble(VALUE_KEY)));
+            if (owner.getRandom().nextDouble() < doubleV(RATE_KEY) / 100) {
+                stack.setDamageValue((int) (stack.getDamageValue() + level * doubleV(VALUE_KEY)));
             }
         });
     }

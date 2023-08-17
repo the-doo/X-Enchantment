@@ -35,7 +35,7 @@ public class Climber extends BaseXEnchantment {
 
     @Override
     public void onEndTick(LivingEntity living) {
-        if (living.tickCount % SECOND_TICK != 0 || living.getY() < getDouble(Y_KEY)) {
+        if (living.tickCount % SECOND_TICK != 0 || living.getY() < doubleV(Y_KEY)) {
             return;
         }
 

@@ -57,6 +57,6 @@ public class SuckBlood extends BaseXEnchantment implements WithAttribute<SuckBlo
 
     @Override
     public AttributeModifier getMatchModify(Attribute attribute, ItemStack stack, int level) {
-        return oneAttrModify(stackIdx(stack, slots), level, getDouble(BASE_VALUE), AttributeModifier.Operation.ADDITION);
+        return oneAttrModify(stackIdx(stack, slots), level, doubleV(BASE_VALUE), AttributeModifier.Operation.ADDITION);
     }
 }

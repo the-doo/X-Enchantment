@@ -1,5 +1,6 @@
 package com.doo.xenchantment.mixin;
 
+import com.doo.xenchantment.enchantment.ShootSpeed;
 import com.doo.xenchantment.events.ArrowApi;
 import com.doo.xenchantment.interfaces.ArrowAccessor;
 import com.doo.xenchantment.util.EnchantUtil;
@@ -14,6 +15,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(AbstractArrow.class)
@@ -37,6 +39,11 @@ public abstract class AbstractArrowMixin implements ArrowAccessor {
         if (attacker != null) {
             ArrowApi.call(EnchantUtil.get(this), attacker, itemStack, (LivingEntity) entityHitResult.getEntity(), damage);
         }
+    }
+
+    @ModifyVariable(method = "shoot", at = @At(value = "HEAD"), argsOnly = true, ordinal = 0)
+    private float setSpeedH(float speed, double x, double y, double z, float divergence) {
+        return ShootSpeed.speed(speed, attacker, itemStack);
     }
 
 

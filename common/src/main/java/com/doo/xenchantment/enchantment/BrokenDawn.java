@@ -82,7 +82,7 @@ public class BrokenDawn extends BaseXEnchantment {
 
     @Override
     public @NotNull Component getFullname(int level) {
-        if (thanksTip == null || !getBoolean(TIP_KEY)) {
+        if (thanksTip == null || !boolV(TIP_KEY)) {
             return super.getFullname(level);
         }
         return super.getFullname(level).copy().append(thanksTip);
@@ -117,12 +117,12 @@ public class BrokenDawn extends BaseXEnchantment {
 
     @Override
     public void tooltip(ItemStack stack, TooltipFlag context, List<Component> lines) {
-        if (stack.getItem() instanceof EnchantedBookItem || stack.getTag() == null) {
+        CompoundTag nbt = stack.getTag();
+        if (stack.getItem() instanceof EnchantedBookItem || nbt == null || nbt.isEmpty()) {
             return;
         }
 
         // if done
-        CompoundTag nbt = stack.getTag();
         if (nbt.getBoolean(nbtKey(DONE))) {
             lines.add(DONE_TIPS.copy().append(thanksTip));
             return;
@@ -151,7 +151,7 @@ public class BrokenDawn extends BaseXEnchantment {
         // default increment
         RandomSource random = owner.getRandom();
         int inc = 1;
-        boolean needLevelUp = random.nextDouble() < getDouble(LEVEL_UP_KEY) / 100;
+        boolean needLevelUp = random.nextDouble() < doubleV(LEVEL_UP_KEY) / 100;
         ItemStack drop = ItemStack.EMPTY;
         if (needLevelUp) {
             Item next = nextLevelItem(stack.getItem());
@@ -192,7 +192,7 @@ public class BrokenDawn extends BaseXEnchantment {
     }
 
     private long max(ItemStack stack) {
-        return (long) (stack.getMaxDamage() * getDouble(DONE_LIMIT_KEY));
+        return (long) (stack.getMaxDamage() * doubleV(DONE_LIMIT_KEY));
     }
 
     private Item nextLevelItem(Item item) {
@@ -227,7 +227,7 @@ public class BrokenDawn extends BaseXEnchantment {
 
         group.add(getInfoKey(LEVEL_UP_COUNT_INFO_KEY), notLevel ? 0 : stack.getOrCreateTag().getLong(nbtKey(KEY)), false);
         group.add(getInfoKey(DONE_LIMIT_KEY), notLevel ? 0 : max(stack), false);
-        group.add(getInfoKey(LEVEL_UP_KEY), notLevel ? 0 : getDouble(LEVEL_UP_KEY) / 100, true);
+        group.add(getInfoKey(LEVEL_UP_KEY), notLevel ? 0 : doubleV(LEVEL_UP_KEY) / 100, true);
 
         Item i;
         group.add(getInfoKey(LEVEL_UP_ITEM_INFO_KEY),

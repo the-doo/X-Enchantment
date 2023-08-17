@@ -66,8 +66,8 @@ public class Weakness extends BaseXEnchantment implements WithAttribute<Weakness
     @Override
     public AttributeModifier getMatchModify(Attribute attribute, ItemStack stack, int level) {
         if (attribute == ATTRIBUTES.get(0)) {
-            return new AttributeModifier(UUID_RATE[0], name(), getDouble(CRIT_RATE_KEY) / 100 * level, AttributeModifier.Operation.ADDITION);
+            return new AttributeModifier(UUID_RATE[0], name(), doubleV(CRIT_RATE_KEY) / 100 * level, AttributeModifier.Operation.ADDITION);
         }
-        return new AttributeModifier(UUID[0], name(), getDouble(CRIT_DAMAGE_KEY) / 10 * level, AttributeModifier.Operation.ADDITION);
+        return new AttributeModifier(UUID[0], name(), doubleV(CRIT_DAMAGE_KEY) / 10 * level, AttributeModifier.Operation.ADDITION);
     }
 }

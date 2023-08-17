@@ -19,17 +19,13 @@ import java.util.UUID;
 public class DownDamage extends Cursed implements WithAttribute<DownDamage> {
     private static final java.util.UUID[] UUIDS = {
             java.util.UUID.fromString("E8960AAE-2680-67F5-06D8-F75FD4A061FA"),
-            java.util.UUID.fromString("E8960AAE-2680-67F5-06D8-F75FD4A061FB"),
-            java.util.UUID.fromString("E8960AAE-2680-67F5-06D8-F75FD4A061FC"),
-            java.util.UUID.fromString("E8960AAE-2680-67F5-06D8-F75FD4A061FD"),
-            java.util.UUID.fromString("E8960AAE-2680-67F5-06D8-F75FD4A061FE"),
-            java.util.UUID.fromString("E8960AAE-2680-67F5-06D8-F75FD4A061FF")
+            java.util.UUID.fromString("E8960AAE-2680-67F5-06D8-F75FD4A061FB")
     };
     private static final String VALUE_KEY = "value";
     private static final List<Attribute> ATTRIBUTES = Collections.singletonList(Attributes.ATTACK_DAMAGE);
 
     public DownDamage() {
-        super("down_damage", Rarity.UNCOMMON, EnchantmentCategory.WEAPON, EquipmentSlot.values());
+        super("down_damage", Rarity.UNCOMMON, EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
 
         options.addProperty(MAX_LEVEL_KEY, 5);
         options.addProperty(VALUE_KEY, 10);
@@ -52,6 +48,6 @@ public class DownDamage extends Cursed implements WithAttribute<DownDamage> {
 
     @Override
     public AttributeModifier getMatchModify(Attribute attribute, ItemStack stack, int level) {
-        return oneAttrModify(stackIdx(stack, slots), level, -getDouble(VALUE_KEY), AttributeModifier.Operation.MULTIPLY_TOTAL);
+        return oneAttrModify(stackIdx(stack, slots), level, -doubleV(VALUE_KEY), AttributeModifier.Operation.MULTIPLY_TOTAL);
     }
 }

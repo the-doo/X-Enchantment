@@ -39,7 +39,7 @@ public class Regicide extends Cursed {
                 return;
             }
 
-            float limit = (float) (level * getDouble(VALUE_KEY));
+            float limit = (float) (level * doubleV(VALUE_KEY));
             if (amount <= limit) {
                 player.hurt(player.damageSources().playerAttack(player), amount);
 
@@ -55,7 +55,7 @@ public class Regicide extends Cursed {
         int level = totalLevel(player);
 
         InfoGroupItems group = InfoGroupItems.groupKey(getDescriptionId());
-        group.add(getInfoKey(VALUE_KEY), level < 1 ? 0 : level * getDouble(VALUE_KEY), false);
+        group.add(getInfoKey(VALUE_KEY), level < 1 ? 0 : level * doubleV(VALUE_KEY), false);
         return group;
     }
 

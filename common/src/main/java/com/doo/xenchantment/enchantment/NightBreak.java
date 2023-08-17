@@ -39,7 +39,7 @@ public class NightBreak extends BaseXEnchantment {
 
     @Override
     public @NotNull Component getFullname(int level) {
-        if (getBoolean(TIP_KEY)) {
+        if (boolV(TIP_KEY)) {
             super.getFullname(level);
         }
         return super.getFullname(level).copy().append(THANKS);
@@ -68,9 +68,9 @@ public class NightBreak extends BaseXEnchantment {
         String log = nbtKey(LOG_DAMAGE_KEY);
 
         int count = tag.getInt(log);
-        if (count++ >= getDouble(DAMAGE_COUNT_KEY)) {
+        if (count++ >= doubleV(DAMAGE_COUNT_KEY)) {
             count = 0;
-            float hurt = (float) (getDouble(DAMAGE_KEY) * level * e.getMaxHealth() / 100);
+            float hurt = (float) (doubleV(DAMAGE_KEY) * level * e.getMaxHealth() / 100);
             e.heal(-hurt);
         }
 
@@ -82,8 +82,8 @@ public class NightBreak extends BaseXEnchantment {
         ItemStack stack = player.getMainHandItem();
         int level = level(stack);
         InfoGroupItems group = InfoGroupItems.groupKey(getDescriptionId());
-        group.add(getInfoKey(DAMAGE_COUNT_KEY), getDouble(DAMAGE_COUNT_KEY), false);
-        group.add(getInfoKey(DAMAGE_KEY), level < 1 ? 0 : getDouble(DAMAGE_KEY) * level / 100, true);
+        group.add(getInfoKey(DAMAGE_COUNT_KEY), doubleV(DAMAGE_COUNT_KEY), false);
+        group.add(getInfoKey(DAMAGE_KEY), level < 1 ? 0 : doubleV(DAMAGE_KEY) * level / 100, true);
         return group;
     }
 

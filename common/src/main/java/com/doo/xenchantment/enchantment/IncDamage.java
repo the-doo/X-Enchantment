@@ -62,7 +62,7 @@ public class IncDamage extends BaseXEnchantment implements WithAttribute<IncDama
     @Override
     public AttributeModifier getMatchModify(Attribute attribute, ItemStack stack, int level) {
         float damage = stack.getOrCreateTag().getFloat(nbtKey(KEY));
-        float reduce = (float) (getDouble(REDUCE_KEY) / 100);
+        float reduce = (float) (doubleV(REDUCE_KEY) / 100);
         if (stack.getItem() instanceof SwordItem si) {
             damage -= si.getDamage() * reduce;
         } else if (stack.getItem() instanceof DiggerItem di) {
@@ -92,7 +92,7 @@ public class IncDamage extends BaseXEnchantment implements WithAttribute<IncDama
         } else if (ti instanceof DiggerItem di) {
             max = di.getAttackDamage();
         }
-        max *= (float) (level * getDouble(PER_LEVEL_DAMAGE_KEY));
+        max *= (float) (level * doubleV(PER_LEVEL_DAMAGE_KEY));
 
         if (now >= max) {
             return;

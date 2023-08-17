@@ -6,9 +6,6 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
-/**
- * Item is damaged
- */
 public interface ItemApi {
 
     final class InnerE {

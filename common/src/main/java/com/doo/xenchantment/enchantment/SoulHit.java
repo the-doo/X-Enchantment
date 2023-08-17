@@ -45,6 +45,6 @@ public class SoulHit extends BaseXEnchantment implements WithAttribute<SoulHit> 
 
     @Override
     public AttributeModifier getMatchModify(Attribute attribute, ItemStack stack, int level) {
-        return oneAttrModify(stackIdx(stack, slots), level, getDouble(DAMAGE_KEY), AttributeModifier.Operation.ADDITION);
+        return oneAttrModify(stackIdx(stack, slots), level, doubleV(DAMAGE_KEY), AttributeModifier.Operation.ADDITION);
     }
 }

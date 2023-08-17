@@ -86,9 +86,7 @@ public class XEnchantmentForge {
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
     public void onAttrMaps(ItemAttributeModifierEvent event) {
-        if (!event.getOriginalModifiers().isEmpty()) {
-            EnchantUtil.registerAttr(e -> e.insertAttr(event.getItemStack(), event.getSlotType(), event::addModifier));
-        }
+        EnchantUtil.registerAttr(e -> e.insertAttr(event.getItemStack(), event.getSlotType(), event::addModifier));
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call

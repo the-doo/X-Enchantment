@@ -8,9 +8,6 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Entity get Armor - like EntityDamageApi
- */
 public interface AnvilApi {
 
     final class InnerE {

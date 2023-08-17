@@ -1,6 +1,7 @@
 package com.doo.xenchantment.enchantment.curse;
 
 import com.doo.xenchantment.interfaces.WithAttribute;
+import com.doo.xenchantment.util.EnchantUtil;
 import com.google.gson.JsonObject;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -21,16 +22,14 @@ public class DownArmor extends Cursed implements WithAttribute<DownArmor> {
             java.util.UUID.fromString("650203AC-2826-70BF-F18A-41C557FDE947"),
             java.util.UUID.fromString("650203AC-2826-70BF-F18A-41C557FDE946"),
             java.util.UUID.fromString("650203AC-2826-70BF-F18A-41C557FDE945"),
-            java.util.UUID.fromString("650203AC-2826-70BF-F18A-41C557FDE944"),
-            java.util.UUID.fromString("650203AC-2826-70BF-F18A-41C557FDE943"),
-            java.util.UUID.fromString("650203AC-2826-70BF-F18A-41C557FDE942")
+            java.util.UUID.fromString("650203AC-2826-70BF-F18A-41C557FDE944")
     };
 
     private static final String VALUE_KEY = "value";
     private static final List<Attribute> ATTRIBUTES = Collections.singletonList(Attributes.ARMOR);
 
     public DownArmor() {
-        super("down_armor", Rarity.UNCOMMON, EnchantmentCategory.ARMOR, EquipmentSlot.values());
+        super("down_armor", Rarity.UNCOMMON, EnchantmentCategory.ARMOR, EnchantUtil.ALL_ARMOR);
 
         options.addProperty(MAX_LEVEL_KEY, 5);
         options.addProperty(VALUE_KEY, 10);
@@ -55,6 +54,6 @@ public class DownArmor extends Cursed implements WithAttribute<DownArmor> {
 
     @Override
     public AttributeModifier getMatchModify(Attribute attribute, ItemStack stack, int level) {
-        return oneAttrModify(stackIdx(stack, slots), level, -getDouble(VALUE_KEY), AttributeModifier.Operation.MULTIPLY_TOTAL);
+        return oneAttrModify(stackIdx(stack, slots), level, -doubleV(VALUE_KEY), AttributeModifier.Operation.MULTIPLY_TOTAL);
     }
 }

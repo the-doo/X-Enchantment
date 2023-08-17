@@ -49,7 +49,7 @@ public class Librarian extends BaseXEnchantment {
 
     @Override
     public void onServer(MinecraftServer server) {
-        LootApi.register(((living, stack, stacks) -> {
+        LootApi.register(((living, stack, stacks, effectBlocks) -> {
             if (disabled()) {
                 return Collections.emptyList();
             }
@@ -63,7 +63,7 @@ public class Librarian extends BaseXEnchantment {
                 return Collections.emptyList();
             }
 
-            boolean dropped = living.getRandom().nextDouble() < level * getDouble(TRIGGER_KEY) / 100;
+            boolean dropped = living.getRandom().nextDouble() < level * doubleV(TRIGGER_KEY) / 100;
             if (!dropped) {
                 return Collections.emptyList();
             }
@@ -85,13 +85,13 @@ public class Librarian extends BaseXEnchantment {
      * base: 5-very_rare 10-rare 30-uncommon 55-common
      */
     private Rarity randRarityByLevel(double rand, double luck) {
-        if (rand < luck * getDouble(VARY_RARE_VALUE_KEY) / 100) {
+        if (rand < luck * doubleV(VARY_RARE_VALUE_KEY) / 100) {
             return Rarity.VERY_RARE;
         }
-        if (rand < luck * getDouble(RARE_VALUE_KEY) / 100) {
+        if (rand < luck * doubleV(RARE_VALUE_KEY) / 100) {
             return Rarity.RARE;
         }
-        if (rand < luck * getDouble(UNCOMMON_VALUE_KEY) / 100) {
+        if (rand < luck * doubleV(UNCOMMON_VALUE_KEY) / 100) {
             return Rarity.UNCOMMON;
         }
         return Rarity.COMMON;

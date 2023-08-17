@@ -21,9 +21,6 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.function.Predicate;
 
-/**
- * Diffusion
- */
 public class Diffusion extends BaseXEnchantment {
 
     private static final String MONSTER_KEY = "monster";
@@ -74,10 +71,10 @@ public class Diffusion extends BaseXEnchantment {
 
             MobEffectInstance light = new MobEffectInstance(MobEffects.GLOWING, 60, level);
             Level world = attacker.level();
-            float amount = (float) (damage * level * (getDouble(DAMAGE_KEY) / 100));
-            long count = (long) (level * getDouble(COUNT_KEY));
-            Predicate<LivingEntity> test = e -> e != entity && e != attacker && !e.isAlliedTo(attacker) && (!getBoolean(MONSTER_KEY) || e instanceof Monster);
-            world.getEntitiesOfClass(LivingEntity.class, entity.getBoundingBox().inflate((int) getDouble(RANGE_KEY)), test)
+            float amount = (float) (damage * level * (doubleV(DAMAGE_KEY) / 100));
+            long count = (long) (level * doubleV(COUNT_KEY));
+            Predicate<LivingEntity> test = e -> e != entity && e != attacker && !e.isAlliedTo(attacker) && (!boolV(MONSTER_KEY) || e instanceof Monster);
+            world.getEntitiesOfClass(LivingEntity.class, entity.getBoundingBox().inflate((int) doubleV(RANGE_KEY)), test)
                     .stream().limit(count)
                     .forEach(e -> initArrow(world, amount, attacker, e, light));
         });
@@ -87,7 +84,7 @@ public class Diffusion extends BaseXEnchantment {
         AbstractArrow arrow = ARROW_ITEM.createArrow(world, ItemStack.EMPTY, user);
         arrow.pickup = AbstractArrow.Pickup.DISALLOWED;
         arrow.setBaseDamage(damage);
-        if (getBoolean(LIGHT_ENABLED_KEY) && arrow instanceof Arrow a) {
+        if (boolV(LIGHT_ENABLED_KEY) && arrow instanceof Arrow a) {
             a.addEffect(light);
         }
         Vec3 eP = e.getPosition(0);

@@ -56,6 +56,6 @@ public class AttackSpeed extends BaseXEnchantment implements WithAttribute<Attac
 
     @Override
     public AttributeModifier getMatchModify(Attribute attribute, ItemStack stack, int level) {
-        return oneAttrModify(stackIdx(stack, slots), level, getDouble(BASE_VALUE), AttributeModifier.Operation.MULTIPLY_TOTAL);
+        return oneAttrModify(stackIdx(stack, slots), level, doubleV(BASE_VALUE), AttributeModifier.Operation.MULTIPLY_TOTAL);
     }
 }

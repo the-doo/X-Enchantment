@@ -12,9 +12,6 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Elasticity Up
- */
 public class Elasticity extends BaseXEnchantment implements WithAttribute<Elasticity> {
 
     private static final java.util.UUID[] UUID = {
@@ -28,7 +25,7 @@ public class Elasticity extends BaseXEnchantment implements WithAttribute<Elasti
     public Elasticity() {
         super("elasticity", Rarity.RARE, EnchantmentCategory.BOW, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
 
-        options.addProperty(MAX_LEVEL_KEY, 3);
+        options.addProperty(MAX_LEVEL_KEY, 4);
         options.addProperty(VALUE_KEY, 10);
     }
 
@@ -51,6 +48,6 @@ public class Elasticity extends BaseXEnchantment implements WithAttribute<Elasti
 
     @Override
     public AttributeModifier getMatchModify(Attribute attribute, ItemStack stack, int level) {
-        return oneAttrModify(stackIdx(stack, slots), level, getDouble(VALUE_KEY), AttributeModifier.Operation.ADDITION);
+        return oneAttrModify(stackIdx(stack, slots), level, doubleV(VALUE_KEY), AttributeModifier.Operation.ADDITION);
     }
 }

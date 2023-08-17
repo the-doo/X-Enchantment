@@ -106,7 +106,7 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
 
     @Override
     protected boolean checkCompatibility(Enchantment enchantment) {
-        return !compatibility.contains(enchantment);
+        return super.checkCompatibility(enchantment) && !compatibility.contains(enchantment);
     }
 
     public boolean isDisabled() {
@@ -170,11 +170,11 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
     }
 
     public String nbtKey(String key) {
-        return id.toString() + key;
+        return "%s.%s".formatted(id.toString(), key);
     }
 
-    public int level(ItemStack item) {
-        return item == null || item.isEmpty() ? 0 : EnchantmentHelper.getEnchantments(item).getOrDefault(this, 0);
+    public int level(ItemStack stack) {
+        return stack == null || stack.isEmpty() || stack.getTag() == null || stack.getTag().isEmpty() || stack.getEnchantmentTags().isEmpty() ? 0 : EnchantmentHelper.getEnchantments(stack).getOrDefault(this, 0);
     }
 
     public int totalLevel(Player player) {
@@ -310,11 +310,18 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
     public void loadOptions(JsonObject json) {
         loadIf(json, MAX_LEVEL_KEY);
         loadIf(json, DISABLED_KEY);
+        loadIf(json, COMPATIBILITY_KEY);
+
+        compatibility.clear();
 
         foreach(COMPATIBILITY_KEY, j ->
                 BuiltInRegistries.ENCHANTMENT.stream()
                         .filter(e -> e.getDescriptionId().equals(j.getAsString()))
                         .forEach(compatibility::add));
+    }
+
+    public void onOptionsRegister(BiConsumer<String, Supplier<Stream<String>>> register) {
+        register.accept(COMPATIBILITY_KEY, () -> BuiltInRegistries.ENCHANTMENT.stream().map(Enchantment::getDescriptionId));
     }
 
     protected final void loadIf(JsonObject json, String key) {
@@ -332,15 +339,15 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
         });
     }
 
-    protected final double getDouble(String optionKey) {
+    protected final double doubleV(String optionKey) {
         return options.get(optionKey).getAsDouble();
     }
 
-    protected final int getInt(String optionKey) {
+    protected final int intV(String optionKey) {
         return options.get(optionKey).getAsInt();
     }
 
-    protected final boolean getBoolean(String optionKey) {
+    protected final boolean boolV(String optionKey) {
         return options.get(optionKey).getAsBoolean();
     }
 
@@ -350,9 +357,5 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
         }
 
         options.getAsJsonArray(optionKey).forEach(callback);
-    }
-
-    public void onOptionsRegister(BiConsumer<String, Supplier<Stream<String>>> register) {
-        register.accept(COMPATIBILITY_KEY, () -> BuiltInRegistries.ENCHANTMENT.stream().map(Enchantment::getDescriptionId));
     }
 }

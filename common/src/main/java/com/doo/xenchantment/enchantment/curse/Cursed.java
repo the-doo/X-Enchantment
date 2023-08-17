@@ -9,7 +9,7 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
  */
 public abstract class Cursed extends BaseXEnchantment {
 
-    protected Cursed(String name, Rarity weight, EnchantmentCategory type, EquipmentSlot[] slotTypes) {
+    protected Cursed(String name, Rarity weight, EnchantmentCategory type, EquipmentSlot... slotTypes) {
         super(name, weight, type, slotTypes);
     }
 

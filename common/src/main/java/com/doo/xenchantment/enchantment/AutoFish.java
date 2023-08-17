@@ -57,13 +57,13 @@ public class AutoFish extends BaseXEnchantment {
 
             ServersideChannelUtil.send(player, getId(), new FriendlyByteBuf(Unpooled.buffer()), "");
 
-            if (!getBoolean(HEALING_KEY)) {
+            if (!boolV(HEALING_KEY)) {
                 return;
             }
 
             // healing damage
-            if (player.getRandom().nextDouble() <= getDouble(HEALING_CHANCE_KEY) / 100) {
-                stack.setDamageValue(stack.getDamageValue() - getInt(HEALING_VALUE_KEY));
+            if (player.getRandom().nextDouble() <= doubleV(HEALING_CHANCE_KEY) / 100) {
+                stack.setDamageValue(stack.getDamageValue() - intV(HEALING_VALUE_KEY));
             }
         });
     }

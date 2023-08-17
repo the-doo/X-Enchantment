@@ -49,6 +49,6 @@ public class FoodBonus extends BaseXEnchantment implements WithAttribute<FoodBon
 
     @Override
     public AttributeModifier getMatchModify(Attribute attribute, ItemStack stack, int level) {
-        return oneAttrModify(stackIdx(stack, slots), level, getDouble(VALUE_KEY), AttributeModifier.Operation.ADDITION);
+        return oneAttrModify(stackIdx(stack, slots), level, doubleV(VALUE_KEY), AttributeModifier.Operation.ADDITION);
     }
 }
