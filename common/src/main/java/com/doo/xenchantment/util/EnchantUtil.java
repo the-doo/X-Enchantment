@@ -4,10 +4,7 @@ import com.doo.playerinfo.core.InfoGroupItems;
 import com.doo.playerinfo.core.InfoItemCollector;
 import com.doo.xenchantment.XEnchantment;
 import com.doo.xenchantment.enchantment.*;
-import com.doo.xenchantment.enchantment.curse.DownArmor;
-import com.doo.xenchantment.enchantment.curse.DownDamage;
-import com.doo.xenchantment.enchantment.curse.Regicide;
-import com.doo.xenchantment.enchantment.curse.Thin;
+import com.doo.xenchantment.enchantment.curse.*;
 import com.doo.xenchantment.enchantment.halo.AlliedBonus;
 import com.doo.xenchantment.enchantment.halo.FarmSpeed;
 import com.doo.xenchantment.enchantment.halo.Halo;
@@ -86,7 +83,7 @@ public class EnchantUtil {
                 WalkOn.class, JumpAndJump.class, Timor.class
                 ,
                 // cursed
-                Regicide.class, Thin.class, DownDamage.class, DownArmor.class
+                Regicide.class, Thin.class, DownDamage.class, DownArmor.class, Insanity.class
                 ,
                 // Special
                 RemoveCursed.class, HealthConverter.class, InfinityEnhance.class

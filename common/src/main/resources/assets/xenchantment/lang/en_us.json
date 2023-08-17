@@ -9,8 +9,11 @@
   "advancements.x_enchantment.broken_dawn.dawn_coming.title": "I See... It's so beautiful...",
   "advancements.x_enchantment.broken_dawn.dawn_coming.desc": "Item completes the Broken Dawn process, and sublimation.",
 
-  "advancements.x_enchantment.regicide.die.title": "I'm hero now!!!",
+  "advancements.x_enchantment.regicide.die.title": "Now, it's all mine",
   "advancements.x_enchantment.regicide.die.desc": "Death by regicide attack",
+
+  "advancements.x_enchantment.insanity.hit.title": "Oh... The head hurts so much~",
+  "advancements.x_enchantment.insanity.hit.desc": "Trigger an automated attack",
 
   "enchantment.x_enchantment.auto_fish": "Auto Fishing",
   "enchantment.x_enchantment.auto_fish.desc": "When fishing, the rod can be automatically retracted, and there is a certain chance to restore the durability.",
@@ -89,6 +92,8 @@
   "enchantment.x_enchantment.down_damage.desc": "Percentage reduction in attack damage.",
   "enchantment.x_enchantment.down_armor": "Decayed Armor",
   "enchantment.x_enchantment.down_armor.desc": "Percentage armor reduction",
+  "enchantment.x_enchantment.insanity": "Insanity",
+  "enchantment.x_enchantment.insanity.desc": "Attack range increased，However, there is a certain chance that it will automatically attack other creatures.",
 
 
   "enchantment.x_enchantment.halo.farm_speed": "Spring Blossoms",
@@ -236,6 +241,15 @@
 
   "x_enchantment.menu.option.down_damage.value": "Attack Reduction Bonus",
   "x_enchantment.menu.option.down_damage.value.tip": "Attack reduction bonus per level",
+
+  "x_enchantment.menu.option.insanity.value": "Value",
+  "x_enchantment.menu.option.insanity.value.tip": "Included property bonuses",
+  "x_enchantment.menu.option.insanity.attack_interval": "Interval",
+  "x_enchantment.menu.option.insanity.attack_interval.tip": "Automatic attack trigger min interval, in seconds",
+  "x_enchantment.menu.option.insanity.attack_rate": "Chance",
+  "x_enchantment.menu.option.insanity.attack_rate.tip": "Automatic attack chances",
+  "x_enchantment.menu.option.insanity.attack_range": "Attack Range",
+  "x_enchantment.menu.option.insanity.attack_range.tip": "Automatic attack range",
 
   "x_enchantment.menu.option.down_armor.value": "Reduction Base",
   "x_enchantment.menu.option.down_armor.value.tip": "Reduced base per level",

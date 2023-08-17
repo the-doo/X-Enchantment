@@ -3,7 +3,6 @@ package com.doo.xenchantment.enchantment.curse;
 import com.doo.xenchantment.interfaces.WithAttribute;
 import com.doo.xenchantment.util.EnchantUtil;
 import com.google.gson.JsonObject;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;

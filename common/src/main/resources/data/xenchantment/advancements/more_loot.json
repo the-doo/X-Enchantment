@@ -25,6 +25,7 @@
     ["super_loot"]
   ],
   "rewards": {
+    "experience": 2048
   },
   "sends_telemetry_event": false
 }

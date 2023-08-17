@@ -1,5 +1,6 @@
 package com.doo.xenchantment.fabric;
 
+import com.doo.playerinfo.utils.ExtractAttributes;
 import com.doo.xenchantment.XEnchantment;
 import com.doo.xenchantment.util.EnchantUtil;
 import com.doo.xenchantment.util.ServersideChannelUtil;
@@ -20,7 +21,7 @@ import java.util.Optional;
 public class XEnchantmentFabric implements ModInitializer {
     @Override
     public void onInitialize() {
-        XEnchantment.init(1);
+        XEnchantment.init(() -> ExtractAttributes.ATTACK_RANGE);
 
         EnchantUtil.registerAll(e -> Registry.register(BuiltInRegistries.ENCHANTMENT, e.getId(), e));
         EnchantUtil.registerAttr(e -> ModifyItemAttributeModifiersCallback.EVENT.register((stack, slot, attributeModifiers) ->

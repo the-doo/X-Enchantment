@@ -12,6 +12,9 @@
   "advancements.x_enchantment.regicide.die.title": "岂能郁郁久居人下",
   "advancements.x_enchantment.regicide.die.desc": "被弑君者伤害杀死",
 
+  "advancements.x_enchantment.insanity.hit.title": "额...头好痛~",
+  "advancements.x_enchantment.insanity.hit.desc": "触发一次自动攻击",
+
   "enchantment.x_enchantment.auto_fish": "自动钓鱼",
   "enchantment.x_enchantment.auto_fish.desc": "钓鱼时可以自动收杆，有一定几率恢复使用耐久",
   "enchantment.x_enchantment.librarian": "图书管理员",
@@ -89,6 +92,8 @@
   "enchantment.x_enchantment.down_damage.desc": "百分比降低攻击伤害",
   "enchantment.x_enchantment.down_armor": "腐朽护甲",
   "enchantment.x_enchantment.down_armor.desc": "百分比降低护甲值",
+  "enchantment.x_enchantment.insanity": "精神错乱",
+  "enchantment.x_enchantment.insanity.desc": "攻击距离增加，但有一定几率会自动攻击其他生物",
 
 
 
@@ -235,6 +240,15 @@
 
   "x_enchantment.menu.option.down_damage.value": "减攻基数",
   "x_enchantment.menu.option.down_damage.value.tip": "每级的减攻加成",
+
+  "x_enchantment.menu.option.insanity.value": "属性值",
+  "x_enchantment.menu.option.insanity.value.tip": "附魔附带的属性加成",
+  "x_enchantment.menu.option.insanity.attack_interval": "间隔",
+  "x_enchantment.menu.option.insanity.attack_interval.tip": "自动攻击触发间隔，单位秒",
+  "x_enchantment.menu.option.insanity.attack_rate": "几率",
+  "x_enchantment.menu.option.insanity.attack_rate.tip": "自动攻击几率",
+  "x_enchantment.menu.option.insanity.attack_range": "攻击距离",
+  "x_enchantment.menu.option.insanity.attack_range.tip": "自动攻击的范围",
 
   "x_enchantment.menu.option.down_armor.value": "降低基数",
   "x_enchantment.menu.option.down_armor.value.tip": "每级的降低基数",

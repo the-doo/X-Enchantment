@@ -17,6 +17,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.event.ItemAttributeModifierEvent;
@@ -53,7 +54,7 @@ public class XEnchantmentForge {
     );
 
     public XEnchantmentForge() {
-        XEnchantment.init(0);
+        XEnchantment.init(ForgeMod.ENTITY_REACH);
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 

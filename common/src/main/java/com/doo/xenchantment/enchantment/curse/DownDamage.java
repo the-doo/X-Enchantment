@@ -33,6 +33,8 @@ public class DownDamage extends Cursed implements WithAttribute<DownDamage> {
 
     @Override
     public void loadOptions(JsonObject json) {
+        super.loadOptions(json);
+
         loadIf(json, VALUE_KEY);
     }
 

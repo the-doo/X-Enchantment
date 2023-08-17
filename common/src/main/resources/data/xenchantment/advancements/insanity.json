@@ -1,28 +1,28 @@
 {
   "criteria": {
-    "regicide_die": {
+    "hit": {
       "conditions": {
       },
-      "trigger": "x_enchantment:trigger.regicide.die"
+      "trigger": "x_enchantment:trigger.insanity.hit"
     }
   },
   "display": {
-    "frame": "goal",
+    "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
     "description": {
-      "translate": "advancements.x_enchantment.regicide.die.desc"
+      "translate": "advancements.x_enchantment.insanity.hit.desc"
     },
     "hidden": false,
     "icon": {
       "item": "minecraft:iron_sword"
     },
     "title": {
-      "translate": "advancements.x_enchantment.regicide.die.title"
+      "translate": "advancements.x_enchantment.insanity.hit.title"
     }
   },
   "requirements": [
-    ["regicide_die"]
+    ["hit"]
   ],
   "rewards": {
   },
