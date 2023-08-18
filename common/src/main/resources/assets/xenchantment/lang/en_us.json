@@ -317,6 +317,8 @@
   "x_enchantment.menu.option.magic_immune.ban": "Ban Effect",
   "x_enchantment.menu.option.magic_immune.ban.tip": "Certain effects are prohibited from taking effect.",
 
+  "x_enchantment.menu.option.walk_on.speed": "Speed Bonus",
+  "x_enchantment.menu.option.walk_on.speed.tip": "Increase percentage movement speed on liquids",
   "x_enchantment.menu.option.walk_on.ban": "Ban Fluids",
   "x_enchantment.menu.option.walk_on.ban.tip": "Does not work on some fluids.",
   "x_enchantment.menu.option.walk_on.powder_snow": "Powder Snow",

@@ -1,7 +1,8 @@
 package com.doo.xenchantment.mixin;
 
 import com.doo.playerinfo.XPlayerInfo;
-import com.doo.xenchantment.enchantment.NightBreak;
+import com.doo.xenchantment.enchantment.WalkOn;
+import com.doo.xenchantment.interfaces.LivingEntityAccessor;
 import com.doo.xenchantment.util.EnchantUtil;
 import com.google.common.collect.Lists;
 import net.minecraft.world.damagesource.DamageSource;
@@ -21,6 +22,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -28,7 +30,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 @Mixin(LivingEntity.class)
-public abstract class LivingEntityMixin extends Entity implements NightBreak.LogHitTick {
+public abstract class LivingEntityMixin extends Entity implements LivingEntityAccessor {
 
     @Shadow
     @Nullable
@@ -40,6 +42,9 @@ public abstract class LivingEntityMixin extends Entity implements NightBreak.Log
     @Unique
     private int nightBreakHurtTick = -1;
 
+    @Unique
+    private boolean canStandOnFluid = false;
+
     public LivingEntityMixin(EntityType<?> entityType, Level level) {
         super(entityType, level);
     }
@@ -49,11 +54,21 @@ public abstract class LivingEntityMixin extends Entity implements NightBreak.Log
         EnchantUtil.lootMob(damageSource, additionLoot, list -> list.forEach(this::spawnAtLocation));
     }
 
+    @ModifyVariable(method = "getFrictionInfluencedSpeed", at = @At("HEAD"), argsOnly = true)
+    private float getFrictionInfluencedSpeed(float f) {
+        return canStandOnFluid ? WalkOn.getAdditionSpeed(f) : f;
+    }
+
     @Inject(method = "canStandOnFluid", at = @At("HEAD"), cancellable = true)
     private void injectCanStandOnFluidHead(FluidState fluidState, CallbackInfoReturnable<Boolean> cir) {
         if (getPose() == Pose.STANDING && EnchantUtil.canStandOnFluid(XPlayerInfo.get(this), blockPosition(), fluidState)) {
+            if (!canStandOnFluid) {
+                canStandOnFluid = true;
+            }
             cir.setReturnValue(true);
             cir.cancel();
+        } else if (canStandOnFluid) {
+            canStandOnFluid = false;
         }
     }
 
@@ -61,6 +76,8 @@ public abstract class LivingEntityMixin extends Entity implements NightBreak.Log
     private void endLivingTick(CallbackInfo ci) {
         if (!level().isClientSide()) {
             EnchantUtil.endLivingTick(XPlayerInfo.get(this));
+        } else {
+            canStandOnFluid = false;
         }
     }
 
@@ -85,7 +102,7 @@ public abstract class LivingEntityMixin extends Entity implements NightBreak.Log
     }
 
     @Override
-    public boolean canHit() {
+    public boolean x_Enchantment$canHit() {
         if (nightBreakHurtTick >= tickCount) {
             return false;
         }

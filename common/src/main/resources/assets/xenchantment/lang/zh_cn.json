@@ -315,6 +315,8 @@
   "x_enchantment.menu.option.magic_immune.ban": "效果禁用列表",
   "x_enchantment.menu.option.magic_immune.ban.tip": "某些效果禁止生效",
 
+  "x_enchantment.menu.option.walk_on.speed": "速度加成",
+  "x_enchantment.menu.option.walk_on.speed.tip": "在液体上提高百分比移动速度",
   "x_enchantment.menu.option.walk_on.ban": "流体禁用列表",
   "x_enchantment.menu.option.walk_on.ban.tip": "某些流体禁止生效",
   "x_enchantment.menu.option.walk_on.powder_snow": "细雪",

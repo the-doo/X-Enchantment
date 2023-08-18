@@ -1,7 +1,7 @@
 package com.doo.xenchantment.enchantment;
 
-import com.doo.playerinfo.XPlayerInfo;
 import com.doo.playerinfo.core.InfoGroupItems;
+import com.doo.xenchantment.interfaces.LivingEntityAccessor;
 import com.google.gson.JsonObject;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -59,7 +59,7 @@ public class NightBreak extends BaseXEnchantment {
         if (living.level().isClientSide() || living == entity || level < 1) {
             return;
         }
-        if (!(entity instanceof LivingEntity e) || !LogHitTick.canHit(e)) {
+        if (!(entity instanceof LivingEntity e) || !LivingEntityAccessor.canHit(e)) {
             return;
         }
 
@@ -85,14 +85,5 @@ public class NightBreak extends BaseXEnchantment {
         group.add(getInfoKey(DAMAGE_COUNT_KEY), doubleV(DAMAGE_COUNT_KEY), false);
         group.add(getInfoKey(DAMAGE_KEY), level < 1 ? 0 : doubleV(DAMAGE_KEY) * level / 100, true);
         return group;
-    }
-
-    public interface LogHitTick {
-
-        static boolean canHit(Object o) {
-            return ((LogHitTick) XPlayerInfo.get(o)).canHit();
-        }
-
-        boolean canHit();
     }
 }
