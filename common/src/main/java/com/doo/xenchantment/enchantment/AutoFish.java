@@ -12,9 +12,6 @@ import net.minecraft.world.item.FishingRodItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
-/**
- * 自动钓鱼
- */
 public class AutoFish extends BaseXEnchantment {
 
     private static final String HEALING_KEY = "healing";

@@ -21,6 +21,7 @@ repositories {
 loom {
     forge {
         mixinConfig "x-enchantment-common.mixins.json"
+        mixinConfig "x-enchantment.mixins.json"
     }
 }
 

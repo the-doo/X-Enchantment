@@ -5,9 +5,6 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
-/**
- * King Kong Legs
- */
 public class KingKongLegs extends BaseXEnchantment {
 
     public KingKongLegs() {

@@ -15,9 +15,6 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 import java.util.List;
 
-/**
- * 弱点攻击
- */
 public class Weakness extends BaseXEnchantment implements WithAttribute<Weakness> {
     private static final java.util.UUID[] UUID_RATE = {
             java.util.UUID.fromString("F9155234-E79F-5068-D7F6-B76078A9A7D8")

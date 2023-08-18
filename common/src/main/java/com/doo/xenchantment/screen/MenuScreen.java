@@ -63,7 +63,7 @@ public class MenuScreen extends Screen {
 
         opts = EnchantUtil.HALO_CLASS.stream()
                 .map(EnchantUtil.ENCHANTMENTS_MAP::get)
-                .map(e -> opt(e.name(), e))
+                .map(e -> opt(e.menuName(), e))
                 .toArray(OptionInstance[]::new);
         list.addSmall(opts);
 

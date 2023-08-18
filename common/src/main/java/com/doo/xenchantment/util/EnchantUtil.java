@@ -6,6 +6,7 @@ import com.doo.xenchantment.XEnchantment;
 import com.doo.xenchantment.enchantment.*;
 import com.doo.xenchantment.enchantment.curse.*;
 import com.doo.xenchantment.enchantment.halo.AlliedBonus;
+import com.doo.xenchantment.enchantment.halo.BurnWell;
 import com.doo.xenchantment.enchantment.halo.FarmSpeed;
 import com.doo.xenchantment.enchantment.halo.Halo;
 import com.doo.xenchantment.enchantment.special.HealthConverter;
@@ -22,6 +23,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -45,6 +48,7 @@ import java.util.stream.Stream;
 public class EnchantUtil {
     public static final List<Class<? extends Halo>> HALO_CLASS = Lists.newArrayList();
     public static final List<WithAttribute<? extends BaseXEnchantment>> ATTR_ENCHANT = Lists.newArrayList();
+    public static final List<BaseXEnchantment> USED_ENCHANT = Lists.newArrayList();
 
     public static final Map<Class<? extends BaseXEnchantment>, BaseXEnchantment> ENCHANTMENTS_MAP = new LinkedHashMap<>();
 
@@ -91,7 +95,7 @@ public class EnchantUtil {
 
         // Halo
         List<Class<? extends Halo>> halos = Lists.newArrayList(
-                FarmSpeed.class, AlliedBonus.class
+                FarmSpeed.class, AlliedBonus.class, BurnWell.class
         );
         HALO_CLASS.addAll(halos);
         Stream<? extends BaseXEnchantment> stream2 =
@@ -105,6 +109,10 @@ public class EnchantUtil {
         ).forEach(e -> {
             e.register(registry);
             ENCHANTMENTS_MAP.putIfAbsent(e.getClass(), e);
+
+            if (e.canUsed()) {
+                USED_ENCHANT.add(e);
+            }
 
             if (e instanceof WithAttribute<?> attribute) {
                 ATTR_ENCHANT.add(attribute);
@@ -289,5 +297,10 @@ public class EnchantUtil {
         JsonObject object = new JsonObject();
         ENCHANTMENTS_MAP.forEach((k, e) -> object.add(e.name(), e.getOptions()));
         return object;
+    }
+
+    public static boolean useBook(ItemStack stack, Player player, InteractionHand hand,
+                                  Consumer<InteractionResultHolder<ItemStack>> consumer) {
+        return USED_ENCHANT.stream().anyMatch(e -> e.onUsed(stack, player, hand, consumer));
     }
 }

@@ -13,9 +13,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * Smart
- */
 public class FoodBonus extends BaseXEnchantment implements WithAttribute<FoodBonus> {
     public static final UUID[] UUID = {
             java.util.UUID.fromString("B0A4EDCD-EECC-C863-69AB-13F0AE38F961")

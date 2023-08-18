@@ -1,10 +1,12 @@
 package com.doo.xenchantment.enchantment.halo;
 
+import com.doo.playerinfo.core.InfoGroupItems;
 import com.doo.xenchantment.XEnchantment;
 import com.doo.xenchantment.enchantment.BaseXEnchantment;
 import com.doo.xenchantment.util.EnchantUtil;
 import com.google.gson.JsonObject;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -26,14 +28,16 @@ public abstract class Halo extends BaseXEnchantment {
     public static final String PLAYER_ONLY_KEY = "player_only";
 
     private static final JsonObject OPTS = new JsonObject();
+    protected final String haloFullName;
     protected final String haloName;
     protected final String optName;
 
-    protected Halo(String name, Rarity rarity, EquipmentSlot slot) {
-        super("halo." + name + "." + slot.getName(), rarity, EnchantmentCategory.ARMOR, slot);
+    protected Halo(String name, EquipmentSlot slot) {
+        super(String.format("%s.%s.%s", HALO_KEY, name, slot.getName()), Rarity.RARE, EnchantmentCategory.ARMOR, slot);
 
-        haloName = "enchantment.x_enchantment.halo." + name;
-        optName = OPT_FORMAT.formatted(XEnchantment.MOD_ID, "halo.") + name;
+        haloName = String.format("%s.%s", HALO_KEY, name);
+        haloFullName = String.format("enchantment.x_enchantment.%s", haloName);
+        optName = OPT_FORMAT.formatted(XEnchantment.MOD_ID, haloName);
         if (OPTS.has(haloName)) {
             return;
         }
@@ -44,7 +48,7 @@ public abstract class Halo extends BaseXEnchantment {
 
         options.addProperty(HALO_KEY, true);
         options.addProperty(PLAYER_ONLY_KEY, true);
-        options.addProperty(INTERVAL_KEY, 1);
+        options.addProperty(INTERVAL_KEY, 3);
         options.addProperty(RANGE_KEY, 5);
 
         initHaloFirstOptions();
@@ -101,10 +105,8 @@ public abstract class Halo extends BaseXEnchantment {
             return;
         }
 
-        for (ItemStack slot : living.getArmorSlots()) {
-            if (!(slot.getItem() instanceof Equipable ei) || halo.level(slot.getEnchantmentTags(), ei.getEquipmentSlot().getName()) < 1) {
-                return;
-            }
+        if (checkPart(living, halo)) {
+            return;
         }
 
         double range = halo.range();
@@ -113,6 +115,15 @@ public abstract class Halo extends BaseXEnchantment {
         }
 
         halo.trigger(living, living.getBoundingBox().inflate(range));
+    }
+
+    private static boolean checkPart(LivingEntity living, Halo halo) {
+        for (ItemStack slot : living.getArmorSlots()) {
+            if (!(slot.getItem() instanceof Equipable ei) || halo.level(slot.getEnchantmentTags(), ei.getEquipmentSlot().getName()) < 1) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private int level(ListTag tag, String slotName) {
@@ -147,6 +158,11 @@ public abstract class Halo extends BaseXEnchantment {
     }
 
     @Override
+    public String menuName() {
+        return haloFullName;
+    }
+
+    @Override
     public String optGroup() {
         return optName;
     }
@@ -154,5 +170,30 @@ public abstract class Halo extends BaseXEnchantment {
     @Override
     public JsonObject getOptions() {
         return OPTS.getAsJsonObject(haloName);
+    }
+
+    @Override
+    public String getInfoKey(String key) {
+        return switch (key) {
+            case INTERVAL_KEY, RANGE_KEY, PLAYER_ONLY_KEY -> String.format("x_enchantment.info.%s.%s", HALO_KEY, key);
+            default -> String.format("x_enchantment.info.%s.%s", haloName, key);
+        };
+    }
+
+    @Override
+    public final InfoGroupItems collectPlayerInfo(ServerPlayer player) {
+        if (checkPart(player, this)) {
+            return super.collectPlayerInfo(player);
+        }
+
+        InfoGroupItems group = InfoGroupItems.groupKey("enchantment.x_enchantment." + haloName);
+        group.add(getInfoKey(INTERVAL_KEY), doubleV(INTERVAL_KEY));
+        group.add(getInfoKey(RANGE_KEY), doubleV(RANGE_KEY));
+        group.add(getInfoKey(PLAYER_ONLY_KEY), boolV(PLAYER_ONLY_KEY));
+        collectHaloPlayerInfo(player, group);
+        return group;
+    }
+
+    protected void collectHaloPlayerInfo(ServerPlayer player, InfoGroupItems group) {
     }
 }

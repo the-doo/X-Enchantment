@@ -1,9 +1,10 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.doo.xenchantment.mixin.forge",
+  "package": "com.doo.xenchantment.forge.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "accessor.CanBurnAccessor"
   ],
   "client": [
   ],

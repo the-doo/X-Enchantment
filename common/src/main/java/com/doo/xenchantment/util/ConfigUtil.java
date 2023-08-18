@@ -21,7 +21,7 @@ import java.nio.file.StandardOpenOption;
 public class ConfigUtil {
     public static final Logger LOGGER = LogManager.getLogger();
 
-    private static final Path path = FileSystems.getDefault().getPath("config", XEnchantment.MOD_NAME + ".JSON");
+    private static final Path path = FileSystems.getDefault().getPath("config", XEnchantment.MOD_NAME + ".json");
 
     protected static final Gson JSON = new GsonBuilder().setPrettyPrinting().create();
 

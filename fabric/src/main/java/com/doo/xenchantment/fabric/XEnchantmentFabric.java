@@ -2,6 +2,7 @@ package com.doo.xenchantment.fabric;
 
 import com.doo.playerinfo.utils.ExtractAttributes;
 import com.doo.xenchantment.XEnchantment;
+import com.doo.xenchantment.fabric.mixin.accessor.CanBurnAccessor;
 import com.doo.xenchantment.util.EnchantUtil;
 import com.doo.xenchantment.util.ServersideChannelUtil;
 import net.fabricmc.api.ModInitializer;
@@ -21,7 +22,10 @@ import java.util.Optional;
 public class XEnchantmentFabric implements ModInitializer {
     @Override
     public void onInitialize() {
-        XEnchantment.init(() -> ExtractAttributes.ATTACK_RANGE);
+        XEnchantment.init();
+
+        XEnchantment.setAttrGetter(() -> ExtractAttributes.ATTACK_RANGE);
+        XEnchantment.setCanBurnGetter((o, registryAccess, recipe, nonNullList, i) -> CanBurnAccessor.invokeCanBurn(registryAccess, recipe, nonNullList, i));
 
         EnchantUtil.registerAll(e -> Registry.register(BuiltInRegistries.ENCHANTMENT, e.getId(), e));
         EnchantUtil.registerAttr(e -> ModifyItemAttributeModifiersCallback.EVENT.register((stack, slot, attributeModifiers) ->

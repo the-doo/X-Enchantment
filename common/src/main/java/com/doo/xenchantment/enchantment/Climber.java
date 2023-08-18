@@ -8,9 +8,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
-/**
- * Climber
- */
 public class Climber extends BaseXEnchantment {
 
     private static final String Y_KEY = "y";

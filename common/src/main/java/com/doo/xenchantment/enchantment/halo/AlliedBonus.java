@@ -1,9 +1,11 @@
 package com.doo.xenchantment.enchantment.halo;
 
+import com.doo.playerinfo.core.InfoGroupItems;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -29,12 +31,11 @@ public class AlliedBonus extends Halo {
     private static final String BAN_KEY = "ban";
 
     protected AlliedBonus(EquipmentSlot slot) {
-        super("allied_bonus", Rarity.RARE, slot);
+        super("allied_bonus", slot);
     }
 
     @Override
     public void initHaloFirstOptions() {
-        options.addProperty(INTERVAL_KEY, 3);
         options.addProperty(EFFECT_TIME_KEY, 1);
         options.addProperty(EFFECT_LEVEL_KEY, 1);
         options.add(BAN_KEY, new JsonArray());
@@ -44,7 +45,6 @@ public class AlliedBonus extends Halo {
     public void loadOptions(JsonObject json) {
         super.loadOptions(json);
 
-        loadIf(json, INTERVAL_KEY);
         loadIf(json, EFFECT_TIME_KEY);
         loadIf(json, EFFECT_LEVEL_KEY);
         loadIf(json, BAN_KEY);
@@ -61,6 +61,12 @@ public class AlliedBonus extends Halo {
         super.onOptionsRegister(register);
 
         register.accept(BAN_KEY, () -> EFFECTS.stream().map(MobEffect::getDescriptionId));
+    }
+
+    @Override
+    protected void collectHaloPlayerInfo(ServerPlayer player, InfoGroupItems group) {
+        group.add(getInfoKey(EFFECT_TIME_KEY), doubleV(EFFECT_TIME_KEY));
+        group.add(getInfoKey(EFFECT_LEVEL_KEY), intV(EFFECT_LEVEL_KEY));
     }
 
     @Override
@@ -84,7 +90,7 @@ public class AlliedBonus extends Halo {
     @Override
     protected void trigger(LivingEntity living, AABB box) {
         int tick = (int) (interval() * doubleV(EFFECT_TIME_KEY));
-        int level = (int) doubleV(EFFECT_LEVEL_KEY);
+        int level = intV(EFFECT_LEVEL_KEY);
         if (BAN.size() >= EFFECTS.size() || tick < 0 || level < 0) {
             return;
         }

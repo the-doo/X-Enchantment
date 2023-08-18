@@ -18,6 +18,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -124,6 +126,10 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
     }
 
     public String name() {
+        return name;
+    }
+
+    public String menuName() {
         return name;
     }
 
@@ -268,7 +274,16 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
     }
 
 
-    public final String getInfoKey(String key) {
+    public boolean canUsed() {
+        return false;
+    }
+
+    public boolean onUsed(ItemStack stack, Player player, InteractionHand hand,
+                          Consumer<InteractionResultHolder<ItemStack>> consumer) {
+        return false;
+    }
+
+    public String getInfoKey(String key) {
         return String.format("x_enchantment.info.%s.%s", name, key);
     }
 

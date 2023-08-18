@@ -99,13 +99,13 @@
   "enchantment.x_enchantment.halo.farm_speed": "Spring Blossoms",
   "enchantment.x_enchantment.halo.farm_speed.tip": "Halo - Spring Blossoms",
   "enchantment.x_enchantment.halo.farm_speed.head": "Spring Blossoms · Head",
-  "enchantment.x_enchantment.halo.farm_speed.head.desc": "Speed up crop growth, head part. A type of halo that needs to be assembled to activate all parts.",
+  "enchantment.x_enchantment.halo.farm_speed.head.desc": "Significantly accelerate crops to maturity, head part. A type of halo that needs to be assembled to activate all parts.",
   "enchantment.x_enchantment.halo.farm_speed.chest": "Spring Blossoms · Chest",
-  "enchantment.x_enchantment.halo.farm_speed.chest.desc": "Speed up crop growth, chest part. A type of halo that needs to be assembled to activate all parts.",
+  "enchantment.x_enchantment.halo.farm_speed.chest.desc": "Significantly accelerate crops to maturity, chest part. A type of halo that needs to be assembled to activate all parts.",
   "enchantment.x_enchantment.halo.farm_speed.legs": "Spring Blossoms · Legs",
-  "enchantment.x_enchantment.halo.farm_speed.legs.desc": "Speed up crop growth, legs part. A type of halo that needs to be assembled to activate all parts.",
+  "enchantment.x_enchantment.halo.farm_speed.legs.desc": "Significantly accelerate crops to maturity, legs part. A type of halo that needs to be assembled to activate all parts.",
   "enchantment.x_enchantment.halo.farm_speed.feet": "Spring Blossoms · Feet",
-  "enchantment.x_enchantment.halo.farm_speed.feet.desc": "Speed up crop growth, feet part. A type of halo that needs to be assembled to activate all parts.",
+  "enchantment.x_enchantment.halo.farm_speed.feet.desc": "Significantly accelerate crops to maturity, feet part. A type of halo that needs to be assembled to activate all parts.",
 
   "enchantment.x_enchantment.halo.allied_bonus": "King Of Beasts",
   "enchantment.x_enchantment.halo.allied_bonus.tip": "Halo - King Of Beasts",
@@ -117,6 +117,17 @@
   "enchantment.x_enchantment.halo.allied_bonus.legs.desc": "Gives partner status effects, legs part. A type of halo that needs to be assembled to activate all parts.",
   "enchantment.x_enchantment.halo.allied_bonus.feet": "King Of Beasts · Feet",
   "enchantment.x_enchantment.halo.allied_bonus.feet.desc": "Gives partner status effects, feet part. A type of halo that needs to be assembled to activate all parts.",
+
+  "enchantment.x_enchantment.halo.burn_well": "Prometheus",
+  "enchantment.x_enchantment.halo.burn_well.tip": "Halo - Prometheus",
+  "enchantment.x_enchantment.halo.burn_well.head": "Prometheus · Head",
+  "enchantment.x_enchantment.halo.burn_well.head.desc": "Percentages in the furnace speed up processing. A type of halo that needs to be assembled to activate all parts.",
+  "enchantment.x_enchantment.halo.burn_well.chest": "Prometheus · Chest",
+  "enchantment.x_enchantment.halo.burn_well.chest.desc": "Percentages in the furnace speed up processing. A type of halo that needs to be assembled to activate all parts.",
+  "enchantment.x_enchantment.halo.burn_well.legs": "Prometheus · Legs",
+  "enchantment.x_enchantment.halo.burn_well.legs.desc": "Percentages in the furnace speed up processing. A type of halo that needs to be assembled to activate all parts.",
+  "enchantment.x_enchantment.halo.burn_well.feet": "Prometheus · Feet",
+  "enchantment.x_enchantment.halo.burn_well.feet.desc": "Percentages in the furnace speed up processing. A type of halo that needs to be assembled to activate all parts.",
 
   "x_enchantment.max_level": "Max Level",
   "x_enchantment.max_level.tip": "Max level of enchantment",
@@ -136,6 +147,13 @@
   "x_enchantment.halo.player_only.tip": "Enchanted sets only trigger the halo effect while they are present on the player",
   "x_enchantment.halo.halo": "Halo",
   "x_enchantment.halo.halo.tip": "This enchantment is a type of halo. This button is for illustration only and has no additional effect.",
+
+  "x_enchantment.info.halo.interval": "Interval",
+  "x_enchantment.info.halo.interval.tip": "The trigger interval of the halo, in seconds.",
+  "x_enchantment.info.halo.range": "Range",
+  "x_enchantment.info.halo.range.tip": "The effective range of the halo, based on the current living entity coordinates",
+  "x_enchantment.info.halo.player_only": "Player Only",
+  "x_enchantment.info.halo.player_only.tip": "Enchanted sets only trigger the halo effect while they are present on the player",
 
   "x_enchantment.menu.option.only_server.tip": "Tip: Remote game modification configuration does not take effect, local games need to be modified after entering the game!!!",
 
@@ -187,8 +205,11 @@
   "x_enchantment.menu.option.food_bonus.value": "Hunger Bonus Base",
   "x_enchantment.menu.option.food_bonus.value.tip": "Hunger bonus base when eating.",
 
-  "x_enchantment.menu.option.ignored_armor.value": "Penetration base",
-  "x_enchantment.menu.option.ignored_armor.value.tip": "Penetration base per level",
+  "x_enchantment.menu.option.ignored_armor.base_value": "Penetration base",
+  "x_enchantment.menu.option.ignored_armor.base_value.tip": "Penetration base per level",
+
+  "x_enchantment.menu.option.attack_speed.base_value": "Attack Speed Base",
+  "x_enchantment.menu.option.attack_speed.base_value.tip": "Attack speed bonus base",
 
   "x_enchantment.info.broken_dawn.done": "Broken Dawn",
   "x_enchantment.info.broken_dawn.done.tip": "Broken Dawn is complete(main hand item)",
@@ -322,7 +343,21 @@
   "x_enchantment.menu.option.with_effect.level.tip": "Effect level",
   "x_enchantment.menu.option.with_effect.duration": "Duration",
   "x_enchantment.menu.option.with_effect.duration.tip": "Duration of effect",
+  
+  "x_enchantment.info.halo.burn_well.inc": "Progress Bonus",
+  "x_enchantment.info.halo.burn_well.inc.tip": "The furnace time that accelerates after the halo is triggered, in seconds, default 32. Indicates the time it takes 32 seconds to accelerate the furnace after the halo is triggered.",
+  "x_enchantment.menu.option.halo.burn_well.inc": "Progress Bonus",
+  "x_enchantment.menu.option.halo.burn_well.inc.tip": "The furnace time that accelerates after the halo is triggered, in seconds, default 32. Indicates the time it takes 32 seconds to accelerate the furnace after the halo is triggered.",
 
+  "x_enchantment.info.halo.farm_speed.inc": "Progress Bonus",
+  "x_enchantment.info.halo.farm_speed.inc.tip": "Adds crop maturity after triggering",
+  "x_enchantment.menu.option.halo.farm_speed.inc": "Progress Bonus",
+  "x_enchantment.menu.option.halo.farm_speed.inc.tip": "Adds crop maturity after triggering",
+
+  "x_enchantment.info.halo.allied_bonus.effect_time": "Duration",
+  "x_enchantment.info.halo.allied_bonus.effect_time.tip": "Based on the percentage relationship of the interval time, when the value is 1, the effect duration = interval time.",
+  "x_enchantment.info.halo.allied_bonus.effect_level": "Level",
+  "x_enchantment.info.halo.allied_bonus.effect_level.tip": "Effect level",
   "x_enchantment.menu.option.halo.allied_bonus.effect_time": "Duration",
   "x_enchantment.menu.option.halo.allied_bonus.effect_time.tip": "Based on the percentage relationship of the interval time, when the value is 1, the effect duration = interval time.",
   "x_enchantment.menu.option.halo.allied_bonus.effect_level": "Level",

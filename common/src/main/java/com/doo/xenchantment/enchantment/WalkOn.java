@@ -16,9 +16,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-/**
- * Timor
- */
+
 public class WalkOn extends BaseXEnchantment {
 
     private static final String BAN_KEY = "ban";

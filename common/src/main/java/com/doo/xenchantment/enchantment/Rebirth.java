@@ -12,9 +12,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
-/**
- * 重生
- */
 public class Rebirth extends BaseXEnchantment {
 
     public Rebirth() {
