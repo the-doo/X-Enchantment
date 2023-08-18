@@ -9,9 +9,6 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
-/**
- * Remove Cursed
- */
 public class RemoveCursed extends Special {
 
     public RemoveCursed() {

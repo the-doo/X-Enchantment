@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public abstract class Special extends BaseXEnchantment {
 
-    protected Special(String name, EnchantmentCategory type, EquipmentSlot[] slotTypes) {
+    protected Special(String name, EnchantmentCategory type, EquipmentSlot... slotTypes) {
         super(name, Rarity.UNCOMMON, type, slotTypes);
     }
 

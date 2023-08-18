@@ -76,6 +76,8 @@
   "enchantment.x_enchantment.health_converter.desc": "副手持该附魔书时，将伤害自身修复主手物品，有一定触发间隔。",
   "enchantment.x_enchantment.infinity_enhance": "无限增强",
   "enchantment.x_enchantment.infinity_enhance.desc": "可在铁砧处为无限弓添加经验修补",
+  "enchantment.x_enchantment.go_back": "回归",
+  "enchantment.x_enchantment.go_back.desc": "传送到重生点，仅支持附魔书下有用",
 
   "enchantment.x_enchantment.trinkets": "饰品附魔",
   "enchantment.x_enchantment.trinkets.attr": "%s增幅 ",
@@ -361,5 +363,9 @@
   "x_enchantment.menu.option.halo.allied_bonus.effect_level": "等级",
   "x_enchantment.menu.option.halo.allied_bonus.effect_level.tip": "效果等级",
   "x_enchantment.menu.option.halo.allied_bonus.ban": "禁止列表",
-  "x_enchantment.menu.option.halo.allied_bonus.ban.tip": "某些效果禁止生效"
+  "x_enchantment.menu.option.halo.allied_bonus.ban.tip": "某些效果禁止生效",
+
+
+  "x_enchantment.menu.option.go_back.consumer": "消耗几率",
+  "x_enchantment.menu.option.go_back.consumer.tip": "使用后消耗的几率"
 }

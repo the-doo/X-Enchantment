@@ -9,10 +9,7 @@ import com.doo.xenchantment.enchantment.halo.AlliedBonus;
 import com.doo.xenchantment.enchantment.halo.BurnWell;
 import com.doo.xenchantment.enchantment.halo.FarmSpeed;
 import com.doo.xenchantment.enchantment.halo.Halo;
-import com.doo.xenchantment.enchantment.special.HealthConverter;
-import com.doo.xenchantment.enchantment.special.InfinityEnhance;
-import com.doo.xenchantment.enchantment.special.RemoveCursed;
-import com.doo.xenchantment.enchantment.special.Special;
+import com.doo.xenchantment.enchantment.special.*;
 import com.doo.xenchantment.events.LootApi;
 import com.doo.xenchantment.interfaces.WithAttribute;
 import com.doo.xenchantment.interfaces.XEnchantmentRegistry;
@@ -33,6 +30,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.material.FluidState;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jetbrains.annotations.NotNull;
@@ -48,7 +46,6 @@ import java.util.stream.Stream;
 public class EnchantUtil {
     public static final List<Class<? extends Halo>> HALO_CLASS = Lists.newArrayList();
     public static final List<WithAttribute<? extends BaseXEnchantment>> ATTR_ENCHANT = Lists.newArrayList();
-    public static final List<BaseXEnchantment> USED_ENCHANT = Lists.newArrayList();
 
     public static final Map<Class<? extends BaseXEnchantment>, BaseXEnchantment> ENCHANTMENTS_MAP = new LinkedHashMap<>();
 
@@ -90,7 +87,7 @@ public class EnchantUtil {
                 Regicide.class, Thin.class, DownDamage.class, DownArmor.class, Insanity.class
                 ,
                 // Special
-                RemoveCursed.class, HealthConverter.class, InfinityEnhance.class
+                RemoveCursed.class, HealthConverter.class, InfinityEnhance.class, GoBack.class
         ).map(BaseXEnchantment::get).filter(Objects::nonNull);
 
         // Halo
@@ -109,10 +106,6 @@ public class EnchantUtil {
         ).forEach(e -> {
             e.register(registry);
             ENCHANTMENTS_MAP.putIfAbsent(e.getClass(), e);
-
-            if (e.canUsed()) {
-                USED_ENCHANT.add(e);
-            }
 
             if (e instanceof WithAttribute<?> attribute) {
                 ATTR_ENCHANT.add(attribute);
@@ -301,6 +294,7 @@ public class EnchantUtil {
 
     public static boolean useBook(ItemStack stack, Player player, InteractionHand hand,
                                   Consumer<InteractionResultHolder<ItemStack>> consumer) {
-        return USED_ENCHANT.stream().anyMatch(e -> e.onUsed(stack, player, hand, consumer));
+        return EnchantmentHelper.getEnchantments(stack).entrySet().stream().anyMatch(entry ->
+                entry.getKey() instanceof BaseXEnchantment e && entry.getValue() > 0 && e.canUsed() && e.onUsed(entry.getValue(), stack, player, hand, consumer));
     }
 }

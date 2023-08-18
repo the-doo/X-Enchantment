@@ -71,11 +71,13 @@
 
   "enchantment.x_enchantment.special": "Special Enchantment",
   "enchantment.x_enchantment.remove_cursed": "Curse Killer",
-  "enchantment.x_enchantment.remove_cursed.desc": "Remove cursed enchantment at the anvil",
+  "enchantment.x_enchantment.remove_cursed.desc": "Remove cursed enchantment at the anvil, Only supported under Enchantment Books is useful.",
   "enchantment.x_enchantment.health_converter": "Health Converter",
-  "enchantment.x_enchantment.health_converter.desc": "When holding the enchanted book in the secondary hand, it will damage itself and repair the items in the main hand, with a certain trigger interval.",
+  "enchantment.x_enchantment.health_converter.desc": "When holding the enchanted book in the secondary hand, it will damage itself and repair the items in the main hand, with a certain trigger interval. Only supported under Enchantment Books is useful.",
   "enchantment.x_enchantment.infinity_enhance": "Infinity Enhance",
   "enchantment.x_enchantment.infinity_enhance.desc": "Can add mending to infinite bows at the anvil",
+  "enchantment.x_enchantment.go_back": "Triumphant Return",
+  "enchantment.x_enchantment.go_back.desc": "Teleport to the respawn point, Only supported under Enchantment Books is useful.",
 
   "enchantment.x_enchantment.trinkets": "Trinkets Enchantment",
   "enchantment.x_enchantment.trinkets.attr": "With %s ",
@@ -363,5 +365,9 @@
   "x_enchantment.menu.option.halo.allied_bonus.effect_level": "Level",
   "x_enchantment.menu.option.halo.allied_bonus.effect_level.tip": "Effect level",
   "x_enchantment.menu.option.halo.allied_bonus.ban": "Ban Effects",
-  "x_enchantment.menu.option.halo.allied_bonus.ban.tip": "Certain effects are prohibited from taking effect."
+  "x_enchantment.menu.option.halo.allied_bonus.ban.tip": "Certain effects are prohibited from taking effect.",
+
+
+  "x_enchantment.menu.option.go_back.consumer": "Chance Of Consumption",
+  "x_enchantment.menu.option.go_back.consumer.tip": "Chance of consumption after use"
 }

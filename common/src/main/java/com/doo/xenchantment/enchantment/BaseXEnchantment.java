@@ -13,6 +13,8 @@ import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -175,6 +177,13 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
         return id;
     }
 
+    protected final boolean isSameId(Tag tag) {
+        if (tag instanceof CompoundTag t) {
+            return id.equals(EnchantmentHelper.getEnchantmentId(t));
+        }
+        return false;
+    }
+
     public String nbtKey(String key) {
         return "%s.%s".formatted(id.toString(), key);
     }
@@ -278,7 +287,7 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
         return false;
     }
 
-    public boolean onUsed(ItemStack stack, Player player, InteractionHand hand,
+    public boolean onUsed(Integer level, ItemStack stack, Player player, InteractionHand hand,
                           Consumer<InteractionResultHolder<ItemStack>> consumer) {
         return false;
     }
