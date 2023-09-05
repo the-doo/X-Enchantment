@@ -28,10 +28,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.EnchantedBookItem;
-import net.minecraft.world.item.Equipable;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -189,7 +186,7 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
     }
 
     public int level(ItemStack stack) {
-        return stack == null || stack.isEmpty() || stack.getTag() == null || stack.getTag().isEmpty() || stack.getEnchantmentTags().isEmpty() ? 0 : EnchantmentHelper.getEnchantments(stack).getOrDefault(this, 0);
+        return stack == null || stack.isEmpty() || stack.getTag() == null || stack.getTag().isEmpty() || !stack.is(Items.ENCHANTED_BOOK) && stack.getEnchantmentTags().isEmpty() ? 0 : EnchantmentHelper.getEnchantments(stack).getOrDefault(this, 0);
     }
 
     public int totalLevel(Player player) {
