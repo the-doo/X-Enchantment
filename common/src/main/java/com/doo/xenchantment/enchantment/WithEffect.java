@@ -1,6 +1,7 @@
 package com.doo.xenchantment.enchantment;
 
 import com.doo.playerinfo.core.InfoGroupItems;
+import com.doo.xenchantment.events.AnvilApi;
 import com.doo.xenchantment.events.GrindstoneApi;
 import com.doo.xenchantment.util.EnchantUtil;
 import com.google.gson.JsonArray;
@@ -16,15 +17,17 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,13 +84,24 @@ public class WithEffect extends BaseXEnchantment {
 
     @Override
     public void onServer(MinecraftServer server) {
+        String key = nbtKey(EFFECT_KEY_TAG);
         GrindstoneApi.register(stack -> {
             CompoundTag tag = stack.getTag();
             if (tag == null || tag.isEmpty()) {
                 return;
             }
 
-            tag.remove(nbtKey(EFFECT_KEY_TAG));
+            tag.remove(key);
+        });
+
+        AnvilApi.register((player, map, first, second, result) -> {
+            if (!map.containsKey(this) || result.getTag() == null) {
+                return;
+            }
+
+            if (result.getTag().contains(key) && second.is(Items.ENCHANTED_BOOK) && EnchantmentHelper.getEnchantments(second).containsKey(this)) {
+                result.removeTagKey(key);
+            }
         });
 
         EFFECT_MAP.clear();
@@ -183,19 +197,17 @@ public class WithEffect extends BaseXEnchantment {
         group.add(getInfoKey(LEVEL_KEY), intV(LEVEL_KEY));
         group.add(getInfoKey(DURATION_KEY), doubleV(DURATION_KEY));
 
-        for (EquipmentSlot slot : slots) {
+        Arrays.stream(slots).forEach(slot -> {
             ItemStack stack = player.getItemBySlot(slot);
             if (level(stack) < 1) {
-                continue;
+                return;
             }
-
             String key = stack.getTag().getString(nbtKey(EFFECT_KEY_TAG));
             if (key.isEmpty()) {
-                continue;
+                return;
             }
-
             group.add(getInfoKey(slot.getName()), Component.translatable(key).getString());
-        }
+        });
         return group;
     }
 }
