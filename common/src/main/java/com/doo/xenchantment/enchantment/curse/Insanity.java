@@ -36,7 +36,7 @@ public class Insanity extends Cursed implements WithAttribute<Insanity> {
         super("insanity", Rarity.RARE, EnchantmentCategory.ARMOR_HEAD, EquipmentSlot.HEAD, EquipmentSlot.HEAD);
 
         options.addProperty(VALUE_KEY, 2);
-        options.addProperty(ATTACK_INTERVAL_KEY, 3);
+        options.addProperty(ATTACK_INTERVAL_KEY, 20);
         options.addProperty(ATTACK_RATE_KEY, 50);
         options.addProperty(ATTACK_RANGE_KEY, 3);
     }
