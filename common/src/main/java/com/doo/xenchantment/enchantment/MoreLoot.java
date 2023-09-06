@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Equipable;
@@ -29,6 +30,7 @@ public class MoreLoot extends BaseXEnchantment {
 
     public static final String EFFECT_KEY = "effect_ore";
     public static final String LOOT_RATE = "loot_rate";
+    public static final String SOUND_ON = "sound_on";
     public static final String SUPER_LOOT_RATE = "super_loot_rate";
     public static final String SUPER_LOOT_VALUE = "super_loot_value";
 
@@ -37,6 +39,7 @@ public class MoreLoot extends BaseXEnchantment {
 
         options.addProperty(MAX_LEVEL_KEY, 5);
         options.addProperty(EFFECT_KEY, false);
+        options.addProperty(SOUND_ON, true);
         options.addProperty(LOOT_RATE, 40);
         options.addProperty(SUPER_LOOT_RATE, 0.5);
         options.addProperty(SUPER_LOOT_VALUE, 10);
@@ -46,6 +49,7 @@ public class MoreLoot extends BaseXEnchantment {
     public void loadOptions(JsonObject json) {
         super.loadOptions(json);
 
+        loadIf(json, SOUND_ON);
         loadIf(json, EFFECT_KEY);
         loadIf(json, LOOT_RATE);
         loadIf(json, SUPER_LOOT_RATE);
@@ -84,7 +88,15 @@ public class MoreLoot extends BaseXEnchantment {
                     .filter(i -> effectBlocks || !(i.getItem() instanceof BlockItem bi) || boolV(EFFECT_KEY) && bi.getBlock() instanceof DropExperienceBlock)
                     .forEach(addFromForeach(rand, addition::add));
 
-            if (!addition.isEmpty() && living instanceof ServerPlayer player && isSuper.isTrue()) {
+            if (addition.isEmpty()) {
+                return addition;
+            }
+
+            if (boolV(SOUND_ON)) {
+                living.playSound(isSuper.isTrue() ? SoundEvents.PLAYER_LEVELUP : SoundEvents.BEEHIVE_ENTER);
+            }
+
+            if (isSuper.isTrue() && living instanceof ServerPlayer player) {
                 SUPER_LOOT_TRIGGER.trigger(player);
             }
 

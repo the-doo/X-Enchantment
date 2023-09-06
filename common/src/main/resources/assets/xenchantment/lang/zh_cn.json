@@ -239,6 +239,8 @@
   "x_enchantment.info.more_loot.super_loot_rate.tip": "触发后，收获继续放大倍数的几率",
   "x_enchantment.info.more_loot.super_loot_value": "放大倍数",
   "x_enchantment.info.more_loot.super_loot_value.tip": "放大收获的倍数",
+  "x_enchantment.menu.option.more_loot.sound_on": "开启音效",
+  "x_enchantment.menu.option.more_loot.sound_on.tip": "开启音效",
   "x_enchantment.menu.option.more_loot.effect_ore": "兼容原矿",
   "x_enchantment.menu.option.more_loot.effect_ore.tip": "是否兼容原矿掉落，如精准采集的原矿石",
   "x_enchantment.menu.option.more_loot.loot_rate": "触发几率",
@@ -276,6 +278,8 @@
   "x_enchantment.menu.option.down_armor.value": "降低基数",
   "x_enchantment.menu.option.down_armor.value.tip": "每级的降低基数",
 
+  "x_enchantment.menu.option.health_converter.consumer": "是否消耗",
+  "x_enchantment.menu.option.health_converter.consumer.tip": "使用后消耗一级附魔",
   "x_enchantment.menu.option.health_converter.hurt": "伤害",
   "x_enchantment.menu.option.health_converter.hurt.tip": "使用后对使用者造成的伤害",
   "x_enchantment.menu.option.health_converter.ban": "物品禁用列表",
@@ -369,6 +373,8 @@
 
 
   "x_enchantment.go_back.tips.wait": "冷却中",
+  "x_enchantment.menu.option.go_back.cd": "冷却时间",
+  "x_enchantment.menu.option.go_back.cd.tip": "冷却时间",
   "x_enchantment.menu.option.go_back.consumer": "消耗几率",
   "x_enchantment.menu.option.go_back.consumer.tip": "使用后消耗的几率"
 }

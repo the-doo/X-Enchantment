@@ -23,8 +23,8 @@ public class Smart extends BaseXEnchantment implements WithAttribute<Smart> {
     public Smart() {
         super("smart", Rarity.UNCOMMON, EnchantmentCategory.ARMOR_HEAD, EquipmentSlot.HEAD);
 
-        options.addProperty(MAX_LEVEL_KEY, 5);
-        options.addProperty(VALUE_KEY, 20);
+        options.addProperty(MAX_LEVEL_KEY, 3);
+        options.addProperty(VALUE_KEY, 150);
     }
 
     @Override

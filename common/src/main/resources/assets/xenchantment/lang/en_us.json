@@ -240,6 +240,8 @@
   "x_enchantment.info.more_loot.super_loot_rate.tip": "After triggering, harvest the probability of continuing to magnify.",
   "x_enchantment.info.more_loot.super_loot_value": "Zoom Value",
   "x_enchantment.info.more_loot.super_loot_value.tip": "More multiply the loot.",
+  "x_enchantment.menu.option.more_loot.sound_on": "Sound",
+  "x_enchantment.menu.option.more_loot.sound_on.tip": "Turn on sound effects",
   "x_enchantment.menu.option.more_loot.effect_ore": "Compatible Ore Block",
   "x_enchantment.menu.option.more_loot.effect_ore.tip": "Effect on ore block, like drop's from 'Silk Touch' enchantment",
   "x_enchantment.menu.option.more_loot.loot_rate": "Trigger Chance",
@@ -277,6 +279,8 @@
   "x_enchantment.menu.option.down_armor.value": "Reduction Base",
   "x_enchantment.menu.option.down_armor.value.tip": "Reduced base per level",
 
+  "x_enchantment.menu.option.health_converter.consumer": "Consumeable",
+  "x_enchantment.menu.option.health_converter.consumer.tip": "Consume a level of enchantment after use",
   "x_enchantment.menu.option.health_converter.hurt": "Hurt Value",
   "x_enchantment.menu.option.health_converter.hurt.tip": "Harm to the user after use",
   "x_enchantment.menu.option.health_converter.ban": "Ban Items",
@@ -370,6 +374,8 @@
   "x_enchantment.menu.option.halo.allied_bonus.ban.tip": "Certain effects are prohibited from taking effect.",
 
   "x_enchantment.go_back.tips.wait": "Need cooldown",
+  "x_enchantment.menu.option.go_back.cd": "CoolDown",
+  "x_enchantment.menu.option.go_back.cd.tip": "CoolDown",
   "x_enchantment.menu.option.go_back.consumer": "Chance Of Consumption",
   "x_enchantment.menu.option.go_back.consumer.tip": "Chance of consumption after use"
 }
