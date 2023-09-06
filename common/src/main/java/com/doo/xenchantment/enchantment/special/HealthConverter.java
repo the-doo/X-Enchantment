@@ -4,11 +4,13 @@ import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -22,6 +24,8 @@ import java.util.stream.Stream;
 
 public class HealthConverter extends Special {
 
+    public static final String CONSUMER_KEY = "consumer";
+
     public static final String HURT_KEY = "hurt";
 
     public static final String BAN_KEY = "ban";
@@ -31,6 +35,7 @@ public class HealthConverter extends Special {
     public HealthConverter() {
         super("health_converter", EnchantmentCategory.BREAKABLE, EquipmentSlot.values());
 
+        options.addProperty(CONSUMER_KEY, false);
         options.addProperty(HURT_KEY, 10);
         options.add(BAN_KEY, new JsonArray());
     }
@@ -44,6 +49,7 @@ public class HealthConverter extends Special {
     public void loadOptions(JsonObject json) {
         super.loadOptions(json);
 
+        loadIf(json, CONSUMER_KEY);
         loadIf(json, HURT_KEY);
         loadIf(json, BAN_KEY);
 
@@ -77,7 +83,8 @@ public class HealthConverter extends Special {
             return;
         }
 
-        if (level(living.getOffhandItem()) < 1) {
+        int level = level(living.getOffhandItem());
+        if (level < 1) {
             return;
         }
 
@@ -91,5 +98,10 @@ public class HealthConverter extends Special {
         living.hurt(player.damageSources().magic(), damage);
 
         player.playSound(SoundEvents.ANVIL_USE);
+
+        if (boolV(CONSUMER_KEY) && !player.isCreative()) {
+            ListTag tag = EnchantedBookItem.getEnchantments(living.getOffhandItem());
+            resetLevel(level, living.getOffhandItem(), tag);
+        }
     }
 }

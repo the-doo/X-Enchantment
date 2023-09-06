@@ -1,9 +1,10 @@
 package com.doo.xenchantment.enchantment.special;
 
 import com.google.gson.JsonObject;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -16,7 +17,6 @@ import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 import java.util.Optional;
 import java.util.Set;
@@ -26,9 +26,16 @@ public class GoBack extends Special {
 
     private static final String CONSUMER_KEY = "consumer";
 
+    private static final String CD_KEY = "cd";
+
+    private static final String LAST_KEY = "last";
+
+    private static final Component WAIT_TIP = Component.translatable("x_enchantment.go_back.tips.wait");
+
     public GoBack() {
         super("go_back", EnchantmentCategory.BREAKABLE);
 
+        options.addProperty(CD_KEY, 3);
         options.addProperty(CONSUMER_KEY, 100);
     }
 
@@ -36,6 +43,7 @@ public class GoBack extends Special {
     public void loadOptions(JsonObject json) {
         super.loadOptions(json);
 
+        loadIf(json, CD_KEY);
         loadIf(json, CONSUMER_KEY);
     }
 
@@ -56,6 +64,13 @@ public class GoBack extends Special {
 
     @Override
     public boolean onUsed(Integer level, ItemStack stack, Player player, InteractionHand hand, Consumer<InteractionResultHolder<ItemStack>> consumer) {
+        String key = nbtKey(LAST_KEY);
+        long millis = Util.getEpochMillis();
+        if (stack.getTag().getLong(key) >= millis) {
+            player.displayClientMessage(WAIT_TIP, true);
+            return false;
+        }
+
         consumer.accept(InteractionResultHolder.success(stack));
         ListTag tag = EnchantedBookItem.getEnchantments(stack);
         if (!player.isCreative() && doubleV(CONSUMER_KEY) / 100 > player.getRandom().nextDouble()) {
@@ -72,18 +87,10 @@ public class GoBack extends Special {
         player.teleportTo(serverlevel, pos.getX(), pos.getY(), pos.getZ(), Set.of(), serverPlayer.getYRot(), serverPlayer.getXRot());
         serverlevel.playSound(null, serverPlayer.xo, serverPlayer.yo, serverPlayer.zo, SoundEvents.ENDERMAN_TELEPORT, SoundSource.HOSTILE, 1.0f, 1.0f);
 
-        return true;
-    }
-
-    private void resetLevel(Integer level, ItemStack stack, ListTag tag) {
-        if (level == 1) {
-            tag.removeIf(this::isSameId);
-            if (tag.isEmpty()) {
-                stack.setCount(0);
-            }
-        } else {
-            tag.stream().filter(this::isSameId).findFirst()
-                    .ifPresent(t -> EnchantmentHelper.setEnchantmentLevel((CompoundTag) t, level - 1));
+        if (!stack.isEmpty()) {
+            stack.getTag().putLong(key, millis + (long) (1000 * doubleV(CD_KEY)));
         }
+
+        return true;
     }
 }

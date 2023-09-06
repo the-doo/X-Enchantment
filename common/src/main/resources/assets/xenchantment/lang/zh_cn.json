@@ -368,6 +368,7 @@
   "x_enchantment.menu.option.halo.allied_bonus.ban.tip": "某些效果禁止生效",
 
 
+  "x_enchantment.go_back.tips.wait": "冷却中",
   "x_enchantment.menu.option.go_back.consumer": "消耗几率",
   "x_enchantment.menu.option.go_back.consumer.tip": "使用后消耗的几率"
 }

@@ -369,7 +369,7 @@
   "x_enchantment.menu.option.halo.allied_bonus.ban": "Ban Effects",
   "x_enchantment.menu.option.halo.allied_bonus.ban.tip": "Certain effects are prohibited from taking effect.",
 
-
+  "x_enchantment.go_back.tips.wait": "Need cooldown",
   "x_enchantment.menu.option.go_back.consumer": "Chance Of Consumption",
   "x_enchantment.menu.option.go_back.consumer.tip": "Chance of consumption after use"
 }
