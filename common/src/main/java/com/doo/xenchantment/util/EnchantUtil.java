@@ -87,7 +87,8 @@ public class EnchantUtil {
                 Regicide.class, Thin.class, DownDamage.class, DownArmor.class, Insanity.class
                 ,
                 // Special
-                RemoveCursed.class, HealthConverter.class, InfinityEnhance.class, GoBack.class
+                RemoveCursed.class, HealthConverter.class, InfinityEnhance.class, GoBack.class,
+                Disenchantment.class
         ).map(BaseXEnchantment::get).filter(Objects::nonNull);
 
         // Halo

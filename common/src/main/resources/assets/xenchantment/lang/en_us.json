@@ -78,6 +78,8 @@
   "enchantment.x_enchantment.infinity_enhance.desc": "Can add mending to infinite bows at the anvil",
   "enchantment.x_enchantment.go_back": "Triumphant Return",
   "enchantment.x_enchantment.go_back.desc": "Teleport to the respawn point, Only supported under Enchantment Books is useful.",
+  "enchantment.x_enchantment.disenchantment": "Divest",
+  "enchantment.x_enchantment.disenchantment.desc": "Strip item's enchantments, level is max number of strip, Only supported under Enchantment Books is useful.",
 
   "enchantment.x_enchantment.trinkets": "Trinkets Enchantment",
   "enchantment.x_enchantment.trinkets.attr": "With %s ",

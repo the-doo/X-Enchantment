@@ -65,7 +65,7 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
 
     protected final JsonObject options = new JsonObject();
 
-    private final ResourceLocation id;
+    protected final ResourceLocation id;
 
     private final String name;
 

@@ -78,6 +78,8 @@
   "enchantment.x_enchantment.infinity_enhance.desc": "可在铁砧处为无限弓添加经验修补",
   "enchantment.x_enchantment.go_back": "回归",
   "enchantment.x_enchantment.go_back.desc": "传送到重生点，仅支持附魔书下有用",
+  "enchantment.x_enchantment.disenchantment": "剥离",
+  "enchantment.x_enchantment.disenchantment.desc": "剥离物品附魔，等级为最大剥离个数，仅支持附魔书下有用",
 
   "enchantment.x_enchantment.trinkets": "饰品附魔",
   "enchantment.x_enchantment.trinkets.attr": "%s增幅 ",

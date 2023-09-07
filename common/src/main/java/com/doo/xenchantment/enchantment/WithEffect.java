@@ -57,6 +57,13 @@ public class WithEffect extends BaseXEnchantment {
         options.addProperty(DURATION_KEY, 3);
     }
 
+    public static void removeIfEq(CompoundTag tag, ItemStack off) {
+        BaseXEnchantment e = EnchantUtil.ENCHANTMENTS_MAP.get(WithEffect.class);
+        if (e.getId().equals(EnchantmentHelper.getEnchantmentId(tag))) {
+            off.removeTagKey(e.nbtKey(EFFECT_KEY_TAG));
+        }
+    }
+
     @Override
     protected boolean onlyOneLevel() {
         return true;
@@ -85,14 +92,7 @@ public class WithEffect extends BaseXEnchantment {
     @Override
     public void onServer(MinecraftServer server) {
         String key = nbtKey(EFFECT_KEY_TAG);
-        GrindstoneApi.register(stack -> {
-            CompoundTag tag = stack.getTag();
-            if (tag == null || tag.isEmpty()) {
-                return;
-            }
-
-            tag.remove(key);
-        });
+        GrindstoneApi.register(stack -> stack.removeTagKey(key));
 
         AnvilApi.register((player, map, first, second, result) -> {
             if (!map.containsKey(this) || result.getTag() == null) {
@@ -131,7 +131,7 @@ public class WithEffect extends BaseXEnchantment {
                 return;
             }
 
-            int duration = durationTick + (effect == MobEffects.NIGHT_VISION ? 12 * SECOND_TICK : 0);
+            int duration = durationTick + 10 + (effect == MobEffects.NIGHT_VISION ? 12 * SECOND_TICK : 0);
             living.addEffect(new MobEffectInstance(effect, duration, level));
         });
     }
