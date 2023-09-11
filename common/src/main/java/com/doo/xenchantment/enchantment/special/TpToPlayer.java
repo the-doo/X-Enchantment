@@ -86,7 +86,7 @@ public class TpToPlayer extends Special {
             return false;
         }
 
-        ServerPlayer other = (ServerPlayer) player.level().getPlayerByUUID(UUID.fromString(uuid));
+        ServerPlayer other = player.getServer().getPlayerList().getPlayer(UUID.fromString(uuid));
         if (other == null) {
             player.displayClientMessage(OFF_LINE_TIPS, true);
             return false;
