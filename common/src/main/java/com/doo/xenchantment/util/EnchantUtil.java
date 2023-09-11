@@ -243,7 +243,8 @@ public class EnchantUtil {
     }
 
     public static boolean canStandOnFluid(LivingEntity living, BlockPos pos, FluidState fluidState) {
-        if (!fluidState.isSource() || !living.level().getFluidState(pos.atY(pos.getY() + 1)).isEmpty()) {
+        if (!fluidState.isSource() || !living.level().getFluidState(pos.atY(pos.getY() + 1)).isEmpty()
+                || fluidState.getTags().anyMatch(t -> living.getFluidHeight(t) > 0.5)) {
             return false;
         }
 

@@ -74,8 +74,12 @@ public class WalkOn extends BaseXEnchantment {
         return !BAN.contains(fluidState.getType()) && fluidState.getTags().findFirst().filter(tag -> living.getFluidHeight(tag) <= 0.5).isPresent();
     }
 
-    public static float getAdditionSpeed(float speed) {
-        return disabled ? speed : (float) (speed * (1 - percentage));
+    public static float getAdditionSpeed(LivingEntity entity, float speed) {
+        if (disabled) {
+            return speed;
+        }
+
+        return (float) (speed * (1 - percentage + (entity.isSprinting() ? 0 : 0.02)));
     }
 
     @Override
