@@ -22,6 +22,7 @@ import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import org.apache.commons.lang3.mutable.Mutable;
@@ -99,8 +100,13 @@ public class WithEffect extends BaseXEnchantment {
                 return;
             }
 
-            if (result.getTag().contains(key) && second.is(Items.ENCHANTED_BOOK) && EnchantmentHelper.getEnchantments(second).containsKey(this)) {
+            Map<Enchantment, Integer> m;
+            if (result.getTag().contains(key) && second.is(Items.ENCHANTED_BOOK) && (m = EnchantmentHelper.getEnchantments(second)).containsKey(this)) {
                 result.removeTagKey(key);
+
+                if (m.size() < 2) {
+                    result.getTag().putInt("RepairCost", first.getTag().getInt("RepairCost"));
+                }
             }
         });
 

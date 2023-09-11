@@ -6,11 +6,12 @@ import com.doo.xenchantment.advancements.TrueTrigger;
 import com.doo.xenchantment.events.LootApi;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.ItemStack;
@@ -30,16 +31,19 @@ public class MoreLoot extends BaseXEnchantment {
 
     public static final String EFFECT_KEY = "effect_ore";
     public static final String LOOT_RATE = "loot_rate";
-    public static final String SOUND_ON = "sound_on";
+    public static final String TIP_ON = "tips";
     public static final String SUPER_LOOT_RATE = "super_loot_rate";
     public static final String SUPER_LOOT_VALUE = "super_loot_value";
+
+    private static final Component TRIGGER_TIP = Component.translatable("x_enchantment.more_loot.tips.trigger");
+    private static final Component SUP_TRIGGER_TIP = Component.translatable("x_enchantment.more_loot.tips.super_trigger");
 
     public MoreLoot() {
         super("more_loot", Rarity.RARE, EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND);
 
         options.addProperty(MAX_LEVEL_KEY, 5);
         options.addProperty(EFFECT_KEY, false);
-        options.addProperty(SOUND_ON, true);
+        options.addProperty(TIP_ON, true);
         options.addProperty(LOOT_RATE, 40);
         options.addProperty(SUPER_LOOT_RATE, 0.5);
         options.addProperty(SUPER_LOOT_VALUE, 10);
@@ -49,7 +53,7 @@ public class MoreLoot extends BaseXEnchantment {
     public void loadOptions(JsonObject json) {
         super.loadOptions(json);
 
-        loadIf(json, SOUND_ON);
+        loadIf(json, TIP_ON);
         loadIf(json, EFFECT_KEY);
         loadIf(json, LOOT_RATE);
         loadIf(json, SUPER_LOOT_RATE);
@@ -92,8 +96,8 @@ public class MoreLoot extends BaseXEnchantment {
                 return addition;
             }
 
-            if (boolV(SOUND_ON)) {
-                living.playSound(isSuper.isTrue() ? SoundEvents.PLAYER_LEVELUP : SoundEvents.BEEHIVE_ENTER);
+            if (living instanceof Player p && boolV(TIP_ON)) {
+                p.displayClientMessage(isSuper.isTrue() ? SUP_TRIGGER_TIP : TRIGGER_TIP, true);
             }
 
             if (isSuper.isTrue() && living instanceof ServerPlayer player) {

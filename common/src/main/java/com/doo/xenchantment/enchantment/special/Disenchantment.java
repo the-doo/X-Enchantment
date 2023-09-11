@@ -60,17 +60,17 @@ public class Disenchantment extends Special {
 
         ResourceLocation id = getId();
         ListTag bookTag = stack.is(Items.ENCHANTED_BOOK) ? EnchantedBookItem.getEnchantments(stack) : stack.getEnchantmentTags();
+        bookTag.removeIf(t -> id.equals(EnchantmentHelper.getEnchantmentId((CompoundTag) t)));
 
-        int len = Math.min(level + 1, enchantedTag.size());
+        int len = Math.min(level, enchantedTag.size());
         for (int i = 0; i < len; i++) {
-            Tag tag = enchantedTag.remove(i);
+            Tag tag = enchantedTag.remove(0);
             bookTag.add(tag);
 
             WithEffect.removeIfEq((CompoundTag) tag, other);
         }
-        bookTag.removeIf(t -> id.equals(EnchantmentHelper.getEnchantmentId((CompoundTag) t)));
 
-        consumer.accept(InteractionResultHolder.success(stack));
+        consumer.accept(InteractionResultHolder.consume(stack));
         return true;
     }
 }

@@ -236,14 +236,16 @@
   "x_enchantment.menu.option.suck_blood.base_value.tip": "Life steal bonus per level",
 
 
+  "x_enchantment.more_loot.tips.trigger": "More and more loot",
+  "x_enchantment.more_loot.tips.super_trigger": "Super more loot",
   "x_enchantment.info.more_loot.loot_rate": "Trigger Chance",
   "x_enchantment.info.more_loot.loot_rate.tip": "Trigger Chance",
   "x_enchantment.info.more_loot.super_loot_rate": "Zoom Chance",
   "x_enchantment.info.more_loot.super_loot_rate.tip": "After triggering, harvest the probability of continuing to magnify.",
   "x_enchantment.info.more_loot.super_loot_value": "Zoom Value",
   "x_enchantment.info.more_loot.super_loot_value.tip": "More multiply the loot.",
-  "x_enchantment.menu.option.more_loot.sound_on": "Sound",
-  "x_enchantment.menu.option.more_loot.sound_on.tip": "Turn on sound effects",
+  "x_enchantment.menu.option.more_loot.tips": "Show Tips",
+  "x_enchantment.menu.option.more_loot.tips.tip": "Show tips after trigger",
   "x_enchantment.menu.option.more_loot.effect_ore": "Compatible Ore Block",
   "x_enchantment.menu.option.more_loot.effect_ore.tip": "Effect on ore block, like drop's from 'Silk Touch' enchantment",
   "x_enchantment.menu.option.more_loot.loot_rate": "Trigger Chance",
