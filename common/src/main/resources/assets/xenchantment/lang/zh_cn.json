@@ -80,6 +80,8 @@
   "enchantment.x_enchantment.go_back.desc": "传送到重生点，仅支持附魔书下有用",
   "enchantment.x_enchantment.disenchantment": "剥离",
   "enchantment.x_enchantment.disenchantment.desc": "剥离物品附魔，等级为最大剥离个数，仅支持附魔书下有用",
+  "enchantment.x_enchantment.tp_to_player": "降临",
+  "enchantment.x_enchantment.tp_to_player.desc": "潜行右键标记玩家后可右键传送至标记玩家的当前位置，仅支持附魔书下有用",
 
   "enchantment.x_enchantment.trinkets": "饰品附魔",
   "enchantment.x_enchantment.trinkets.attr": "%s增幅 ",
@@ -380,5 +382,13 @@
   "x_enchantment.menu.option.go_back.cd": "冷却时间",
   "x_enchantment.menu.option.go_back.cd.tip": "冷却时间",
   "x_enchantment.menu.option.go_back.consumer": "消耗几率",
-  "x_enchantment.menu.option.go_back.consumer.tip": "使用后消耗的几率"
+  "x_enchantment.menu.option.go_back.consumer.tip": "使用后消耗的几率",
+
+  "x_enchantment.tp_to_player.tips.mark": "请在5格内潜行右键标记玩家",
+  "x_enchantment.tp_to_player.tips.only": "附魔书必须只存在当前附魔",
+  "x_enchantment.tp_to_player.tips.me": "无法传送自己",
+  "x_enchantment.tp_to_player.tips.offline": "玩家不存在或已离线",
+  "x_enchantment.tp_to_player.tips.check": "附近没有玩家或没有瞄准玩家",
+  "x_enchantment.tp_to_player.tips.marked": "已标记"
+
 }

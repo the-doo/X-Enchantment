@@ -8,7 +8,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -71,7 +70,7 @@ public class GoBack extends Special {
             return false;
         }
 
-        consumer.accept(InteractionResultHolder.success(stack));
+        consumer.accept(InteractionResultHolder.consume(stack));
         ListTag tag = EnchantedBookItem.getEnchantments(stack);
         if (!player.isCreative() && doubleV(CONSUMER_KEY) / 100 > player.getRandom().nextDouble()) {
             resetLevel(level, stack, tag);
@@ -85,7 +84,7 @@ public class GoBack extends Special {
                 .filter(b -> serverlevel.getBlockState(b).is(BlockTags.BEDS))
                 .orElse(serverlevel.getSharedSpawnPos());
         player.teleportTo(serverlevel, pos.getX(), pos.getY(), pos.getZ(), Set.of(), serverPlayer.getYRot(), serverPlayer.getXRot());
-        serverlevel.playSound(null, serverPlayer.xo, serverPlayer.yo, serverPlayer.zo, SoundEvents.ENDERMAN_TELEPORT, SoundSource.HOSTILE, 1.0f, 1.0f);
+        player.playSound(SoundEvents.ENDERMAN_TELEPORT, 1.0f, 1.0f);
 
         if (!stack.isEmpty()) {
             stack.getTag().putLong(key, millis + (long) (1000 * doubleV(CD_KEY)));

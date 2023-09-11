@@ -80,6 +80,8 @@
   "enchantment.x_enchantment.go_back.desc": "Teleport to the respawn point, Only supported under Enchantment Books is useful.",
   "enchantment.x_enchantment.disenchantment": "Divest",
   "enchantment.x_enchantment.disenchantment.desc": "Strip item's enchantments, level is max number of strip, Only supported under Enchantment Books is useful.",
+  "enchantment.x_enchantment.tp_to_player": "I coming",
+  "enchantment.x_enchantment.tp_to_player.desc": "After shift + right-clicking to mark the player, you can right-click to teleport to the current location of the marked player, Only supported under Enchantment Books is useful.",
 
   "enchantment.x_enchantment.trinkets": "Trinkets Enchantment",
   "enchantment.x_enchantment.trinkets.attr": "With %s ",
@@ -381,5 +383,12 @@
   "x_enchantment.menu.option.go_back.cd": "CoolDown",
   "x_enchantment.menu.option.go_back.cd.tip": "CoolDown",
   "x_enchantment.menu.option.go_back.consumer": "Chance Of Consumption",
-  "x_enchantment.menu.option.go_back.consumer.tip": "Chance of consumption after use"
+  "x_enchantment.menu.option.go_back.consumer.tip": "Chance of consumption after use",
+
+  "x_enchantment.tp_to_player.tips.mark": "Please shift + right-click within 5 range to mark the player",
+  "x_enchantment.tp_to_player.tips.only": "Book must only one enchantment",
+  "x_enchantment.tp_to_player.tips.me": "Can't not tp self",
+  "x_enchantment.tp_to_player.tips.offline": "Player offline or no this player",
+  "x_enchantment.tp_to_player.tips.check": "Need look at other player",
+  "x_enchantment.tp_to_player.tips.marked": "Marked"
 }

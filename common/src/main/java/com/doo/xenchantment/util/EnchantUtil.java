@@ -88,7 +88,7 @@ public class EnchantUtil {
                 ,
                 // Special
                 RemoveCursed.class, HealthConverter.class, InfinityEnhance.class, GoBack.class,
-                Disenchantment.class
+                Disenchantment.class, TpToPlayer.class
         ).map(BaseXEnchantment::get).filter(Objects::nonNull);
 
         // Halo

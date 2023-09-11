@@ -53,7 +53,8 @@ public class Disenchantment extends Special {
             return false;
         }
 
-        ListTag enchantedTag = other.is(Items.ENCHANTED_BOOK) ? EnchantedBookItem.getEnchantments(other) : other.getEnchantmentTags();
+        boolean isBook = other.is(Items.ENCHANTED_BOOK);
+        ListTag enchantedTag = isBook ? EnchantedBookItem.getEnchantments(other) : other.getEnchantmentTags();
         if (enchantedTag.isEmpty()) {
             return false;
         }
@@ -69,8 +70,12 @@ public class Disenchantment extends Special {
 
             WithEffect.removeIfEq((CompoundTag) tag, other);
         }
+        if (isBook && enchantedTag.isEmpty()) {
+            other.setCount(0);
+        }
 
         consumer.accept(InteractionResultHolder.consume(stack));
+
         return true;
     }
 }
