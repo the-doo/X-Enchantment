@@ -59,7 +59,7 @@ public class NightBreak extends BaseXEnchantment {
         if (living.level().isClientSide() || living == entity || level < 1) {
             return;
         }
-        if (!(entity instanceof LivingEntity e) || !LivingEntityAccessor.canHit(e)) {
+        if (!(entity instanceof LivingEntity e) || e.isDeadOrDying() || !LivingEntityAccessor.canHit(e)) {
             return;
         }
 
@@ -71,7 +71,9 @@ public class NightBreak extends BaseXEnchantment {
         if (count++ >= doubleV(DAMAGE_COUNT_KEY)) {
             count = 0;
             float hurt = (float) (doubleV(DAMAGE_KEY) * level * e.getMaxHealth() / 100);
-            e.heal(-hurt);
+            if (!e.isInvulnerable()) {
+                e.heal(-hurt);
+            }
         }
 
         tag.putInt(log, count);
