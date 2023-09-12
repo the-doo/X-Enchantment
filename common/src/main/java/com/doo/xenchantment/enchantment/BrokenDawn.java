@@ -4,6 +4,9 @@ import com.doo.playerinfo.core.InfoGroupItems;
 import com.doo.xenchantment.XEnchantment;
 import com.doo.xenchantment.advancements.TrueTrigger;
 import com.doo.xenchantment.events.ItemApi;
+import com.doo.xenchantment.interfaces.Advable;
+import com.doo.xenchantment.interfaces.OneLevelMark;
+import com.doo.xenchantment.interfaces.Tooltipsable;
 import com.google.gson.JsonObject;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -33,7 +36,8 @@ import java.util.function.Predicate;
  * <p>
  * from @BrokenDawn627
  */
-public class BrokenDawn extends BaseXEnchantment {
+public class BrokenDawn extends BaseXEnchantment implements
+        Tooltipsable<BrokenDawn>, Advable<BrokenDawn>, OneLevelMark {
     private static final String LEVEL_UP_KEY = "level_up_rate";
     private static final String DONE_LIMIT_KEY = "done_limit";
     private static final String LEVEL_UP_COUNT_INFO_KEY = "level_up_count";
@@ -59,11 +63,6 @@ public class BrokenDawn extends BaseXEnchantment {
         options.addProperty(LEVEL_UP_KEY, 20);
         options.addProperty(DONE_LIMIT_KEY, 1.5);
         options.addProperty(TIP_KEY, true);
-    }
-
-    @Override
-    protected boolean onlyOneLevel() {
-        return true;
     }
 
     @Override
@@ -108,11 +107,6 @@ public class BrokenDawn extends BaseXEnchantment {
             // if done
             ifDone(stack, owner, count, owner::spawnAtLocation);
         });
-    }
-
-    @Override
-    public boolean needTooltips() {
-        return true;
     }
 
     @Override
@@ -233,11 +227,6 @@ public class BrokenDawn extends BaseXEnchantment {
         group.add(getInfoKey(LEVEL_UP_ITEM_INFO_KEY),
                 notLevel || (i = nextLevelItem(stack.getItem())) == Items.AIR ? "None" : i.getDefaultInstance().getDisplayName().getString(), false);
         return group;
-    }
-
-    @Override
-    public boolean hasAdv() {
-        return true;
     }
 
     @Override

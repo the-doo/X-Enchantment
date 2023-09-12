@@ -1,5 +1,6 @@
 package com.doo.xenchantment.enchantment;
 
+import com.doo.xenchantment.interfaces.Tooltipsable;
 import com.doo.xenchantment.interfaces.WithAttribute;
 import com.google.gson.JsonObject;
 import net.minecraft.ChatFormatting;
@@ -17,7 +18,8 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import java.util.Collections;
 import java.util.List;
 
-public class IncDamage extends BaseXEnchantment implements WithAttribute<IncDamage> {
+public class IncDamage extends BaseXEnchantment implements
+        WithAttribute<IncDamage>, Tooltipsable<IncDamage> {
 
     private static final java.util.UUID[] UUID = {
             java.util.UUID.fromString("4DD34D4C-9B52-4674-85F4-B9569BAABFFC")
@@ -31,7 +33,7 @@ public class IncDamage extends BaseXEnchantment implements WithAttribute<IncDama
     public IncDamage() {
         super("increment_attack_damage", Rarity.VERY_RARE, EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND);
 
-        options.addProperty(MAX_LEVEL_KEY, 3);
+        options.addProperty(MAX_LEVEL_KEY, 4);
         options.addProperty(PER_LEVEL_DAMAGE_KEY, 1.5);
         options.addProperty(REDUCE_KEY, 50);
     }
@@ -104,11 +106,6 @@ public class IncDamage extends BaseXEnchantment implements WithAttribute<IncDama
         if (inc > 0) {
             compound.putFloat(nbtKey(KEY), Math.min(max, now + inc));
         }
-    }
-
-    @Override
-    public boolean needTooltips() {
-        return true;
     }
 
     @Override

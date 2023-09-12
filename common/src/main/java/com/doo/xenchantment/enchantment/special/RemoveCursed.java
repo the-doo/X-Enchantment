@@ -1,6 +1,7 @@
 package com.doo.xenchantment.enchantment.special;
 
 import com.doo.xenchantment.events.AnvilApi;
+import com.doo.xenchantment.interfaces.OneLevelMark;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
@@ -9,15 +10,10 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
-public class RemoveCursed extends Special {
+public class RemoveCursed extends Special implements OneLevelMark {
 
     public RemoveCursed() {
         super("remove_cursed", EnchantmentCategory.BREAKABLE, EquipmentSlot.values());
-    }
-
-    @Override
-    protected boolean onlyOneLevel() {
-        return true;
     }
 
     @Override

@@ -24,7 +24,7 @@ public class Smart extends BaseXEnchantment implements WithAttribute<Smart> {
         super("smart", Rarity.UNCOMMON, EnchantmentCategory.ARMOR_HEAD, EquipmentSlot.HEAD);
 
         options.addProperty(MAX_LEVEL_KEY, 3);
-        options.addProperty(VALUE_KEY, 150);
+        options.addProperty(VALUE_KEY, 15);
     }
 
     @Override
@@ -46,6 +46,6 @@ public class Smart extends BaseXEnchantment implements WithAttribute<Smart> {
 
     @Override
     public AttributeModifier getMatchModify(Attribute attribute, ItemStack stack, int level) {
-        return oneAttrModify(stackIdx(stack, slots), level, doubleV(VALUE_KEY), AttributeModifier.Operation.ADDITION);
+        return oneAttrModify(stackIdx(stack, slots), level, doubleV(VALUE_KEY) * 10, AttributeModifier.Operation.ADDITION);
     }
 }

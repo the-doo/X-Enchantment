@@ -2,6 +2,8 @@ package com.doo.xenchantment.enchantment.curse;
 
 import com.doo.xenchantment.XEnchantment;
 import com.doo.xenchantment.advancements.TrueTrigger;
+import com.doo.xenchantment.interfaces.Advable;
+import com.doo.xenchantment.interfaces.OneLevelMark;
 import com.doo.xenchantment.interfaces.WithAttribute;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
@@ -20,7 +22,8 @@ import java.util.List;
 import java.util.UUID;
 
 
-public class Insanity extends Cursed implements WithAttribute<Insanity> {
+public class Insanity extends Cursed implements
+        WithAttribute<Insanity>, Advable<Insanity>, OneLevelMark {
     private static final UUID[] UUIDS = {
             UUID.fromString("DD097C02-AF3B-BBEE-EA80-52576EE3253F")
     };
@@ -39,11 +42,6 @@ public class Insanity extends Cursed implements WithAttribute<Insanity> {
         options.addProperty(ATTACK_INTERVAL_KEY, 20);
         options.addProperty(ATTACK_RATE_KEY, 50);
         options.addProperty(ATTACK_RANGE_KEY, 3);
-    }
-
-    @Override
-    protected boolean onlyOneLevel() {
-        return true;
     }
 
     @Override
@@ -92,11 +90,6 @@ public class Insanity extends Cursed implements WithAttribute<Insanity> {
                     p.attack(e);
                     HIT.trigger((ServerPlayer) p);
                 });
-    }
-
-    @Override
-    public boolean hasAdv() {
-        return true;
     }
 
     @Override

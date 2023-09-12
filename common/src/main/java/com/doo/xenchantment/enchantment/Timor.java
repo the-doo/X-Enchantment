@@ -1,5 +1,6 @@
 package com.doo.xenchantment.enchantment;
 
+import com.doo.xenchantment.interfaces.OneLevelMark;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -9,7 +10,7 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
-public class Timor extends BaseXEnchantment {
+public class Timor extends BaseXEnchantment implements OneLevelMark {
 
     private static final String ID = "Id";
 
@@ -19,11 +20,6 @@ public class Timor extends BaseXEnchantment {
 
     public Timor() {
         super("timor", Rarity.COMMON, EnchantmentCategory.ARMOR_FEET, EquipmentSlot.FEET);
-    }
-
-    @Override
-    protected boolean onlyOneLevel() {
-        return true;
     }
 
     @Override

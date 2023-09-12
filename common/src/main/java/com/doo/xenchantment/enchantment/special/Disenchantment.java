@@ -1,6 +1,7 @@
 package com.doo.xenchantment.enchantment.special;
 
 import com.doo.xenchantment.enchantment.WithEffect;
+import com.doo.xenchantment.interfaces.Usable;
 import com.google.gson.JsonObject;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -18,7 +19,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 import java.util.function.Consumer;
 
-public class Disenchantment extends Special {
+public class Disenchantment extends Special implements Usable<Disenchantment> {
 
     public Disenchantment() {
         super("disenchantment", EnchantmentCategory.BREAKABLE);
@@ -39,11 +40,6 @@ public class Disenchantment extends Special {
     @Override
     protected boolean checkCompatibility(Enchantment enchantment) {
         return false;
-    }
-
-    @Override
-    public boolean canUsed() {
-        return true;
     }
 
     @Override

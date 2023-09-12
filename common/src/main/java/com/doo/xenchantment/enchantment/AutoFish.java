@@ -1,6 +1,7 @@
 package com.doo.xenchantment.enchantment;
 
 import com.doo.xenchantment.events.FishApi;
+import com.doo.xenchantment.interfaces.OneLevelMark;
 import com.doo.xenchantment.util.EnchantUtil;
 import com.doo.xenchantment.util.ServersideChannelUtil;
 import com.google.gson.JsonObject;
@@ -12,23 +13,18 @@ import net.minecraft.world.item.FishingRodItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
-public class AutoFish extends BaseXEnchantment {
+public class AutoFish extends BaseXEnchantment implements OneLevelMark {
 
     private static final String HEALING_KEY = "healing";
     private static final String HEALING_CHANCE_KEY = "healing_rate";
     private static final String HEALING_VALUE_KEY = "healing_value";
 
     public AutoFish() {
-        super("auto_fish", Rarity.RARE, EnchantmentCategory.FISHING_ROD, EquipmentSlot.MAINHAND);
+        super("auto_fish", Rarity.UNCOMMON, EnchantmentCategory.FISHING_ROD, EquipmentSlot.MAINHAND);
 
         options.addProperty(HEALING_KEY, true);
         options.addProperty(HEALING_CHANCE_KEY, 25);
         options.addProperty(HEALING_VALUE_KEY, 1);
-    }
-
-    @Override
-    protected boolean onlyOneLevel() {
-        return true;
     }
 
     @Override

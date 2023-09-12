@@ -1,5 +1,6 @@
 package com.doo.xenchantment.enchantment.special;
 
+import com.doo.xenchantment.interfaces.OneLevelMark;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -22,7 +23,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-public class HealthConverter extends Special {
+public class HealthConverter extends Special implements OneLevelMark {
 
     public static final String CONSUMER_KEY = "consumer";
 
@@ -38,11 +39,6 @@ public class HealthConverter extends Special {
         options.addProperty(CONSUMER_KEY, false);
         options.addProperty(HURT_KEY, 10);
         options.add(BAN_KEY, new JsonArray());
-    }
-
-    @Override
-    protected boolean onlyOneLevel() {
-        return true;
     }
 
     @Override

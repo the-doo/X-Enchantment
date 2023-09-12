@@ -203,7 +203,7 @@
 
 
   "x_enchantment.menu.option.smart.value": "XP Bonus",
-  "x_enchantment.menu.option.smart.value.tip": "XP bonus per level",
+  "x_enchantment.menu.option.smart.value.tip": "The value x10 is the final bonus for each level",
 
   "x_enchantment.menu.option.increment_attack_damage.damage_per_level": "Attack Max Growth",
   "x_enchantment.menu.option.increment_attack_damage.damage_per_level.tip": "Attack multipliers per level",

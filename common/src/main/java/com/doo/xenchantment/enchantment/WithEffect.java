@@ -3,6 +3,8 @@ package com.doo.xenchantment.enchantment;
 import com.doo.playerinfo.core.InfoGroupItems;
 import com.doo.xenchantment.events.AnvilApi;
 import com.doo.xenchantment.events.GrindstoneApi;
+import com.doo.xenchantment.interfaces.OneLevelMark;
+import com.doo.xenchantment.interfaces.Tooltipsable;
 import com.doo.xenchantment.util.EnchantUtil;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -38,7 +40,8 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-public class WithEffect extends BaseXEnchantment {
+public class WithEffect extends BaseXEnchantment implements
+        Tooltipsable<WithEffect>, OneLevelMark {
 
     private static final String EFFECT_KEY_TAG = "effect";
 
@@ -63,11 +66,6 @@ public class WithEffect extends BaseXEnchantment {
         if (e.getId().equals(EnchantmentHelper.getEnchantmentId(tag))) {
             off.removeTagKey(e.nbtKey(EFFECT_KEY_TAG));
         }
-    }
-
-    @Override
-    protected boolean onlyOneLevel() {
-        return true;
     }
 
     @Override
@@ -167,11 +165,6 @@ public class WithEffect extends BaseXEnchantment {
                 .filter(e -> e.getCategory() == MobEffectCategory.BENEFICIAL && !e.isInstantenous());
 
         return filter == null ? stream : stream.filter(filter);
-    }
-
-    @Override
-    public boolean needTooltips() {
-        return true;
     }
 
     @Override

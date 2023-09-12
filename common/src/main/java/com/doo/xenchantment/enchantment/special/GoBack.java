@@ -1,5 +1,6 @@
 package com.doo.xenchantment.enchantment.special;
 
+import com.doo.xenchantment.interfaces.Usable;
 import com.google.gson.JsonObject;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -21,7 +22,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
-public class GoBack extends Special {
+public class GoBack extends Special implements Usable<GoBack> {
 
     private static final String CONSUMER_KEY = "consumer";
 
@@ -54,11 +55,6 @@ public class GoBack extends Special {
     @Override
     protected boolean checkCompatibility(Enchantment enchantment) {
         return false;
-    }
-
-    @Override
-    public boolean canUsed() {
-        return true;
     }
 
     @Override

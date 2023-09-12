@@ -203,7 +203,7 @@
   "x_enchantment.menu.option.librarian.very_rare.tip": "与幸运成正比",
 
   "x_enchantment.menu.option.smart.value": "经验加成基数",
-  "x_enchantment.menu.option.smart.value.tip": "经验加成基数",
+  "x_enchantment.menu.option.smart.value.tip": "经验加成基数，该值x10为每级最终加成",
 
   "x_enchantment.menu.option.increment_attack_damage.damage_per_level": "攻击成长",
   "x_enchantment.menu.option.increment_attack_damage.damage_per_level.tip": "每级的攻击成长倍数",

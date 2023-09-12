@@ -4,6 +4,7 @@ import com.doo.playerinfo.core.InfoGroupItems;
 import com.doo.xenchantment.XEnchantment;
 import com.doo.xenchantment.advancements.TrueTrigger;
 import com.doo.xenchantment.events.LootApi;
+import com.doo.xenchantment.interfaces.Advable;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import net.minecraft.network.chat.Component;
@@ -24,7 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class MoreLoot extends BaseXEnchantment {
+public class MoreLoot extends BaseXEnchantment implements Advable<MoreLoot> {
 
     public static final TrueTrigger SUPER_LOOT_TRIGGER =
             TrueTrigger.get(new ResourceLocation(XEnchantment.MOD_ID, "trigger.more_loot.super_loot"));
@@ -141,11 +142,6 @@ public class MoreLoot extends BaseXEnchantment {
         }
 
         return level;
-    }
-
-    @Override
-    public boolean hasAdv() {
-        return true;
     }
 
     @Override

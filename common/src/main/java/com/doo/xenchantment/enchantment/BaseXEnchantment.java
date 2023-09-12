@@ -2,13 +2,11 @@ package com.doo.xenchantment.enchantment;
 
 import com.doo.playerinfo.core.InfoGroupItems;
 import com.doo.xenchantment.XEnchantment;
-import com.doo.xenchantment.advancements.TrueTrigger;
-import com.doo.xenchantment.interfaces.WithAttribute;
+import com.doo.xenchantment.interfaces.OneLevelMark;
 import com.doo.xenchantment.interfaces.WithOptions;
 import com.doo.xenchantment.interfaces.XEnchantmentRegistry;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import net.minecraft.ChatFormatting;
@@ -20,30 +18,20 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
 import java.text.DecimalFormat;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 /**
  * 附魔基类
@@ -71,15 +59,13 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
 
     private final String optGroup;
 
-    protected final EquipmentSlot[] slots;
+    public final EquipmentSlot[] slots;
 
     protected final List<Enchantment> compatibility = Lists.newArrayList();
 
     public static final String MAX_LEVEL_KEY = "max_level";
 
     public static final String DISABLED_KEY = "disabled";
-
-    public static final String COMPATIBILITY_KEY = "compatibility";
 
     public static final String ONLY_ONE_LEVEL_KEY = "only_one_level";
 
@@ -92,26 +78,14 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
         initOptions();
     }
 
-    protected boolean onlyOneLevel() {
-        return false;
-    }
-
     @Override
     public final int getMaxLevel() {
-        return onlyOneLevel() ? 1 : options.get(MAX_LEVEL_KEY).getAsInt();
-    }
-
-    public final boolean disabled() {
-        return options.has(DISABLED_KEY) ? options.get(DISABLED_KEY).getAsBoolean() : isDisabled();
+        return this instanceof OneLevelMark ? 1 : options.get(MAX_LEVEL_KEY).getAsInt();
     }
 
     @Override
     protected boolean checkCompatibility(Enchantment enchantment) {
         return super.checkCompatibility(enchantment) && !compatibility.contains(enchantment);
-    }
-
-    public boolean isDisabled() {
-        return false;
     }
 
     @Override
@@ -124,16 +98,9 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
         return !disabled() && super.isTradeable();
     }
 
-    public String name() {
-        return name;
-    }
-
-    public String menuName() {
-        return name;
-    }
-
-    public String optGroup() {
-        return optGroup;
+    @Override
+    public boolean isTreasureOnly() {
+        return getRarity() == Rarity.VERY_RARE || getRarity() == Rarity.RARE;
     }
 
     @Override
@@ -165,9 +132,24 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
         };
     }
 
-    @Override
-    public boolean isTreasureOnly() {
-        return getRarity() == Rarity.VERY_RARE || getRarity() == Rarity.RARE || getRarity() == Rarity.UNCOMMON;
+    public final boolean disabled() {
+        return options.has(DISABLED_KEY) ? options.get(DISABLED_KEY).getAsBoolean() : isDisabled();
+    }
+
+    public boolean isDisabled() {
+        return false;
+    }
+
+    public String name() {
+        return name;
+    }
+
+    public String menuName() {
+        return name;
+    }
+
+    public String optGroup() {
+        return optGroup;
     }
 
     public ResourceLocation getId() {
@@ -195,37 +177,6 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
             level += level(player.getItemBySlot(slot));
         }
         return level;
-    }
-
-    public boolean hasAdv() {
-        return false;
-    }
-
-    public TrueTrigger getAdvTrigger() {
-        return null;
-    }
-
-    public final void insertAttr(ItemStack stack, EquipmentSlot slot, BiConsumer<Attribute, AttributeModifier> modifier) {
-        if (disabled() || stack.getItem() instanceof EnchantedBookItem) {
-            return;
-        }
-
-        if ((stack.getItem() instanceof Equipable e) && slot != e.getEquipmentSlot() || Arrays.stream(slots).noneMatch(s -> s == slot)) {
-            return;
-        }
-
-        int level = level(stack);
-        if (level < 1) {
-            return;
-        }
-
-        modifiedAttrMap(stack, level, modifier);
-    }
-
-    private void modifiedAttrMap(ItemStack stack, int level, BiConsumer<Attribute, AttributeModifier> modifier) {
-        if (this instanceof WithAttribute<?> attribute) {
-            attribute.getAttribute().forEach(a -> modifier.accept(a, attribute.getMatchModify(a, stack, level)));
-        }
     }
 
     public void onKilled(ServerLevel world, LivingEntity killer, LivingEntity killedEntity) {
@@ -257,36 +208,11 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
     public void onClient() {
     }
 
-    public boolean needTooltips() {
-        return false;
-    }
-
-    public void tooltip(ItemStack stack, TooltipFlag context, List<Component> lines) {
-    }
-
     public void onServerStarted() {
-    }
-
-    public boolean canEntityWalkOnPowderSnow(LivingEntity e) {
-        return false;
     }
 
     public InfoGroupItems collectPlayerInfo(ServerPlayer player) {
         return null;
-    }
-
-    public boolean canStandOnFluid(LivingEntity living, FluidState fluidState) {
-        return false;
-    }
-
-
-    public boolean canUsed() {
-        return false;
-    }
-
-    public boolean onUsed(Integer level, ItemStack stack, Player player, InteractionHand hand,
-                          Consumer<InteractionResultHolder<ItemStack>> consumer) {
-        return false;
     }
 
     public String getInfoKey(String key) {
@@ -317,7 +243,7 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
         options.addProperty(DISABLED_KEY, false);
         options.add(COMPATIBILITY_KEY, new JsonArray());
 
-        if (onlyOneLevel()) {
+        if (this instanceof OneLevelMark) {
             options.addProperty(ONLY_ONE_LEVEL_KEY, false);
         }
     }
@@ -339,44 +265,5 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
                 BuiltInRegistries.ENCHANTMENT.stream()
                         .filter(e -> e.getDescriptionId().equals(j.getAsString()))
                         .forEach(compatibility::add));
-    }
-
-    public void onOptionsRegister(BiConsumer<String, Supplier<Stream<String>>> register) {
-        register.accept(COMPATIBILITY_KEY, () -> BuiltInRegistries.ENCHANTMENT.stream().map(Enchantment::getDescriptionId));
-    }
-
-    protected final void loadIf(JsonObject json, String key) {
-        Optional.ofNullable(json.get(key)).ifPresent(e -> {
-            if (e.isJsonArray()) {
-                options.add(key, e.getAsJsonArray());
-                return;
-            }
-
-            try {
-                options.addProperty(key, e.getAsDouble());
-            } catch (Exception ex) {
-                options.addProperty(key, e.getAsBoolean());
-            }
-        });
-    }
-
-    protected final double doubleV(String optionKey) {
-        return options.get(optionKey).getAsDouble();
-    }
-
-    protected final int intV(String optionKey) {
-        return options.get(optionKey).getAsInt();
-    }
-
-    protected final boolean boolV(String optionKey) {
-        return options.get(optionKey).getAsBoolean();
-    }
-
-    protected final void foreach(String optionKey, Consumer<JsonElement> callback) {
-        if (!options.get(optionKey).isJsonArray()) {
-            return;
-        }
-
-        options.getAsJsonArray(optionKey).forEach(callback);
     }
 }

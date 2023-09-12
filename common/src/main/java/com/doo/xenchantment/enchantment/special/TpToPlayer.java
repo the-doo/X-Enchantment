@@ -1,5 +1,8 @@
 package com.doo.xenchantment.enchantment.special;
 
+import com.doo.xenchantment.interfaces.OneLevelMark;
+import com.doo.xenchantment.interfaces.Tooltipsable;
+import com.doo.xenchantment.interfaces.Usable;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -23,7 +26,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-public class TpToPlayer extends Special {
+public class TpToPlayer extends Special implements
+        Tooltipsable<TpToPlayer>, Usable<TpToPlayer>, OneLevelMark {
     private static final String UUID_KEY = "uuid";
     private static final String NAME_KEY = "name";
 
@@ -39,11 +43,6 @@ public class TpToPlayer extends Special {
     }
 
     @Override
-    protected boolean onlyOneLevel() {
-        return true;
-    }
-
-    @Override
     public boolean canEnchant(ItemStack itemStack) {
         return false;
     }
@@ -51,11 +50,6 @@ public class TpToPlayer extends Special {
     @Override
     protected boolean checkCompatibility(Enchantment enchantment) {
         return false;
-    }
-
-    @Override
-    public boolean canUsed() {
-        return true;
     }
 
     @Override
@@ -121,11 +115,6 @@ public class TpToPlayer extends Special {
 
         player.displayClientMessage(NO_PLAYER_TIPS, true);
         return false;
-    }
-
-    @Override
-    public boolean needTooltips() {
-        return true;
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.doo.xenchantment.enchantment.halo;
 import com.doo.playerinfo.core.InfoGroupItems;
 import com.doo.xenchantment.XEnchantment;
 import com.doo.xenchantment.enchantment.BaseXEnchantment;
+import com.doo.xenchantment.interfaces.OneLevelMark;
 import com.doo.xenchantment.util.EnchantUtil;
 import com.google.gson.JsonObject;
 import net.minecraft.nbt.ListTag;
@@ -20,7 +21,7 @@ import net.minecraft.world.phys.AABB;
 
 import java.util.Map;
 
-public abstract class Halo extends BaseXEnchantment {
+public abstract class Halo extends BaseXEnchantment implements OneLevelMark {
 
     public static final String HALO_KEY = "halo";
     public static final String INTERVAL_KEY = "interval";
@@ -74,11 +75,6 @@ public abstract class Halo extends BaseXEnchantment {
     @Override
     public boolean isDisabled() {
         return EnchantUtil.ENCHANTMENTS_MAP.get(this.getClass()).disabled();
-    }
-
-    @Override
-    protected boolean onlyOneLevel() {
-        return true;
     }
 
     @Override

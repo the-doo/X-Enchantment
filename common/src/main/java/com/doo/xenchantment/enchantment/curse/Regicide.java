@@ -4,6 +4,7 @@ import com.doo.playerinfo.core.InfoGroupItems;
 import com.doo.xenchantment.XEnchantment;
 import com.doo.xenchantment.advancements.TrueTrigger;
 import com.doo.xenchantment.events.PlayerAttackApi;
+import com.doo.xenchantment.interfaces.Advable;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -11,7 +12,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
-public class Regicide extends Cursed {
+public class Regicide extends Cursed implements Advable<Regicide> {
     private static final String VALUE_KEY = "value";
 
     public static final TrueTrigger DIE =
@@ -57,11 +58,6 @@ public class Regicide extends Cursed {
         InfoGroupItems group = InfoGroupItems.groupKey(getDescriptionId());
         group.add(getInfoKey(VALUE_KEY), level < 1 ? 0 : level * doubleV(VALUE_KEY), false);
         return group;
-    }
-
-    @Override
-    public boolean hasAdv() {
-        return true;
     }
 
     @Override

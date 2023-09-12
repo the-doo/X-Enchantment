@@ -56,7 +56,7 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityAc
 
     @ModifyVariable(method = "getFrictionInfluencedSpeed", at = @At("HEAD"), argsOnly = true)
     private float getFrictionInfluencedSpeed(float f) {
-        return canStandOnFluid ? WalkOn.getAdditionSpeed(XPlayerInfo.get(this), f) : f;
+        return canStandOnFluid ? WalkOn.getAdditionSpeed(f) : f;
     }
 
     @Inject(method = "canStandOnFluid", at = @At("HEAD"), cancellable = true)

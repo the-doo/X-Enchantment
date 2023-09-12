@@ -1,6 +1,7 @@
 package com.doo.xenchantment.enchantment.special;
 
 import com.doo.xenchantment.events.AnvilApi;
+import com.doo.xenchantment.interfaces.OneLevelMark;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
@@ -10,7 +11,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import org.jetbrains.annotations.NotNull;
 
-public class InfinityEnhance extends Special {
+public class InfinityEnhance extends Special implements OneLevelMark {
 
     public InfinityEnhance() {
         super("infinity_enhance", EnchantmentCategory.BOW, EquipmentSlot.values());
@@ -19,11 +20,6 @@ public class InfinityEnhance extends Special {
     @Override
     public boolean canEnchant(@NotNull ItemStack stack) {
         return EnchantmentHelper.getEnchantments(stack).containsKey(Enchantments.INFINITY_ARROWS);
-    }
-
-    @Override
-    protected boolean onlyOneLevel() {
-        return true;
     }
 
     @Override

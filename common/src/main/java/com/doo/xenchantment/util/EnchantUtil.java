@@ -11,10 +11,10 @@ import com.doo.xenchantment.enchantment.halo.FarmSpeed;
 import com.doo.xenchantment.enchantment.halo.Halo;
 import com.doo.xenchantment.enchantment.special.*;
 import com.doo.xenchantment.events.LootApi;
-import com.doo.xenchantment.interfaces.WithAttribute;
-import com.doo.xenchantment.interfaces.XEnchantmentRegistry;
+import com.doo.xenchantment.interfaces.*;
 import com.doo.xenchantment.screen.OptionScreen;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -30,6 +30,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.material.FluidState;
 import org.apache.commons.lang3.mutable.MutableBoolean;
@@ -45,7 +46,10 @@ import java.util.stream.Stream;
  */
 public class EnchantUtil {
     public static final List<Class<? extends Halo>> HALO_CLASS = Lists.newArrayList();
+    public static final List<Advable<? extends BaseXEnchantment>> ADV_ENCHANT = Lists.newArrayList();
     public static final List<WithAttribute<? extends BaseXEnchantment>> ATTR_ENCHANT = Lists.newArrayList();
+    public static final List<Tooltipsable<? extends BaseXEnchantment>> TIPS_ENCHANT = Lists.newArrayList();
+    public static final Map<Enchantment, Usable<? extends BaseXEnchantment>> USE_ENCHANT_MAP = Maps.newHashMap();
 
     public static final Map<Class<? extends BaseXEnchantment>, BaseXEnchantment> ENCHANTMENTS_MAP = new LinkedHashMap<>();
 
@@ -108,8 +112,20 @@ public class EnchantUtil {
             e.register(registry);
             ENCHANTMENTS_MAP.putIfAbsent(e.getClass(), e);
 
-            if (e instanceof WithAttribute<?> attribute) {
-                ATTR_ENCHANT.add(attribute);
+            if (e instanceof Advable<?> o) {
+                ADV_ENCHANT.add(o);
+            }
+
+            if (e instanceof WithAttribute<?> o) {
+                ATTR_ENCHANT.add(o);
+            }
+
+            if (e instanceof Tooltipsable<?> o) {
+                TIPS_ENCHANT.add(o);
+            }
+
+            if (e instanceof Usable<?> o) {
+                USE_ENCHANT_MAP.put(e, o);
             }
         });
 
@@ -130,24 +146,23 @@ public class EnchantUtil {
         });
     }
 
-    /**
-     * 注册所有附魔及事件
-     */
-    public static void registerAttr(XEnchantmentRegistry registry) {
-        ENCHANTMENTS_MAP.values().stream().filter(WithAttribute.class::isInstance).forEach(registry::register);
+    public static void registerAttr(Consumer<WithAttribute<?>> registry) {
+        ATTR_ENCHANT.forEach(registry);
     }
 
-    public static void registerAdv(XEnchantmentRegistry registry) {
-        ENCHANTMENTS_MAP.values().stream().filter(BaseXEnchantment::hasAdv).forEach(registry::register);
+    public static void registerAdv(Consumer<Advable<?>> registry) {
+        ADV_ENCHANT.forEach(registry);
     }
 
-    public static void registerToolTips(XEnchantmentRegistry registry) {
-        ENCHANTMENTS_MAP.values().stream().filter(BaseXEnchantment::needTooltips).forEach(registry::register);
+    public static void registerToolTips(Consumer<Tooltipsable<?>> registry) {
+        TIPS_ENCHANT.forEach(registry);
     }
 
     public static void onClient() {
-        ENCHANTMENTS_MAP.values().forEach(BaseXEnchantment::onClient);
-        ENCHANTMENTS_MAP.values().forEach(e -> e.onOptionsRegister((k, v) -> OptionScreen.register(e.optGroup(), k, v)));
+        ENCHANTMENTS_MAP.values().forEach(e -> {
+            e.onClient();
+            e.onOptionsRegister((k, v) -> OptionScreen.register(e.optGroup(), k, v));
+        });
     }
 
     public static void onServer(MinecraftServer server) {
@@ -248,11 +263,13 @@ public class EnchantUtil {
             return false;
         }
 
-        return living instanceof Player && ENCHANTMENTS_MAP.values().stream().anyMatch(e -> !e.disabled() && e.canStandOnFluid(living, fluidState));
+        return living instanceof Player && Optional.of(ENCHANTMENTS_MAP.get(WalkOn.class))
+                .stream().anyMatch(e -> ((WalkOn) e).canStandOnFluid(living, fluidState));
     }
 
     public static boolean canEntityWalkOnPowderSnow(Entity entity) {
-        return entity instanceof LivingEntity e && ENCHANTMENTS_MAP.get(WalkOn.class).canEntityWalkOnPowderSnow(e);
+        return entity instanceof LivingEntity e &&
+                ((WalkOn) ENCHANTMENTS_MAP.get(WalkOn.class)).canEntityWalkOnPowderSnow(e);
     }
 
     public static void configLoad(JsonObject config) {
@@ -296,7 +313,8 @@ public class EnchantUtil {
 
     public static boolean useBook(ItemStack stack, Player player, InteractionHand hand,
                                   Consumer<InteractionResultHolder<ItemStack>> consumer) {
-        return EnchantmentHelper.getEnchantments(stack).entrySet().stream().anyMatch(entry ->
-                entry.getKey() instanceof BaseXEnchantment e && entry.getValue() > 0 && !e.disabled() && e.canUsed() && e.onUsed(entry.getValue(), stack, player, hand, consumer));
+        return EnchantmentHelper.getEnchantments(stack).entrySet().stream()
+                .filter(entry -> entry.getKey() instanceof BaseXEnchantment e && !e.disabled() && entry.getValue() > 0 && USE_ENCHANT_MAP.containsKey(e))
+                .anyMatch(entry -> USE_ENCHANT_MAP.get(entry.getKey()).onUsed(entry.getValue(), stack, player, hand, consumer));
     }
 }

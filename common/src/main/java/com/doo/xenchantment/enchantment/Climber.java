@@ -1,5 +1,6 @@
 package com.doo.xenchantment.enchantment;
 
+import com.doo.xenchantment.interfaces.OneLevelMark;
 import com.google.gson.JsonObject;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -8,7 +9,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
-public class Climber extends BaseXEnchantment {
+public class Climber extends BaseXEnchantment implements OneLevelMark {
 
     private static final String Y_KEY = "y";
 
@@ -23,11 +24,6 @@ public class Climber extends BaseXEnchantment {
         super.loadOptions(json);
 
         loadIf(json, Y_KEY);
-    }
-
-    @Override
-    protected boolean onlyOneLevel() {
-        return true;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.doo.xenchantment.enchantment;
 
+import com.doo.xenchantment.interfaces.OneLevelMark;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -17,7 +18,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-public class MagicImmune extends BaseXEnchantment {
+public class MagicImmune extends BaseXEnchantment implements OneLevelMark {
 
     private static final List<MobEffect> EFFECTS = Lists.newArrayList();
 
@@ -52,11 +53,6 @@ public class MagicImmune extends BaseXEnchantment {
                 .filter(e -> e.getCategory() == MobEffectCategory.HARMFUL)
                 .map(MobEffect::getDescriptionId)
                 .distinct());
-    }
-
-    @Override
-    protected boolean onlyOneLevel() {
-        return true;
     }
 
     @Override

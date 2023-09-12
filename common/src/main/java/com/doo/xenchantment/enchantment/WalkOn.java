@@ -1,5 +1,6 @@
 package com.doo.xenchantment.enchantment;
 
+import com.doo.xenchantment.interfaces.OneLevelMark;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -17,7 +18,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 
-public class WalkOn extends BaseXEnchantment {
+public class WalkOn extends BaseXEnchantment implements OneLevelMark {
 
     private static final String SPEED_KEY = "speed";
 
@@ -43,7 +44,7 @@ public class WalkOn extends BaseXEnchantment {
         loadIf(json, SPEED_KEY);
         loadIf(json, BAN_KEY);
 
-        percentage = doubleV(SPEED_KEY) / 100;
+        percentage = Math.min(0.98, doubleV(SPEED_KEY) / 100);
         disabled = disabled();
 
         BAN.clear();
@@ -60,12 +61,6 @@ public class WalkOn extends BaseXEnchantment {
                         .map(f -> BuiltInRegistries.FLUID.getKey(f).toLanguageKey()));
     }
 
-    @Override
-    protected boolean onlyOneLevel() {
-        return true;
-    }
-
-    @Override
     public boolean canStandOnFluid(LivingEntity living, FluidState fluidState) {
         if (disabled || level(living.getItemBySlot(EquipmentSlot.FEET)) < 1) {
             return false;
@@ -74,15 +69,14 @@ public class WalkOn extends BaseXEnchantment {
         return !BAN.contains(fluidState.getType()) && fluidState.getTags().findFirst().filter(tag -> living.getFluidHeight(tag) <= 0.5).isPresent();
     }
 
-    public static float getAdditionSpeed(LivingEntity entity, float speed) {
+    public static float getAdditionSpeed(float speed) {
         if (disabled) {
             return speed;
         }
 
-        return (float) (speed * (1 - percentage + (entity.isSprinting() ? 0 : 0.02)));
+        return (float) (speed * (0.98 - percentage));
     }
 
-    @Override
     public boolean canEntityWalkOnPowderSnow(LivingEntity e) {
         return !disabled && level(e.getItemBySlot(EquipmentSlot.FEET)) > 0;
     }
