@@ -64,7 +64,7 @@ public class EnchantUtil {
     public static void registerAll(XEnchantmentRegistry registry) {
         Stream<? extends BaseXEnchantment> stream = Stream.of(
                 // other
-                MoreLoot.class, BrokenDawn.class,
+                MoreLoot.class, BrokenDawn.class, ProtectionAnvil.class,
                 // attack
                 NightBreak.class, SuckBlood.class, Weakness.class, SoulHit.class,
                 IncDamage.class, IgnoredArmor.class, AttackSpeed.class,
@@ -297,6 +297,6 @@ public class EnchantUtil {
     public static boolean useBook(ItemStack stack, Player player, InteractionHand hand,
                                   Consumer<InteractionResultHolder<ItemStack>> consumer) {
         return EnchantmentHelper.getEnchantments(stack).entrySet().stream().anyMatch(entry ->
-                entry.getKey() instanceof BaseXEnchantment e && entry.getValue() > 0 && e.canUsed() && e.onUsed(entry.getValue(), stack, player, hand, consumer));
+                entry.getKey() instanceof BaseXEnchantment e && entry.getValue() > 0 && !e.disabled() && e.canUsed() && e.onUsed(entry.getValue(), stack, player, hand, consumer));
     }
 }

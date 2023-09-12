@@ -35,12 +35,12 @@ public class TpToPlayer extends Special {
     private static final MutableComponent PLAYER_NAME_TIPS = Component.translatable("x_enchantment.tp_to_player.tips.marked");
 
     public TpToPlayer() {
-        super("tp_to", EnchantmentCategory.WEARABLE);
+        super("tp_to_player", EnchantmentCategory.WEARABLE);
     }
 
     @Override
     protected boolean onlyOneLevel() {
-        return super.onlyOneLevel();
+        return true;
     }
 
     @Override

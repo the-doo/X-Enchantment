@@ -68,6 +68,8 @@
   "enchantment.x_enchantment.ignored_armor.desc": "额外的护甲穿透加成",
   "enchantment.x_enchantment.with_effect": "祝福",
   "enchantment.x_enchantment.with_effect.desc": "为自身增加一种状态效果",
+  "enchantment.x_enchantment.protection_anvil": "百炼成钢",
+  "enchantment.x_enchantment.protection_anvil.desc": "降低物品维修惩罚",
 
   "enchantment.x_enchantment.special": "特殊附魔",
   "enchantment.x_enchantment.remove_cursed": "诅咒杀手",
@@ -355,6 +357,9 @@
   "x_enchantment.menu.option.with_effect.level.tip": "效果等级",
   "x_enchantment.menu.option.with_effect.duration": "持续时间",
   "x_enchantment.menu.option.with_effect.duration.tip": "效果持续时间",
+
+  "x_enchantment.menu.option.protection_anvil.projection": "降低系数",
+  "x_enchantment.menu.option.protection_anvil.projection.tip": "每级的维修花费降低百分数，10表示降低10%",
 
   "x_enchantment.info.halo.burn_well.inc": "进度加成",
   "x_enchantment.info.halo.burn_well.inc.tip": "触发后加速熔炉的进度百分比",

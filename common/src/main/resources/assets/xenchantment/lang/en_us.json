@@ -68,6 +68,8 @@
   "enchantment.x_enchantment.ignored_armor.desc": "Additional Armor Penetration Bonus",
   "enchantment.x_enchantment.with_effect": "Blessing",
   "enchantment.x_enchantment.with_effect.desc": "Add a status effect to yourself",
+  "enchantment.x_enchantment.protection_anvil": "Tempered Into A Steel",
+  "enchantment.x_enchantment.protection_anvil.desc": "Reduce item repair cost",
 
   "enchantment.x_enchantment.special": "Special Enchantment",
   "enchantment.x_enchantment.remove_cursed": "Curse Killer",
@@ -357,6 +359,9 @@
   "x_enchantment.menu.option.with_effect.level.tip": "Effect level",
   "x_enchantment.menu.option.with_effect.duration": "Duration",
   "x_enchantment.menu.option.with_effect.duration.tip": "Duration of effect",
+
+  "x_enchantment.menu.option.protection_anvil.projection": "Reduction Factor",
+  "x_enchantment.menu.option.protection_anvil.projection.tip": "Percentage reduction in repair costs per level, 10 means 10% reduction",
   
   "x_enchantment.info.halo.burn_well.inc": "Progress Bonus",
   "x_enchantment.info.halo.burn_well.inc.tip": "The furnace time that accelerates after the halo is triggered, in seconds, default 32. Indicates the time it takes 32 seconds to accelerate the furnace after the halo is triggered.",
