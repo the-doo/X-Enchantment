@@ -18,6 +18,6 @@ public class KingKongLegs extends BaseXEnchantment {
 
     @Override
     public int getDamageProtection(int i, DamageSource source) {
-        return !disabled() && source.is(DamageTypes.FALL) ? Integer.MAX_VALUE : 0;
+        return !disabled() && source.is(DamageTypes.FALL) ? 1000000000 : 0;
     }
 }
