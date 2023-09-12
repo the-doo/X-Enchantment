@@ -1,7 +1,5 @@
 package com.doo.xenchantment.interfaces;
 
-import net.minecraft.world.entity.LivingEntity;
-
 public interface LivingEntityAccessor {
 
 
