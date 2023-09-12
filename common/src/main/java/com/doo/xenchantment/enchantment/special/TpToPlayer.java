@@ -32,7 +32,7 @@ public class TpToPlayer extends Special {
     private static final Component NOT_SELF_TIPS = Component.translatable("x_enchantment.tp_to_player.tips.me");
     private static final Component OFF_LINE_TIPS = Component.translatable("x_enchantment.tp_to_player.tips.offline");
     private static final Component NO_PLAYER_TIPS = Component.translatable("x_enchantment.tp_to_player.tips.check");
-    private static final MutableComponent PLAYER_NAME_TIPS = Component.translatable("x_enchantment.tp_to_player.tips.marked");
+    private static final MutableComponent PLAYER_NAME_TIPS = Component.translatable("x_enchantment.tp_to_player.tips.marked").append(": ");
 
     public TpToPlayer() {
         super("tp_to_player", EnchantmentCategory.WEARABLE);
@@ -139,6 +139,6 @@ public class TpToPlayer extends Special {
             return;
         }
 
-        lines.add(PLAYER_NAME_TIPS.append(": ").append(tag.getString(nbtKey(NAME_KEY))).withStyle(ChatFormatting.DARK_GRAY));
+        lines.add(PLAYER_NAME_TIPS.copy().append(tag.getString(nbtKey(NAME_KEY))).withStyle(ChatFormatting.DARK_GRAY));
     }
 }
