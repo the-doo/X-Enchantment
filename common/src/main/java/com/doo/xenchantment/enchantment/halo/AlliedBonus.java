@@ -75,6 +75,7 @@ public class AlliedBonus extends Halo {
         EFFECTS.add(MobEffects.DAMAGE_BOOST);
         EFFECTS.add(MobEffects.DAMAGE_RESISTANCE);
         EFFECTS.add(MobEffects.MOVEMENT_SPEED);
+        EFFECTS.add(MobEffects.GLOWING);
     }
 
     @Override
@@ -84,6 +85,7 @@ public class AlliedBonus extends Halo {
             EFFECTS.add(MobEffects.DAMAGE_BOOST);
             EFFECTS.add(MobEffects.DAMAGE_RESISTANCE);
             EFFECTS.add(MobEffects.MOVEMENT_SPEED);
+            EFFECTS.add(MobEffects.GLOWING);
         }
     }
 
