@@ -1,6 +1,7 @@
 package com.doo.xenchantment.enchantment.curse;
 
 import com.doo.xenchantment.enchantment.BaseXEnchantment;
+import net.minecraft.ChatFormatting;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
@@ -16,5 +17,10 @@ public abstract class Cursed extends BaseXEnchantment {
     @Override
     public boolean isCurse() {
         return true;
+    }
+
+    @Override
+    public ChatFormatting optionsTextColor() {
+        return ChatFormatting.RED;
     }
 }

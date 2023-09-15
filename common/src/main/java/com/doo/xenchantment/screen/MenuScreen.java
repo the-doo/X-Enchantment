@@ -10,6 +10,7 @@ import net.minecraft.client.OptionInstance;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.OptionsList;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -49,7 +50,10 @@ public class MenuScreen extends Screen {
     protected void init() {
         if (!minecraft.isLocalServer()) {
             addRenderableWidget(Button.builder(MODIFY_TIP, b -> {
-            }).bounds(this.width / 2 - 150 / 2, 10, 150, 20).build());
+                    })
+                    .bounds(this.width / 2 - 150 / 2, 10, 150, 20)
+                    .tooltip(Tooltip.create(MODIFY_TIP))
+                    .build());
         }
 
         int w = this.width;
@@ -74,7 +78,7 @@ public class MenuScreen extends Screen {
     private OptionInstance<?> opt(String key, BaseXEnchantment e) {
         return new OptionInstance<>(
                 key,
-                OptionInstance.cachedConstantTooltip(Component.translatable(key)),
+                OptionInstance.cachedConstantTooltip(Component.translatable(key).withStyle(e.optionsTextColor())),
                 (component, object) -> Component.literal(String.valueOf(e.getMaxLevel())),
                 new OptionInstance.Enum<>(Collections.singletonList(e.getOptions()), null),
                 null, null,

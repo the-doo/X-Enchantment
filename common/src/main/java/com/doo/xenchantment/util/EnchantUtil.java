@@ -21,6 +21,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -32,6 +33,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jetbrains.annotations.NotNull;
@@ -92,7 +96,7 @@ public class EnchantUtil {
                 ,
                 // Special
                 RemoveCursed.class, HealthConverter.class, InfinityEnhance.class, GoBack.class,
-                Disenchantment.class, TpToPlayer.class
+                Disenchantment.class, TpToPlayer.class, TimeFaster.class
         ).map(BaseXEnchantment::get).filter(Objects::nonNull);
 
         // Halo
@@ -309,6 +313,16 @@ public class EnchantUtil {
         JsonObject object = new JsonObject();
         ENCHANTMENTS_MAP.forEach((k, e) -> object.add(e.name(), e.getOptions()));
         return object;
+    }
+
+    public static boolean useBookOn(BlockPos pos, ItemStack stack, Player player, InteractionHand hand,
+                                    Consumer<InteractionResult> consumer) {
+        BlockState state = player.level().getBlockState(pos);
+        Block block = state.getBlock();
+        BlockEntity entity = state.hasBlockEntity() ? player.level().getBlockEntity(pos) : null;
+        return EnchantmentHelper.getEnchantments(stack).entrySet().stream()
+                .filter(entry -> entry.getKey() instanceof BaseXEnchantment e && !e.disabled() && entry.getValue() > 0 && USE_ENCHANT_MAP.containsKey(e))
+                .anyMatch(entry -> USE_ENCHANT_MAP.get(entry.getKey()).useBookOn(entry.getValue(), stack, player, hand, state, block, entity, consumer));
     }
 
     public static boolean useBook(ItemStack stack, Player player, InteractionHand hand,

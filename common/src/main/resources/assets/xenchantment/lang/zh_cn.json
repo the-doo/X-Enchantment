@@ -4,7 +4,7 @@
   "keybinding.key.x_enchantment.name": "设置",
 
   "advancements.x_enchantment.more_loot.super_loot.title": "幸运女神在微笑",
-  "advancements.x_enchantment.more_loot.super_loot.desc": "战利品获得二次倍数放大",
+  "advancements.x_enchantment.more_loot.super_loot.desc": "战利品获得二次放大倍数",
 
   "advancements.x_enchantment.broken_dawn.dawn_coming.title": "终见曙光",
   "advancements.x_enchantment.broken_dawn.dawn_coming.desc": "物品完成破晓进化并升华",
@@ -12,7 +12,7 @@
   "advancements.x_enchantment.regicide.die.title": "岂能郁郁久居人下",
   "advancements.x_enchantment.regicide.die.desc": "被弑君者伤害杀死",
 
-  "advancements.x_enchantment.insanity.hit.title": "额...头好痛~",
+  "advancements.x_enchantment.insanity.hit.title": "额...头好痛...",
   "advancements.x_enchantment.insanity.hit.desc": "触发一次自动攻击",
 
   "enchantment.x_enchantment.auto_fish": "自动钓鱼",
@@ -84,6 +84,8 @@
   "enchantment.x_enchantment.disenchantment.desc": "剥离物品附魔，等级为最大剥离个数，仅支持附魔书下有用",
   "enchantment.x_enchantment.tp_to_player": "降临",
   "enchantment.x_enchantment.tp_to_player.desc": "潜行右键标记玩家后可右键传送至标记玩家的当前位置，仅支持附魔书下有用",
+  "enchantment.x_enchantment.time_faster": "白驹过隙",
+  "enchantment.x_enchantment.time_faster.desc": "潜行右键对方块实体（如熔炉或其他模组中的机器等）使用，可让'春暖花开'/'燧人氏'识别并触发加速，本附魔单独无作用且仅支持附魔书下有用",
 
   "enchantment.x_enchantment.trinkets": "饰品附魔",
   "enchantment.x_enchantment.trinkets.attr": "%s增幅 ",
@@ -244,7 +246,7 @@
   "x_enchantment.info.more_loot.loot_rate": "触发几率",
   "x_enchantment.info.more_loot.loot_rate.tip": "触发几率",
   "x_enchantment.info.more_loot.super_loot_rate": "放大几率",
-  "x_enchantment.info.more_loot.super_loot_rate.tip": "触发后，收获继续放大倍数的几率",
+  "x_enchantment.info.more_loot.super_loot_rate.tip": "触发后，收获继续放大倍数的几率，5表示几率是0.05",
   "x_enchantment.info.more_loot.super_loot_value": "放大倍数",
   "x_enchantment.info.more_loot.super_loot_value.tip": "放大收获的倍数",
   "x_enchantment.menu.option.more_loot.tips": "开启触发提示",
@@ -394,6 +396,14 @@
   "x_enchantment.tp_to_player.tips.me": "无法传送自己",
   "x_enchantment.tp_to_player.tips.offline": "玩家不存在或已离线",
   "x_enchantment.tp_to_player.tips.check": "附近没有玩家或没有瞄准玩家",
-  "x_enchantment.tp_to_player.tips.marked": "已标记"
+  "x_enchantment.tp_to_player.tips.marked": "已标记",
 
+  "x_enchantment.time_faster.tips.not_exist": "目标不是方块实体或已移除或不存在",
+  "x_enchantment.time_faster.tips.max_limit": "已达到最大加速",
+  "x_enchantment.menu.option.time_faster.per_speed": "加速倍数",
+  "x_enchantment.menu.option.time_faster.per_speed.tip": "每级加速倍数",
+  "x_enchantment.menu.option.time_faster.max_speed": "最大加速倍数",
+  "x_enchantment.menu.option.time_faster.max_speed.tip": "最大加速倍数, 1表示最大加速倍数是10倍",
+  "x_enchantment.menu.option.time_faster.sync": "是否同步",
+  "x_enchantment.menu.option.time_faster.sync.tip": "开表示触发加速为游戏主要线程，当触发倍数过大或触发个数过多，有可能导致游戏卡顿，关表示异步线程触发。"
 }

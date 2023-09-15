@@ -45,8 +45,8 @@ public class MoreLoot extends BaseXEnchantment implements Advable<MoreLoot> {
         options.addProperty(MAX_LEVEL_KEY, 5);
         options.addProperty(EFFECT_KEY, false);
         options.addProperty(TIP_ON, true);
-        options.addProperty(LOOT_RATE, 40);
-        options.addProperty(SUPER_LOOT_RATE, 0.5);
+        options.addProperty(LOOT_RATE, 20);
+        options.addProperty(SUPER_LOOT_RATE, 5);
         options.addProperty(SUPER_LOOT_VALUE, 10);
     }
 
@@ -136,7 +136,7 @@ public class MoreLoot extends BaseXEnchantment implements Advable<MoreLoot> {
         }
 
         // 0.5% only 0
-        if (rand < doubleV(SUPER_LOOT_RATE) / 100) {
+        if (rand < doubleV(SUPER_LOOT_RATE) / 1000) {
             level = (int) (level * doubleV(SUPER_LOOT_VALUE));
             isSuper.accept(true);
         }

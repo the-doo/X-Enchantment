@@ -49,8 +49,6 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
      */
     protected static final int SECOND_TICK = 20;
 
-    private static final ChatFormatting[] RATE_COLOR = {ChatFormatting.GRAY, ChatFormatting.GRAY, ChatFormatting.GRAY, ChatFormatting.GOLD};
-
     protected final JsonObject options = new JsonObject();
 
     protected final ResourceLocation id;
@@ -109,7 +107,7 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
         if (disabled()) {
             fullname = fullname.copy().withStyle(ChatFormatting.STRIKETHROUGH);
         }
-        return isCurse() ? fullname : fullname.copy().withStyle(RATE_COLOR[getRarity().ordinal()]);
+        return isCurse() ? fullname : fullname.copy().withStyle(getRarity() == Rarity.VERY_RARE ? ChatFormatting.GOLD : ChatFormatting.GRAY);
     }
 
     @Override
@@ -265,5 +263,10 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
                 BuiltInRegistries.ENCHANTMENT.stream()
                         .filter(e -> e.getDescriptionId().equals(j.getAsString()))
                         .forEach(compatibility::add));
+    }
+
+    @Override
+    public ChatFormatting optionsTextColor() {
+        return getRarity() == Rarity.VERY_RARE ? ChatFormatting.GOLD : WithOptions.super.optionsTextColor();
     }
 }

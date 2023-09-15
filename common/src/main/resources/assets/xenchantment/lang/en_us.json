@@ -83,7 +83,9 @@
   "enchantment.x_enchantment.disenchantment": "Divest",
   "enchantment.x_enchantment.disenchantment.desc": "Strip item's enchantments, level is max number of strip, Only supported under Enchantment Books is useful.",
   "enchantment.x_enchantment.tp_to_player": "I coming",
-  "enchantment.x_enchantment.tp_to_player.desc": "After shift + right-clicking to mark the player, you can right-click to teleport to the current location of the marked player, Only supported under Enchantment Books is useful.",
+  "enchantment.x_enchantment.tp_to_player.desc": "Sneak right-clicking to mark the player, you can right-click to teleport to the current location of the marked player, Only supported under Enchantment Books is useful.",
+  "enchantment.x_enchantment.time_faster": "Time Flies",
+  "enchantment.x_enchantment.time_faster.desc": "Sneak right-click to use on block entities (such as machines in furnaces or other modules), It allows the 'Spring Blossom' and 'Prometheus' to recognize and trigger acceleration, this enchantment alone has no effect and is only supported under the Enchantment Book useful.",
 
   "enchantment.x_enchantment.trinkets": "Trinkets Enchantment",
   "enchantment.x_enchantment.trinkets.attr": "With %s ",
@@ -245,7 +247,7 @@
   "x_enchantment.info.more_loot.loot_rate": "Trigger Chance",
   "x_enchantment.info.more_loot.loot_rate.tip": "Trigger Chance",
   "x_enchantment.info.more_loot.super_loot_rate": "Zoom Chance",
-  "x_enchantment.info.more_loot.super_loot_rate.tip": "After triggering, harvest the probability of continuing to magnify.",
+  "x_enchantment.info.more_loot.super_loot_rate.tip": "After triggering, the chance of harvesting continues to magnify, 5 means the chance is 0.05",
   "x_enchantment.info.more_loot.super_loot_value": "Zoom Value",
   "x_enchantment.info.more_loot.super_loot_value.tip": "More multiply the loot.",
   "x_enchantment.menu.option.more_loot.tips": "Show Tips",
@@ -395,5 +397,14 @@
   "x_enchantment.tp_to_player.tips.me": "Can't not tp self",
   "x_enchantment.tp_to_player.tips.offline": "Player offline or no this player",
   "x_enchantment.tp_to_player.tips.check": "Need look at other player",
-  "x_enchantment.tp_to_player.tips.marked": "Marked"
+  "x_enchantment.tp_to_player.tips.marked": "Marked",
+
+  "x_enchantment.time_faster.tips.not_exist": "The target is not a block entity or has been removed or does not exist",
+  "x_enchantment.time_faster.tips.max_limit": "Maximum speedup has been reached",
+  "x_enchantment.menu.option.time_faster.per_speed": "Speedup Multiplier",
+  "x_enchantment.menu.option.time_faster.per_speed.tip": "Speedup multipliers per level",
+  "x_enchantment.menu.option.time_faster.max_speed": "Maximum Speedup",
+  "x_enchantment.menu.option.time_faster.max_speed.tip": "Maximum speedup, 1 means that the maximum speedup is 10 times",
+  "x_enchantment.menu.option.time_faster.sync": "Synchronized",
+  "x_enchantment.menu.option.time_faster.sync.tip": "On indicates that the main thread of the game triggers acceleration, and when the speedup multiplier is too large or the number of block entities is too large, it may cause the game to freeze, Off indicates that an asynchronous thread is triggered."
 }

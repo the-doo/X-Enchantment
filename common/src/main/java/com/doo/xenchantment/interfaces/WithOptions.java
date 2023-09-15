@@ -2,6 +2,7 @@ package com.doo.xenchantment.interfaces;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.enchantment.Enchantment;
 
@@ -18,6 +19,10 @@ public interface WithOptions {
     JsonObject getOptions();
 
     void loadOptions(JsonObject json);
+
+    default ChatFormatting optionsTextColor() {
+        return ChatFormatting.WHITE;
+    }
 
     default void onOptionsRegister(BiConsumer<String, Supplier<Stream<String>>> register) {
         register.accept(COMPATIBILITY_KEY, () -> BuiltInRegistries.ENCHANTMENT.stream().map(Enchantment::getDescriptionId));

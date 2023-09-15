@@ -41,4 +41,9 @@ public abstract class Special extends BaseXEnchantment {
                     .ifPresent(t -> EnchantmentHelper.setEnchantmentLevel((CompoundTag) t, level - 1));
         }
     }
+
+    @Override
+    public ChatFormatting optionsTextColor() {
+        return ChatFormatting.DARK_PURPLE;
+    }
 }

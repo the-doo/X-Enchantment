@@ -1,6 +1,7 @@
 package com.doo.xenchantment.enchantment.halo;
 
 import com.doo.playerinfo.core.InfoGroupItems;
+import com.doo.xenchantment.enchantment.special.TimeFaster;
 import com.doo.xenchantment.interfaces.IntegerPropertyAccessor;
 import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;
@@ -47,6 +48,10 @@ public class FarmSpeed extends Halo {
         double v = doubleV(INC_KEY) / 100;
         BlockPos.betweenClosedStream(box).forEach(p -> {
             BlockState state = level.getBlockState(p);
+            if (TimeFaster.needFaster(p, state, level)) {
+                return;
+            }
+
             if (state.isAir() || !(state.is(BlockTags.CROPS) || state.is(Blocks.FARMLAND) || state.getBlock() instanceof CocoaBlock)) {
                 return;
             }
