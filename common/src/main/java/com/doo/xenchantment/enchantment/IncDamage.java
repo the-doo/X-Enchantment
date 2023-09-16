@@ -17,6 +17,7 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class IncDamage extends BaseXEnchantment implements
         WithAttribute<IncDamage>, Tooltipsable<IncDamage> {
@@ -89,7 +90,9 @@ public class IncDamage extends BaseXEnchantment implements
         CompoundTag compound = stack.getOrCreateTag();
         float now = compound.getFloat(nbtKey(KEY));
         float max;
-        if (ti instanceof SwordItem si) {
+        if (isSGItem(compound)) {
+            max = sgAttack(compound);
+        } else if (ti instanceof SwordItem si) {
             max = si.getDamage();
         } else if (ti instanceof DiggerItem di) {
             max = di.getAttackDamage();
@@ -128,6 +131,21 @@ public class IncDamage extends BaseXEnchantment implements
      */
     private float inc(int durability) {
         return .5F * durability / Tiers.DIAMOND.getUses();
+    }
+
+    // sg like
+    private boolean isSGItem(CompoundTag tag) {
+        return tag.contains("SGear_Data") &&
+                Optional.ofNullable(tag.getCompound("SGear_Data")).map(c ->
+                        Optional.ofNullable(c.getCompound("Properties")).map(c1 ->
+                                        Optional.ofNullable(c1.getCompound("Stats"))
+                                                .map(c2 -> c2.contains("silentgear:melee_damage"))
+                                                .orElse(false)).orElse(false)).orElse(false);
+    }
+
+    private float sgAttack(CompoundTag tag) {
+        return tag.getCompound("SGear_Data").getCompound("Properties")
+                .getCompound("Stats").getFloat("silentgear:melee_damage");
     }
 
 }
