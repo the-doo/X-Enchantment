@@ -88,11 +88,13 @@ public class IncDamage extends BaseXEnchantment implements
 
         CompoundTag compound = stack.getOrCreateTag();
         float now = compound.getFloat(nbtKey(KEY));
-        float max = 0;
+        float max;
         if (ti instanceof SwordItem si) {
             max = si.getDamage();
         } else if (ti instanceof DiggerItem di) {
             max = di.getAttackDamage();
+        } else {
+            return;
         }
         max *= (float) (level * doubleV(PER_LEVEL_DAMAGE_KEY));
 
