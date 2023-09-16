@@ -37,7 +37,7 @@ public class TimeFaster extends Special implements Usable<TimeFaster> {
 
         options.addProperty(PER_SPEED_KEY, 10);
         options.addProperty(MAX_SPEED_KEY, 10);
-        options.addProperty(SYNC_KEY, false);
+        options.addProperty(SYNC_KEY, true);
     }
 
     @Override

@@ -29,7 +29,7 @@ public class HeightAttacked extends BaseXEnchantment {
         options.addProperty(MONSTER_KEY, true);
         options.addProperty(TIME_KEY, 5);
         options.addProperty(RANGE_KEY, 5);
-        options.addProperty(DAMAGE_KEY, 1);
+        options.addProperty(DAMAGE_KEY, 2);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class HeightAttacked extends BaseXEnchantment {
 
     @Override
     public InfoGroupItems collectPlayerInfo(ServerPlayer player) {
-        ItemStack stack = player.getMainHandItem();
+        ItemStack stack = player.getItemBySlot(EquipmentSlot.LEGS);
         int level = level(stack);
         InfoGroupItems group = InfoGroupItems.groupKey(getDescriptionId());
         group.add(getInfoKey(MONSTER_KEY), boolV(MONSTER_KEY), false);
