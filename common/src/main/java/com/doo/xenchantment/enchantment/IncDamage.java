@@ -1,7 +1,6 @@
 package com.doo.xenchantment.enchantment;
 
 import com.doo.playerinfo.XPlayerInfo;
-import com.doo.xenchantment.XEnchantment;
 import com.doo.xenchantment.interfaces.Tooltipsable;
 import com.doo.xenchantment.interfaces.WithAttribute;
 import com.google.gson.JsonObject;
@@ -143,9 +142,9 @@ public class IncDamage extends BaseXEnchantment implements
         return XPlayerInfo.isForge() && tag.contains("SGear_Data") &&
                 Optional.ofNullable(tag.getCompound("SGear_Data")).map(c ->
                         Optional.ofNullable(c.getCompound("Properties")).map(c1 ->
-                                        Optional.ofNullable(c1.getCompound("Stats"))
-                                                .map(c2 -> c2.contains("silentgear:melee_damage"))
-                                                .orElse(false)).orElse(false)).orElse(false);
+                                Optional.ofNullable(c1.getCompound("Stats"))
+                                        .map(c2 -> c2.contains("silentgear:melee_damage"))
+                                        .orElse(false)).orElse(false)).orElse(false);
     }
 
     private float sgAttack(CompoundTag tag) {
