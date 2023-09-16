@@ -64,9 +64,12 @@ public class IncDamage extends BaseXEnchantment implements
 
     @Override
     public AttributeModifier getMatchModify(Attribute attribute, ItemStack stack, int level) {
-        float damage = stack.getOrCreateTag().getFloat(nbtKey(KEY));
+        CompoundTag tag = stack.getOrCreateTag();
+        float damage = tag.getFloat(nbtKey(KEY));
         float reduce = (float) (doubleV(REDUCE_KEY) / 100);
-        if (stack.getItem() instanceof SwordItem si) {
+        if (isSGItem(tag)) {
+            damage -= sgAttack(tag) * reduce;
+        } else if (stack.getItem() instanceof SwordItem si) {
             damage -= si.getDamage() * reduce;
         } else if (stack.getItem() instanceof DiggerItem di) {
             damage -= di.getAttackDamage() * reduce;
