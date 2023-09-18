@@ -184,7 +184,7 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
         return true;
     }
 
-    public boolean allowEffectAddition(MobEffectInstance effect, LivingEntity living) {
+    public boolean canBeAffected(MobEffectInstance effect, LivingEntity living) {
         return true;
     }
 

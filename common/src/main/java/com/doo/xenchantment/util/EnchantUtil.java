@@ -37,7 +37,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -198,15 +197,10 @@ public class EnchantUtil {
         HALO_CLASS.forEach(h -> Halo.onEndLiving(entity, (Halo) ENCHANTMENTS_MAP.get(h)));
     }
 
-    public static boolean allowEffectAddition(MobEffectInstance effect, LivingEntity living) {
-        MutableBoolean tag = new MutableBoolean(true);
-        ENCHANTMENTS_MAP.values().stream().filter(e -> !e.disabled()).forEach(e -> {
-            boolean b = e.allowEffectAddition(effect, living);
-            if (tag.isTrue()) {
-                tag.setValue(b);
-            }
-        });
-        return tag.booleanValue();
+    public static boolean canBeAffected(MobEffectInstance effect, LivingEntity living) {
+        return ENCHANTMENTS_MAP.values().stream()
+                .filter(e -> !e.disabled())
+                .allMatch(e -> e.canBeAffected(effect, living));
     }
 
     @SuppressWarnings("unchecked")
@@ -315,20 +309,37 @@ public class EnchantUtil {
         return object;
     }
 
-    public static boolean useBookOn(BlockPos pos, ItemStack stack, Player player, InteractionHand hand,
-                                    Consumer<InteractionResult> consumer) {
+    public static boolean useOnBlock(BlockPos pos, ItemStack stack, Player player, InteractionHand hand,
+                                     Consumer<InteractionResult> consumer) {
         BlockState state = player.level().getBlockState(pos);
         Block block = state.getBlock();
         BlockEntity entity = state.hasBlockEntity() ? player.level().getBlockEntity(pos) : null;
         return EnchantmentHelper.getEnchantments(stack).entrySet().stream()
-                .filter(entry -> entry.getKey() instanceof BaseXEnchantment e && !e.disabled() && entry.getValue() > 0 && USE_ENCHANT_MAP.containsKey(e))
-                .anyMatch(entry -> USE_ENCHANT_MAP.get(entry.getKey()).useBookOn(entry.getValue(), stack, player, hand, state, block, entity, consumer));
+                .filter(entry -> entry.getKey() instanceof BaseXEnchantment e && !e.disabled() && entry.getValue() != null && entry.getValue() > 0 && USE_ENCHANT_MAP.containsKey(e))
+                .anyMatch(entry -> USE_ENCHANT_MAP.get(entry.getKey()).useOnBlock(entry.getValue(), stack, player, hand, state, block, entity, consumer));
     }
 
     public static boolean useBook(ItemStack stack, Player player, InteractionHand hand,
                                   Consumer<InteractionResultHolder<ItemStack>> consumer) {
         return EnchantmentHelper.getEnchantments(stack).entrySet().stream()
-                .filter(entry -> entry.getKey() instanceof BaseXEnchantment e && !e.disabled() && entry.getValue() > 0 && USE_ENCHANT_MAP.containsKey(e))
+                .filter(entry -> entry.getKey() instanceof BaseXEnchantment e && !e.disabled() && entry.getValue() != null && entry.getValue() > 0 && USE_ENCHANT_MAP.containsKey(e))
                 .anyMatch(entry -> USE_ENCHANT_MAP.get(entry.getKey()).onUsed(entry.getValue(), stack, player, hand, consumer));
+    }
+
+    public static boolean useOnEntity(Entity entity, Player player, InteractionHand hand, Consumer<InteractionResult> consumer) {
+        if (entity instanceof Player target) {
+            ItemStack stack = player.getItemInHand(hand);
+            return EnchantmentHelper.getEnchantments(stack).entrySet().stream()
+                    .filter(entry -> entry.getKey() instanceof BaseXEnchantment e && !e.disabled() && entry.getValue() != null && entry.getValue() > 0 && USE_ENCHANT_MAP.containsKey(e))
+                    .anyMatch(entry -> USE_ENCHANT_MAP.get(entry.getKey()).useOnPlayer(entry.getValue(), stack, player, hand, target, consumer));
+        }
+
+        return false;
+    }
+
+    public static void onEquipItem(LivingEntity living, EquipmentSlot slot, ItemStack stack) {
+        EnchantmentHelper.getEnchantments(stack).entrySet().stream()
+                .filter(entry -> entry.getKey() instanceof BaseXEnchantment e && !e.disabled() && entry.getValue() != null && entry.getValue() > 0 && USE_ENCHANT_MAP.containsKey(e) && Arrays.stream(e.slots).anyMatch(s -> s == slot))
+                .forEach(entry -> USE_ENCHANT_MAP.get(entry.getKey()).onEquipItem(entry.getValue(), living, slot, stack));
     }
 }

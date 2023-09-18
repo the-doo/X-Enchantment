@@ -7,10 +7,7 @@ import com.doo.xenchantment.util.EnchantUtil;
 import com.google.common.collect.Lists;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -81,11 +78,18 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityAc
         }
     }
 
-    @Inject(method = "addEffect(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)Z", at = @At("HEAD"), cancellable = true)
-    private void onEffectAddition(MobEffectInstance mobEffectInstance, Entity entity, CallbackInfoReturnable<Boolean> cir) {
-        if (!level().isClientSide() && !EnchantUtil.allowEffectAddition(mobEffectInstance, XPlayerInfo.get(this))) {
+    @Inject(method = "canBeAffected", at = @At("HEAD"), cancellable = true)
+    private void onEffectAddition(MobEffectInstance mobEffectInstance, CallbackInfoReturnable<Boolean> cir) {
+        if (!level().isClientSide() && !EnchantUtil.canBeAffected(mobEffectInstance, XPlayerInfo.get(this))) {
             cir.setReturnValue(false);
             cir.cancel();
+        }
+    }
+
+    @Inject(method = "onEquipItem", at = @At("TAIL"))
+    private void onEquipItem(EquipmentSlot equipmentSlot, ItemStack itemStack, ItemStack itemStack2, CallbackInfo ci) {
+        if (!level().isClientSide()) {
+            EnchantUtil.onEquipItem(XPlayerInfo.get(this), equipmentSlot, itemStack2);
         }
     }
 

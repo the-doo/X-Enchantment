@@ -5,6 +5,7 @@ import com.doo.xenchantment.events.AnvilApi;
 import com.doo.xenchantment.events.GrindstoneApi;
 import com.doo.xenchantment.interfaces.OneLevelMark;
 import com.doo.xenchantment.interfaces.Tooltipsable;
+import com.doo.xenchantment.interfaces.Usable;
 import com.doo.xenchantment.util.EnchantUtil;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -19,6 +20,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
@@ -27,21 +29,18 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import org.apache.commons.lang3.mutable.Mutable;
-import org.apache.commons.lang3.mutable.MutableObject;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class WithEffect extends BaseXEnchantment implements
-        Tooltipsable<WithEffect>, OneLevelMark {
+        Tooltipsable<WithEffect>, Usable<WithEffect>, OneLevelMark {
 
     private static final String EFFECT_KEY_TAG = "effect";
 
@@ -53,12 +52,16 @@ public class WithEffect extends BaseXEnchantment implements
 
     private static final Map<String, MobEffect> EFFECT_MAP = new LinkedHashMap<>();
 
+    private int durationTick;
+
     public WithEffect() {
         super("with_effect", Rarity.RARE, EnchantmentCategory.ARMOR, EnchantUtil.ALL_ARMOR);
 
         options.add(BAN_KEY, new JsonArray());
         options.addProperty(LEVEL_KEY, 2);
         options.addProperty(DURATION_KEY, 3);
+
+        durationTick = 3 * SECOND_TICK;
     }
 
     public static void removeIfEq(CompoundTag tag, ItemStack off) {
@@ -79,6 +82,8 @@ public class WithEffect extends BaseXEnchantment implements
         BAN_MAP.clear();
         foreach(BAN_KEY, e -> streamEffect(effect -> effect.getDescriptionId().equals(e.getAsString()))
                 .forEach(effect -> BAN_MAP.put(effect.getDescriptionId(), effect)));
+
+        durationTick = (int) (SECOND_TICK * doubleV(DURATION_KEY));
     }
 
     @Override
@@ -114,11 +119,7 @@ public class WithEffect extends BaseXEnchantment implements
 
     @Override
     public void onEndTick(LivingEntity living) {
-        initEffectIf(living.getArmorSlots(), list -> list.get(living.getRandom().nextInt(list.size())));
-
-        int level = intV(LEVEL_KEY) - 1;
-        int durationTick = (int) (SECOND_TICK * doubleV(DURATION_KEY));
-        if (living.tickCount % durationTick != 0 || level < 0) {
+        if (durationTick < 1 || living.tickCount % durationTick != 0) {
             return;
         }
 
@@ -135,29 +136,41 @@ public class WithEffect extends BaseXEnchantment implements
                 return;
             }
 
-            int duration = durationTick + 10 + (effect == MobEffects.NIGHT_VISION ? 12 * SECOND_TICK : 0);
-            living.addEffect(new MobEffectInstance(effect, duration, level));
+            addEffect(living, effect);
         });
     }
 
-    private void initEffectIf(Iterable<ItemStack> stacks, Function<List<MobEffect>, MobEffect> randEffect) {
-        Mutable<List<MobEffect>> effects = new MutableObject<>();
+    private void addEffect(LivingEntity living, MobEffect effect) {
+        int level = intV(LEVEL_KEY) - 1;
+        if (level < 0) {
+            return;
+        }
+
+        int duration = durationTick + 10 + (effect == MobEffects.NIGHT_VISION ? 12 * SECOND_TICK : 0);
+        MobEffectInstance instance = new MobEffectInstance(effect, duration, level);
+        if (living.hasEffect(effect)) {
+            living.getEffect(effect).update(instance);
+        } else {
+            living.addEffect(instance);
+        }
+    }
+
+    @Override
+    public void onEquipItem(Integer level, LivingEntity living, EquipmentSlot slot, ItemStack stack) {
         String key = nbtKey(EFFECT_KEY_TAG);
-        stacks.forEach(s -> {
-            if (level(s) < 1 || s.getTag().contains(key)) {
-                return;
-            }
+        if (stack.getTag().contains(key)) {
+            return;
+        }
 
-            if (effects.getValue() == null) {
-                effects.setValue(streamEffect(e -> !BAN_MAP.containsKey(e.getDescriptionId())).toList());
-            }
+        List<MobEffect> list = streamEffect(e -> !BAN_MAP.containsKey(e.getDescriptionId())).toList();
+        if (list.isEmpty()) {
+            return;
+        }
 
-            if (effects.getValue().isEmpty()) {
-                return;
-            }
+        MobEffect effect = list.get(living.getRandom().nextInt(list.size()));
+        stack.getTag().putString(nbtKey(EFFECT_KEY_TAG), effect.getDescriptionId());
 
-            s.getTag().putString(nbtKey(EFFECT_KEY_TAG), randEffect.apply(effects.getValue()).getDescriptionId());
-        });
+        addEffect(living, effect);
     }
 
     private Stream<MobEffect> streamEffect(Predicate<MobEffect> filter) {

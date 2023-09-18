@@ -1,6 +1,7 @@
 package com.doo.xenchantment.enchantment;
 
 import com.doo.xenchantment.interfaces.OneLevelMark;
+import com.doo.xenchantment.interfaces.Usable;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -11,6 +12,7 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 import java.util.List;
@@ -18,7 +20,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-public class MagicImmune extends BaseXEnchantment implements OneLevelMark {
+public class MagicImmune extends BaseXEnchantment implements OneLevelMark, Usable<MagicImmune> {
 
     private static final List<MobEffect> EFFECTS = Lists.newArrayList();
 
@@ -63,21 +65,15 @@ public class MagicImmune extends BaseXEnchantment implements OneLevelMark {
     }
 
     @Override
-    public void onEndTick(LivingEntity living) {
-        if (living.tickCount % SECOND_TICK != 0) {
-            return;
-        }
+    public boolean canBeAffected(MobEffectInstance effect, LivingEntity living) {
+        return !(level(living.getItemBySlot(EquipmentSlot.CHEST)) > 0 && !BAN.contains(effect.getEffect()) && EFFECTS.contains(effect.getEffect()));
+    }
 
-        int level = level(living.getItemBySlot(EquipmentSlot.CHEST));
-        if (level < 1) {
+    public void onEquipItem(Integer level, LivingEntity living, EquipmentSlot slot, ItemStack stack) {
+        if (slot != slots[0]) {
             return;
         }
 
         EFFECTS.forEach(living::removeEffect);
-    }
-
-    @Override
-    public boolean allowEffectAddition(MobEffectInstance effect, LivingEntity living) {
-        return !(!BAN.contains(effect.getEffect()) && level(living.getItemBySlot(EquipmentSlot.CHEST)) > 1 && EFFECTS.contains(effect.getEffect()));
     }
 }

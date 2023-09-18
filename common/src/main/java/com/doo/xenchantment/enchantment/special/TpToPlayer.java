@@ -11,8 +11,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -30,12 +30,12 @@ public class TpToPlayer extends Special implements
         Tooltipsable<TpToPlayer>, Usable<TpToPlayer>, OneLevelMark {
     private static final String UUID_KEY = "uuid";
     private static final String NAME_KEY = "name";
+    private static final String TICK_KEY = "tick";
 
     private static final Component LOG_TIPS = Component.translatable("x_enchantment.tp_to_player.tips.mark");
     private static final Component ONE_TIPS = Component.translatable("x_enchantment.tp_to_player.tips.only");
     private static final Component NOT_SELF_TIPS = Component.translatable("x_enchantment.tp_to_player.tips.me");
     private static final Component OFF_LINE_TIPS = Component.translatable("x_enchantment.tp_to_player.tips.offline");
-    private static final Component NO_PLAYER_TIPS = Component.translatable("x_enchantment.tp_to_player.tips.check");
     private static final MutableComponent PLAYER_NAME_TIPS = Component.translatable("x_enchantment.tp_to_player.tips.marked").append(": ");
 
     public TpToPlayer() {
@@ -53,21 +53,26 @@ public class TpToPlayer extends Special implements
     }
 
     @Override
-    public boolean onUsed(Integer level, ItemStack stack, Player player, InteractionHand hand, Consumer<InteractionResultHolder<ItemStack>> consumer) {
+    public boolean useOnPlayer(Integer level, ItemStack stack, Player player, InteractionHand hand, Player target, Consumer<InteractionResult> consumer) {
         if (stack.getEnchantmentTags().size() > 1) {
             player.displayClientMessage(ONE_TIPS, true);
             return false;
         }
 
-        String uuidKey = nbtKey(UUID_KEY);
-        if (player.getPose() == Pose.CROUCHING) {
-            return logPlayer(player, other -> {
-                stack.getTag().putString(uuidKey, other.getStringUUID());
-                stack.getTag().putString(nbtKey(NAME_KEY), other.getDisplayName().getString());
-                consumer.accept(InteractionResultHolder.consume(stack));
-            });
+        if (player.getPose() != Pose.CROUCHING) {
+            return false;
         }
 
+        stack.getTag().putInt(nbtKey(TICK_KEY), player.tickCount);
+        stack.getTag().putString(nbtKey(UUID_KEY), target.getStringUUID());
+        stack.getTag().putString(nbtKey(NAME_KEY), target.getDisplayName().getString());
+        consumer.accept(InteractionResult.CONSUME);
+        return true;
+    }
+
+    @Override
+    public boolean onUsed(Integer level, ItemStack stack, Player player, InteractionHand hand, Consumer<InteractionResultHolder<ItemStack>> consumer) {
+        String uuidKey = nbtKey(UUID_KEY);
         CompoundTag tag = stack.getTag();
         if (tag == null || !tag.contains(uuidKey)) {
             player.displayClientMessage(LOG_TIPS, true);
@@ -77,6 +82,12 @@ public class TpToPlayer extends Special implements
         String uuid = tag.getString(uuidKey);
         if (player.getStringUUID().equals(uuid)) {
             player.displayClientMessage(NOT_SELF_TIPS, true);
+            return false;
+        }
+
+        String key = nbtKey(TICK_KEY);
+        if (tag.getInt(key) == player.tickCount) {
+            tag.remove(key);
             return false;
         }
 
@@ -96,25 +107,6 @@ public class TpToPlayer extends Special implements
 
         consumer.accept(InteractionResultHolder.consume(stack));
         return true;
-    }
-
-    private boolean logPlayer(Player player, Consumer<Player> callback) {
-        Vec3 vec3 = player.getViewVector(1.0f).normalize();
-
-        Player other;
-        for (Entity entity : player.level().getEntities(player, player.getBoundingBox().inflate(5, 1, 5), e -> e instanceof Player)) {
-            other = (Player) entity;
-            Vec3 vec32 = new Vec3(other.getX() - player.getX(), other.getEyeY() - player.getEyeY(), other.getZ() - player.getZ());
-            double d = vec32.length();
-            double e = vec3.dot(vec32.normalize());
-            if (e > 1.0 - 0.025 / d) {
-                callback.accept(other);
-                return true;
-            }
-        }
-
-        player.displayClientMessage(NO_PLAYER_TIPS, true);
-        return false;
     }
 
     @Override

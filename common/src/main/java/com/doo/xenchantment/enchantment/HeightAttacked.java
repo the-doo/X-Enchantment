@@ -29,7 +29,7 @@ public class HeightAttacked extends BaseXEnchantment {
         options.addProperty(MONSTER_KEY, true);
         options.addProperty(TIME_KEY, 5);
         options.addProperty(RANGE_KEY, 5);
-        options.addProperty(DAMAGE_KEY, 2);
+        options.addProperty(DAMAGE_KEY, 4);
     }
 
     @Override

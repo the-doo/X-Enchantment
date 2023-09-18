@@ -7,6 +7,7 @@ import com.doo.xenchantment.events.ItemApi;
 import com.doo.xenchantment.interfaces.Advable;
 import com.doo.xenchantment.interfaces.OneLevelMark;
 import com.doo.xenchantment.interfaces.Tooltipsable;
+import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -29,6 +30,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -52,8 +54,10 @@ public class BrokenDawn extends BaseXEnchantment implements
 
     private static final Component DONE_TIPS = Component.translatable("enchantment.x_enchantment.broken_dawn.done")
             .withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GOLD);
-    private static final Component TIPS = Component.translatable("enchantment.x_enchantment.broken_dawn.tips");
-    private Component thanksTip;
+    private static final Component TIPS = Component.literal(" - ").withStyle(ChatFormatting.DARK_GRAY)
+            .append(Component.translatable("enchantment.x_enchantment.broken_dawn.tips"));
+
+    public static final List<Function<ItemStack, Predicate<Item>>> ITEM_SWITCHERS = Lists.newArrayList();
 
     public BrokenDawn() {
         super("broken_dawn", Rarity.VERY_RARE, EnchantmentCategory.BREAKABLE, EquipmentSlot.values());
@@ -81,15 +85,10 @@ public class BrokenDawn extends BaseXEnchantment implements
 
     @Override
     public @NotNull Component getFullname(int level) {
-        if (thanksTip == null || !boolV(TIP_KEY)) {
+        if (!boolV(TIP_KEY)) {
             return super.getFullname(level);
         }
-        return super.getFullname(level).copy().append(thanksTip);
-    }
-
-    @Override
-    public void onClient() {
-        thanksTip = Component.literal(" - ").append(TIPS).withStyle(ChatFormatting.DARK_GRAY);
+        return super.getFullname(level).copy().append(TIPS);
     }
 
     @Override
@@ -102,11 +101,16 @@ public class BrokenDawn extends BaseXEnchantment implements
             CompoundTag nbt = stack.getOrCreateTag();
             String key = nbtKey(KEY);
             long count = nbt.getLong(key);
-            nbt.putLong(key, (long) (count + amount));
+            nbt.putLong(key, (long) (count + randomAmount(owner, amount)));
 
             // if done
             ifDone(stack, owner, count, owner::spawnAtLocation);
         });
+    }
+
+    private static float randomAmount(LivingEntity owner, float amount) {
+        RandomSource random = owner.getRandom();
+        return random.nextDouble() < 0.6 ? amount : amount * random.nextInt(1, 4);
     }
 
     @Override
@@ -118,7 +122,7 @@ public class BrokenDawn extends BaseXEnchantment implements
 
         // if done
         if (nbt.getBoolean(nbtKey(DONE))) {
-            lines.add(DONE_TIPS.copy().append(thanksTip));
+            lines.add(DONE_TIPS.copy().append(TIPS));
             return;
         }
 
@@ -148,7 +152,7 @@ public class BrokenDawn extends BaseXEnchantment implements
         boolean needLevelUp = random.nextDouble() < doubleV(LEVEL_UP_KEY) / 100;
         ItemStack drop = ItemStack.EMPTY;
         if (needLevelUp) {
-            Item next = nextLevelItem(stack.getItem());
+            Item next = nextLevelItem(stack);
             // need level up but hasn't next level
             if (next == Items.AIR) {
                 inc *= 3;
@@ -189,12 +193,23 @@ public class BrokenDawn extends BaseXEnchantment implements
         return (long) (stack.getMaxDamage() * doubleV(DONE_LIMIT_KEY));
     }
 
-    private Item nextLevelItem(Item item) {
-        Predicate<Item> filter = switchFilter(item);
-        return BuiltInRegistries.ITEM.stream().filter(filter).min(Comparator.comparing(Item::getMaxDamage)).orElse(Items.AIR);
+    private Item nextLevelItem(ItemStack stack) {
+        return BuiltInRegistries.ITEM.stream()
+                .filter(switchFilter(stack))
+                .min(Comparator.comparing(Item::getMaxDamage))
+                .orElse(Items.AIR);
     }
 
-    private Predicate<Item> switchFilter(Item item) {
+    private Predicate<Item> switchFilter(ItemStack stack) {
+        for (Function<ItemStack, Predicate<Item>> switcher : ITEM_SWITCHERS) {
+            Predicate<Item> predicate = switcher.apply(stack);
+            if (predicate != null) {
+                return predicate;
+            }
+        }
+
+        // default
+        Item item = stack.getItem();
         if (item instanceof ArmorItem ia) {
             return i -> i instanceof ArmorItem ai && ia.getEquipmentSlot() == ai.getEquipmentSlot() &&
                     ai.getMaxDamage() > ia.getMaxDamage() && ai.getDefense() > ia.getDefense();
@@ -225,7 +240,7 @@ public class BrokenDawn extends BaseXEnchantment implements
 
         Item i;
         group.add(getInfoKey(LEVEL_UP_ITEM_INFO_KEY),
-                notLevel || (i = nextLevelItem(stack.getItem())) == Items.AIR ? "None" : i.getDefaultInstance().getDisplayName().getString(), false);
+                notLevel || (i = nextLevelItem(stack)) == Items.AIR ? "None" : i.getDefaultInstance().getDisplayName().getString(), false);
         return group;
     }
 

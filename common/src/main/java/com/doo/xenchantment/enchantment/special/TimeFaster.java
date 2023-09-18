@@ -58,8 +58,8 @@ public class TimeFaster extends Special implements Usable<TimeFaster> {
     }
 
     @Override
-    public boolean useBookOn(Integer value, ItemStack stack, Player player, InteractionHand hand,
-                             BlockState state, Block block, BlockEntity entity, Consumer<InteractionResult> consumer) {
+    public boolean useOnBlock(Integer value, ItemStack stack, Player player, InteractionHand hand,
+                              BlockState state, Block block, BlockEntity entity, Consumer<InteractionResult> consumer) {
         if (entity == null) {
             player.displayClientMessage(NOT_EXIST, true);
             return false;

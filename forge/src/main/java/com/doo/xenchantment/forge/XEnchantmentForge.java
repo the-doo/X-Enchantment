@@ -2,6 +2,7 @@ package com.doo.xenchantment.forge;
 
 import com.doo.xenchantment.XEnchantment;
 import com.doo.xenchantment.forge.mixin.accessor.CanBurnAccessor;
+import com.doo.xenchantment.forge.utils.ForgeEnchantmentUtil;
 import com.doo.xenchantment.screen.MenuScreen;
 import com.doo.xenchantment.util.ClientsideChannelUtil;
 import com.doo.xenchantment.util.ClientsideUtil;
@@ -56,6 +57,7 @@ public class XEnchantmentForge {
 
     public XEnchantmentForge() {
         XEnchantment.init();
+        ForgeEnchantmentUtil.init();
 
         XEnchantment.setAttrGetter(ForgeMod.ENTITY_REACH);
         XEnchantment.setCanBurnGetter((o, registryAccess, recipe, nonNullList, i) ->

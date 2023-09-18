@@ -40,7 +40,7 @@ public abstract class ItemStackMixin {
             return;
         }
 
-        if (EnchantUtil.useBookOn(useOnContext.getClickedPos(), XPlayerInfo.get(this), useOnContext.getPlayer(), useOnContext.getHand(), cir::setReturnValue)) {
+        if (EnchantUtil.useOnBlock(useOnContext.getClickedPos(), XPlayerInfo.get(this), useOnContext.getPlayer(), useOnContext.getHand(), cir::setReturnValue)) {
             cir.cancel();
         }
     }

@@ -1,6 +1,5 @@
 package com.doo.xenchantment.enchantment;
 
-import com.doo.playerinfo.XPlayerInfo;
 import com.doo.xenchantment.interfaces.Tooltipsable;
 import com.doo.xenchantment.interfaces.WithAttribute;
 import com.google.gson.JsonObject;
@@ -15,10 +14,12 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import org.apache.commons.compress.utils.Lists;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
+import java.util.function.Function;
 
 public class IncDamage extends BaseXEnchantment implements
         WithAttribute<IncDamage>, Tooltipsable<IncDamage> {
@@ -31,6 +32,8 @@ public class IncDamage extends BaseXEnchantment implements
     private static final String REDUCE_KEY = "reduce";
     private static final String PER_LEVEL_DAMAGE_KEY = "damage_per_level";
     private static final List<Attribute> ATTRIBUTES = Collections.singletonList(Attributes.ATTACK_DAMAGE);
+
+    public static final List<Function<ItemStack, Float>> DAMAGE_GETTER = Lists.newArrayList();
 
     public IncDamage() {
         super("increment_attack_damage", Rarity.VERY_RARE, EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND);
@@ -68,14 +71,28 @@ public class IncDamage extends BaseXEnchantment implements
         CompoundTag tag = stack.getOrCreateTag();
         float damage = tag.getFloat(nbtKey(KEY));
         float reduce = (float) (doubleV(REDUCE_KEY) / 100);
-        if (isSGItem(tag)) {
-            damage -= sgAttack(tag) * reduce;
+
+        Float beforeReduced = getOtherDamage(stack);
+        if (beforeReduced != null) {
+            damage -= beforeReduced * reduce;
         } else if (stack.getItem() instanceof SwordItem si) {
             damage -= si.getDamage() * reduce;
         } else if (stack.getItem() instanceof DiggerItem di) {
             damage -= di.getAttackDamage() * reduce;
         }
         return oneAttrModify(stackIdx(stack, slots), 1, damage * 100, AttributeModifier.Operation.ADDITION);
+    }
+
+    @Nullable
+    private static Float getOtherDamage(ItemStack stack) {
+        Float beforeReduced;
+        for (Function<ItemStack, Float> damageGetter : DAMAGE_GETTER) {
+            beforeReduced = damageGetter.apply(stack);
+            if (beforeReduced != null) {
+                return beforeReduced;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -94,8 +111,9 @@ public class IncDamage extends BaseXEnchantment implements
         CompoundTag compound = stack.getOrCreateTag();
         float now = compound.getFloat(nbtKey(KEY));
         float max;
-        if (isSGItem(compound)) {
-            max = sgAttack(compound);
+        Float otherMaxDamage = getOtherDamage(stack);
+        if (otherMaxDamage != null) {
+            max = otherMaxDamage;
         } else if (ti instanceof SwordItem si) {
             max = si.getDamage();
         } else if (ti instanceof DiggerItem di) {
@@ -136,20 +154,4 @@ public class IncDamage extends BaseXEnchantment implements
     private float inc(int durability) {
         return .5F * durability / Tiers.DIAMOND.getUses();
     }
-
-    // sg like
-    private boolean isSGItem(CompoundTag tag) {
-        return XPlayerInfo.isForge() && tag.contains("SGear_Data") &&
-                Optional.ofNullable(tag.getCompound("SGear_Data")).map(c ->
-                        Optional.ofNullable(c.getCompound("Properties")).map(c1 ->
-                                Optional.ofNullable(c1.getCompound("Stats"))
-                                        .map(c2 -> c2.contains("silentgear:melee_damage"))
-                                        .orElse(false)).orElse(false)).orElse(false);
-    }
-
-    private float sgAttack(CompoundTag tag) {
-        return tag.getCompound("SGear_Data").getCompound("Properties")
-                .getCompound("Stats").getFloat("silentgear:melee_damage");
-    }
-
 }

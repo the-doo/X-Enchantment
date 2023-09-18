@@ -391,11 +391,10 @@
   "x_enchantment.menu.option.go_back.consumer": "消耗几率",
   "x_enchantment.menu.option.go_back.consumer.tip": "使用后消耗的几率",
 
-  "x_enchantment.tp_to_player.tips.mark": "请在5格内潜行右键标记玩家",
+  "x_enchantment.tp_to_player.tips.mark": "请潜行右键标记玩家",
   "x_enchantment.tp_to_player.tips.only": "附魔书必须只存在当前附魔",
   "x_enchantment.tp_to_player.tips.me": "无法传送自己",
   "x_enchantment.tp_to_player.tips.offline": "玩家不存在或已离线",
-  "x_enchantment.tp_to_player.tips.check": "附近没有玩家或没有瞄准玩家",
   "x_enchantment.tp_to_player.tips.marked": "已标记",
 
   "x_enchantment.time_faster.tips.not_exist": "目标不是方块实体或已移除或不存在",

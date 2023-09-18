@@ -392,11 +392,10 @@
   "x_enchantment.menu.option.go_back.consumer": "Chance Of Consumption",
   "x_enchantment.menu.option.go_back.consumer.tip": "Chance of consumption after use",
 
-  "x_enchantment.tp_to_player.tips.mark": "Please shift + right-click within 5 range to mark the player",
+  "x_enchantment.tp_to_player.tips.mark": "Please shift + right-click to mark other player",
   "x_enchantment.tp_to_player.tips.only": "Book must only one enchantment",
   "x_enchantment.tp_to_player.tips.me": "Can't not tp self",
   "x_enchantment.tp_to_player.tips.offline": "Player offline or no this player",
-  "x_enchantment.tp_to_player.tips.check": "Need look at other player",
   "x_enchantment.tp_to_player.tips.marked": "Marked",
 
   "x_enchantment.time_faster.tips.not_exist": "The target is not a block entity or has been removed or does not exist",
