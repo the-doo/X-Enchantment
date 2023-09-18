@@ -2,6 +2,7 @@ package com.doo.xenchantment.enchantment;
 
 import com.doo.xenchantment.interfaces.Tooltipsable;
 import com.doo.xenchantment.interfaces.WithAttribute;
+import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -14,7 +15,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
-import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;

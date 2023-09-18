@@ -57,7 +57,6 @@ public class XEnchantmentForge {
 
     public XEnchantmentForge() {
         XEnchantment.init();
-        ForgeEnchantmentUtil.init();
 
         XEnchantment.setAttrGetter(ForgeMod.ENTITY_REACH);
         XEnchantment.setCanBurnGetter((o, registryAccess, recipe, nonNullList, i) ->
@@ -102,6 +101,8 @@ public class XEnchantmentForge {
     public void onSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(() ->
                 EnchantUtil.registerAdv(e -> Optional.ofNullable(e.getAdvTrigger()).ifPresent(CriteriaTriggers::register)));
+
+        event.enqueueWork(ForgeEnchantmentUtil::init);
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
