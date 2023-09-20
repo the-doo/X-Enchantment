@@ -68,6 +68,8 @@ public class Disenchantment extends Special implements Usable<Disenchantment> {
         }
         if (isBook && enchantedTag.isEmpty()) {
             other.setCount(0);
+        } else if (enchantedTag.isEmpty()) {
+            other.removeTagKey("RepairCost");
         }
 
         consumer.accept(InteractionResultHolder.consume(stack));
