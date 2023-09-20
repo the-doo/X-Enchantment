@@ -73,7 +73,7 @@ public class Diffusion extends BaseXEnchantment {
             Level world = attacker.level();
             float amount = (float) (damage * level * (doubleV(DAMAGE_KEY) / 100));
             long count = (long) (level * doubleV(COUNT_KEY));
-            Predicate<LivingEntity> test = e -> e != entity && e != attacker && !e.isAlliedTo(attacker) && (!boolV(MONSTER_KEY) || e instanceof Monster);
+            Predicate<LivingEntity> test = e -> e != entity && e != attacker && isNotAllied(e, attacker) && (!boolV(MONSTER_KEY) || e instanceof Monster);
             world.getEntitiesOfClass(LivingEntity.class, entity.getBoundingBox().inflate((int) doubleV(RANGE_KEY)), test)
                     .stream().limit(count)
                     .forEach(e -> initArrow(world, amount, attacker, e, light));

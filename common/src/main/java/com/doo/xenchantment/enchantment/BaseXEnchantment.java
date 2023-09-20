@@ -14,13 +14,18 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.OwnableEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -74,6 +79,23 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
         this.slots = slotTypes;
         this.optGroup = OPT_FORMAT.formatted(XEnchantment.MOD_ID, name);
         initOptions();
+    }
+
+    protected static boolean isNotAllied(Entity e, LivingEntity living) {
+        return !e.isAlliedTo(living) && (!(e instanceof OwnableEntity o) || !living.isAlliedTo(o.getOwner()));
+    }
+
+    protected static void addEffect(LivingEntity e, MobEffectInstance instance) {
+        MobEffect effect = instance.getEffect();
+        if (!effect.getAttributeModifiers().containsKey(Attributes.MAX_HEALTH) || e.hasEffect(effect)) {
+            e.addEffect(instance);
+            return;
+        }
+
+        e.getEffect(effect).update(instance);
+        if (e instanceof ServerPlayer p) {
+            p.connection.send(new ClientboundUpdateMobEffectPacket(e.getId(), instance));
+        }
     }
 
     @Override

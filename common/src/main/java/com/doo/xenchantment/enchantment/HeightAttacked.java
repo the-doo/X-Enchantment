@@ -54,7 +54,7 @@ public class HeightAttacked extends BaseXEnchantment {
         }
 
         AABB aabb = living.getBoundingBox();
-        Predicate<Entity> other = e -> !e.isAlliedTo(living) && (!boolV(MONSTER_KEY) || e instanceof Monster);
+        Predicate<Entity> other = e -> isNotAllied(e, living) && (!boolV(MONSTER_KEY) || e instanceof Monster);
         List<Entity> entities = living.level().getEntities(living, aabb.inflate(doubleV(RANGE_KEY)), other);
         DamageSource attack = living.damageSources().mobAttack(living);
         float value = (float) (level * doubleV(DAMAGE_KEY));

@@ -148,11 +148,7 @@ public class WithEffect extends BaseXEnchantment implements
 
         int duration = durationTick + 10 + (effect == MobEffects.NIGHT_VISION ? 12 * SECOND_TICK : 0);
         MobEffectInstance instance = new MobEffectInstance(effect, duration, level);
-        if (living.hasEffect(effect)) {
-            living.getEffect(effect).update(instance);
-        } else {
-            living.addEffect(instance);
-        }
+        addEffect(living, instance);
     }
 
     @Override
