@@ -87,7 +87,7 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
 
     protected static void addEffect(LivingEntity e, MobEffectInstance instance) {
         MobEffect effect = instance.getEffect();
-        if (!effect.getAttributeModifiers().containsKey(Attributes.MAX_HEALTH) || e.hasEffect(effect)) {
+        if (!effect.getAttributeModifiers().containsKey(Attributes.MAX_HEALTH) || !e.hasEffect(effect)) {
             e.addEffect(instance);
             return;
         }
