@@ -24,7 +24,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -50,7 +49,7 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
     protected static final Logger LOGGER = LogUtils.getLogger();
 
     /**
-     * 1s is 20 ticks
+     * 1s == 20 ticks
      */
     protected static final int SECOND_TICK = 20;
 
@@ -82,7 +81,7 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
     }
 
     protected static boolean isNotAllied(Entity e, LivingEntity living) {
-        return !e.isAlliedTo(living) && (!(e instanceof OwnableEntity o) || !living.isAlliedTo(o.getOwner()));
+        return !(e.isAlliedTo(living) || living.isAlliedTo(e));
     }
 
     protected static void addEffect(LivingEntity e, MobEffectInstance instance) {
@@ -129,7 +128,11 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
         if (disabled()) {
             fullname = fullname.copy().withStyle(ChatFormatting.STRIKETHROUGH);
         }
-        return isCurse() ? fullname : fullname.copy().withStyle(getRarity() == Rarity.VERY_RARE ? ChatFormatting.GOLD : ChatFormatting.GRAY);
+        return isCurse() ? fullname : fullname.copy().withStyle(defaultColor());
+    }
+
+    private ChatFormatting defaultColor() {
+        return getRarity() == Rarity.VERY_RARE ? ChatFormatting.GOLD : ChatFormatting.GRAY;
     }
 
     @Override

@@ -74,7 +74,7 @@ public class AlliedBonus extends Halo {
     @Override
     public void onClient() {
         EFFECTS.add(MobEffects.HEALTH_BOOST);
-        EFFECTS.add(MobEffects.HEAL);
+        EFFECTS.add(MobEffects.REGENERATION);
         EFFECTS.add(MobEffects.DAMAGE_BOOST);
         EFFECTS.add(MobEffects.DAMAGE_RESISTANCE);
         EFFECTS.add(MobEffects.MOVEMENT_SPEED);
@@ -85,7 +85,7 @@ public class AlliedBonus extends Halo {
     public void onServer(MinecraftServer server) {
         if (EFFECTS.isEmpty()) {
             EFFECTS.add(MobEffects.HEALTH_BOOST);
-            EFFECTS.add(MobEffects.HEAL);
+            EFFECTS.add(MobEffects.REGENERATION);
             EFFECTS.add(MobEffects.DAMAGE_BOOST);
             EFFECTS.add(MobEffects.DAMAGE_RESISTANCE);
             EFFECTS.add(MobEffects.MOVEMENT_SPEED);
