@@ -1,18 +1,21 @@
 package com.doo.xenchantment.forge.mixin.accessor;
 
 
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-@Mixin(AbstractFurnaceBlockEntity.class)
-public interface CanBurnAccessor {
+@Mixin(CriteriaTriggers.class)
+public interface CriteriaTriggersAccessor {
 
-    @Invoker("canBurn")
-    boolean invokeCanBurn(RegistryAccess registryAccess, @Nullable RecipeHolder<?> recipe, NonNullList<ItemStack> nonNullList, int i);
+    @Invoker("register")
+    static <T extends CriterionTrigger<?>> T register(String string, T arg) {
+        return null;
+    }
 }

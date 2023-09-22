@@ -2,6 +2,7 @@ package com.doo.xenchantment.forge;
 
 import com.doo.xenchantment.XEnchantment;
 import com.doo.xenchantment.forge.mixin.accessor.CanBurnAccessor;
+import com.doo.xenchantment.forge.mixin.accessor.CriteriaTriggersAccessor;
 import com.doo.xenchantment.forge.utils.ForgeEnchantmentUtil;
 import com.doo.xenchantment.screen.MenuScreen;
 import com.doo.xenchantment.util.ClientsideChannelUtil;
@@ -10,7 +11,6 @@ import com.doo.xenchantment.util.EnchantUtil;
 import com.doo.xenchantment.util.ServersideChannelUtil;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
@@ -35,9 +35,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.ChannelBuilder;
 import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.simple.SimpleChannel;
+import net.minecraftforge.network.SimpleChannel;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
 import org.lwjgl.glfw.GLFW;
@@ -47,13 +47,28 @@ import java.util.Optional;
 @Mod(XEnchantment.MOD_ID)
 public class XEnchantmentForge {
 
-    private static final String PROTOCOL_VERSION = "1";
-    public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
-            new ResourceLocation(XEnchantment.MOD_ID, "xenchantment_pack_sender"),
-            () -> PROTOCOL_VERSION,
-            PROTOCOL_VERSION::equals,
-            PROTOCOL_VERSION::equals
-    );
+    private static final int PROTOCOL_VERSION = 1;
+    public static final SimpleChannel INSTANCE = ChannelBuilder.named(new ResourceLocation(XEnchantment.MOD_ID, "xenchantment_pack_sender"))
+            .acceptedVersions((s, i) -> PROTOCOL_VERSION == 1)
+            .networkProtocolVersion(PROTOCOL_VERSION)
+            .simpleChannel()
+            .messageBuilder(JsonObject.class)
+            .encoder(ServersideChannelUtil::getJsonBuf)
+            .decoder(ServersideChannelUtil::getConfig)
+            .consumerNetworkThread((packet, context) -> {
+                context.enqueueWork(() -> ClientsideChannelUtil.loadConfig(packet));
+                context.setPacketHandled(true);
+            })
+            .add()
+            .messageBuilder(String.class)
+            .encoder((a, m) -> {
+            })
+            .decoder(b -> "")
+            .consumerNetworkThread((packet, context) -> {
+                context.enqueueWork(ClientsideChannelUtil::autoFish);
+                context.setPacketHandled(true);
+            })
+            .add();
 
     public XEnchantmentForge() {
         XEnchantment.init();
@@ -66,21 +81,6 @@ public class XEnchantmentForge {
 
         modEventBus.addListener(this::register);
         modEventBus.addListener(this::onSetup);
-
-        INSTANCE.registerMessage(0, String.class, (a, m) -> {
-        }, b -> "", ((packet, contextSupplier) -> {
-            contextSupplier.get().enqueueWork(ClientsideChannelUtil::autoFish);
-            contextSupplier.get().setPacketHandled(true);
-        }));
-
-        INSTANCE.registerMessage(1, JsonObject.class,
-                ServersideChannelUtil::getJsonBuf,
-                ServersideChannelUtil::getConfig,
-                ((packet, contextSupplier) -> {
-                    contextSupplier.get().enqueueWork(() -> ClientsideChannelUtil.loadConfig(packet));
-                    contextSupplier.get().setPacketHandled(true);
-                }));
-
 
         MinecraftForge.EVENT_BUS.register(this);
     }
@@ -99,8 +99,8 @@ public class XEnchantmentForge {
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
     public void onSetup(FMLCommonSetupEvent event) {
-        event.enqueueWork(() ->
-                EnchantUtil.registerAdv(e -> Optional.ofNullable(e.getAdvTrigger()).ifPresent(CriteriaTriggers::register)));
+        event.enqueueWork(() -> EnchantUtil.registerAdv(e -> Optional.ofNullable(e.getAdvTrigger())
+                .ifPresent(t -> CriteriaTriggersAccessor.register(t.getId().toString(), t))));
 
         event.enqueueWork(ForgeEnchantmentUtil::init);
     }
@@ -126,7 +126,7 @@ public class XEnchantmentForge {
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
     public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
-        INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) event.getEntity()), EnchantUtil.allOptions());
+        INSTANCE.send(EnchantUtil.allOptions(), PacketDistributor.PLAYER.with((ServerPlayer) event.getEntity()));
     }
 
 
@@ -134,7 +134,7 @@ public class XEnchantmentForge {
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
         ServersideChannelUtil.setSender((player, id, buf, json) ->
-                INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), json));
+                INSTANCE.send(json, PacketDistributor.PLAYER.with(player)));
 
         EnchantUtil.onServer(event.getServer());
     }

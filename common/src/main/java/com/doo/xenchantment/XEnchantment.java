@@ -4,7 +4,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
@@ -30,7 +30,7 @@ public class XEnchantment {
         return attrGetter.get();
     }
 
-    public static boolean canBurn(Object o, RegistryAccess registryAccess, @Nullable Recipe<?> recipe, NonNullList<ItemStack> nonNullList, int i) {
+    public static boolean canBurn(Object o, RegistryAccess registryAccess, @Nullable RecipeHolder<?> recipe, NonNullList<ItemStack> nonNullList, int i) {
         return canBurnGetter.canBurn(o, registryAccess, recipe, nonNullList, i);
     }
 
@@ -38,6 +38,6 @@ public class XEnchantment {
     public static ICanBurn canBurnGetter;
 
     public interface ICanBurn {
-        boolean canBurn(Object o, RegistryAccess registryAccess, @Nullable Recipe<?> recipe, NonNullList<ItemStack> nonNullList, int i);
+        boolean canBurn(Object o, RegistryAccess registryAccess, @Nullable RecipeHolder<?> recipe, NonNullList<ItemStack> nonNullList, int i);
     }
 }

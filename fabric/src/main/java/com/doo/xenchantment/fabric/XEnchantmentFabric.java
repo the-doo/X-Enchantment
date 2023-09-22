@@ -30,8 +30,8 @@ public class XEnchantmentFabric implements ModInitializer {
         EnchantUtil.registerAll(e -> Registry.register(BuiltInRegistries.ENCHANTMENT, e.getId(), e));
         EnchantUtil.registerAttr(e -> ModifyItemAttributeModifiersCallback.EVENT.register((stack, slot, attributeModifiers) ->
                 e.insertAttr(stack, slot, (a, m) -> attributeModifiers.get(a).add(m))));
-        EnchantUtil.registerAdv(
-                e -> Optional.ofNullable(e.getAdvTrigger()).ifPresent(CriteriaTriggers::register));
+        EnchantUtil.registerAdv(e -> Optional.ofNullable(e.getAdvTrigger())
+                        .ifPresent(t -> CriteriaTriggers.register(t.getId().toString(), t)));
 
         ServersideChannelUtil.setSender((p, i, b, o) -> ServerPlayNetworking.send(p, i, b));
 

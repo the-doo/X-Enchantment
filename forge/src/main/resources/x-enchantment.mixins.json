@@ -4,7 +4,8 @@
   "package": "com.doo.xenchantment.forge.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "accessor.CanBurnAccessor"
+    "accessor.CanBurnAccessor",
+    "accessor.CriteriaTriggersAccessor"
   ],
   "client": [
   ],

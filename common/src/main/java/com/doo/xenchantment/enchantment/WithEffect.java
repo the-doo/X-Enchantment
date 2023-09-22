@@ -214,7 +214,7 @@ public class WithEffect extends BaseXEnchantment implements
             if (key.isEmpty()) {
                 return;
             }
-            group.add(getInfoKey(slot.getName()), Component.translatable(key).getString());
+            group.addValueKeyFlag(getInfoKey(slot.getName()), key);
         });
         return group;
     }

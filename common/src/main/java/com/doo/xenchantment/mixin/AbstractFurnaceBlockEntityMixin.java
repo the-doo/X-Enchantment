@@ -6,7 +6,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
-import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import org.spongepowered.asm.mixin.Final;
@@ -38,7 +38,7 @@ public abstract class AbstractFurnaceBlockEntityMixin implements FurnaceAccessor
     }
 
     @Override
-    public Recipe<?> x_Enchantment$quickCheck(AbstractFurnaceBlockEntity e, ServerLevel level) {
+    public RecipeHolder<?> x_Enchantment$quickCheck(AbstractFurnaceBlockEntity e, ServerLevel level) {
         return quickCheck.getRecipeFor(e, level).orElse(null);
     }
 
