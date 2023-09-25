@@ -205,10 +205,6 @@ public abstract class BaseXEnchantment extends Enchantment implements WithOption
     public void onKilled(ServerLevel world, LivingEntity killer, LivingEntity killedEntity) {
     }
 
-    public boolean canDeath(LivingEntity living) {
-        return true;
-    }
-
     public boolean canBeAffected(MobEffectInstance effect, LivingEntity living) {
         return true;
     }

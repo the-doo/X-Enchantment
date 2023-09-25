@@ -49,6 +49,7 @@ import java.util.stream.Stream;
  */
 public class EnchantUtil {
     public static final List<Class<? extends Halo>> HALO_CLASS = Lists.newArrayList();
+    public static final List<CanDeath<? extends BaseXEnchantment>> DEATH_ENCHANT = Lists.newArrayList();
     public static final List<Advable<? extends BaseXEnchantment>> ADV_ENCHANT = Lists.newArrayList();
     public static final List<WithAttribute<? extends BaseXEnchantment>> ATTR_ENCHANT = Lists.newArrayList();
     public static final List<Tooltipsable<? extends BaseXEnchantment>> TIPS_ENCHANT = Lists.newArrayList();
@@ -130,6 +131,10 @@ public class EnchantUtil {
             if (e instanceof Usable<?> o) {
                 USE_ENCHANT_MAP.put(e, o);
             }
+
+            if (e instanceof CanDeath<?> o) {
+                DEATH_ENCHANT.add(o);
+            }
         });
 
         registerPlayerInfo();
@@ -185,8 +190,8 @@ public class EnchantUtil {
         ENCHANTMENTS_MAP.values().stream().filter(e -> !e.disabled()).forEach(consumer);
     }
 
-    public static void canDeath(Consumer<BaseXEnchantment> consumer) {
-        ENCHANTMENTS_MAP.values().stream().filter(e -> !e.disabled()).forEach(consumer);
+    public static void canDeath(Consumer<CanDeath<?>> consumer) {
+        DEATH_ENCHANT.forEach(consumer);
     }
 
     public static void endLivingTick(LivingEntity entity) {
