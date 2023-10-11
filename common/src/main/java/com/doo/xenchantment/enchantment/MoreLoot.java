@@ -68,7 +68,7 @@ public class MoreLoot extends BaseXEnchantment implements Advable<MoreLoot> {
 
     @Override
     public void onServer(MinecraftServer server) {
-        LootApi.register((living, stack, stacks, effectBlocks) -> {
+        LootApi.register((living, random, stack, stacks, effectBlocks) -> {
             if (disabled()) {
                 return Collections.emptyList();
             }
@@ -79,13 +79,13 @@ public class MoreLoot extends BaseXEnchantment implements Advable<MoreLoot> {
             }
 
             MutableBoolean isSuper = new MutableBoolean();
-            int rand = baseIfSuper(level, living.getRandom().nextDouble(), isSuper::setValue);
+            int rand = baseIfSuper(level, random.nextDouble(), isSuper::setValue);
             if (rand < 1) {
                 return Collections.emptyList();
             }
 
             // 0.5x ~ 1.5x
-            rand = living.getRandom().nextInt(rand / 2, (int) (rand * 1.5));
+            rand = random.nextInt(rand / 2, (int) (rand * 1.5));
 
             List<ItemStack> addition = Lists.newArrayList();
             stacks.stream()
@@ -93,11 +93,11 @@ public class MoreLoot extends BaseXEnchantment implements Advable<MoreLoot> {
                     .filter(i -> effectBlocks || !(i.getItem() instanceof BlockItem bi) || boolV(EFFECT_KEY) && bi.getBlock() instanceof DropExperienceBlock)
                     .forEach(addFromForeach(rand, addition::add));
 
-            if (addition.isEmpty()) {
+            if (addition.isEmpty() || !(living instanceof Player p)) {
                 return addition;
             }
 
-            if (living instanceof Player p && boolV(TIP_ON)) {
+            if (boolV(TIP_ON)) {
                 p.displayClientMessage(isSuper.isTrue() ? SUP_TRIGGER_TIP : TRIGGER_TIP, true);
             }
 

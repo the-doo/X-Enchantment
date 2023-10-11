@@ -4,6 +4,7 @@
   "package": "com.doo.xenchantment.fabric.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "SheepMixin",
     "accessor.CanBurnAccessor"
   ],
   "client": [

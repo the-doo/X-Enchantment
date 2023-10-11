@@ -257,7 +257,7 @@
   "x_enchantment.menu.option.more_loot.loot_rate": "Trigger Chance",
   "x_enchantment.menu.option.more_loot.loot_rate.tip": "Trigger chance",
   "x_enchantment.menu.option.more_loot.super_loot_rate": "Zoom Chance",
-  "x_enchantment.menu.option.more_loot.super_loot_rate.tip": "After triggering, harvest the probability of continuing to magnify.",
+  "x_enchantment.menu.option.more_loot.super_loot_rate.tip": "After triggering, harvest the probability of continuing to magnify. 100 means 10%, that is, the maximum probability is 10%.",
   "x_enchantment.menu.option.more_loot.super_loot_value": "Zoom Value",
   "x_enchantment.menu.option.more_loot.super_loot_value.tip": "More multiply the loot.",
 

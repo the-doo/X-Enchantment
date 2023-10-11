@@ -256,7 +256,7 @@
   "x_enchantment.menu.option.more_loot.loot_rate": "触发几率",
   "x_enchantment.menu.option.more_loot.loot_rate.tip": "触发几率",
   "x_enchantment.menu.option.more_loot.super_loot_rate": "放大几率",
-  "x_enchantment.menu.option.more_loot.super_loot_rate.tip": "触发后，收获继续放大倍数的几率",
+  "x_enchantment.menu.option.more_loot.super_loot_rate.tip": "触发后，收获继续放大倍数的几率，100表示10%，即最大为10%几率",
   "x_enchantment.menu.option.more_loot.super_loot_value": "放大倍数",
   "x_enchantment.menu.option.more_loot.super_loot_value.tip": "放大收获的倍数",
 

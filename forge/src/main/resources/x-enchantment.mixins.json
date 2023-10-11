@@ -4,6 +4,7 @@
   "package": "com.doo.xenchantment.forge.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "ShearsItemMixin",
     "accessor.CanBurnAccessor"
   ],
   "client": [
