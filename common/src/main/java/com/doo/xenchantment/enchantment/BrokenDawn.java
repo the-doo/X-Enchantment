@@ -214,14 +214,30 @@ public class BrokenDawn extends BaseXEnchantment implements
             return i -> i instanceof ArmorItem ai && ia.getEquipmentSlot() == ai.getEquipmentSlot() &&
                     ai.getMaxDamage() > ia.getMaxDamage() && ai.getDefense() > ia.getDefense();
         }
+        if (item instanceof ShovelItem it) {
+            return i -> i instanceof ShovelItem ti && isToolUp(it, ti);
+        }
+        if (item instanceof HoeItem it) {
+            return i -> i instanceof HoeItem ti && isToolUp(it, ti);
+        }
+        if (item instanceof AxeItem it) {
+            return i -> i instanceof AxeItem ti && isToolUp(it, ti);
+        }
+        if (item instanceof PickaxeItem it) {
+            return i -> i instanceof PickaxeItem ti && isToolUp(it, ti);
+        }
         if (item instanceof SwordItem is) {
             return i -> i instanceof SwordItem si && si.getDamage() > is.getDamage() && si.getMaxDamage() > is.getMaxDamage();
         }
         if (item instanceof TieredItem it) {
-            return i -> i instanceof TieredItem ti && ti.getMaxDamage() > it.getMaxDamage() &&
-                    (ti.getTier().getLevel() > it.getTier().getLevel() || ti.getTier().getUses() > it.getTier().getUses() && ti.getTier().getSpeed() > it.getTier().getSpeed());
+            return i -> i instanceof TieredItem ti && isToolUp(it, ti);
         }
         return i -> item.getClass().isInstance(i) && i.getMaxDamage() > item.getMaxDamage();
+    }
+
+    private static boolean isToolUp(TieredItem it, TieredItem ti) {
+        return ti.getMaxDamage() > it.getMaxDamage() &&
+                (ti.getTier().getLevel() > it.getTier().getLevel() || ti.getTier().getUses() > it.getTier().getUses() && ti.getTier().getSpeed() > it.getTier().getSpeed());
     }
 
     @Override

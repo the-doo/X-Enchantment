@@ -4,10 +4,7 @@ import com.doo.playerinfo.XPlayerInfo;
 import com.doo.xenchantment.enchantment.BrokenDawn;
 import com.doo.xenchantment.enchantment.IncDamage;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.SwordItem;
-import net.minecraft.world.item.TieredItem;
+import net.minecraft.world.item.*;
 import net.minecraftforge.fml.ModList;
 
 import java.util.Optional;
@@ -37,15 +34,28 @@ public class ForgeEnchantmentUtil {
                 return i -> i instanceof ArmorItem ai && ia.getEquipmentSlot() == ai.getEquipmentSlot() &&
                         ai.getMaxDamage() > damage && ai.getDefense() > value;
             }
+
             if (item instanceof SwordItem) {
                 float value = sgAttack(tag);
                 return i -> i instanceof SwordItem si && si.getDamage() > value && si.getMaxDamage() > damage;
             }
+
+            float level = sgMaxLevel(tag);
+            float uses = sgMaxUse(tag);
+            if (item instanceof ShovelItem) {
+                return i -> i instanceof ShovelItem ti && isToolUp(damage, level, uses, ti);
+            }
+            if (item instanceof HoeItem) {
+                return i -> i instanceof HoeItem ti && isToolUp(damage, level, uses, ti);
+            }
+            if (item instanceof AxeItem) {
+                return i -> i instanceof AxeItem ti && isToolUp(damage, level, uses, ti);
+            }
+            if (item instanceof PickaxeItem) {
+                return i -> i instanceof PickaxeItem ti && isToolUp(damage, level, uses, ti);
+            }
             if (item instanceof TieredItem) {
-                float level = sgMaxLevel(tag);
-                float uses = sgMaxUse(tag);
-                return i -> i instanceof TieredItem ti && ti.getMaxDamage() > damage &&
-                        (ti.getTier().getLevel() > level || ti.getTier().getSpeed() > uses);
+                return i -> i instanceof TieredItem ti && isToolUp(damage, level, uses, ti);
             }
 
             return null;
@@ -58,6 +68,10 @@ public class ForgeEnchantmentUtil {
 
             return sgAttack(stack.getTag());
         });
+    }
+
+    private static boolean isToolUp(float damage, float level, float uses, TieredItem ti) {
+        return ti.getMaxDamage() > damage && (ti.getTier().getLevel() > level || ti.getTier().getSpeed() > uses);
     }
 
     private static boolean isSGSwordItem(CompoundTag tag) {
