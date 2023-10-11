@@ -85,7 +85,7 @@
   "enchantment.x_enchantment.tp_to_player": "I coming",
   "enchantment.x_enchantment.tp_to_player.desc": "Sneak right-clicking to mark the player, you can right-click to teleport to the current location of the marked player, Only supported under Enchantment Books is useful.",
   "enchantment.x_enchantment.time_faster": "Time Flies",
-  "enchantment.x_enchantment.time_faster.desc": "Sneak right-click to use on block entities (such as machines in furnaces or other modules), It allows the 'Spring Blossom' and 'Prometheus' to recognize and trigger acceleration, this enchantment alone has no effect and is only supported under the Enchantment Book useful.",
+  "enchantment.x_enchantment.time_faster.desc": "Sneak right-click to use on block entities (such as machines in furnaces or other modules), It allows the 'Spring Blossom' and 'Prometheus' to recognize and trigger acceleration, the effect disappears after removing the block, this enchantment alone has no effect and is only supported under the Enchantment Book useful.",
 
   "enchantment.x_enchantment.trinkets": "Trinkets Enchantment",
   "enchantment.x_enchantment.trinkets.attr": "With %s ",

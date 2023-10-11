@@ -85,7 +85,7 @@
   "enchantment.x_enchantment.tp_to_player": "降临",
   "enchantment.x_enchantment.tp_to_player.desc": "潜行右键标记玩家后可右键传送至标记玩家的当前位置，仅支持附魔书下有用",
   "enchantment.x_enchantment.time_faster": "白驹过隙",
-  "enchantment.x_enchantment.time_faster.desc": "潜行右键对方块实体（如熔炉或其他模组中的机器等）使用，可让'春暖花开'/'燧人氏'识别并触发加速，本附魔单独无作用且仅支持附魔书下有用",
+  "enchantment.x_enchantment.time_faster.desc": "潜行右键对方块实体（如熔炉或其他模组中的机器等）使用，可让'春暖花开'/'燧人氏'识别并触发加速，拆除方块后效果消失，本附魔单独无作用且仅支持附魔书下有用",
 
   "enchantment.x_enchantment.trinkets": "饰品附魔",
   "enchantment.x_enchantment.trinkets.attr": "%s增幅 ",
