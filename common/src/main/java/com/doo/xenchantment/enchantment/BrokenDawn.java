@@ -109,6 +109,10 @@ public class BrokenDawn extends BaseXEnchantment implements
     }
 
     private static float randomAmount(LivingEntity owner, float amount) {
+        if (owner == null) {
+            return amount;
+        }
+
         RandomSource random = owner.getRandom();
         return random.nextDouble() < 0.6 ? amount : amount * random.nextInt(1, 4);
     }
