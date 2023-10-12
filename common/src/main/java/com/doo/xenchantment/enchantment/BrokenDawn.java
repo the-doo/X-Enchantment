@@ -104,7 +104,7 @@ public class BrokenDawn extends BaseXEnchantment implements
             nbt.putLong(key, (long) (count + randomAmount(owner, amount)));
 
             // if done
-            ifDone(stack, owner, count, owner::spawnAtLocation);
+            ifDone(stack, owner, count, owner == null ? null : owner::spawnAtLocation);
         });
     }
 
@@ -151,9 +151,9 @@ public class BrokenDawn extends BaseXEnchantment implements
         stack.getOrCreateTag().remove(nbtKey(KEY));
 
         // default increment
-        RandomSource random = owner.getRandom();
+        boolean onlyStack = owner == null;
         int inc = 1;
-        boolean needLevelUp = random.nextDouble() < doubleV(LEVEL_UP_KEY) / 100;
+        boolean needLevelUp = !onlyStack && owner.getRandom().nextDouble() < doubleV(LEVEL_UP_KEY) / 100;
         ItemStack drop = ItemStack.EMPTY;
         if (needLevelUp) {
             Item next = nextLevelItem(stack);
@@ -180,7 +180,7 @@ public class BrokenDawn extends BaseXEnchantment implements
         olds.forEach((e, l) ->
                 enchantments.add(EnchantmentHelper.storeEnchantment(EnchantmentHelper.getEnchantmentId(e), l + (e == this || e.getMaxLevel() < 2 ? 0 : amount))));
 
-        if (drop.isEmpty()) {
+        if (onlyStack || drop.isEmpty()) {
             // log done
             stack.addTagElement(ItemStack.TAG_ENCH, enchantments);
             return;
