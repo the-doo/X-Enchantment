@@ -31,6 +31,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.block.Block;
@@ -49,6 +50,7 @@ import java.util.stream.Stream;
  */
 public class EnchantUtil {
     public static final List<Class<? extends Halo>> HALO_CLASS = Lists.newArrayList();
+    public static final List<CanDeath<? extends BaseXEnchantment>> DEATH_ENCHANT = Lists.newArrayList();
     public static final List<Advable<? extends BaseXEnchantment>> ADV_ENCHANT = Lists.newArrayList();
     public static final List<WithAttribute<? extends BaseXEnchantment>> ATTR_ENCHANT = Lists.newArrayList();
     public static final List<Tooltipsable<? extends BaseXEnchantment>> TIPS_ENCHANT = Lists.newArrayList();
@@ -130,6 +132,10 @@ public class EnchantUtil {
             if (e instanceof Usable<?> o) {
                 USE_ENCHANT_MAP.put(e, o);
             }
+
+            if (e instanceof CanDeath<?> o) {
+                DEATH_ENCHANT.add(o);
+            }
         });
 
         registerPlayerInfo();
@@ -185,8 +191,8 @@ public class EnchantUtil {
         ENCHANTMENTS_MAP.values().stream().filter(e -> !e.disabled()).forEach(consumer);
     }
 
-    public static void canDeath(Consumer<BaseXEnchantment> consumer) {
-        ENCHANTMENTS_MAP.values().stream().filter(e -> !e.disabled()).forEach(consumer);
+    public static void canDeath(Consumer<CanDeath<?>> consumer) {
+        DEATH_ENCHANT.forEach(consumer);
     }
 
     public static void endLivingTick(LivingEntity entity) {
@@ -221,12 +227,12 @@ public class EnchantUtil {
 
     public static void lootMob(DamageSource damageSource, List<ItemStack> additionLoot, Consumer<List<ItemStack>> callback) {
         Entity entity = damageSource.getEntity();
-        if (!(entity instanceof Player player)) {
+        if (!(entity instanceof LivingEntity living)) {
             return;
         }
 
-        ItemStack stack = player.getMainHandItem();
-        List<ItemStack> trigger = LootApi.trigger(player, stack, additionLoot, true);
+        ItemStack stack = living.getMainHandItem();
+        List<ItemStack> trigger = LootApi.trigger(living, living.getRandom(), stack, additionLoot, true);
         if (!trigger.isEmpty()) {
             callback.accept(trigger);
         }
@@ -238,7 +244,7 @@ public class EnchantUtil {
         }
 
         ItemStack stack = player.getMainHandItem();
-        List<ItemStack> trigger = LootApi.trigger(player, stack, list, true);
+        List<ItemStack> trigger = LootApi.trigger(player, player.getRandom(), stack, list, true);
         if (!trigger.isEmpty()) {
             callback.accept(trigger);
         }
@@ -249,10 +255,32 @@ public class EnchantUtil {
             return;
         }
 
-        List<ItemStack> trigger = LootApi.trigger(player, itemStack, list, false);
+        List<ItemStack> trigger = LootApi.trigger(player, player.getRandom(), itemStack, list, false);
         if (!trigger.isEmpty()) {
             consumer.accept(trigger);
         }
+    }
+
+    public static int lootShearsFabric(Player player, ItemStack stack, int amount) {
+        if (amount < 1 || player == null || stack == null) {
+            return amount;
+        }
+
+        ItemStack test = Items.COAL.getDefaultInstance();
+        List<ItemStack> trigger = LootApi.trigger(player, player.getRandom(), stack, Collections.singletonList(test), true);
+        if (trigger.isEmpty()) {
+            return amount;
+        }
+
+        return amount * trigger.stream().mapToInt(ItemStack::getCount).sum();
+    }
+
+    public static void lootShearsForge(List<ItemStack> drop, Player playerIn, LivingEntity living, ItemStack stack) {
+        if (drop.isEmpty()) {
+            return;
+        }
+
+        drop.addAll(LootApi.trigger(playerIn, living.getRandom(), stack, drop, true));
     }
 
     public static boolean canStandOnFluid(LivingEntity living, BlockPos pos, FluidState fluidState) {

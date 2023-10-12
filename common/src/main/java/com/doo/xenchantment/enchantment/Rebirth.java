@@ -1,5 +1,6 @@
 package com.doo.xenchantment.enchantment;
 
+import com.doo.xenchantment.interfaces.CanDeath;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -12,7 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
-public class Rebirth extends BaseXEnchantment {
+public class Rebirth extends BaseXEnchantment implements CanDeath<Rebirth> {
 
     public Rebirth() {
         super("rebirth", Rarity.RARE, EnchantmentCategory.ARMOR_CHEST, EquipmentSlot.CHEST);

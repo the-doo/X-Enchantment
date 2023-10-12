@@ -100,8 +100,12 @@ public class TimeFaster extends Special implements Usable<TimeFaster> {
             return false;
         }
 
+        int times = BlockEntityAccessor.timeSpeed(block) * 100;
+        if (times < 1) {
+            return false;
+        }
+
         execute(() -> {
-            int times = BlockEntityAccessor.timeSpeed(block) * 100;
             for (int i = 0; i < times; i++) {
                 ticker.tick(level, pos, state, block);
             }

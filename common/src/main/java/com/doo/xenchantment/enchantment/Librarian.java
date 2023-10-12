@@ -49,7 +49,7 @@ public class Librarian extends BaseXEnchantment {
 
     @Override
     public void onServer(MinecraftServer server) {
-        LootApi.register(((living, stack, stacks, effectBlocks) -> {
+        LootApi.register(((living, random, stack, stacks, effectBlocks) -> {
             if (disabled()) {
                 return Collections.emptyList();
             }
@@ -63,21 +63,21 @@ public class Librarian extends BaseXEnchantment {
                 return Collections.emptyList();
             }
 
-            boolean dropped = living.getRandom().nextDouble() < level * doubleV(TRIGGER_KEY) / 100;
+            boolean dropped = random.nextDouble() < level * doubleV(TRIGGER_KEY) / 100;
             if (!dropped) {
                 return Collections.emptyList();
             }
 
             // check rarity
-            Rarity rarity = randRarityByLevel(living.getRandom().nextDouble(), living.getAttributeValue(Attributes.LUCK) + 1);
+            Rarity rarity = randRarityByLevel(random.nextDouble(), living == null ? 0 : living.getAttributeValue(Attributes.LUCK) + 1);
             List<Enchantment> list = ENCHANTMENT_MAP.get(rarity);
 
             if (list == null || list.isEmpty()) {
                 return Collections.emptyList();
             }
 
-            Enchantment e = list.get(living.getRandom().nextInt(list.size()));
-            return Collections.singletonList(EnchantedBookItem.createForEnchantment(new EnchantmentInstance(e, living.getRandom().nextInt(1, e.getMaxLevel()))));
+            Enchantment e = list.get(random.nextInt(list.size()));
+            return Collections.singletonList(EnchantedBookItem.createForEnchantment(new EnchantmentInstance(e, random.nextInt(1, e.getMaxLevel()))));
         }));
     }
 
