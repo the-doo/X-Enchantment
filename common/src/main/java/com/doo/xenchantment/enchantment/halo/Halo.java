@@ -48,7 +48,7 @@ public abstract class Halo extends BaseXEnchantment implements OneLevelMark {
         super.initOptions();
 
         options.addProperty(HALO_KEY, true);
-        options.addProperty(PLAYER_ONLY_KEY, true);
+        options.addProperty(PLAYER_ONLY_KEY, false);
         options.addProperty(INTERVAL_KEY, 3);
         options.addProperty(RANGE_KEY, 5);
 

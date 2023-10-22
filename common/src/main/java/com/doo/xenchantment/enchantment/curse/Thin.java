@@ -31,7 +31,7 @@ public class Thin extends Cursed {
 
     @Override
     public void onServer(MinecraftServer server) {
-        ItemApi.register((owner, stack, amount) -> {
+        ItemApi.registerOnDamaged((owner, stack, amount) -> {
             if (owner == null) {
                 return;
             }

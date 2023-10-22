@@ -93,7 +93,7 @@ public class BrokenDawn extends BaseXEnchantment implements
 
     @Override
     public void onServer(MinecraftServer server) {
-        ItemApi.register((owner, stack, amount) -> {
+        ItemApi.registerBeforeDamaged((owner, stack, amount) -> {
             if (disabled() || level(stack) < 1) {
                 return;
             }
@@ -151,7 +151,7 @@ public class BrokenDawn extends BaseXEnchantment implements
         stack.getOrCreateTag().remove(nbtKey(KEY));
 
         // default increment
-        boolean onlyStack = owner == null;
+        boolean onlyStack = owner == null || !stack.isDamageableItem();
         int inc = 1;
         boolean needLevelUp = !onlyStack && owner.getRandom().nextDouble() < doubleV(LEVEL_UP_KEY) / 100;
         ItemStack drop = ItemStack.EMPTY;
@@ -198,6 +198,9 @@ public class BrokenDawn extends BaseXEnchantment implements
     }
 
     private Item nextLevelItem(ItemStack stack) {
+        if (!stack.isDamageableItem()) {
+            return Items.AIR;
+        }
         return BuiltInRegistries.ITEM.stream()
                 .filter(switchFilter(stack))
                 .min(Comparator.comparing(Item::getMaxDamage))
@@ -259,8 +262,8 @@ public class BrokenDawn extends BaseXEnchantment implements
         group.add(getInfoKey(LEVEL_UP_KEY), notLevel ? 0 : doubleV(LEVEL_UP_KEY) / 100, true);
 
         Item i;
-        group.add(getInfoKey(LEVEL_UP_ITEM_INFO_KEY),
-                notLevel || (i = nextLevelItem(stack)) == Items.AIR ? "None" : i.getDefaultInstance().getDisplayName().getString(), false);
+        group.addValueKeyFlag(getInfoKey(LEVEL_UP_ITEM_INFO_KEY),
+                notLevel || (i = nextLevelItem(stack)) == Items.AIR ? "None" : i.getDefaultInstance().getDescriptionId());
         return group;
     }
 

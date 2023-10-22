@@ -27,7 +27,7 @@ public class ProtectionAnvil extends BaseXEnchantment {
 
     @Override
     public boolean canEnchant(ItemStack itemStack) {
-        return itemStack.isDamageableItem();
+        return itemStack.getItem().isEnchantable(itemStack);
     }
 
     @Override
