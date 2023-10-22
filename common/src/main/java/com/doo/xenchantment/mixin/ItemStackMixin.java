@@ -8,6 +8,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.Item;
@@ -18,7 +19,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.function.Consumer;
 
 @Mixin(ItemStack.class)
 public abstract class ItemStackMixin {
@@ -31,7 +35,14 @@ public abstract class ItemStackMixin {
 
     @Inject(method = "hurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/enchantment/EnchantmentHelper;getItemEnchantmentLevel(Lnet/minecraft/world/item/enchantment/Enchantment;Lnet/minecraft/world/item/ItemStack;)I"))
     private void itemUsedCallback(int i, RandomSource randomSource, ServerPlayer serverPlayer, CallbackInfoReturnable<Boolean> cir) {
-        ItemApi.call(serverPlayer, XPlayerInfo.get(this), i);
+        ItemApi.callOnDamaged(serverPlayer, XPlayerInfo.get(this), i);
+    }
+
+    @Inject(method = "hurtAndBreak", at = @At("HEAD"))
+    private void itemBeforeUsedCallback(int i, LivingEntity livingEntity, Consumer<LivingEntity> consumer, CallbackInfo ci) {
+        if (livingEntity instanceof ServerPlayer serverPlayer) {
+            ItemApi.callBeforeDamaged(serverPlayer, XPlayerInfo.get(this), i);
+        }
     }
 
     @Inject(method = "useOn", at = @At(value = "HEAD"), cancellable = true)

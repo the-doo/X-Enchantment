@@ -9,20 +9,36 @@ import java.util.List;
 public interface ItemApi {
 
     final class InnerE {
-        static final List<ItemApi> EVENT = Lists.newArrayList();
+        static final List<OnDamaged> ON_DAMAGED = Lists.newArrayList();
+        static final List<BeforeDamaged> BEFORE_DAMAGED = Lists.newArrayList();
 
         private InnerE() {
         }
     }
 
 
-    static void register(ItemApi callback) {
-        ItemApi.InnerE.EVENT.add(callback);
+    static void registerOnDamaged(OnDamaged callback) {
+        ItemApi.InnerE.ON_DAMAGED.add(callback);
     }
 
-    static void call(LivingEntity owner, ItemStack stack, float amount) {
-        ItemApi.InnerE.EVENT.forEach(l -> l.onDamaged(owner, stack, amount));
+    static void callOnDamaged(LivingEntity owner, ItemStack stack, float amount) {
+        ItemApi.InnerE.ON_DAMAGED.forEach(l -> l.onDamaged(owner, stack, amount));
     }
 
-    void onDamaged(LivingEntity owner, ItemStack stack, float amount);
+
+    static void registerBeforeDamaged(BeforeDamaged callback) {
+        ItemApi.InnerE.BEFORE_DAMAGED.add(callback);
+    }
+
+    static void callBeforeDamaged(LivingEntity owner, ItemStack stack, float amount) {
+        ItemApi.InnerE.BEFORE_DAMAGED.forEach(l -> l.beforeDamaged(owner, stack, amount));
+    }
+
+    interface OnDamaged {
+        void onDamaged(LivingEntity owner, ItemStack stack, float amount);
+    }
+
+    interface BeforeDamaged {
+        void beforeDamaged(LivingEntity owner, ItemStack stack, float amount);
+    }
 }

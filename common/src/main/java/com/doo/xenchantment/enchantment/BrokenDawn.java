@@ -93,7 +93,7 @@ public class BrokenDawn extends BaseXEnchantment implements
 
     @Override
     public void onServer(MinecraftServer server) {
-        ItemApi.register((owner, stack, amount) -> {
+        ItemApi.registerBeforeDamaged((owner, stack, amount) -> {
             if (disabled() || level(stack) < 1) {
                 return;
             }
@@ -104,11 +104,15 @@ public class BrokenDawn extends BaseXEnchantment implements
             nbt.putLong(key, (long) (count + randomAmount(owner, amount)));
 
             // if done
-            ifDone(stack, owner, count, owner::spawnAtLocation);
+            ifDone(stack, owner, count, owner == null ? null : owner::spawnAtLocation);
         });
     }
 
     private static float randomAmount(LivingEntity owner, float amount) {
+        if (owner == null) {
+            return amount;
+        }
+
         RandomSource random = owner.getRandom();
         return random.nextDouble() < 0.6 ? amount : amount * random.nextInt(1, 4);
     }
@@ -147,9 +151,9 @@ public class BrokenDawn extends BaseXEnchantment implements
         stack.getOrCreateTag().remove(nbtKey(KEY));
 
         // default increment
-        RandomSource random = owner.getRandom();
+        boolean onlyStack = owner == null || !stack.isDamageableItem();
         int inc = 1;
-        boolean needLevelUp = random.nextDouble() < doubleV(LEVEL_UP_KEY) / 100;
+        boolean needLevelUp = !onlyStack && owner.getRandom().nextDouble() < doubleV(LEVEL_UP_KEY) / 100;
         ItemStack drop = ItemStack.EMPTY;
         if (needLevelUp) {
             Item next = nextLevelItem(stack);
@@ -176,7 +180,7 @@ public class BrokenDawn extends BaseXEnchantment implements
         olds.forEach((e, l) ->
                 enchantments.add(EnchantmentHelper.storeEnchantment(EnchantmentHelper.getEnchantmentId(e), l + (e == this || e.getMaxLevel() < 2 ? 0 : amount))));
 
-        if (drop.isEmpty()) {
+        if (onlyStack || drop.isEmpty()) {
             // log done
             stack.addTagElement(ItemStack.TAG_ENCH, enchantments);
             return;
@@ -194,6 +198,9 @@ public class BrokenDawn extends BaseXEnchantment implements
     }
 
     private Item nextLevelItem(ItemStack stack) {
+        if (!stack.isDamageableItem()) {
+            return Items.AIR;
+        }
         return BuiltInRegistries.ITEM.stream()
                 .filter(switchFilter(stack))
                 .min(Comparator.comparing(Item::getMaxDamage))
@@ -255,8 +262,8 @@ public class BrokenDawn extends BaseXEnchantment implements
         group.add(getInfoKey(LEVEL_UP_KEY), notLevel ? 0 : doubleV(LEVEL_UP_KEY) / 100, true);
 
         Item i;
-        group.add(getInfoKey(LEVEL_UP_ITEM_INFO_KEY),
-                notLevel || (i = nextLevelItem(stack)) == Items.AIR ? "None" : i.getDefaultInstance().getDisplayName().getString(), false);
+        group.addValueKeyFlag(getInfoKey(LEVEL_UP_ITEM_INFO_KEY),
+                notLevel || (i = nextLevelItem(stack)) == Items.AIR ? "None" : i.getDefaultInstance().getDescriptionId());
         return group;
     }
 
